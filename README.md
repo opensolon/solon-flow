@@ -87,7 +87,7 @@ Solon
 id: f1
 layout:
   - task: |
-      context.result = a + b;
+      System.out.println("hello world!"); 
     when: a > b
 ```
 
@@ -99,7 +99,7 @@ public void case1() throws Throwable {
     engine.load("classpath:flow/*.yml");
 
     FlowContext context = new FlowContext();
-    context.put("a", 1);
+    context.put("a", 3);
     context.put("b", 2);
 
     engine.eval("f1", context);
@@ -116,7 +116,7 @@ public void case2() throws Throwable {
     engine.load("classpath:flow/*.yml");
 
     FlowContext context = new FlowContext();
-    context.put("a", 1);
+    context.put("a", 3);
     context.put("b", 2);
 
     engine.eval("f1", context);
@@ -129,7 +129,7 @@ public void case3() throws Throwable {
     engine.load("classpath:flow/*.yml");
 
     FlowContext context = new FlowContext();
-    context.put("a", 1);
+    context.put("a", 3);
     context.put("b", 2);
 
     engine.eval("f1", context);
