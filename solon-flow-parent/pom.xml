@@ -30,19 +30,19 @@
 
             <dependency>
                 <groupId>org.noear</groupId>
-                <artifactId>solon-flow-aviator</artifactId>
+                <artifactId>solon-flow-eval-aviator</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.noear</groupId>
-                <artifactId>solon-flow-beetl</artifactId>
+                <artifactId>solon-flow-eval-beetl</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.noear</groupId>
-                <artifactId>solon-flow-magic</artifactId>
+                <artifactId>solon-flow-eval-magic</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
