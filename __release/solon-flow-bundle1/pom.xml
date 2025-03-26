@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.noear</groupId>
         <artifactId>solon-flow-parent</artifactId>
-        <version>3.1.1</version>
+        <version>3.1.2-SNAPSHOT</version>
         <relativePath>../../solon-flow-parent/pom.xml</relativePath>
     </parent>
 
@@ -21,6 +21,5 @@
 
         <module>../../solon-flow-projects/solon-flow-aviator</module>
         <module>../../solon-flow-projects/solon-flow-beetl</module>
-        <module>../../solon-flow-projects/solon-flow-liquor</module>
     </modules>
 </project>
