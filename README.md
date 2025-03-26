@@ -78,3 +78,54 @@ Solon
 | https://gitee.com/dromara/solon-plugins         | Solon 第三方扩展插件代码仓库                | 
 
 
+## Solon Flow 示例
+
+配置示例
+
+```yaml
+# flow/case1.yml
+id: f1
+layout:
+  - task: |
+      context.result = a + b;
+    when: a > b
+```
+
+代码执行示例
+
+```java
+public void case1() throws Throwable {
+    FlowEngine engine = FlowEngine.newInstance();
+    engine.load("classpath:flow/*");
+
+    FlowContext context = new FlowContext();
+    context.put("a", 1);
+    context.put("b", 2);
+
+    engine.eval("f1", context);
+}
+
+public void case2() throws Throwable {
+    FlowEngine engine = FlowEngine.newInstance();
+    engine.register(new SimpleFlowDriver(new BeetlEvaluation())); //脚本执行器定制
+    engine.load("classpath:flow/*");
+
+    FlowContext context = new FlowContext();
+    context.put("a", 1);
+    context.put("b", 2);
+
+    engine.eval("f1", context);
+}
+
+public void case3() throws Throwable {
+    FlowEngine engine = FlowEngine.newInstance();
+    engine.register(new SimpleFlowDriver(new BeetlEvaluation(), new SpringContainer())); //脚本执行器定制 + 组件容器定制
+    engine.load("classpath:flow/*");
+
+    FlowContext context = new FlowContext();
+    context.put("a", 1);
+    context.put("b", 2);
+
+    engine.eval("f1", context);
+}
+```
