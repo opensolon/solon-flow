@@ -78,7 +78,7 @@ Solon
 | https://gitee.com/dromara/solon-plugins         | Solon 第三方扩展插件代码仓库                | 
 
 
-## Solon Flow 示例
+## Solon Flow 使用示例
 
 配置示例
 
@@ -96,7 +96,7 @@ layout:
 ```java
 public void case1() throws Throwable {
     FlowEngine engine = FlowEngine.newInstance();
-    engine.load("classpath:flow/*");
+    engine.load("classpath:flow/*.yml");
 
     FlowContext context = new FlowContext();
     context.put("a", 1);
@@ -113,7 +113,7 @@ public void case1() throws Throwable {
 public void case2() throws Throwable {
     FlowEngine engine = FlowEngine.newInstance();
     engine.register(new SimpleFlowDriver(new BeetlEvaluation())); 
-    engine.load("classpath:flow/*");
+    engine.load("classpath:flow/*.yml");
 
     FlowContext context = new FlowContext();
     context.put("a", 1);
@@ -126,7 +126,7 @@ public void case2() throws Throwable {
 public void case3() throws Throwable {
     FlowEngine engine = FlowEngine.newInstance();
     engine.register(new SimpleFlowDriver(new BeetlEvaluation(), new SpringContainer())); 
-    engine.load("classpath:flow/*");
+    engine.load("classpath:flow/*.yml");
 
     FlowContext context = new FlowContext();
     context.put("a", 1);
