@@ -12,23 +12,13 @@
     </parent>
 
     <!-- 添加事务支持和缓存支持 -->
-    <artifactId>solon-flow</artifactId>
+    <artifactId>solon-flow-liquor</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.noear</groupId>
-            <artifactId>solon</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.noear</groupId>
-            <artifactId>snack3</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <artifactId>solon-flow</artifactId>
         </dependency>
 
         <dependency>

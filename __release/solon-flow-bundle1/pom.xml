@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.noear</groupId>
+        <artifactId>solon-flow-parent</artifactId>
+        <version>3.1.1</version>
+        <relativePath>../../solon-flow-parent/pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.noear.bundle</groupId>
+    <artifactId>solon-flow-bundle1</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>../../solon-flow</module>
+        <module>../../solon-flow-parent</module>
+
+        <module>../../solon-flow-projects/solon-flow-aviator</module>
+        <module>../../solon-flow-projects/solon-flow-beetl</module>
+        <module>../../solon-flow-projects/solon-flow-liquor</module>
+    </modules>
+</project>

@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>solon-flow</module>
+        <module>__release</module>
     </modules>
 
     <build>

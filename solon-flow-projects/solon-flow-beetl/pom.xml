@@ -12,29 +12,19 @@
     </parent>
 
     <!-- 添加事务支持和缓存支持 -->
-    <artifactId>solon-flow</artifactId>
+    <artifactId>solon-flow-beetl</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.noear</groupId>
-            <artifactId>solon</artifactId>
+            <artifactId>solon-flow</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.noear</groupId>
-            <artifactId>snack3</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.noear</groupId>
-            <artifactId>liquor-eval</artifactId>
-            <version>${liquor.version}</version>
+            <groupId>com.ibeetl</groupId>
+            <artifactId>beetl</artifactId>
+            <version>${beetl.version}</version>
         </dependency>
 
         <dependency>
