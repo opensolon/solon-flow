@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.flow.ChainContext;
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.test.SolonTest;
 
@@ -26,7 +26,7 @@ public class AppTest {
 
     @Test
     public void case6() throws Throwable {
-        ChainContext context = new ChainContext();
+        FlowContext context = new FlowContext();
         flowEngine.eval("c6", context);
         assert context.result.equals(112);
 
@@ -35,13 +35,13 @@ public class AppTest {
 
     @Test
     public void case4_inclusive() throws Throwable {
-        ChainContext context = new ChainContext();
+        FlowContext context = new FlowContext();
         context.put("day", 1);
         flowEngine.eval("c4", context);
         assert context.result.equals(0);
         log.trace("counter: {}", context.counter());
 
-        context = new ChainContext();
+        context = new FlowContext();
         context.put("day", 3);
         flowEngine.eval("c4", context);
         assert context.result.equals(3);
@@ -50,7 +50,7 @@ public class AppTest {
 
     @Test
     public void case4_inclusive2() throws Throwable {
-        ChainContext context = new ChainContext();
+        FlowContext context = new FlowContext();
         context.put("day", 7);
         flowEngine.eval("c4", context);
         assert context.result.equals(10);
@@ -59,7 +59,7 @@ public class AppTest {
 
     @Test
     public void case5_parallel() throws Throwable {
-        ChainContext context = new ChainContext();
+        FlowContext context = new FlowContext();
         context.put("day", 7);
         flowEngine.eval("c5", context);
         assert context.result.equals(10);
@@ -70,9 +70,9 @@ public class AppTest {
 
     @Test
     public void case7() throws Throwable {
-        ChainContext context;
+        FlowContext context;
 
-        context = new ChainContext();
+        context = new FlowContext();
         context.put("day", 1);
         flowEngine.eval("c7", context);
         assert context.result.equals(2);
@@ -82,7 +82,7 @@ public class AppTest {
 
         //----------------
 
-        context = new ChainContext();
+        context = new FlowContext();
         context.put("day", 3);
         flowEngine.eval("c7", context);
         assert context.result.equals(3);
@@ -92,7 +92,7 @@ public class AppTest {
 
         //----------------
 
-        context = new ChainContext();
+        context = new FlowContext();
         context.put("day", 7);
         flowEngine.eval("c7", context);
         assert context.result.equals(4);
@@ -102,7 +102,7 @@ public class AppTest {
 
         //----------------
 
-        context = new ChainContext();
+        context = new FlowContext();
         context.put("day", 10);
         flowEngine.eval("c7", context);
         assert context.result.equals(5);
@@ -112,7 +112,7 @@ public class AppTest {
 
         //----------------
 
-        context = new ChainContext();
+        context = new FlowContext();
         context.put("day", 15);
         flowEngine.eval("c7", context);
         assert context.result.equals(6);
@@ -123,7 +123,7 @@ public class AppTest {
 
         //----------------
 
-        context = new ChainContext();
+        context = new FlowContext();
         context.put("day", 20);
         flowEngine.eval("c7", context);
         assert context.result.equals(7);
@@ -133,7 +133,7 @@ public class AppTest {
 
         //----------------
 
-        context = new ChainContext();
+        context = new FlowContext();
         context.put("day", 30);
         flowEngine.eval("c7", context);
         assert context.result.equals(8);
@@ -144,7 +144,7 @@ public class AppTest {
 
     @Test
     public void case7_2() throws Throwable {
-        ChainContext context = new ChainContext();
+        FlowContext context = new FlowContext();
         context.put("day", 30);
         flowEngine.eval("c7", context);
         assert context.result.equals(8);
@@ -155,7 +155,7 @@ public class AppTest {
 
     @Test
     public void d2_test() throws Throwable {
-        ChainContext context = new ChainContext();
+        FlowContext context = new FlowContext();
         context.put("score", 7);
 
         flowEngine.eval("d2", context);
@@ -163,7 +163,7 @@ public class AppTest {
 
     @Test
     public void r1_test() throws Throwable {
-        ChainContext context = new ChainContext();
+        FlowContext context = new FlowContext();
         Order order = new Order();
 
         order.amount = 100;

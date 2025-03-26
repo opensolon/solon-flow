@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.SimpleSolonApp;
 import org.noear.solon.flow.*;
-import org.noear.solon.flow.driver.SimpleChainDriver;
+import org.noear.solon.flow.driver.SimpleFlowDriver;
 
 /**
  * 手动配装风格
@@ -21,9 +21,9 @@ public class ComJavaTest {
         SimpleSolonApp solonApp = new SimpleSolonApp(ComJavaTest.class);
         solonApp.start(null);
 
-        SimpleChainDriver driver = new SimpleChainDriver() {
+        SimpleFlowDriver driver = new SimpleFlowDriver() {
             @Override
-            public void handleTask(ChainContext context, Task task) throws Throwable {
+            public void handleTask(FlowContext context, Task task) throws Throwable {
                 context.result = task.node().id();
                 if (task.node().id().equals("n3")) {
                     context.interrupt();
@@ -44,7 +44,7 @@ public class ComJavaTest {
         chain.addNode(new NodeDecl("n4", NodeType.execute).task("@c").linkAdd("n5"));
         chain.addNode(new NodeDecl("n5", NodeType.end));
 
-        ChainContext context = new ChainContext();
+        FlowContext context = new FlowContext();
         context.put("a", 2);
         context.put("b", 3);
         context.put("c", 4);
@@ -57,7 +57,7 @@ public class ComJavaTest {
 
         System.out.println("------------");
 
-        context = new ChainContext();
+        context = new FlowContext();
         context.put("a", 12);
         context.put("b", 13);
         context.put("c", 14);

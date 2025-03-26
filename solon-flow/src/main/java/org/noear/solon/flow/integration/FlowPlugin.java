@@ -17,7 +17,7 @@ package org.noear.solon.flow.integration;
 
 import org.noear.solon.core.AppContext;
 import org.noear.solon.core.Plugin;
-import org.noear.solon.flow.ChainDriver;
+import org.noear.solon.flow.FlowDriver;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.intercept.ChainInterceptor;
 
@@ -39,7 +39,7 @@ public class FlowPlugin implements Plugin {
 
         context.wrapAndPut(FlowEngine.class, flowEngine);
 
-        context.subWrapsOfType(ChainDriver.class, bw -> {
+        context.subWrapsOfType(FlowDriver.class, bw -> {
             flowEngine.register(bw.name(), bw.raw());
         });
 

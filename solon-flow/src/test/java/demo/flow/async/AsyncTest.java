@@ -2,13 +2,9 @@ package demo.flow.async;
 
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.Chain;
-import org.noear.solon.flow.Container;
-import org.noear.solon.flow.Evaluation;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.container.MapContainer;
-import org.noear.solon.flow.driver.AbstractChainDriver;
-import org.noear.solon.flow.driver.SimpleChainDriver;
-import org.noear.solon.flow.evaluation.LiquorEvaluation;
+import org.noear.solon.flow.driver.SimpleFlowDriver;
 
 /**
  * @author noear 2025/3/20 created
@@ -19,7 +15,7 @@ public class AsyncTest {
         MapContainer container = new MapContainer();
 
         FlowEngine engine = FlowEngine.newInstance();
-        engine.register(new SimpleChainDriver(container));
+        engine.register(new SimpleFlowDriver(container));
 
         container.putComponent("a", new TaskComponentImpl());
 

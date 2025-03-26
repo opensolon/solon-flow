@@ -17,8 +17,8 @@ package org.noear.solon.flow.intercept;
 
 import org.noear.solon.core.util.ConsumerEx;
 import org.noear.solon.core.util.RankEntity;
-import org.noear.solon.flow.ChainContext;
-import org.noear.solon.flow.ChainDriver;
+import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowDriver;
 import org.noear.solon.flow.Node;
 
 import java.util.List;
@@ -30,8 +30,8 @@ import java.util.List;
  * @since 3.1
  */
 public class ChainInvocation {
-    private final ChainDriver driver;
-    private final ChainContext context;
+    private final FlowDriver driver;
+    private final FlowContext context;
     private final Node startNode;
     private final int evalDepth;
 
@@ -39,7 +39,7 @@ public class ChainInvocation {
     private final ConsumerEx<ChainInvocation> handler;
     private int index;
 
-    public ChainInvocation(ChainDriver driver, ChainContext context, Node startNode, int evalDepth, List<RankEntity<ChainInterceptor>> interceptorList, ConsumerEx<ChainInvocation> handler) {
+    public ChainInvocation(FlowDriver driver, FlowContext context, Node startNode, int evalDepth, List<RankEntity<ChainInterceptor>> interceptorList, ConsumerEx<ChainInvocation> handler) {
         this.driver = driver;
         this.context = context;
         this.startNode = startNode;
@@ -53,14 +53,14 @@ public class ChainInvocation {
     /**
      * 驱动器
      */
-    public ChainDriver getDriver() {
+    public FlowDriver getDriver() {
         return driver;
     }
 
     /**
      * 上下文
      */
-    public ChainContext getContext() {
+    public FlowContext getContext() {
         return context;
     }
 

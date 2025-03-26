@@ -21,37 +21,53 @@ import org.noear.solon.flow.container.SolonContainer;
 import org.noear.solon.flow.evaluation.LiquorEvaluation;
 
 /**
- * 简单链驱动器
+ * 简单流驱动器
  *
  * @author noear
  * @since 3.1
  */
-public class SimpleChainDriver extends AbstractChainDriver {
+public class SimpleFlowDriver extends AbstractFlowDriver {
     private final Evaluation evaluation;
     private final Container container;
 
-    public SimpleChainDriver() {
+    public SimpleFlowDriver() {
         this(null, null);
     }
 
-    public SimpleChainDriver(Evaluation evaluation) {
+    /**
+     * @param evaluation 脚本评估器
+     */
+    public SimpleFlowDriver(Evaluation evaluation) {
         this(evaluation, null);
     }
 
-    public SimpleChainDriver(Container container) {
+    /**
+     * @param container 组件容器
+     */
+    public SimpleFlowDriver(Container container) {
         this(null, container);
     }
 
-    public SimpleChainDriver(Evaluation evaluation, Container container) {
+    /**
+     * @param evaluation 脚本评估器
+     * @param container  组件容器
+     */
+    public SimpleFlowDriver(Evaluation evaluation, Container container) {
         this.evaluation = (evaluation == null ? new LiquorEvaluation() : evaluation);
         this.container = (container == null ? new SolonContainer() : container);
     }
 
+    /**
+     * 获取脚本评估器
+     */
     @Override
     public Evaluation getEvaluation() {
         return evaluation;
     }
 
+    /**
+     * 获取组件容器
+     */
     @Override
     public Container getContainer() {
         return container;

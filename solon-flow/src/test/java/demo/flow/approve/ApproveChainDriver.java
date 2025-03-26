@@ -1,15 +1,15 @@
 package demo.flow.approve;
 
-import org.noear.solon.flow.ChainContext;
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Task;
 import org.noear.solon.flow.driver.*;
 
 /**
  * @author noear 2025/1/13 created
  */
-public class ApproveChainDriver extends SimpleChainDriver {
+public class ApproveChainDriver extends SimpleFlowDriver {
     @Override
-    public void handleTask(ChainContext context, Task task) throws Throwable {
+    public void handleTask(FlowContext context, Task task) throws Throwable {
         if (isChain(task.description())) {
             //如果跨链调用
             tryAsChainTask(context, task, task.description());

@@ -21,13 +21,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 链驱动器基类（方便定制）
+ * 流驱动器基类（方便定制）
  *
  * @author noear
  * @since 3.1
  */
-public abstract class AbstractChainDriver implements ChainDriver {
-    static final Logger log = LoggerFactory.getLogger(AbstractChainDriver.class);
+public abstract class AbstractFlowDriver implements FlowDriver {
+    static final Logger log = LoggerFactory.getLogger(AbstractFlowDriver.class);
 
     /**
      * 是否为组件
@@ -46,38 +46,38 @@ public abstract class AbstractChainDriver implements ChainDriver {
     /// //////////////
 
     @Override
-    public void onNodeStart(ChainContext context, Node node) {
+    public void onNodeStart(FlowContext context, Node node) {
         log.debug("on-node-start: chain={}, node={}", node.chain().id(), node);
     }
 
     @Override
-    public void onNodeEnd(ChainContext context, Node node) {
+    public void onNodeEnd(FlowContext context, Node node) {
         log.debug("on-node-end: chain={}, node={}", node.chain().id(), node);
     }
 
     /// //////////////
 
     @Override
-    public boolean handleTest(ChainContext context, Condition condition) throws Throwable {
+    public boolean handleTest(FlowContext context, Condition condition) throws Throwable {
         //（不需要检测是否为空，引擎会把空条件作为默认，不会再传入）
 
         //如果 condition.description 有加密，可以转码后传入
         return handleConditionDo(context, condition, condition.description());
     }
 
-    protected boolean handleConditionDo(ChainContext context, Condition condition, String description) throws Throwable {
+    protected boolean handleConditionDo(FlowContext context, Condition condition, String description) throws Throwable {
         //按脚本运行
         return tryAsScriptCondition(context, condition, description);
     }
 
-    protected boolean tryAsScriptCondition(ChainContext context, Condition condition, String description) throws Throwable {
+    protected boolean tryAsScriptCondition(FlowContext context, Condition condition, String description) throws Throwable {
         return getEvaluation().runCondition(description, context.model());
     }
 
     /// //////////////
 
     @Override
-    public void handleTask(ChainContext context, Task task) throws Throwable {
+    public void handleTask(FlowContext context, Task task) throws Throwable {
         //默认过滤空任务（执行节点可能没有配置任务）
         if (Utils.isEmpty(task.description())) {
             return;
@@ -87,7 +87,7 @@ public abstract class AbstractChainDriver implements ChainDriver {
         handleTaskDo(context, task, task.description());
     }
 
-    protected void handleTaskDo(ChainContext context, Task task, String description) throws Throwable {
+    protected void handleTaskDo(FlowContext context, Task task, String description) throws Throwable {
         if (isChain(description)) {
             //如果跨链调用
             tryAsChainTask(context, task, description);
@@ -107,7 +107,7 @@ public abstract class AbstractChainDriver implements ChainDriver {
     /**
      * 尝试如果是链则运行
      */
-    protected void tryAsChainTask(ChainContext context, Task task, String description) throws Throwable {
+    protected void tryAsChainTask(FlowContext context, Task task, String description) throws Throwable {
         //调用其它链
         String chainId = description.substring(1);
         context.engine().eval(chainId, context);
@@ -116,7 +116,7 @@ public abstract class AbstractChainDriver implements ChainDriver {
     /**
      * 尝试如果是组件则运行
      */
-    protected void tryAsComponentTask(ChainContext context, Task task, String description) throws Throwable {
+    protected void tryAsComponentTask(FlowContext context, Task task, String description) throws Throwable {
         //按组件运行
         String beanName = description.substring(1);
         Object component = getContainer().getComponent(beanName);
@@ -133,7 +133,7 @@ public abstract class AbstractChainDriver implements ChainDriver {
     /**
      * 尝试作为脚本运行
      */
-    protected void tryAsScriptTask(ChainContext context, Task task, String description) throws Throwable {
+    protected void tryAsScriptTask(FlowContext context, Task task, String description) throws Throwable {
         //按脚本运行
         try {
             context.put("node", task.node());

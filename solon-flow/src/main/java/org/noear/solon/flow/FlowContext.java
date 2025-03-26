@@ -23,13 +23,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 链上下文（不支持序列化）
+ * 流上下文（不支持序列化）
  *
  * @author noear
  * @since 3.0
  */
 @Preview("3.0")
-public class ChainContext {
+public class FlowContext {
     //存放数据模型
     private transient final Map<String, Object> model = new LinkedHashMap<>();
     //存放执行结果（可选）
@@ -45,11 +45,11 @@ public class ChainContext {
     //当前流程引擎
     protected transient FlowEngine engine;
 
-    public ChainContext() {
+    public FlowContext() {
         this(null);
     }
 
-    public ChainContext(Map<String, Object> model) {
+    public FlowContext(Map<String, Object> model) {
         this.model.put("context", this);
         if (model != null) {
             this.model.putAll(model);
@@ -154,7 +154,7 @@ public class ChainContext {
     /**
      * 推入
      */
-    public ChainContext put(String key, Object value) {
+    public FlowContext put(String key, Object value) {
         model.put(key, value);
         return this;
     }
@@ -162,7 +162,7 @@ public class ChainContext {
     /**
      * 推入
      */
-    public ChainContext putIfAbsent(String key, Object value) {
+    public FlowContext putIfAbsent(String key, Object value) {
         model.putIfAbsent(key, value);
         return this;
     }
@@ -170,7 +170,7 @@ public class ChainContext {
     /**
      * 推入全部
      */
-    public ChainContext putAll(Map<String, Object> model) {
+    public FlowContext putAll(Map<String, Object> model) {
         model.putAll(model);
         return this;
     }

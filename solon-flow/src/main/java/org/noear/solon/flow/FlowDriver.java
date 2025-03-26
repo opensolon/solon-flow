@@ -18,13 +18,13 @@ package org.noear.solon.flow;
 import org.noear.solon.lang.Preview;
 
 /**
- * 链驱动器
+ * 流驱动器
  *
  * @author noear
  * @since 3.0
  * */
 @Preview("3.0")
-public interface ChainDriver {
+public interface FlowDriver {
     /**
      * 获取脚本评估器
      */
@@ -38,20 +38,20 @@ public interface ChainDriver {
     /**
      * 节点运行开始时
      */
-    void onNodeStart(ChainContext context, Node node);
+    void onNodeStart(FlowContext context, Node node);
 
     /**
      * 节点运行结束时
      */
-    void onNodeEnd(ChainContext context, Node node);
+    void onNodeEnd(FlowContext context, Node node);
 
     /**
      * 处理条件检测
      */
-    boolean handleTest(ChainContext context, Condition condition) throws Throwable;
+    boolean handleTest(FlowContext context, Condition condition) throws Throwable;
 
     /**
      * 处理执行任务
      */
-    void handleTask(ChainContext context, Task task) throws Throwable;
+    void handleTask(FlowContext context, Task task) throws Throwable;
 }

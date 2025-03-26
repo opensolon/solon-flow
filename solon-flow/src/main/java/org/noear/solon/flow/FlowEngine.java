@@ -52,14 +52,14 @@ public interface FlowEngine {
      * @param name   名字
      * @param driver 驱动器
      */
-    void register(String name, ChainDriver driver);
+    void register(String name, FlowDriver driver);
 
     /**
      * 注册默认链驱动器
      *
      * @param driver 默认驱动器
      */
-    default void register(ChainDriver driver) {
+    default void register(FlowDriver driver) {
         register("", driver);
     }
 
@@ -109,7 +109,7 @@ public interface FlowEngine {
      * @param chainId 链Id
      */
     default void eval(String chainId) throws Throwable {
-        eval(chainId, new ChainContext());
+        eval(chainId, new FlowContext());
     }
 
     /**
@@ -118,7 +118,7 @@ public interface FlowEngine {
      * @param chainId 链Id
      * @param context 上下文
      */
-    default void eval(String chainId, ChainContext context) throws Throwable {
+    default void eval(String chainId, FlowContext context) throws Throwable {
         eval(chainId, null, -1, context);
     }
 
@@ -130,7 +130,7 @@ public interface FlowEngine {
      * @param depth   执行深度
      * @param context 上下文
      */
-    void eval(String chainId, String startId, int depth, ChainContext context) throws Throwable;
+    void eval(String chainId, String startId, int depth, FlowContext context) throws Throwable;
 
     /**
      * 评估
@@ -138,7 +138,7 @@ public interface FlowEngine {
      * @param chain 链
      */
     default void eval(Chain chain) throws Throwable {
-        eval(chain, new ChainContext());
+        eval(chain, new FlowContext());
     }
 
     /**
@@ -147,7 +147,7 @@ public interface FlowEngine {
      * @param chain   链
      * @param context 上下文
      */
-    default void eval(Chain chain, ChainContext context) throws Throwable {
+    default void eval(Chain chain, FlowContext context) throws Throwable {
         eval(chain, null, -1, context);
     }
 
@@ -159,5 +159,5 @@ public interface FlowEngine {
      * @param depth   执行深度
      * @param context 上下文
      */
-    void eval(Chain chain, String startId, int depth, ChainContext context) throws Throwable;
+    void eval(Chain chain, String startId, int depth, FlowContext context) throws Throwable;
 }

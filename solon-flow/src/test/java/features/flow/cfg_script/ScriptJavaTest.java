@@ -20,7 +20,7 @@ public class ScriptJavaTest {
         chain.addNode(new NodeDecl("n3", NodeType.end));
 
 
-        ChainContext context = new ChainContext();
+        FlowContext context = new FlowContext();
         context.put("a", 2);
         context.put("b", 3);
         context.put("c", 4);

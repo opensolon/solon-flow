@@ -17,7 +17,7 @@ package org.noear.solon.flow;
 
 import org.noear.solon.Utils;
 import org.noear.solon.core.util.RankEntity;
-import org.noear.solon.flow.driver.SimpleChainDriver;
+import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.intercept.ChainInterceptor;
 import org.noear.solon.flow.intercept.ChainInvocation;
 
@@ -32,12 +32,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 class FlowEngineImpl implements FlowEngine {
     protected final Map<String, Chain> chainMap = new ConcurrentHashMap<>();
-    protected final Map<String, ChainDriver> driverMap = new ConcurrentHashMap<>();
+    protected final Map<String, FlowDriver> driverMap = new ConcurrentHashMap<>();
     protected final List<RankEntity<ChainInterceptor>> interceptorList = new ArrayList<>();
 
     public FlowEngineImpl() {
         //默认驱动器
-        driverMap.put("", new SimpleChainDriver());
+        driverMap.put("", new SimpleFlowDriver());
     }
 
     @Override
@@ -47,7 +47,7 @@ class FlowEngineImpl implements FlowEngine {
     }
 
     @Override
-    public void register(String name, ChainDriver driver) {
+    public void register(String name, FlowDriver driver) {
         if (driver != null) {
             driverMap.put(name, driver);
         }
@@ -82,7 +82,7 @@ class FlowEngineImpl implements FlowEngine {
      * @param context 上下文
      */
     @Override
-    public void eval(String chainId, String startId, int depth, ChainContext context) throws Throwable {
+    public void eval(String chainId, String startId, int depth, FlowContext context) throws Throwable {
         Chain chain = chainMap.get(chainId);
         if (chain == null) {
             throw new IllegalArgumentException("No chain found for id: " + chainId);
@@ -100,7 +100,7 @@ class FlowEngineImpl implements FlowEngine {
      * @param context 上下文
      */
     @Override
-    public void eval(Chain chain, String startId, int depth, ChainContext context) throws Throwable {
+    public void eval(Chain chain, String startId, int depth, FlowContext context) throws Throwable {
         Node start;
         if (startId == null) {
             start = chain.start();
@@ -116,7 +116,7 @@ class FlowEngineImpl implements FlowEngine {
             context.engine = this;
         }
 
-        ChainDriver driver = driverMap.get(chain.driver());
+        FlowDriver driver = driverMap.get(chain.driver());
 
         if (driver == null) {
             throw new IllegalArgumentException("No driver found for: '" + chain.driver() + "'");
@@ -136,7 +136,7 @@ class FlowEngineImpl implements FlowEngine {
     /**
      * 条件检测
      */
-    private boolean condition_test(ChainDriver driver, ChainContext context, Condition condition, boolean def) throws Throwable {
+    private boolean condition_test(FlowDriver driver, FlowContext context, Condition condition, boolean def) throws Throwable {
         if (Utils.isNotEmpty(condition.description())) {
             return driver.handleTest(context, condition);
         } else {
@@ -147,7 +147,7 @@ class FlowEngineImpl implements FlowEngine {
     /**
      * 执行任务
      */
-    private void task_exec(ChainDriver driver, ChainContext context, Node node) throws Throwable {
+    private void task_exec(FlowDriver driver, FlowContext context, Node node) throws Throwable {
         //尝试检测条件；缺省为 true
         if (condition_test(driver, context, node.when(), true)) {
             //起到触发事件的作用 //处理方会“过滤”空任务
@@ -158,7 +158,7 @@ class FlowEngineImpl implements FlowEngine {
     /**
      * 运行节点
      */
-    private boolean node_run(ChainDriver driver, ChainContext context, Node node, int depth) throws Throwable {
+    private boolean node_run(FlowDriver driver, FlowContext context, Node node, int depth) throws Throwable {
         if (node == null) {
             return false;
         }
@@ -233,7 +233,7 @@ class FlowEngineImpl implements FlowEngine {
     /**
      * 运行包容网关
      */
-    private boolean inclusive_run(ChainDriver driver, ChainContext context, Node node, int depth) throws Throwable {
+    private boolean inclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws Throwable {
         Stack<Integer> inclusive_stack = context.counter().stack(node.chain(), "inclusive_run");
 
         //::流入
@@ -285,7 +285,7 @@ class FlowEngineImpl implements FlowEngine {
     /**
      * 运行排他网关
      */
-    private boolean exclusive_run(ChainDriver driver, ChainContext context, Node node, int depth) throws Throwable {
+    private boolean exclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws Throwable {
         //::流出
         Link def_line = null; //默认线
         for (Link l : node.nextLinks()) {
@@ -311,7 +311,7 @@ class FlowEngineImpl implements FlowEngine {
     /**
      * 运行并行网关
      */
-    private boolean parallel_run(ChainDriver driver, ChainContext context, Node node, int depth) throws Throwable {
+    private boolean parallel_run(FlowDriver driver, FlowContext context, Node node, int depth) throws Throwable {
         //::流入
         int count = context.counter().incr(node.chain(), node.id());//运行次数累计
         if (node.prveLinks().size() > count) { //等待所有支线计数完成

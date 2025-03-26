@@ -1,6 +1,6 @@
 package demo.flow.async;
 
-import org.noear.solon.flow.ChainContext;
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
 
 /**
@@ -8,7 +8,7 @@ import org.noear.solon.flow.Node;
  */
 public class TaskComponentImpl extends TaskComponentPlus {
     @Override
-    protected void doRun(ChainContext context, Node node, boolean async) throws Throwable {
+    protected void doRun(FlowContext context, Node node, boolean async) throws Throwable {
         System.out.println("do...: " + node.id());
 
         if (async) {

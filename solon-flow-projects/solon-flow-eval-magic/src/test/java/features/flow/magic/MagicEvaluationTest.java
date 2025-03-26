@@ -1,9 +1,9 @@
 package features.flow.magic;
 
 import org.junit.jupiter.api.Test;
-import org.noear.solon.flow.ChainContext;
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.driver.SimpleChainDriver;
+import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.evaluation.MagicEvaluation;
 
 /**
@@ -13,11 +13,11 @@ public class MagicEvaluationTest {
     @Test
     public void case1() throws Throwable {
         FlowEngine engine = FlowEngine.newInstance();
-        engine.register(new SimpleChainDriver(new MagicEvaluation()));
+        engine.register(new SimpleFlowDriver(new MagicEvaluation()));
 
         engine.load("classpath:flow/*");
 
-        ChainContext context = new ChainContext();
+        FlowContext context = new FlowContext();
         context.put("a", 1);
         context.put("b", 2);
 
@@ -26,7 +26,7 @@ public class MagicEvaluationTest {
         assert context.result == null;
 
 
-        context = new ChainContext();
+        context = new FlowContext();
         context.put("a", 3);
         context.put("b", 2);
 

@@ -3,7 +3,7 @@ package features.flow.cfg_com;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.SimpleSolonApp;
 import org.noear.solon.flow.Chain;
-import org.noear.solon.flow.ChainContext;
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 
 /**
@@ -21,7 +21,7 @@ public class ComJsonTest {
 
         Chain chain = Chain.parseByUri("classpath:flow/com.chain.json");
 
-        ChainContext context = new ChainContext();
+        FlowContext context = new FlowContext();
         context.put("a", 2);
         context.put("b", 3);
         context.put("c", 4);
@@ -31,7 +31,7 @@ public class ComJsonTest {
         flowEngine.eval(chain, context);
         System.out.println("------------");
 
-        context = new ChainContext();
+        context = new FlowContext();
         context.put("a", 12);
         context.put("b", 13);
         context.put("c", 14);

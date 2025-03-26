@@ -2,7 +2,7 @@ package demo.flow.rule;
 
 import org.junit.jupiter.api.Test;
 import org.noear.solon.annotation.Inject;
-import org.noear.solon.flow.ChainContext;
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.test.SolonTest;
 
@@ -19,7 +19,7 @@ public class BookTest {
         BookOrder bookOrder = new BookOrder();
         bookOrder.setOriginalPrice(10);
 
-        ChainContext ctx = new ChainContext();
+        FlowContext ctx = new FlowContext();
         ctx.put("order", bookOrder);
 
         flowEngine.eval("book_discount", ctx);
@@ -32,7 +32,7 @@ public class BookTest {
         BookOrder bookOrder = new BookOrder();
         bookOrder.setOriginalPrice(500);
 
-        ChainContext ctx = new ChainContext();
+        FlowContext ctx = new FlowContext();
         ctx.put("order", bookOrder);
 
         flowEngine.eval("book_discount", ctx);
@@ -45,7 +45,7 @@ public class BookTest {
         BookOrder bookOrder = new BookOrder();
         bookOrder.setOriginalPrice(120);
 
-        ChainContext ctx = new ChainContext();
+        FlowContext ctx = new FlowContext();
         ctx.put("order", bookOrder);
 
         flowEngine.eval("book_discount", ctx);

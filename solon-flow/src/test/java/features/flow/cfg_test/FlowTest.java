@@ -2,10 +2,10 @@ package features.flow.cfg_test;
 
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.Chain;
-import org.noear.solon.flow.ChainContext;
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.container.MapContainer;
-import org.noear.solon.flow.driver.SimpleChainDriver;
+import org.noear.solon.flow.driver.SimpleFlowDriver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +22,10 @@ public class FlowTest {
         });
 
         FlowEngine flow = FlowEngine.newInstance();
-        flow.register(new SimpleChainDriver(mapContainer));
+        flow.register(new SimpleFlowDriver(mapContainer));
         flow.load(Chain.parseByUri("classpath:flow/flow_case8.chain.yml"));
 
-        ChainContext context = new ChainContext();
+        FlowContext context = new FlowContext();
         context.put("log", new ArrayList<>());
         context.put("dataType", "1");
 
@@ -38,7 +38,7 @@ public class FlowTest {
 
         System.out.println("---------------------");
 
-        context = new ChainContext();
+        context = new FlowContext();
         context.put("log", new ArrayList<>());
         context.put("dataType", "type1");
 
