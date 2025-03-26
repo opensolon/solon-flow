@@ -125,7 +125,7 @@ public void case2() throws Throwable {
 //脚本执行器定制 + 组件容器定制
 public void case3() throws Throwable {
     FlowEngine engine = FlowEngine.newInstance();
-    engine.register(new SimpleFlowDriver(new BeetlEvaluation(), new SpringContainer())); 
+    engine.register(new SimpleFlowDriver(new AviatorEvaluation(), new SpringContainer())); 
     engine.load("classpath:flow/*.yml");
 
     FlowContext context = new FlowContext();
