@@ -78,7 +78,7 @@ Solon
 | https://gitee.com/dromara/solon-plugins         | Solon 第三方扩展插件代码仓库                | 
 
 
-## Solon Flow 使用示例
+## Solon Flow 简单使用示例（hello world）
 
 配置示例
 
