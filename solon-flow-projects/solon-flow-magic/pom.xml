@@ -11,7 +11,7 @@
         <relativePath>../../solon-flow-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>solon-flow-beetl</artifactId>
+    <artifactId>solon-flow-magic</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -21,9 +21,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.ibeetl</groupId>
-            <artifactId>beetl</artifactId>
-            <version>${beetl.version}</version>
+            <groupId>org.ssssssss</groupId>
+            <artifactId>magic-script</artifactId>
+            <version>${magic.version}</version>
         </dependency>
 
         <dependency>

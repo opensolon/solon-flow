@@ -21,5 +21,6 @@
 
         <module>../../solon-flow-projects/solon-flow-aviator</module>
         <module>../../solon-flow-projects/solon-flow-beetl</module>
+        <module>../../solon-flow-projects/solon-flow-magic</module>
     </modules>
 </project>

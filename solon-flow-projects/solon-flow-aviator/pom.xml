@@ -11,7 +11,6 @@
         <relativePath>../../solon-flow-parent/pom.xml</relativePath>
     </parent>
 
-    <!-- 添加事务支持和缓存支持 -->
     <artifactId>solon-flow-aviator</artifactId>
     <packaging>jar</packaging>
 
@@ -24,7 +23,7 @@
         <dependency>
             <groupId>com.googlecode.aviator</groupId>
             <artifactId>aviator</artifactId>
-            <version>5.3.2</version>
+            <version>${aviator.version}</version>
         </dependency>
 
         <dependency>

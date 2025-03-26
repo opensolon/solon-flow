@@ -16,7 +16,8 @@
     <packaging>pom</packaging>
 
     <properties>
-
+        <aviator.version>5.3.2</aviator.version>
+        <magic.version>1.8.8</magic.version>
     </properties>
 
     <dependencyManagement>
@@ -36,6 +37,12 @@
             <dependency>
                 <groupId>org.noear</groupId>
                 <artifactId>solon-flow-beetl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.noear</groupId>
+                <artifactId>solon-flow-magic</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
