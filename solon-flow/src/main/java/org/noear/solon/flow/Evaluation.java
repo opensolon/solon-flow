@@ -15,38 +15,28 @@
  */
 package org.noear.solon.flow;
 
-import org.noear.solon.lang.Preview;
+import java.util.Map;
 
 /**
- * 链驱动器
+ * 评估器
  *
  * @author noear
- * @since 3.0
- * */
-@Preview("3.0")
-public interface ChainDriver {
+ * @since 3.1
+ */
+public interface Evaluation {
     /**
-     * 评估器
+     * 运行条件
+     *
+     * @param code    条件代码
+     * @param context 上下文
      */
-    Evaluation evaluation();
+    boolean runCondition(String code, Map<String, Object> context);
 
     /**
-     * 节点运行开始时
+     * 运行任务
+     *
+     * @param code    任务代码
+     * @param context 上下文
      */
-    void onNodeStart(ChainContext context, Node node);
-
-    /**
-     * 节点运行结束时
-     */
-    void onNodeEnd(ChainContext context, Node node);
-
-    /**
-     * 处理条件检测
-     */
-    boolean handleTest(ChainContext context, Condition condition) throws Throwable;
-
-    /**
-     * 处理执行任务
-     */
-    void handleTask(ChainContext context, Task task) throws Throwable;
+    void runTask(String code, Map<String, Object> context);
 }

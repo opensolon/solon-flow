@@ -15,10 +15,9 @@
  */
 package org.noear.solon.flow.driver;
 
-import org.noear.liquor.eval.Exprs;
-import org.noear.liquor.eval.Scripts;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.*;
+import org.noear.solon.flow.evaluation.LiquorEvaluation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +30,10 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractChainDriver implements ChainDriver {
     static final Logger log = LoggerFactory.getLogger(AbstractChainDriver.class);
 
+    @Override
+    public Evaluation evaluation() {
+        return LiquorEvaluation.INSTANCE;
+    }
 
     /**
      * 是否为组件
@@ -74,7 +77,7 @@ public abstract class AbstractChainDriver implements ChainDriver {
     }
 
     protected boolean tryAsScriptCondition(ChainContext context, Condition condition, String description) throws Throwable {
-        return (boolean) Exprs.eval(description, context.model());
+        return evaluation().runCondition(description, context.model());
     }
 
     /// //////////////
@@ -146,7 +149,7 @@ public abstract class AbstractChainDriver implements ChainDriver {
         try {
             context.put("node", task.node());
 
-            Scripts.eval(description, context.model());
+            evaluation().runTask(description, context.model());
         } finally {
             context.remove("node");
         }

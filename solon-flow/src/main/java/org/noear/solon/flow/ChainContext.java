@@ -57,6 +57,20 @@ public class ChainContext {
     }
 
     /**
+     * 设置临时结果（有些脚本引擎必须用属性方式）
+     */
+    public void setResult(Object result) {
+        this.result = result;
+    }
+
+    /**
+     * 获取临时结果
+     */
+    public Object getResult() {
+        return result;
+    }
+
+    /**
      * 当前流程引擎
      */
     public FlowEngine engine() {

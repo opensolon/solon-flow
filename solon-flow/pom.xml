@@ -6,9 +6,9 @@
 
     <parent>
         <groupId>org.noear</groupId>
-        <artifactId>solon-parent</artifactId>
-        <version>3.1.1</version>
-        <relativePath />
+        <artifactId>solon-flow-parent</artifactId>
+        <version>3.1.2-SNAPSHOT</version>
+        <relativePath>../solon-flow-parent/pom.xml</relativePath>
     </parent>
 
     <!-- 添加事务支持和缓存支持 -->
