@@ -17,8 +17,7 @@ package org.noear.solon.flow.evaluation;
 
 import com.googlecode.aviator.AviatorEvaluator;
 import org.noear.solon.flow.Evaluation;
-
-import java.util.Map;
+import org.noear.solon.flow.FlowContext;
 
 /**
  * Aviator 评估器
@@ -28,12 +27,12 @@ import java.util.Map;
  */
 public class AviatorEvaluation implements Evaluation {
     @Override
-    public boolean runCondition(String code, Map<String, Object> context) {
-        return (Boolean) AviatorEvaluator.execute(code, context);
+    public boolean runCondition(FlowContext context, String code) {
+        return (Boolean) AviatorEvaluator.execute(code, context.model());
     }
 
     @Override
-    public void runTask(String code, Map<String, Object> context) {
-        AviatorEvaluator.execute(code, context);
+    public void runTask(FlowContext context, String code) {
+        AviatorEvaluator.execute(code, context.model());
     }
 }

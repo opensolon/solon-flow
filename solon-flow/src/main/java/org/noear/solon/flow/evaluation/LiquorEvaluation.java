@@ -18,8 +18,7 @@ package org.noear.solon.flow.evaluation;
 import org.noear.liquor.eval.Exprs;
 import org.noear.liquor.eval.Scripts;
 import org.noear.solon.flow.Evaluation;
-
-import java.util.Map;
+import org.noear.solon.flow.FlowContext;
 
 /**
  * Liquor 脚本评估器
@@ -29,12 +28,12 @@ import java.util.Map;
  */
 public class LiquorEvaluation implements Evaluation {
     @Override
-    public boolean runCondition(String code, Map<String, Object> context) {
-        return (boolean) Exprs.eval(code, context);
+    public boolean runCondition(FlowContext context, String code) {
+        return (boolean) Exprs.eval(code, context.model());
     }
 
     @Override
-    public void runTask(String code, Map<String, Object> context) {
-        Scripts.eval(code, context);
+    public void runTask(FlowContext context, String code) {
+        Scripts.eval(code, context.model());
     }
 }

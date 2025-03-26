@@ -17,8 +17,6 @@ package org.noear.solon.flow;
 
 import org.noear.solon.lang.Preview;
 
-import java.util.Map;
-
 /**
  * 脚本评估器
  *
@@ -30,16 +28,16 @@ public interface Evaluation {
     /**
      * 运行条件
      *
+     * @param context 流上下文
      * @param code    条件代码
-     * @param context 上下文
      */
-    boolean runCondition(String code, Map<String, Object> context);
+    boolean runCondition(FlowContext context, String code);
 
     /**
      * 运行任务
      *
+     * @param context 流上下文
      * @param code    任务代码
-     * @param context 上下文
      */
-    void runTask(String code, Map<String, Object> context);
+    void runTask(FlowContext context, String code);
 }

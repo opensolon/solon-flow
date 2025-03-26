@@ -16,6 +16,7 @@
 package org.noear.solon.flow.evaluation;
 
 import org.noear.solon.flow.Evaluation;
+import org.noear.solon.flow.FlowContext;
 import org.ssssssss.script.MagicScript;
 import org.ssssssss.script.MagicScriptContext;
 
@@ -29,9 +30,9 @@ import java.util.Map;
  */
 public class MagicEvaluation implements Evaluation {
     @Override
-    public boolean runCondition(String code, Map<String, Object> context) {
+    public boolean runCondition(FlowContext context, String code) {
         MagicScriptContext scriptContext = new MagicScriptContext();
-        for (Map.Entry<String, Object> entry : context.entrySet()) {
+        for (Map.Entry<String, Object> entry : context.model().entrySet()) {
             scriptContext.set(entry.getKey(), entry.getValue());
         }
 
@@ -41,9 +42,9 @@ public class MagicEvaluation implements Evaluation {
     }
 
     @Override
-    public void runTask(String code, Map<String, Object> context) {
+    public void runTask(FlowContext context, String code) {
         MagicScriptContext scriptContext = new MagicScriptContext();
-        for (Map.Entry<String, Object> entry : context.entrySet()) {
+        for (Map.Entry<String, Object> entry : context.model().entrySet()) {
             scriptContext.set(entry.getKey(), entry.getValue());
         }
 

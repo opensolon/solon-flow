@@ -21,6 +21,7 @@ import org.beetl.core.io.EmptyWriter;
 import org.beetl.core.resource.ClasspathResourceLoader;
 import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.noear.solon.flow.Evaluation;
+import org.noear.solon.flow.FlowContext;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -52,16 +53,16 @@ public class BeetlEvaluation implements Evaluation, Closeable {
     }
 
     @Override
-    public boolean runCondition(String code, Map<String, Object> context) {
+    public boolean runCondition(FlowContext context, String code) {
         Writer writer = new EmptyWriter();
-        Map values = engine.runScript("return " + code + ";", context, writer, templateLoader);
+        Map values = engine.runScript("return " + code + ";", context.model(), writer, templateLoader);
         return (Boolean) values.get("return");
     }
 
     @Override
-    public void runTask(String code, Map<String, Object> context) {
+    public void runTask(FlowContext context, String code) {
         Writer writer = new EmptyWriter();
-        engine.runScript(code, context, writer, templateLoader);
+        engine.runScript(code, context.model(), writer, templateLoader);
     }
 
     @Override

@@ -71,7 +71,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     }
 
     protected boolean tryAsScriptCondition(FlowContext context, Condition condition, String description) throws Throwable {
-        return getEvaluation().runCondition(description, context.model());
+        return getEvaluation().runCondition(context, description);
     }
 
     /// //////////////
@@ -138,7 +138,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
         try {
             context.put("node", task.node());
 
-            getEvaluation().runTask(description, context.model());
+            getEvaluation().runTask(context, description);
         } finally {
             context.remove("node");
         }
