@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.driver;
+package org.noear.solon.flow.container;
 
 import org.noear.solon.Solon;
+import org.noear.solon.flow.Container;
 
 /**
- * Solon 组件管理链驱动器
+ * Solon 组件容器
  *
  * @author noear
- * @since 3.0
- * */
-public class SolonChainDriver extends AbstractChainDriver {
-    private static final SolonChainDriver instance = new SolonChainDriver();
-
-    public static SolonChainDriver getInstance() {
-        return instance;
-    }
-
+ * @since 3.1
+ */
+public class SolonContainer implements Container {
     @Override
     public Object getComponent(String componentName) {
         return Solon.context().getBean(componentName);

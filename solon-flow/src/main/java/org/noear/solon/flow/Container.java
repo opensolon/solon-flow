@@ -13,28 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.evaluation;
-
-import org.noear.liquor.eval.Exprs;
-import org.noear.liquor.eval.Scripts;
-import org.noear.solon.flow.Evaluation;
-
-import java.util.Map;
+package org.noear.solon.flow;
 
 /**
- * Liquor 脚本评估器
+ * 组件容器
  *
  * @author noear
  * @since 3.1
  */
-public class LiquorEvaluation implements Evaluation {
-    @Override
-    public boolean runCondition(String code, Map<String, Object> context) {
-        return (boolean) Exprs.eval(code, context);
-    }
-
-    @Override
-    public void runTask(String code, Map<String, Object> context) {
-        Scripts.eval(code, context);
-    }
+public interface Container {
+    /**
+     * 获取组件
+     */
+    Object getComponent(String componentName);
 }

@@ -15,14 +15,17 @@
  */
 package org.noear.solon.flow;
 
+import org.noear.solon.lang.Preview;
+
 import java.util.Map;
 
 /**
- * 评估器
+ * 脚本评估器
  *
  * @author noear
  * @since 3.1
  */
+@Preview("3.1")
 public interface Evaluation {
     /**
      * 运行条件

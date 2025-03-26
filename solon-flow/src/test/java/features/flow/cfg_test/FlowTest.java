@@ -4,7 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.Chain;
 import org.noear.solon.flow.ChainContext;
 import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.driver.MapChainDriver;
+import org.noear.solon.flow.container.MapContainer;
+import org.noear.solon.flow.driver.SimpleChainDriver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +16,13 @@ import java.util.List;
 public class FlowTest {
     @Test
     public void case1() throws Throwable {
-        MapChainDriver driver = new MapChainDriver();
-        driver.putComponent("a", (c, o) -> {
+        MapContainer mapContainer = new MapContainer();
+        mapContainer.putComponent("a", (c, o) -> {
             ((List) c.get("log")).add(o.title());
         });
 
         FlowEngine flow = FlowEngine.newInstance();
-        flow.register(driver);
+        flow.register(new SimpleChainDriver(mapContainer));
         flow.load(Chain.parseByUri("classpath:flow/flow_case8.chain.yml"));
 
         ChainContext context = new ChainContext();

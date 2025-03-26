@@ -17,7 +17,6 @@ package org.noear.solon.flow.driver;
 
 import org.noear.solon.Utils;
 import org.noear.solon.flow.*;
-import org.noear.solon.flow.evaluation.LiquorEvaluation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,11 +28,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractChainDriver implements ChainDriver {
     static final Logger log = LoggerFactory.getLogger(AbstractChainDriver.class);
-
-    @Override
-    public Evaluation evaluation() {
-        return LiquorEvaluation.INSTANCE;
-    }
 
     /**
      * 是否为组件
@@ -125,7 +119,7 @@ public abstract class AbstractChainDriver implements ChainDriver {
     protected void tryAsComponentTask(ChainContext context, Task task, String description) throws Throwable {
         //按组件运行
         String beanName = description.substring(1);
-        Object component = getComponent(beanName);
+        Object component = container().getComponent(beanName);
 
         if (component == null) {
             throw new IllegalStateException("The task component '" + beanName + "' not exist");
@@ -135,11 +129,6 @@ public abstract class AbstractChainDriver implements ChainDriver {
             ((TaskComponent) component).run(context, task.node());
         }
     }
-
-    /**
-     * 获取组件
-     */
-    public abstract Object getComponent(String componentName);
 
     /**
      * 尝试作为脚本运行

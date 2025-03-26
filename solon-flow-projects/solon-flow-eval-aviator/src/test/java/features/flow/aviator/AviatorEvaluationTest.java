@@ -3,6 +3,8 @@ package features.flow.aviator;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.ChainContext;
 import org.noear.solon.flow.FlowEngine;
+import org.noear.solon.flow.driver.SimpleChainDriver;
+import org.noear.solon.flow.evaluation.AviatorEvaluation;
 
 /**
  * @author noear 2025/3/26 created
@@ -11,7 +13,7 @@ public class AviatorEvaluationTest {
     @Test
     public void case1() throws Throwable {
         FlowEngine engine = FlowEngine.newInstance();
-        engine.register(new AviatorDriver());
+        engine.register(new SimpleChainDriver(new AviatorEvaluation()));
 
         engine.load("classpath:flow/*");
 

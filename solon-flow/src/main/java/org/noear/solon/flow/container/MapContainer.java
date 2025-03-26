@@ -13,27 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.driver;
+package org.noear.solon.flow.container;
 
+import org.noear.solon.flow.Container;
 import org.noear.solon.flow.TaskComponent;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Map 组件管理链驱动器
+ * Map 组件容器
  *
  * @author noear
  * @since 3.1
  */
-public class MapChainDriver extends AbstractChainDriver {
-    private static final MapChainDriver instance = new MapChainDriver();
-
-    public static MapChainDriver getInstance() {
-        return instance;
-    }
-
-    protected final Map<String, TaskComponent> components = new ConcurrentHashMap<>();
+public class MapContainer implements Container {
+    private final Map<String, TaskComponent> components = new ConcurrentHashMap<>();
 
     /**
      * 添加组件

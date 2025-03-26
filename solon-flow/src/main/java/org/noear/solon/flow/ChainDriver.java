@@ -26,9 +26,14 @@ import org.noear.solon.lang.Preview;
 @Preview("3.0")
 public interface ChainDriver {
     /**
-     * 评估器
+     * 脚本评估器
      */
     Evaluation evaluation();
+
+    /**
+     * 组件容器
+     */
+    Container container();
 
     /**
      * 节点运行开始时

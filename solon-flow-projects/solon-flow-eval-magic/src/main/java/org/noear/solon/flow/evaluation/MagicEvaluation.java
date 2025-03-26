@@ -28,8 +28,6 @@ import java.util.Map;
  * @since 3.1
  */
 public class MagicEvaluation implements Evaluation {
-    public static final Evaluation INSTANCE = new MagicEvaluation();
-
     @Override
     public boolean runCondition(String code, Map<String, Object> context) {
         MagicScriptContext scriptContext = new MagicScriptContext();

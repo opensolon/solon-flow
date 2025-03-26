@@ -22,6 +22,7 @@ import org.beetl.core.resource.ClasspathResourceLoader;
 import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.noear.solon.flow.Evaluation;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
@@ -32,20 +33,19 @@ import java.util.Map;
  * @author noear
  * @since 3.1
  */
-public class BeetlEvaluation implements Evaluation {
-    public static final Evaluation INSTANCE = new BeetlEvaluation();
+public class BeetlEvaluation implements Evaluation, Closeable {
+    private final GroupTemplate engine;
+    private final StringTemplateResourceLoader templateLoader = new StringTemplateResourceLoader();
+    private final ClasspathResourceLoader resourceLoader;
 
-    private GroupTemplate template;
-    private StringTemplateResourceLoader loader = new StringTemplateResourceLoader();
-
-    private BeetlEvaluation() {
+    public BeetlEvaluation() {
         try {
-            ClasspathResourceLoader resourceLoader = new ClasspathResourceLoader("/");
+            resourceLoader = new ClasspathResourceLoader("/");
             Configuration cfg = Configuration.defaultConfiguration();
             cfg.setStatementStart("@");
             cfg.setStatementEnd(null);
 
-            template = new GroupTemplate(resourceLoader, cfg, BeetlEvaluation.class.getClassLoader());
+            engine = new GroupTemplate(resourceLoader, cfg, BeetlEvaluation.class.getClassLoader());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -54,13 +54,20 @@ public class BeetlEvaluation implements Evaluation {
     @Override
     public boolean runCondition(String code, Map<String, Object> context) {
         Writer writer = new EmptyWriter();
-        Map values = template.runScript("return " + code + ";", context, writer, loader);
+        Map values = engine.runScript("return " + code + ";", context, writer, templateLoader);
         return (Boolean) values.get("return");
     }
 
     @Override
     public void runTask(String code, Map<String, Object> context) {
         Writer writer = new EmptyWriter();
-        template.runScript(code, context, writer, loader);
+        engine.runScript(code, context, writer, templateLoader);
+    }
+
+    @Override
+    public void close() throws IOException {
+        templateLoader.close();
+        resourceLoader.close();
+        engine.close();
     }
 }

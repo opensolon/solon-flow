@@ -27,8 +27,6 @@ import java.util.Map;
  * @since 3.1
  */
 public class AviatorEvaluation implements Evaluation {
-    public static final Evaluation INSTANCE = new AviatorEvaluation();
-
     @Override
     public boolean runCondition(String code, Map<String, Object> context) {
         return (Boolean) AviatorEvaluator.execute(code, context);
