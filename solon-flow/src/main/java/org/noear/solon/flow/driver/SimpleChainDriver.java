@@ -48,12 +48,12 @@ public class SimpleChainDriver extends AbstractChainDriver {
     }
 
     @Override
-    public Evaluation evaluation() {
+    public Evaluation getEvaluation() {
         return evaluation;
     }
 
     @Override
-    public Container container() {
+    public Container getContainer() {
         return container;
     }
 }

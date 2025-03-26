@@ -34,4 +34,10 @@ public class AviatorEvaluationTest {
         System.out.println(context.result);
         assert ((Number) context.result).intValue() == 5;
     }
+
+    //demo
+    public void case2() throws Throwable {
+        FlowEngine engine = FlowEngine.newInstance();
+        engine.register(new SimpleChainDriver(new SpringContainer()));
+    }
 }

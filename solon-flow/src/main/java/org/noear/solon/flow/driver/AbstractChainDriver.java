@@ -71,7 +71,7 @@ public abstract class AbstractChainDriver implements ChainDriver {
     }
 
     protected boolean tryAsScriptCondition(ChainContext context, Condition condition, String description) throws Throwable {
-        return evaluation().runCondition(description, context.model());
+        return getEvaluation().runCondition(description, context.model());
     }
 
     /// //////////////
@@ -119,7 +119,7 @@ public abstract class AbstractChainDriver implements ChainDriver {
     protected void tryAsComponentTask(ChainContext context, Task task, String description) throws Throwable {
         //按组件运行
         String beanName = description.substring(1);
-        Object component = container().getComponent(beanName);
+        Object component = getContainer().getComponent(beanName);
 
         if (component == null) {
             throw new IllegalStateException("The task component '" + beanName + "' not exist");
@@ -138,7 +138,7 @@ public abstract class AbstractChainDriver implements ChainDriver {
         try {
             context.put("node", task.node());
 
-            evaluation().runTask(description, context.model());
+            getEvaluation().runTask(description, context.model());
         } finally {
             context.remove("node");
         }
