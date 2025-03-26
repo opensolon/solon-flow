@@ -80,7 +80,7 @@ Solon
 
 ## Solon Flow 简单使用示例 （Helloworld）
 
-配置示例（此例，使用脚本模式）
+配置示例（此例，使用脚本模式。也可使用组件模式）
 
 ```yaml
 # flow/case1.yml
