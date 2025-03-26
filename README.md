@@ -104,10 +104,15 @@ public void case1() throws Throwable {
 
     engine.eval("f1", context);
 }
+```
 
+脚本执行器定制与组件容器定制
+
+```java
+//脚本执行器定制
 public void case2() throws Throwable {
     FlowEngine engine = FlowEngine.newInstance();
-    engine.register(new SimpleFlowDriver(new BeetlEvaluation())); //脚本执行器定制
+    engine.register(new SimpleFlowDriver(new BeetlEvaluation())); 
     engine.load("classpath:flow/*");
 
     FlowContext context = new FlowContext();
@@ -117,9 +122,10 @@ public void case2() throws Throwable {
     engine.eval("f1", context);
 }
 
+//脚本执行器定制 + 组件容器定制
 public void case3() throws Throwable {
     FlowEngine engine = FlowEngine.newInstance();
-    engine.register(new SimpleFlowDriver(new BeetlEvaluation(), new SpringContainer())); //脚本执行器定制 + 组件容器定制
+    engine.register(new SimpleFlowDriver(new BeetlEvaluation(), new SpringContainer())); 
     engine.load("classpath:flow/*");
 
     FlowContext context = new FlowContext();
