@@ -32,10 +32,16 @@ public class StatefulNode {
         this.state = state;
     }
 
+    /**
+     * 节点
+     */
     public Node getNode() {
         return node;
     }
 
+    /**
+     * 状态
+     */
     public int getState() {
         return state;
     }

@@ -40,7 +40,7 @@ public class SimpleFlowStateRepository implements FlowStateRepository {
 
         Integer rst = stateMap.get(stateKey);
         if (rst == null) {
-            return FlowNodeState.UNDEFINED;
+            return NodeStates.UNDEFINED;
         } else {
             return rst;
         }
@@ -61,7 +61,7 @@ public class SimpleFlowStateRepository implements FlowStateRepository {
         records.add(new FlowStateRecord(chainId, nodeId, nodeState, context.getUserId(), System.currentTimeMillis()));
 
         //更新状态
-        if (nodeState == FlowNodeState.WITHDRAW) {
+        if (nodeState == NodeStates.WITHDRAW) {
             //撤回
             Node node = flowEngine.getChain(chainId).getNode(nodeId);
             //撤回之前的节点
@@ -70,7 +70,7 @@ public class SimpleFlowStateRepository implements FlowStateRepository {
                 String stateKey = instanceId + ":" + chainId + ":" + n1.id();
                 stateMap.remove(stateKey);
             }
-        } else if (nodeState == FlowNodeState.WITHDRAW_ALL) {
+        } else if (nodeState == NodeStates.WITHDRAW_ALL) {
             //撤回全部（重新开始）
             stateMap.clear();
         } else {

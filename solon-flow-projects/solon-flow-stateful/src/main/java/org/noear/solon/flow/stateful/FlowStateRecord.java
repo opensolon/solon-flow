@@ -24,34 +24,49 @@ package org.noear.solon.flow.stateful;
 public class FlowStateRecord {
     private String chainId;
     private String nodeId;
-    private String userId;
     private int nodeState;
+    private String userId;
     private long created;
 
     public FlowStateRecord(String chainId, String nodeId, int nodeState, String userId, long created) {
         this.chainId = chainId;
         this.nodeId = nodeId;
-        this.userId = userId;
         this.nodeState = nodeState;
+        this.userId = userId;
         this.created = created;
     }
 
+    /**
+     * 链Id
+     */
     public String getChainId() {
         return chainId;
     }
 
+    /**
+     * 节点Id
+     */
     public String getNodeId() {
         return nodeId;
     }
 
+    /**
+     * 节点状态
+     */
     public int getNodeState() {
         return nodeState;
     }
 
+    /**
+     * 用户Id
+     */
     public String getUserId() {
         return userId;
     }
 
+    /**
+     * 创建时间戳
+     */
     public long getCreated() {
         return created;
     }

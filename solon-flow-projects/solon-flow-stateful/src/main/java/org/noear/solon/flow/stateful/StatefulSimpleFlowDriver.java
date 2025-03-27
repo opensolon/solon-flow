@@ -66,7 +66,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                 task.node().chain().id(),
                 task.node().id());
 
-        if (nodeState == FlowNodeState.UNDEFINED) {
+        if (nodeState == NodeStates.UNDEFINED) {
             //检查是否为当前用户的任务
             if (isMyTask(context, task)) {
                 //记录当前流程节点（用于展示）
@@ -78,14 +78,14 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                         context,
                         task.node().chain().id(),
                         task.node().id(),
-                        FlowNodeState.WAIT,
+                        NodeStates.WAIT,
                         context.engine());
 
             } else {
                 //阻断当前分支（等待别的用户办理）
                 context.interrupt();
             }
-        } else if (nodeState == FlowNodeState.WAIT) {
+        } else if (nodeState == NodeStates.WAIT) {
             //检查是否为当前用户的任务
             if (isMyTask(context, task)) {
                 //记录当前流程节点（用于展示）
