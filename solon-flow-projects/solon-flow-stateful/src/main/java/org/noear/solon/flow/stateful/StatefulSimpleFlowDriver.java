@@ -15,6 +15,7 @@
  */
 package org.noear.solon.flow.stateful;
 
+import org.noear.solon.Utils;
 import org.noear.solon.flow.Container;
 import org.noear.solon.flow.Evaluation;
 import org.noear.solon.flow.FlowContext;
@@ -61,46 +62,54 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
 
     @Override
     public void handleTask(FlowContext context0, Task task) throws Throwable {
-        StatefulFlowContext context = (StatefulFlowContext) context0;
-        int nodeState = getStateRepository().getState(
-                context,
-                task.node().chain().id(),
-                task.node().id());
+        if (context0 instanceof StatefulFlowContext) {
+            StatefulFlowContext context = (StatefulFlowContext) context0;
+            String instanceId = context.getInstanceId();
 
-        if (nodeState == NodeStates.UNDEFINED) {
-            //检查是否为当前用户的任务
-            if (isMyTask(context, task)) {
-                //记录当前流程节点（用于展示）
-                context.setTaskNode(new StatefulNode(task.node(), nodeState));
-                //停止流程
-                context.stop();
-                //设置状态为待办
-                getStateRepository().postState(
+            if (Utils.isNotEmpty(instanceId)) {
+                int nodeState = getStateRepository().getState(
                         context,
                         task.node().chain().id(),
-                        task.node().id(),
-                        NodeStates.WAIT,
-                        context.engine());
+                        task.node().id());
 
-            } else {
-                //阻断当前分支（等待别的用户办理）
-                context.interrupt();
+                if (nodeState == NodeStates.UNDEFINED) {
+                    //检查是否为当前用户的任务
+                    if (isMyTask(context, task)) {
+                        //记录当前流程节点（用于展示）
+                        context.setTaskNode(new StatefulNode(task.node(), nodeState));
+                        //停止流程
+                        context.stop();
+                        //设置状态为待办
+                        getStateRepository().postState(
+                                context,
+                                task.node().chain().id(),
+                                task.node().id(),
+                                NodeStates.WAIT,
+                                context.engine());
+
+                    } else {
+                        //阻断当前分支（等待别的用户办理）
+                        context.interrupt();
+                    }
+                } else if (nodeState == NodeStates.WAIT) {
+                    //检查是否为当前用户的任务
+                    if (isMyTask(context, task)) {
+                        //记录当前流程节点（用于展示）
+                        context.setTaskNode(new StatefulNode(task.node(), nodeState)); //说明之前没有结办
+                        //停止流程
+                        context.stop();
+                    } else {
+                        //阻断当前分支（等待别的用户办理）
+                        context.interrupt();
+                    }
+                }
+
+                return;
             }
-        } else if (nodeState == NodeStates.WAIT) {
-            //检查是否为当前用户的任务
-            if (isMyTask(context, task)) {
-                //记录当前流程节点（用于展示）
-                context.setTaskNode(new StatefulNode(task.node(), nodeState)); //说明之前没有结办
-                //停止流程
-                context.stop();
-            } else {
-                //阻断当前分支（等待别的用户办理）
-                context.interrupt();
-            }
-        } else {
-            //已办
-            super.handleTask(context, task);
         }
+
+        //当无状态的用
+        super.handleTask(context0, task);
     }
 
     protected boolean isMyTask(StatefulFlowContext context, Task task) {
