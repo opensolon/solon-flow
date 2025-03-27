@@ -15,13 +15,15 @@
  */
 package org.noear.solon.flow.stateful;
 
+import java.io.Serializable;
+
 /**
  * 流状态记录
  *
  * @author noear
  * @since 3.1
  */
-public class FlowStateRecord {
+public class FlowStateRecord implements Serializable {
     private String chainId;
     private String nodeId;
     private int nodeState;
