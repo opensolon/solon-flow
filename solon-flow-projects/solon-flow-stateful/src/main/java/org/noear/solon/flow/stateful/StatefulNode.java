@@ -33,6 +33,13 @@ public class StatefulNode {
     }
 
     /**
+     * 节点Id
+     */
+    public String getNodeId() {
+        return node.id();
+    }
+
+    /**
      * 节点
      */
     public Node getNode() {
@@ -44,5 +51,13 @@ public class StatefulNode {
      */
     public int getState() {
         return state;
+    }
+
+    @Override
+    public String toString() {
+        return "StatefulNode{" +
+                "node=" + node +
+                ", state=" + state +
+                '}';
     }
 }
