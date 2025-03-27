@@ -81,7 +81,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     }
 
     protected boolean tryAsScriptCondition(FlowContext context, Condition condition, String description) throws Throwable {
-        return getEvaluation().runCondition(context, description);
+        return getEvaluation().runTest(context, description);
     }
 
     /// //////////////

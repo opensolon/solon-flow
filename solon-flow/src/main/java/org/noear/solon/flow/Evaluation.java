@@ -26,12 +26,12 @@ import org.noear.solon.lang.Preview;
 @Preview("3.1")
 public interface Evaluation {
     /**
-     * 运行条件
+     * 运行检测
      *
      * @param context 流上下文
      * @param code    条件代码
      */
-    boolean runCondition(FlowContext context, String code);
+    boolean runTest(FlowContext context, String code);
 
     /**
      * 运行任务

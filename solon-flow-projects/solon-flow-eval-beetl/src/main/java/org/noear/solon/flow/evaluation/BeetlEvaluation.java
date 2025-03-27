@@ -53,7 +53,7 @@ public class BeetlEvaluation implements Evaluation, Closeable {
     }
 
     @Override
-    public boolean runCondition(FlowContext context, String code) {
+    public boolean runTest(FlowContext context, String code) {
         Writer writer = new EmptyWriter();
         Map values = engine.runScript("return " + code + ";", context.model(), writer, templateLoader);
         return (Boolean) values.get("return");
