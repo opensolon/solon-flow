@@ -2,7 +2,7 @@ package demo.flow.stateful;
 
 import org.noear.solon.annotation.Bean;
 import org.noear.solon.annotation.Configuration;
-import org.noear.solon.flow.stateful.SimpleFlowStateRepository;
+import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.flow.stateful.StatefulFlowEngine;
 import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
 
@@ -16,6 +16,6 @@ public class DemoConfig {
         //初始化引擎
         return new StatefulFlowEngine(
                 new StatefulSimpleFlowDriver(
-                        new SimpleFlowStateRepository()));
+                        new InMemoryStateRepository()));
     }
 }

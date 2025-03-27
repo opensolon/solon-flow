@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.stateful;
+package org.noear.solon.flow.stateful.repository;
 
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Node;
+import org.noear.solon.flow.stateful.FlowStateRecord;
+import org.noear.solon.flow.stateful.FlowStateRepository;
+import org.noear.solon.flow.stateful.NodeStates;
+import org.noear.solon.flow.stateful.StatefulFlowContext;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,12 +29,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 简单节点状态仓库
+ * 简单状态仓库
  *
  * @author noear
  * @since 3.1
  */
-public class SimpleFlowStateRepository implements FlowStateRepository {
+public class InMemoryStateRepository implements FlowStateRepository {
     private final Map<String, List<FlowStateRecord>> historyMap = new ConcurrentHashMap<>();
     private final Map<String, Integer> stateMap = new ConcurrentHashMap<>();
 

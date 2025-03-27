@@ -20,6 +20,7 @@ import org.noear.solon.flow.Evaluation;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Task;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
+import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 
 /**
  * 有状态的简单流驱动器
@@ -40,22 +41,22 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
 
     public StatefulSimpleFlowDriver(FlowStateRepository stateRepository) {
         super();
-        this.stateRepository = (stateRepository == null ? new SimpleFlowStateRepository() : stateRepository);
+        this.stateRepository = (stateRepository == null ? new InMemoryStateRepository() : stateRepository);
     }
 
     public StatefulSimpleFlowDriver(FlowStateRepository stateRepository, Container container) {
         super(container);
-        this.stateRepository = (stateRepository == null ? new SimpleFlowStateRepository() : stateRepository);
+        this.stateRepository = (stateRepository == null ? new InMemoryStateRepository() : stateRepository);
     }
 
     public StatefulSimpleFlowDriver(FlowStateRepository stateRepository, Evaluation evaluation) {
         super(evaluation);
-        this.stateRepository = (stateRepository == null ? new SimpleFlowStateRepository() : stateRepository);
+        this.stateRepository = (stateRepository == null ? new InMemoryStateRepository() : stateRepository);
     }
 
     public StatefulSimpleFlowDriver(FlowStateRepository stateRepository, Evaluation evaluation, Container container) {
         super(evaluation, container);
-        this.stateRepository = (stateRepository == null ? new SimpleFlowStateRepository() : stateRepository);
+        this.stateRepository = (stateRepository == null ? new InMemoryStateRepository() : stateRepository);
     }
 
     @Override
