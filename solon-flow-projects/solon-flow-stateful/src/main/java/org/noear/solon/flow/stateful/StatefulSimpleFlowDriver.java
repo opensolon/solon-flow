@@ -23,6 +23,8 @@ import org.noear.solon.flow.Task;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 
+import java.util.Objects;
+
 /**
  * 有状态的简单流驱动器
  *
@@ -113,7 +115,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
     }
 
     protected boolean isMyTask(StatefulFlowContext context, Task task) {
-        return context.getUserId().equals(task.node().meta("userId")) ||
-                context.getRoleId().equals(task.node().meta("roleId"));
+        return Objects.equals(context.getUserId(), task.node().meta("userId")) ||
+                Objects.equals(context.getRoleId(), task.node().meta("roleId"));
     }
 }
