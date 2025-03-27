@@ -1,5 +1,6 @@
 ### 3.1.2
 
+* 新增 solon-flow-stateful 插件
 * 新增 solon-flow-eval-aviator 插件
 * 新增 solon-flow-eval-beetl 插件
 * 新增 solon-flow-eval-magic 插件
