@@ -21,7 +21,7 @@ import org.noear.solon.lang.Preview;
 import java.util.List;
 
 /**
- * 有状态的流引擎
+ * 有状态的流引擎（也可以用于无状态）
  *
  * @author noear
  * @since 3.1
