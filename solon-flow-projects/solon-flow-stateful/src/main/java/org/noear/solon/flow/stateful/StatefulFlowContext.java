@@ -24,6 +24,10 @@ import org.noear.solon.flow.FlowContext;
  * @since 3.1
  */
 public class StatefulFlowContext extends FlowContext {
+    public StatefulFlowContext() {
+        super(); //兼容无状态模式
+    }
+
     public StatefulFlowContext(String instanceId, String roleId, String userId) {
         super();
 
