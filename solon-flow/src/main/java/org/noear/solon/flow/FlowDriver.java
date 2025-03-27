@@ -26,16 +26,6 @@ import org.noear.solon.lang.Preview;
 @Preview("3.0")
 public interface FlowDriver {
     /**
-     * 获取脚本评估器
-     */
-    Evaluation getEvaluation();
-
-    /**
-     * 获取组件容器
-     */
-    Container getContainer();
-
-    /**
      * 节点运行开始时
      */
     void onNodeStart(FlowContext context, Node node);

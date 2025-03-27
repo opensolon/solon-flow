@@ -61,7 +61,7 @@ public class SimpleFlowDriver extends AbstractFlowDriver {
      * 获取脚本评估器
      */
     @Override
-    public Evaluation getEvaluation() {
+    protected Evaluation getEvaluation() {
         return evaluation;
     }
 
@@ -69,7 +69,7 @@ public class SimpleFlowDriver extends AbstractFlowDriver {
      * 获取组件容器
      */
     @Override
-    public Container getContainer() {
+    protected Container getContainer() {
         return container;
     }
 }

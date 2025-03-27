@@ -30,12 +30,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author noear
  * @since 3.0
  */
-class FlowEngineImpl implements FlowEngine {
+public class FlowEngineDefault implements FlowEngine {
     protected final Map<String, Chain> chainMap = new ConcurrentHashMap<>();
     protected final Map<String, FlowDriver> driverMap = new ConcurrentHashMap<>();
     protected final List<RankEntity<ChainInterceptor>> interceptorList = new ArrayList<>();
 
-    public FlowEngineImpl() {
+    public FlowEngineDefault() {
         //默认驱动器
         driverMap.put("", new SimpleFlowDriver());
     }
@@ -71,8 +71,13 @@ class FlowEngineImpl implements FlowEngine {
     }
 
     @Override
-    public Collection<Chain> chains() {
+    public Collection<Chain> getChains() {
         return chainMap.values();
+    }
+
+    @Override
+    public Chain getChain(String chainId) {
+        return chainMap.get(chainId);
     }
 
     /**

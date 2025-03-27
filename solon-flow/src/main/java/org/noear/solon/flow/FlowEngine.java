@@ -34,7 +34,7 @@ public interface FlowEngine {
      * 新实例
      */
     static FlowEngine newInstance() {
-        return new FlowEngineImpl();
+        return new FlowEngineDefault();
     }
 
     /**
@@ -99,9 +99,14 @@ public interface FlowEngine {
     void unload(String chainId);
 
     /**
-     * 获取链集合
+     * 获取所有链
      */
-    Collection<Chain> chains();
+    Collection<Chain> getChains();
+
+    /**
+     * 获取链
+     */
+    Chain getChain(String chainId);
 
     /**
      * 评估

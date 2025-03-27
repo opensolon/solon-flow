@@ -30,6 +30,16 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     static final Logger log = LoggerFactory.getLogger(AbstractFlowDriver.class);
 
     /**
+     * 获取脚本评估器
+     */
+    protected abstract Evaluation getEvaluation();
+
+    /**
+     * 获取组件容器
+     */
+    protected abstract Container getContainer();
+
+    /**
      * 是否为组件
      */
     protected boolean isChain(String description) {
