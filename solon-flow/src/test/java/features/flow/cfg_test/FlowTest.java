@@ -18,7 +18,7 @@ public class FlowTest {
     public void case1() throws Throwable {
         MapContainer mapContainer = new MapContainer();
         mapContainer.putComponent("a", (c, o) -> {
-            ((List) c.get("log")).add(o.title());
+            ((List) c.get("log")).add(o.getTitle());
         });
 
         FlowEngine flow = FlowEngine.newInstance();

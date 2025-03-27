@@ -10,15 +10,15 @@ import org.noear.solon.flow.driver.*;
 public class ApproveChainDriver extends SimpleFlowDriver {
     @Override
     public void handleTask(FlowContext context, Task task) throws Throwable {
-        if (isChain(task.description())) {
+        if (isChain(task.getDescription())) {
             //如果跨链调用
-            tryAsChainTask(context, task, task.description());
+            tryAsChainTask(context, task, task.getDescription());
             return;
         }
 
-        if (isComponent(task.description())) {
+        if (isComponent(task.getDescription())) {
             //如果用组件运行
-            tryAsComponentTask(context, task, task.description());
+            tryAsComponentTask(context, task, task.getDescription());
             return;
         }
 
@@ -27,8 +27,8 @@ public class ApproveChainDriver extends SimpleFlowDriver {
         String role_id = context.get("role_id");
 
 
-        String chain_id = task.node().chain().id();
-        String task_id = task.node().id();
+        String chain_id = task.getNode().getChain().getId();
+        String task_id = task.getNode().getId();
 
         //把状态批量加载到上下文参考（或者通过数据库查找状态）
         TaskState taskState = null;//查询任务装态
@@ -41,9 +41,9 @@ public class ApproveChainDriver extends SimpleFlowDriver {
             //...
 
             //如果当前用户匹配这个节点任务
-            if(role_id.equals(task.node().meta().get("role_id"))){
+            if(role_id.equals(task.getNode().getMeta("role_id"))){
                 //则把这个节点，作为结果（用于展示界面）
-                context.result = task.node();
+                context.result = task.getNode();
             }
         }
     }

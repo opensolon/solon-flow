@@ -10,8 +10,8 @@ import org.noear.solon.flow.driver.SimpleFlowDriver;
 public class Case2FlowDriver extends SimpleFlowDriver {
     @Override
     public void handleTask(FlowContext context, Task task) throws Throwable {
-        context.result = task.node().id();
-        if(task.node().id().equals("n-3")) {
+        context.result = task.getNode().getId();
+        if(task.getNode().getId().equals("n-3")) {
             context.interrupt();
             return;
         }

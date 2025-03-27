@@ -12,7 +12,7 @@ public abstract class TaskComponentPlus implements TaskComponent {
     @Override
     public void run(FlowContext context, Node node) throws Throwable {
         //通过 meta:{async:true} 来启用
-        boolean async = node.metaOrDefault("async", false);
+        boolean async = node.getMetaOrDefault("async", false);
 
         if (async) {
             context.interrupt();

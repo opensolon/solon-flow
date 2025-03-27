@@ -62,7 +62,7 @@ public class FlowEngineDefault implements FlowEngine {
 
     @Override
     public void load(Chain chain) {
-        chainMap.put(chain.id(), chain);
+        chainMap.put(chain.getId(), chain);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class FlowEngineDefault implements FlowEngine {
     public void eval(Chain chain, String startId, int depth, FlowContext context) throws Throwable {
         Node start;
         if (startId == null) {
-            start = chain.start();
+            start = chain.getStart();
         } else {
             start = chain.getNode(startId);
         }
@@ -121,10 +121,10 @@ public class FlowEngineDefault implements FlowEngine {
             context.engine = this;
         }
 
-        FlowDriver driver = driverMap.get(chain.driver());
+        FlowDriver driver = driverMap.get(chain.getDriver());
 
         if (driver == null) {
-            throw new IllegalArgumentException("No driver found for: '" + chain.driver() + "'");
+            throw new IllegalArgumentException("No driver found for: '" + chain.getDriver() + "'");
         }
 
         //开始执行
@@ -142,7 +142,7 @@ public class FlowEngineDefault implements FlowEngine {
      * 条件检测
      */
     private boolean condition_test(FlowDriver driver, FlowContext context, Condition condition, boolean def) throws Throwable {
-        if (Utils.isNotEmpty(condition.description())) {
+        if (Utils.isNotEmpty(condition.getDescription())) {
             return driver.handleTest(context, condition);
         } else {
             return def;
@@ -154,9 +154,9 @@ public class FlowEngineDefault implements FlowEngine {
      */
     private void task_exec(FlowDriver driver, FlowContext context, Node node) throws Throwable {
         //尝试检测条件；缺省为 true
-        if (condition_test(driver, context, node.when(), true)) {
+        if (condition_test(driver, context, node.getWhen(), true)) {
             //起到触发事件的作用 //处理方会“过滤”空任务
-            driver.handleTask(context, node.task());
+            driver.handleTask(context, node.getTask());
         }
     }
 
@@ -202,10 +202,10 @@ public class FlowEngineDefault implements FlowEngine {
 
         boolean node_end = true;
 
-        switch (node.type()) {
+        switch (node.getType()) {
             case start:
                 //转到下个节点
-                node_run(driver, context, node.nextNode(), depth);
+                node_run(driver, context, node.getNextNode(), depth);
                 break;
             case end:
                 break;
@@ -213,7 +213,7 @@ public class FlowEngineDefault implements FlowEngine {
                 //尝试执行任务（可能为空）
                 task_exec(driver, context, node);
                 //转到下个节点
-                node_run(driver, context, node.nextNode(), depth);
+                node_run(driver, context, node.getNextNode(), depth);
                 break;
             case inclusive: //包容网关（多选）
                 node_end = inclusive_run(driver, context, node, depth);
@@ -239,13 +239,13 @@ public class FlowEngineDefault implements FlowEngine {
      * 运行包容网关
      */
     private boolean inclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws Throwable {
-        Stack<Integer> inclusive_stack = context.counter().stack(node.chain(), "inclusive_run");
+        Stack<Integer> inclusive_stack = context.counter().stack(node.getChain(), "inclusive_run");
 
         //::流入
-        if (node.prveLinks().size() > 1) { //如果是多个输入链接（尝试等待）
+        if (node.getPrveLinks().size() > 1) { //如果是多个输入链接（尝试等待）
             if (inclusive_stack.size() > 0) {
                 int start_size = inclusive_stack.peek();
-                int in_size = context.counter().incr(node.chain(), node.id());//运行次数累计
+                int in_size = context.counter().incr(node.getChain(), node.getId());//运行次数累计
                 if (start_size > in_size) { //等待所有支线流入完成
                     return false;
                 }
@@ -260,11 +260,11 @@ public class FlowEngineDefault implements FlowEngine {
         Link def_line = null;
         List<Link> matched_lines = new ArrayList<>();
 
-        for (Link l : node.nextLinks()) {
-            if (l.condition().isEmpty()) {
+        for (Link l : node.getNextLinks()) {
+            if (l.getCondition().isEmpty()) {
                 def_line = l;
             } else {
-                if (condition_test(driver, context, l.condition(), false)) {
+                if (condition_test(driver, context, l.getCondition(), false)) {
                     matched_lines.add(l);
                 }
             }
@@ -276,12 +276,12 @@ public class FlowEngineDefault implements FlowEngine {
 
             //执行所有满足条件
             for (Link l : matched_lines) {
-                node_run(driver, context, l.nextNode(), depth);
+                node_run(driver, context, l.getNextNode(), depth);
             }
         } else if (def_line != null) {
             //不需要，记录流出数量
             //如果有默认
-            node_run(driver, context, def_line.nextNode(), depth);
+            node_run(driver, context, def_line.getNextNode(), depth);
         }
 
         return true;
@@ -293,13 +293,13 @@ public class FlowEngineDefault implements FlowEngine {
     private boolean exclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws Throwable {
         //::流出
         Link def_line = null; //默认线
-        for (Link l : node.nextLinks()) {
-            if (l.condition().isEmpty()) {
+        for (Link l : node.getNextLinks()) {
+            if (l.getCondition().isEmpty()) {
                 def_line = l;
             } else {
-                if (condition_test(driver, context, l.condition(), false)) {
+                if (condition_test(driver, context, l.getCondition(), false)) {
                     //执行第一个满足条件
-                    node_run(driver, context, l.nextNode(), depth);
+                    node_run(driver, context, l.getNextNode(), depth);
                     return true; //结束
                 }
             }
@@ -307,7 +307,7 @@ public class FlowEngineDefault implements FlowEngine {
 
         if (def_line != null) {
             //如果有默认
-            node_run(driver, context, def_line.nextNode(), depth);
+            node_run(driver, context, def_line.getNextNode(), depth);
         }
 
         return true;
@@ -318,16 +318,16 @@ public class FlowEngineDefault implements FlowEngine {
      */
     private boolean parallel_run(FlowDriver driver, FlowContext context, Node node, int depth) throws Throwable {
         //::流入
-        int count = context.counter().incr(node.chain(), node.id());//运行次数累计
-        if (node.prveLinks().size() > count) { //等待所有支线计数完成
+        int count = context.counter().incr(node.getChain(), node.getId());//运行次数累计
+        if (node.getPrveLinks().size() > count) { //等待所有支线计数完成
             return false;
         }
 
         //恢复计数
-        context.counter().set(node.chain(), node.id(), 0);
+        context.counter().set(node.getChain(), node.getId(), 0);
 
         //::流出
-        for (Node n : node.nextNodes()) {
+        for (Node n : node.getNextNodes()) {
             node_run(driver, context, n, depth);
         }
 

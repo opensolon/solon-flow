@@ -29,7 +29,7 @@ public class StatefulSimpleFlowDriverTest {
         statefulNode = context.getTaskNode();
         log.warn("{}", statefulNode);
         assert statefulNode != null;
-        assert "step2".equals(statefulNode.getNode().id());
+        assert "step2".equals(statefulNode.getNode().getId());
         assert NodeStates.UNDEFINED == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
 
         //二次测试
@@ -38,19 +38,19 @@ public class StatefulSimpleFlowDriverTest {
         statefulNode = context.getTaskNode();
         log.warn("{}", statefulNode);
         assert statefulNode != null;
-        assert "step2".equals(statefulNode.getNode().id());
+        assert "step2".equals(statefulNode.getNode().getId());
         assert NodeStates.UNDEFINED == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
 
         /// ////////////////
         //提交状态
-        flowEngine.postState(context, "f1", statefulNode.getNodeId(), NodeStates.PASS);
+        flowEngine.postState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
 
         context = getContext("陈鑫");
         flowEngine.eval("f1", context);
         statefulNode = context.getTaskNode();
         log.warn("{}", statefulNode);
         assert statefulNode != null;
-        assert "step3".equals(statefulNode.getNode().id());
+        assert "step3".equals(statefulNode.getNode().getId());
         assert NodeStates.WAIT == statefulNode.getState(); //等待当前用户处理
 
         //二次测试
@@ -59,13 +59,13 @@ public class StatefulSimpleFlowDriverTest {
         statefulNode = context.getTaskNode();
         log.warn("{}", statefulNode);
         assert statefulNode != null;
-        assert "step3".equals(statefulNode.getNode().id());
+        assert "step3".equals(statefulNode.getNode().getId());
         assert NodeStates.WAIT == statefulNode.getState(); //等待当前用户处理
 
 
         /// ////////////////
         //提交状态
-        flowEngine.postState(context, "f1", statefulNode.getNodeId(), NodeStates.PASS);
+        flowEngine.postState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
 
 
         context = getContext("陈鑫");
@@ -73,7 +73,7 @@ public class StatefulSimpleFlowDriverTest {
         statefulNode = context.getTaskNode();
         log.warn("{}", statefulNode);
         assert statefulNode != null;
-        assert statefulNode.getNodeId().startsWith("step4");
+        assert statefulNode.getNode().getId().startsWith("step4");
         assert NodeStates.UNDEFINED == statefulNode.getState(); //没有权限
 
 
@@ -82,12 +82,12 @@ public class StatefulSimpleFlowDriverTest {
         statefulNode = context.getTaskNode();
         log.warn("{}", statefulNode);
         assert statefulNode != null;
-        assert statefulNode.getNodeId().startsWith("step4_1");
+        assert statefulNode.getNode().getId().startsWith("step4_1");
         assert NodeStates.WAIT == statefulNode.getState(); //等待当前用户处理
 
         /// ////////////////
         //提交状态
-        flowEngine.postState(context, "f1", statefulNode.getNodeId(), NodeStates.PASS);
+        flowEngine.postState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
 
 
         context = getContext("吕跃");
@@ -95,12 +95,12 @@ public class StatefulSimpleFlowDriverTest {
         statefulNode = context.getTaskNode();
         log.warn("{}", statefulNode);
         assert statefulNode != null;
-        assert statefulNode.getNodeId().startsWith("step4_2");
+        assert statefulNode.getNode().getId().startsWith("step4_2");
         assert NodeStates.WAIT == statefulNode.getState(); //等待当前用户处理
 
         /// ////////////////
         //提交状态
-        flowEngine.postState(context, "f1", statefulNode.getNodeId(), NodeStates.PASS);
+        flowEngine.postState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
 
 
         context = getContext("吕跃");

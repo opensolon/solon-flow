@@ -42,7 +42,7 @@ public class Condition {
     /**
      * 描述（示例："(a,>,12) and (b,=,1)" 或 "a=12 && b=1" 或 "[{l:'a',p:'>',r:'12'}...]"）
      */
-    public String description() {
+    public String getDescription() {
         return description;
     }
 

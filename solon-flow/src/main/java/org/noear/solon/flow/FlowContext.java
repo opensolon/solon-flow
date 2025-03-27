@@ -77,18 +77,26 @@ public class FlowContext {
         return engine;
     }
 
+
+    /**
+     * 计数器
+     */
+    public Counter counter() {
+        return counter;
+    }
+
     /**
      * 下一步
      *
      * @param node 节点
      */
     public void next(Node node) throws Throwable {
-        if (node.type() != NodeType.execute) {
-            throw new IllegalArgumentException(node.id() + " is not execute");
+        if (node.getType() != NodeType.execute) {
+            throw new IllegalArgumentException(node.getId() + " is not execute");
         }
 
-        for (Node node1 : node.nextNodes()) {
-            engine.eval(node.chain(), node1.id(), -1, this);
+        for (Node node1 : node.getNextNodes()) {
+            engine.eval(node.getChain(), node1.getId(), -1, this);
         }
     }
 
@@ -98,13 +106,6 @@ public class FlowContext {
     public Object run(String script) throws InvocationTargetException {
         //按脚本运行
         return Scripts.eval(script, this.model());
-    }
-
-    /**
-     * 计数器
-     */
-    public Counter counter() {
-        return counter;
     }
 
     /**

@@ -40,23 +40,37 @@ public class Link implements Comparable<Link> {
     }
 
     /**
-     * 所属链
+     * 获取所属链
      */
-    public Chain chain() {
+    public Chain getChain() {
         return chain;
     }
 
     /**
-     * 元信息
+     * 获取所有元信息
      */
-    public Map<String, Object> meta() {
+    public Map<String, Object> getMetas() {
         return decl.meta;
+    }
+
+    /**
+     * 获取元信息
+     */
+    public Object getMeta(String key) {
+        return decl.meta.get(key);
+    }
+
+    /**
+     * 获取元信息或默认
+     */
+    public Object getMetaOrDefault(String key, Object def) {
+        return decl.meta.getOrDefault(key, def);
     }
 
     /**
      * 条件
      */
-    public Condition condition() {
+    public Condition getCondition() {
         if (condition == null) {
             condition = new Condition(decl.condition);
         }
@@ -67,23 +81,23 @@ public class Link implements Comparable<Link> {
     /**
      * 前面的节点Id
      */
-    public String prveId() {
+    public String getPrveId() {
         return prveId;
     }
 
     /**
      * 后面的节点Id
      */
-    public String nextId() {
+    public String getNextId() {
         return decl.nextId;
     }
 
     /**
      * 前面的节点
      */
-    public Node prveNode() {
+    public Node getPrveNode() {
         if (prveNode == null) {
-            prveNode = chain.getNode(prveId()); //by id query
+            prveNode = chain.getNode(getPrveId()); //by id query
         }
 
         return prveNode;
@@ -92,9 +106,9 @@ public class Link implements Comparable<Link> {
     /**
      * 后面的节点
      */
-    public Node nextNode() {
+    public Node getNextNode() {
         if (nextNode == null) {
-            nextNode = chain.getNode(nextId()); //by id query
+            nextNode = chain.getNode(getNextId()); //by id query
         }
 
         return nextNode;
@@ -117,8 +131,8 @@ public class Link implements Comparable<Link> {
 
         buf.append("{");
         buf.append("priority=").append(decl.priority);
-        buf.append(", prveId='").append(prveId()).append('\'');
-        buf.append(", nextId='").append(nextId()).append('\'');
+        buf.append(", prveId='").append(getPrveId()).append('\'');
+        buf.append(", nextId='").append(getNextId()).append('\'');
 
         if (Utils.isNotEmpty(decl.title)) {
             buf.append(", title='").append(decl.title).append('\'');

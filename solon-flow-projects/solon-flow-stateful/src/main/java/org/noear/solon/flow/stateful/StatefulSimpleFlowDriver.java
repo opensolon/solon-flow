@@ -71,39 +71,39 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
             if (Utils.isNotEmpty(instanceId)) {
                 int nodeState = getStateRepository().getState(
                         context,
-                        task.node().chain().id(),
-                        task.node().id());
+                        task.getNode().getChain().getId(),
+                        task.getNode().getId());
 
                 if (nodeState == NodeStates.UNDEFINED) {
                     //检查是否为当前用户的任务
                     if (isMyTask(context, task)) {
                         //记录当前流程节点（用于展示）
-                        context.setTaskNode(new StatefulNode(task.node(), NodeStates.WAIT));
+                        context.setTaskNode(new StatefulNode(task.getNode(), NodeStates.WAIT));
                         //停止流程
                         context.stop();
                         //设置状态为待办
                         getStateRepository().postState(
                                 context,
-                                task.node().chain().id(),
-                                task.node().id(),
+                                task.getNode().getChain().getId(),
+                                task.getNode().getId(),
                                 NodeStates.WAIT,
                                 context.engine());
 
                     } else {
                         //阻断当前分支（等待别的用户办理）
-                        context.setTaskNode(new StatefulNode(task.node(), NodeStates.UNDEFINED));
+                        context.setTaskNode(new StatefulNode(task.getNode(), NodeStates.UNDEFINED));
                         context.interrupt();
                     }
                 } else if (nodeState == NodeStates.WAIT) {
                     //检查是否为当前用户的任务
                     if (isMyTask(context, task)) {
                         //记录当前流程节点（用于展示）
-                        context.setTaskNode(new StatefulNode(task.node(), nodeState)); //说明之前没有结办
+                        context.setTaskNode(new StatefulNode(task.getNode(), nodeState)); //说明之前没有结办
                         //停止流程
                         context.stop();
                     } else {
                         //阻断当前分支（等待别的用户办理）
-                        context.setTaskNode(new StatefulNode(task.node(), NodeStates.UNDEFINED));
+                        context.setTaskNode(new StatefulNode(task.getNode(), NodeStates.UNDEFINED));
                         context.interrupt();
                     }
                 }
@@ -117,7 +117,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
     }
 
     protected boolean isMyTask(StatefulFlowContext context, Task task) {
-        String operator = task.node().meta("operator");
+        String operator = task.getNode().getMeta("operator");
 
         return Objects.equals(context.getOperator(), operator);
     }

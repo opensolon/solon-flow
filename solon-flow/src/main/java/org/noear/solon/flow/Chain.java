@@ -56,51 +56,65 @@ public class Chain {
     }
 
     /**
-     * 标识
+     * 获取标识
      */
-    public String id() {
+    public String getId() {
         return id;
     }
 
     /**
-     * 显示标题
+     * 获取显示标题
      */
-    public String title() {
+    public String getTitle() {
         return title;
     }
 
     /**
-     * 驱动器
+     * 获取驱动器
      */
-    public String driver() {
+    public String getDriver() {
         return driver;
     }
 
     /**
-     * 元信息
+     * 获取元信息
      */
-    public Map<String, Object> meta() {
+    public Map<String, Object> getMetas() {
         return this.meta;
+    }
+
+    /**
+     * 获取元信息
+     */
+    public Object getMeta(String key) {
+        return meta.get(key);
+    }
+
+    /**
+     * 获取元信息或默认
+     */
+    public Object getMetaOrDefault(String key, Object def) {
+        return meta.getOrDefault(key, def);
     }
 
     /**
      * 获取起始节点
      */
-    public Node start() {
+    public Node getStart() {
         return start;
     }
 
     /**
-     * 获取所有元素
+     * 获取所有节点
      */
-    public Map<String, Node> nodes() {
+    public Map<String, Node> getNodes() {
         return Collections.unmodifiableMap(nodes);
     }
 
     /**
      * 获取所有连接
      */
-    public List<Link> links() {
+    public List<Link> getLinks() {
         return Collections.unmodifiableList(links);
     }
 
@@ -118,7 +132,7 @@ public class Chain {
         links.addAll(linkAry);
 
         Node node = new Node(this, nodeDecl, linkAry);
-        nodes.put(node.id(), node);
+        nodes.put(node.getId(), node);
         if (nodeDecl.type == NodeType.start) {
             start = node;
         }
@@ -139,7 +153,7 @@ public class Chain {
         if (start == null) {
             //找到没有流入链接的节点，作为开始节点
             for (Node node : nodes.values()) {
-                if (Utils.isEmpty(node.prveLinks())) {
+                if (Utils.isEmpty(node.getPrveLinks())) {
                     start = node;
                     break;
                 }
@@ -204,7 +218,7 @@ public class Chain {
         //元信息
         Map metaTmp = dom.get("meta").toObject(Map.class);
         if (Utils.isNotEmpty(metaTmp)) {
-            chain.meta().putAll(metaTmp);
+            chain.getMetas().putAll(metaTmp);
         }
 
         //节点（倒序加载，方便自动构建 link）

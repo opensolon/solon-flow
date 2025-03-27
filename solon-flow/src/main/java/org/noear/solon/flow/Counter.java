@@ -34,7 +34,7 @@ public class Counter {
      * 记录栈
      */
     protected Stack<Integer> stack(Chain chain, String key) {
-        return stacks.computeIfAbsent(chain.id() + "/" + key, k -> new Stack<>());
+        return stacks.computeIfAbsent(chain.getId() + "/" + key, k -> new Stack<>());
     }
 
 
@@ -42,7 +42,7 @@ public class Counter {
      * 获取
      */
     protected int get(Chain chain, String key) {
-        return counts.computeIfAbsent(chain.id() + "/" + key, k -> new AtomicInteger(0))
+        return counts.computeIfAbsent(chain.getId() + "/" + key, k -> new AtomicInteger(0))
                 .get();
     }
 
@@ -50,7 +50,7 @@ public class Counter {
      * 设置
      */
     protected void set(Chain chain, String key, int value) {
-        counts.computeIfAbsent(chain.id() + "/" + key, k -> new AtomicInteger(0))
+        counts.computeIfAbsent(chain.getId() + "/" + key, k -> new AtomicInteger(0))
                 .set(value);
     }
 
@@ -58,7 +58,7 @@ public class Counter {
      * 增量
      */
     protected int incr(Chain chain, String key) {
-        return counts.computeIfAbsent(chain.id() + "/" + key, k -> new AtomicInteger(0))
+        return counts.computeIfAbsent(chain.getId() + "/" + key, k -> new AtomicInteger(0))
                 .incrementAndGet();
     }
 

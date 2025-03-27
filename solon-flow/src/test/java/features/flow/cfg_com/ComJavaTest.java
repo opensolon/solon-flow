@@ -24,8 +24,8 @@ public class ComJavaTest {
         SimpleFlowDriver driver = new SimpleFlowDriver() {
             @Override
             public void handleTask(FlowContext context, Task task) throws Throwable {
-                context.result = task.node().id();
-                if (task.node().id().equals("n3")) {
+                context.result = task.getNode().getId();
+                if (task.getNode().getId().equals("n3")) {
                     context.interrupt();
                 }
 

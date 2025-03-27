@@ -49,64 +49,64 @@ public class Node {
 
 
     /**
-     * 所属链
+     * 获取所属链
      */
-    public Chain chain() {
+    public Chain getChain() {
         return chain;
     }
 
     /**
-     * 标识
+     * 获取标识
      */
-    public String id() {
+    public String getId() {
         return decl.id;
     }
 
     /**
-     * 显示标题
+     * 获取显示标题
      */
-    public String title() {
+    public String getTitle() {
         return decl.title;
     }
 
     /**
-     * 类型
+     * 获取类型
      */
-    public NodeType type() {
+    public NodeType getType() {
         return decl.type;
     }
 
     /**
-     * 元信息
+     * 获取所有元信息
      */
-    public Map<String, Object> meta() {
+    public Map<String, Object> getMetas() {
         return Collections.unmodifiableMap(decl.meta);
     }
 
     /**
      * 获取元信息
      */
-    public <T> T meta(String key) {
+    public <T> T getMeta(String key) {
         return (T) decl.meta.get(key);
     }
 
     /**
      * 获取元信息或默认
      */
-    public <T> T metaOrDefault(String key, T def) {
+    public <T> T getMetaOrDefault(String key, T def) {
         return (T) decl.meta.getOrDefault(key, def);
     }
 
     /**
      * 前面的连接（流入连接）
      */
-    public List<Link> prveLinks() {
+    public List<Link> getPrveLinks() {
         if (prveLinks == null) {
             List<Link> tmp = new ArrayList<>();
 
-            if (type() != NodeType.start) {
-                for (Link l : chain.links()) {
-                    if (id().equals(l.nextId())) { //by nextID
+            if (getType() != NodeType.start) {
+                for (Link l : chain.getLinks()) {
+                    if (getId().equals(l.getNextId())) { //by nextID
                         tmp.add(l);
                     }
                 }
@@ -124,21 +124,21 @@ public class Node {
     /**
      * 后面的连接（流出连接）
      */
-    public List<Link> nextLinks() {
+    public List<Link> getNextLinks() {
         return Collections.unmodifiableList(nextLinks);
     }
 
     /**
      * 前面的节点
      */
-    public List<Node> prveNodes() {
+    public List<Node> getPrveNodes() {
         if (prveNodes == null) {
             List<Node> tmp = new ArrayList<>();
 
-            if (type() != NodeType.start) {
-                for (Link l : chain.links()) { //要从链处找
-                    if (id().equals(l.nextId())) {
-                        tmp.add(chain.getNode(l.prveId()));
+            if (getType() != NodeType.start) {
+                for (Link l : chain.getLinks()) { //要从链处找
+                    if (getId().equals(l.getNextId())) {
+                        tmp.add(chain.getNode(l.getPrveId()));
                     }
                 }
             }
@@ -151,13 +151,13 @@ public class Node {
     /**
      * 后面的节点
      */
-    public List<Node> nextNodes() {
+    public List<Node> getNextNodes() {
         if (nextNodes == null) {
             List<Node> tmp = new ArrayList<>();
 
-            if (type() != NodeType.end) {
-                for (Link l : this.nextLinks()) { //从自由处找
-                    tmp.add(chain.getNode(l.nextId()));
+            if (getType() != NodeType.end) {
+                for (Link l : this.getNextLinks()) { //从自由处找
+                    tmp.add(chain.getNode(l.getNextId()));
                 }
             }
             nextNodes = Collections.unmodifiableList(tmp);
@@ -169,9 +169,9 @@ public class Node {
     /**
      * 后面的节点（一个）
      */
-    public Node nextNode() {
-        if (nextNodes().size() > 0) {
-            return nextNodes().get(0);
+    public Node getNextNode() {
+        if (getNextNodes().size() > 0) {
+            return getNextNodes().get(0);
         } else {
             return null;
         }
@@ -180,7 +180,7 @@ public class Node {
     /**
      * 任务条件
      */
-    public Condition when() {
+    public Condition getWhen() {
         if (when == null) {
             when = new Condition(decl.when);
         }
@@ -191,7 +191,7 @@ public class Node {
     /**
      * 任务
      */
-    public Task task() {
+    public Task getTask() {
         if (task == null) {
             task = new Task(this, decl.task);
         }

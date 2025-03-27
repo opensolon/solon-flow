@@ -24,7 +24,7 @@ layout:
   - { id: "n4", link: "g5", task: "context.result=((int)context.result)+1;"}
   - { id: "n5", link: "g4", task: "context.result=((int)context.result)+1;"}
   - { id: "n6", link: "g4", task: "context.result=((int)context.result)+1;"}
-  - { id: "n7", link: "g4", task: 'context.run(node.chain().meta().get("scrip1").toString());'}
+  - { id: "n7", link: "g4", task: 'context.run(node.getChain().getMeta("scrip1").toString());'}
   - { id: "g4", link: "g5", type: "inclusive" }
   - { id: "g5", link: "g6", type: "inclusive" }
   - { id: "g6", type: "inclusive" }

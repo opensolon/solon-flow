@@ -31,7 +31,7 @@ public interface Evaluation {
      * @param context 流上下文
      * @param code    条件代码
      */
-    boolean runTest(FlowContext context, String code);
+    boolean runTest(FlowContext context, String code) throws Throwable;
 
     /**
      * 运行任务
@@ -39,5 +39,5 @@ public interface Evaluation {
      * @param context 流上下文
      * @param code    任务代码
      */
-    void runTask(FlowContext context, String code);
+    void runTask(FlowContext context, String code) throws Throwable;
 }

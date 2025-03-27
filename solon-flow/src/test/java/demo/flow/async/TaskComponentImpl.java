@@ -9,7 +9,7 @@ import org.noear.solon.flow.Node;
 public class TaskComponentImpl extends TaskComponentPlus {
     @Override
     protected void doRun(FlowContext context, Node node, boolean async) throws Throwable {
-        System.out.println("do...: " + node.id());
+        System.out.println("do...: " + node.getId());
 
         if (async) {
             context.next(node);

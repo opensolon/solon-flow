@@ -42,16 +42,16 @@ public class Task {
     }
 
     /**
-     * 所属节点
+     * 获取所属节点
      */
-    public Node node() {
+    public Node getNode() {
         return node;
     }
 
     /**
      * 表达式（示例："F:tag/fun1;R:tag/rule1" 或 "fun1()" 或 "[{t:'F',c:'tag/fun1'}]"）
      */
-    public String description() {
+    public String getDescription() {
         return description;
     }
 
@@ -66,12 +66,12 @@ public class Task {
     public String toString() {
         if (isEmpty()) {
             return "{" +
-                    "nodeId='" + node.id() + '\'' +
+                    "nodeId='" + node.getId() + '\'' +
                     ", description=null" +
                     '}';
         } else {
             return "{" +
-                    "nodeId='" + node.id() + '\'' +
+                    "nodeId='" + node.getId() + '\'' +
                     ", description='" + description + '\'' +
                     '}';
         }

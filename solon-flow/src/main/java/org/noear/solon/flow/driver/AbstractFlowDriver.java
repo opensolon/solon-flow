@@ -57,12 +57,12 @@ public abstract class AbstractFlowDriver implements FlowDriver {
 
     @Override
     public void onNodeStart(FlowContext context, Node node) {
-        log.debug("on-node-start: chain={}, node={}", node.chain().id(), node);
+        log.debug("on-node-start: chain={}, node={}", node.getChain().getId(), node);
     }
 
     @Override
     public void onNodeEnd(FlowContext context, Node node) {
-        log.debug("on-node-end: chain={}, node={}", node.chain().id(), node);
+        log.debug("on-node-end: chain={}, node={}", node.getChain().getId(), node);
     }
 
     /// //////////////
@@ -72,7 +72,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
         //（不需要检测是否为空，引擎会把空条件作为默认，不会再传入）
 
         //如果 condition.description 有加密，可以转码后传入
-        return handleTestDo(context, condition, condition.description());
+        return handleTestDo(context, condition, condition.getDescription());
     }
 
     protected boolean handleTestDo(FlowContext context, Condition condition, String description) throws Throwable {
@@ -89,12 +89,12 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     @Override
     public void handleTask(FlowContext context, Task task) throws Throwable {
         //默认过滤空任务（执行节点可能没有配置任务）
-        if (Utils.isEmpty(task.description())) {
+        if (Utils.isEmpty(task.getDescription())) {
             return;
         }
 
         //如果 task.description 有加密，可以转码后传入
-        handleTaskDo(context, task, task.description());
+        handleTaskDo(context, task, task.getDescription());
     }
 
     protected void handleTaskDo(FlowContext context, Task task, String description) throws Throwable {
@@ -136,7 +136,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
         } else if (component instanceof TaskComponent == false) {
             throw new IllegalStateException("The component '" + beanName + "' is not TaskComponent");
         } else {
-            ((TaskComponent) component).run(context, task.node());
+            ((TaskComponent) component).run(context, task.getNode());
         }
     }
 
@@ -146,7 +146,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     protected void tryAsScriptTask(FlowContext context, Task task, String description) throws Throwable {
         //按脚本运行
         try {
-            context.put("node", task.node());
+            context.put("node", task.getNode());
 
             getEvaluation().runTask(context, description);
         } finally {

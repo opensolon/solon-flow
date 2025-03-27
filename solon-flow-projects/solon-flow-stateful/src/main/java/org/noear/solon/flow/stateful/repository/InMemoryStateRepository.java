@@ -69,9 +69,9 @@ public class InMemoryStateRepository implements FlowStateRepository {
             //撤回
             Node node = flowEngine.getChain(chainId).getNode(nodeId);
             //撤回之前的节点
-            for (Node n1 : node.prveNodes()) {
+            for (Node n1 : node.getPrveNodes()) {
                 //移除状态（要求重来）
-                String stateKey = instanceId + ":" + chainId + ":" + n1.id();
+                String stateKey = instanceId + ":" + chainId + ":" + n1.getId();
                 stateMap.remove(stateKey);
             }
         } else if (nodeState == NodeStates.WITHDRAW_ALL) {
