@@ -16,42 +16,22 @@
 package org.noear.solon.flow.stateful;
 
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.Node;
 
 /**
- * 有状态的流上下文
+ * 状态操作员
  *
  * @author noear
  * @since 3.1
  */
-public class StatefulFlowContext extends FlowContext {
-    public StatefulFlowContext() {
-        super(); //兼容无状态模式
-    }
-
-    public StatefulFlowContext(String instanceId) {
-        super();
-
-        put("instanceId", (instanceId == null ? "" : instanceId));
-    }
+public interface StateOperator<T extends StateRecord> {
+    /**
+     * 是否可操作的
+     */
+    boolean isOperatable(FlowContext context, Node node);
 
     /**
-     * 获取任务节点
+     * 创建状态记录
      */
-    protected void setTaskNode(StatefulNode taskNode) {
-        put("taskNode", taskNode);
-    }
-
-    /**
-     * 获取任务节点
-     */
-    public StatefulNode getTaskNode() {
-        return get("taskNode");
-    }
-
-    /**
-     * 获取实例id
-     */
-    public String getInstanceId() {
-        return get("instanceId");
-    }
+    T createRecord(FlowContext context, String chainId, String nodeId, int nodeState);
 }

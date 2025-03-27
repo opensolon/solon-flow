@@ -15,31 +15,45 @@
  */
 package org.noear.solon.flow.stateful;
 
-import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.lang.Preview;
 
 import java.util.List;
 
 /**
- * 流点状态仓库
+ * 状态仓库
  *
  * @author noear
  * @since 3.1
  */
 @Preview("3.1")
-public interface FlowStateRepository {
+public interface StateRepository<T extends StateRecord> {
     /**
      * 获取状态
      */
     int getState(StatefulFlowContext context, String chainId, String nodeId);
 
     /**
-     * 获取状态记录
+     * 推入状态
      */
-    List<FlowStateRecord> getStateRecords(StatefulFlowContext context);
+    void putState(StatefulFlowContext context, String chainId, String nodeId, int nodeState);
 
     /**
-     * 提交状态
+     * 移除状态
      */
-    void postState(StatefulFlowContext context, String chainId, String nodeId, int nodeState, FlowEngine flowEngine);
+    void removeState(StatefulFlowContext context, String chainId, String nodeId);
+
+    /**
+     * 清空
+     */
+    void clearState(StatefulFlowContext context);
+
+    /**
+     * 获取状态记录
+     */
+    List<T> getStateRecords(StatefulFlowContext context);
+
+    /**
+     * 添加记录
+     */
+    void addStateRecord(StatefulFlowContext context, T record);
 }

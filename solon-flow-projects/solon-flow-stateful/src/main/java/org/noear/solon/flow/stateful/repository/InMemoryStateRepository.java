@@ -15,17 +15,12 @@
  */
 package org.noear.solon.flow.stateful.repository;
 
-import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.Node;
-import org.noear.solon.flow.stateful.FlowStateRecord;
-import org.noear.solon.flow.stateful.FlowStateRepository;
+import org.noear.solon.flow.stateful.StateRecord;
+import org.noear.solon.flow.stateful.StateRepository;
 import org.noear.solon.flow.stateful.NodeStates;
 import org.noear.solon.flow.stateful.StatefulFlowContext;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -34,15 +29,23 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author noear
  * @since 3.1
  */
-public class InMemoryStateRepository implements FlowStateRepository {
-    private final Map<String, List<FlowStateRecord>> historyMap = new ConcurrentHashMap<>();
-    private final Map<String, Integer> stateMap = new ConcurrentHashMap<>();
+public class InMemoryStateRepository<T extends StateRecord> implements StateRepository<T> {
+    private final Map<String, List<T>> historyMap = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, Integer>> stateMap = new ConcurrentHashMap<>();
+
+    private List<T> getHistory(String instanceId) {
+        return historyMap.computeIfAbsent(instanceId, k -> new ArrayList<>());
+    }
+
+    public Map<String, Integer> getStates(String instanceId) {
+        return stateMap.computeIfAbsent(instanceId, k -> new ConcurrentHashMap<>());
+    }
 
     @Override
     public int getState(StatefulFlowContext context, String chainId, String nodeId) {
-        String stateKey = context.getInstanceId() + ":" + chainId + ":" + nodeId;
+        String stateKey = chainId + ":" + nodeId;
 
-        Integer rst = stateMap.get(stateKey);
+        Integer rst = getStates(context.getInstanceId()).get(stateKey);
         if (rst == null) {
             return NodeStates.UNDEFINED;
         } else {
@@ -51,36 +54,29 @@ public class InMemoryStateRepository implements FlowStateRepository {
     }
 
     @Override
-    public List<FlowStateRecord> getStateRecords(StatefulFlowContext context) {
-        return Collections.unmodifiableList(historyMap.get(context.getInstanceId()));
+    public void putState(StatefulFlowContext context, String chainId, String nodeId, int nodeState) {
+        String stateKey = chainId + ":" + nodeId;
+        getStates(context.getInstanceId()).put(stateKey, nodeState);
     }
 
     @Override
-    public void postState(StatefulFlowContext context, String chainId, String nodeId, int nodeState, FlowEngine flowEngine) {
-        //获取实例Id
-        String instanceId = context.getInstanceId();
+    public void removeState(StatefulFlowContext context, String chainId, String nodeId) {
+        String stateKey = chainId + ":" + nodeId;
+        getStates(context.getInstanceId()).remove(stateKey);
+    }
 
-        //添加记录
-        List<FlowStateRecord> records = historyMap.computeIfAbsent(instanceId, k -> new ArrayList<>());
-        records.add(new FlowStateRecord(chainId, nodeId, nodeState, context.getOperator(), System.currentTimeMillis()));
+    @Override
+    public void clearState(StatefulFlowContext context) {
+        getStates(context.getInstanceId()).clear();
+    }
 
-        //更新状态
-        if (nodeState == NodeStates.WITHDRAW) {
-            //撤回
-            Node node = flowEngine.getChain(chainId).getNode(nodeId);
-            //撤回之前的节点
-            for (Node n1 : node.getPrveNodes()) {
-                //移除状态（要求重来）
-                String stateKey = instanceId + ":" + chainId + ":" + n1.getId();
-                stateMap.remove(stateKey);
-            }
-        } else if (nodeState == NodeStates.WITHDRAW_ALL) {
-            //撤回全部（重新开始）
-            stateMap.clear();
-        } else {
-            //其它（等待或通过或拒绝）
-            String stateKey = instanceId + ":" + chainId + ":" + nodeId;
-            stateMap.put(stateKey, nodeState);
-        }
+    @Override
+    public List<T> getStateRecords(StatefulFlowContext context) {
+        return Collections.unmodifiableList(getHistory(context.getInstanceId()));
+    }
+
+    @Override
+    public void addStateRecord(StatefulFlowContext context, T record) {
+        getHistory(context.getInstanceId()).add(record);
     }
 }

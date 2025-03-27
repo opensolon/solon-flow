@@ -23,8 +23,6 @@ import org.noear.solon.flow.Task;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 
-import java.util.Objects;
-
 /**
  * 有状态的简单流驱动器
  *
@@ -32,35 +30,23 @@ import java.util.Objects;
  * @since 3.1
  */
 public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
-    private final FlowStateRepository stateRepository;
+    private final StateRepository stateRepository;
+    private final StateOperator stateOperator;
 
-    public FlowStateRepository getStateRepository() {
+    public StateRepository getStateRepository() {
         return stateRepository;
     }
 
-    public StatefulSimpleFlowDriver() {
-        this(null);
+    public StateOperator getStateOperator() {
+        return stateOperator;
     }
 
-    public StatefulSimpleFlowDriver(FlowStateRepository stateRepository) {
-        super();
-        this.stateRepository = (stateRepository == null ? new InMemoryStateRepository() : stateRepository);
-    }
-
-    public StatefulSimpleFlowDriver(FlowStateRepository stateRepository, Container container) {
-        super(container);
-        this.stateRepository = (stateRepository == null ? new InMemoryStateRepository() : stateRepository);
-    }
-
-    public StatefulSimpleFlowDriver(FlowStateRepository stateRepository, Evaluation evaluation) {
-        super(evaluation);
-        this.stateRepository = (stateRepository == null ? new InMemoryStateRepository() : stateRepository);
-    }
-
-    public StatefulSimpleFlowDriver(FlowStateRepository stateRepository, Evaluation evaluation, Container container) {
+    public StatefulSimpleFlowDriver(StateRepository stateRepository, StateOperator stateOperator, Evaluation evaluation, Container container) {
         super(evaluation, container);
         this.stateRepository = (stateRepository == null ? new InMemoryStateRepository() : stateRepository);
+        this.stateOperator = (stateOperator == null ? new SimpleStateOperator() : stateOperator);
     }
+
 
     @Override
     public void handleTask(FlowContext context0, Task task) throws Throwable {
@@ -76,18 +62,17 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
 
                 if (nodeState == NodeStates.UNDEFINED) {
                     //检查是否为当前用户的任务
-                    if (isMyTask(context, task)) {
+                    if (stateOperator.isOperatable(context, task.getNode())) {
                         //记录当前流程节点（用于展示）
                         context.setTaskNode(new StatefulNode(task.getNode(), NodeStates.WAIT));
                         //停止流程
                         context.stop();
                         //设置状态为待办
-                        getStateRepository().postState(
+                        ((StatefulFlowEngine)context0.engine()).postState(
                                 context,
                                 task.getNode().getChain().getId(),
                                 task.getNode().getId(),
-                                NodeStates.WAIT,
-                                context.engine());
+                                NodeStates.WAIT);
 
                     } else {
                         //阻断当前分支（等待别的用户办理）
@@ -96,7 +81,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                     }
                 } else if (nodeState == NodeStates.WAIT) {
                     //检查是否为当前用户的任务
-                    if (isMyTask(context, task)) {
+                    if (stateOperator.isOperatable(context, task.getNode())) {
                         //记录当前流程节点（用于展示）
                         context.setTaskNode(new StatefulNode(task.getNode(), nodeState)); //说明之前没有结办
                         //停止流程
@@ -116,9 +101,42 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
         super.handleTask(context0, task);
     }
 
-    protected boolean isMyTask(StatefulFlowContext context, Task task) {
-        String operator = task.getNode().getMeta("operator");
+    public static Builder builder() {
+        return new Builder();
+    }
 
-        return Objects.equals(context.getOperator(), operator);
+    public static class Builder {
+        private StateRepository stateRepository;
+        private StateOperator stateOperator;
+        private Evaluation evaluation;
+        private Container container;
+
+        public Builder stateRepository(StateRepository stateRepository) {
+            this.stateRepository = stateRepository;
+            return this;
+        }
+
+        public Builder stateOperator(StateOperator stateOperator) {
+            this.stateOperator = stateOperator;
+            return this;
+        }
+
+        public Builder evaluation(Evaluation evaluation) {
+            this.evaluation = evaluation;
+            return this;
+        }
+
+        public Builder container(Container container) {
+            this.container = container;
+            return this;
+        }
+
+        public StatefulSimpleFlowDriver build() {
+            return new StatefulSimpleFlowDriver(
+                    stateRepository,
+                    stateOperator,
+                    evaluation,
+                    container);
+        }
     }
 }

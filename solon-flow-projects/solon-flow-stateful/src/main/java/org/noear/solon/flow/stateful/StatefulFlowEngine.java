@@ -16,6 +16,7 @@
 package org.noear.solon.flow.stateful;
 
 import org.noear.solon.flow.FlowEngineDefault;
+import org.noear.solon.flow.Node;
 import org.noear.solon.lang.Preview;
 
 import java.util.List;
@@ -28,11 +29,11 @@ import java.util.List;
  */
 @Preview("3.1")
 public class StatefulFlowEngine extends FlowEngineDefault {
-    private FlowStateRepository stateRepository;
+    private StatefulSimpleFlowDriver driver;
 
     public StatefulFlowEngine(StatefulSimpleFlowDriver driver) {
         super();
-        this.stateRepository = driver.getStateRepository();
+        this.driver = driver;
         register(driver);
     }
 
@@ -40,20 +41,39 @@ public class StatefulFlowEngine extends FlowEngineDefault {
      * 获取状态
      */
     public int getState(StatefulFlowContext context, String chainId, String nodeId) {
-        return stateRepository.getState(context, chainId, nodeId);
+        return driver.getStateRepository().getState(context, chainId, nodeId);
     }
 
     /**
      * 获取状态记录
      */
-    public List<FlowStateRecord> getStateRecords(StatefulFlowContext context) {
-        return stateRepository.getStateRecords(context);
+    public List<StateRecord> getStateRecords(StatefulFlowContext context) {
+        return driver.getStateRepository().getStateRecords(context);
     }
 
     /**
      * 提交状态
      */
-    public void postState(StatefulFlowContext context, String chainId, String nodeId, int state) {
-        stateRepository.postState(context, chainId, nodeId, state, this);
+    public void postState(StatefulFlowContext context, String chainId, String nodeId, int nodeState) {
+        //添加记录
+        StateRecord stateRecord = driver.getStateOperator().createRecord(context, chainId, nodeId, nodeState);
+        driver.getStateRepository().addStateRecord(context, stateRecord);
+
+        //更新状态
+        if (nodeState == NodeStates.WITHDRAW) {
+            //撤回
+            Node node = getChain(chainId).getNode(nodeId);
+            //撤回之前的节点
+            for (Node n1 : node.getPrveNodes()) {
+                //移除状态（要求重来）
+                driver.getStateRepository().removeState(context, chainId, n1.getId());
+            }
+        } else if (nodeState == NodeStates.WITHDRAW_ALL) {
+            //撤回全部（重新开始）
+            driver.getStateRepository().clearState(context);
+        } else {
+            //其它（等待或通过或拒绝）
+            driver.getStateRepository().putState(context, chainId, nodeId, nodeState);
+        }
     }
 }

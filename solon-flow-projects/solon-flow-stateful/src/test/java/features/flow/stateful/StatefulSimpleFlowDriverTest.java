@@ -15,9 +15,10 @@ public class StatefulSimpleFlowDriverTest {
     @Test
     public void case1() throws Throwable {
         //初始化引擎
-        StatefulFlowEngine flowEngine = new StatefulFlowEngine(
-                new StatefulSimpleFlowDriver(
-                        new InMemoryStateRepository()));
+        StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
+                .stateOperator(new SimpleStateOperator())
+                .stateRepository(new InMemoryStateRepository())
+                .build());
 
         flowEngine.load("classpath:demo/*.yml");
 
@@ -111,6 +112,8 @@ public class StatefulSimpleFlowDriverTest {
     }
 
     private StatefulFlowContext getContext(String operator) throws Throwable {
-        return new StatefulFlowContext("i1", operator);
+        StatefulFlowContext context = new StatefulFlowContext("i1");
+        context.put("operator", operator);
+        return context;
     }
 }

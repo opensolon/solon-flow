@@ -18,23 +18,21 @@ package org.noear.solon.flow.stateful;
 import java.io.Serializable;
 
 /**
- * 流状态记录
+ * 状态记录
  *
  * @author noear
  * @since 3.1
  */
-public class FlowStateRecord implements Serializable {
+public class StateRecord implements Serializable {
     private String chainId;
     private String nodeId;
     private int nodeState;
-    private String operator;
     private long created;
 
-    public FlowStateRecord(String chainId, String nodeId, int nodeState, String operator, long created) {
+    public StateRecord(String chainId, String nodeId, int nodeState, long created) {
         this.chainId = chainId;
         this.nodeId = nodeId;
         this.nodeState = nodeState;
-        this.operator = operator;
         this.created = created;
     }
 
@@ -57,13 +55,6 @@ public class FlowStateRecord implements Serializable {
      */
     public int getNodeState() {
         return nodeState;
-    }
-
-    /**
-     * 操作员
-     */
-    public String getOperator() {
-        return operator;
     }
 
     /**
