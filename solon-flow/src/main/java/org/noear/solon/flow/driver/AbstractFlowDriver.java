@@ -72,15 +72,15 @@ public abstract class AbstractFlowDriver implements FlowDriver {
         //（不需要检测是否为空，引擎会把空条件作为默认，不会再传入）
 
         //如果 condition.description 有加密，可以转码后传入
-        return handleConditionDo(context, condition, condition.description());
+        return handleTestDo(context, condition, condition.description());
     }
 
-    protected boolean handleConditionDo(FlowContext context, Condition condition, String description) throws Throwable {
+    protected boolean handleTestDo(FlowContext context, Condition condition, String description) throws Throwable {
         //按脚本运行
-        return tryAsScriptCondition(context, condition, description);
+        return tryAsScriptTest(context, condition, description);
     }
 
-    protected boolean tryAsScriptCondition(FlowContext context, Condition condition, String description) throws Throwable {
+    protected boolean tryAsScriptTest(FlowContext context, Condition condition, String description) throws Throwable {
         return getEvaluation().runTest(context, description);
     }
 
