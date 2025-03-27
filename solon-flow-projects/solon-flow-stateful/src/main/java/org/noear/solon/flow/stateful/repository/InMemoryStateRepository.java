@@ -62,7 +62,7 @@ public class InMemoryStateRepository implements FlowStateRepository {
 
         //添加记录
         List<FlowStateRecord> records = historyMap.computeIfAbsent(instanceId, k -> new ArrayList<>());
-        records.add(new FlowStateRecord(chainId, nodeId, nodeState, context.getUserId(), System.currentTimeMillis()));
+        records.add(new FlowStateRecord(chainId, nodeId, nodeState, context.getOperator(), System.currentTimeMillis()));
 
         //更新状态
         if (nodeState == NodeStates.WITHDRAW) {

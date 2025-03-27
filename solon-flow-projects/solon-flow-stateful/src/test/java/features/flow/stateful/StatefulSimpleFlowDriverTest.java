@@ -110,7 +110,7 @@ public class StatefulSimpleFlowDriverTest {
         assert statefulNode == null; //结束了，没有任务节点了
     }
 
-    private StatefulFlowContext getContext(String user) throws Throwable {
-        return new StatefulFlowContext("i1", "", user);
+    private StatefulFlowContext getContext(String operator) throws Throwable {
+        return new StatefulFlowContext("i1", operator);
     }
 }

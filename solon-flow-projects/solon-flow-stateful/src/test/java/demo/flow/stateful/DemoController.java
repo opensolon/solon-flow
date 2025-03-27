@@ -23,7 +23,7 @@ public class DemoController {
     //操作展示
     @Mapping("display")
     public ModelAndView displayFlow(Context ctx, String instanceId, String chainId) throws Throwable {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId, ctx.param("roleId"), ctx.param("userId"));
+        StatefulFlowContext context = new StatefulFlowContext(instanceId, ctx.param("operator"));
 
         flowEngine.eval(chainId, context);
 
@@ -36,9 +36,9 @@ public class DemoController {
 
     //操作提交
     @Mapping("post")
-    public void postFlow(Context ctx, String instanceId, String chainId, String nodeId, int state) throws Throwable {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId, ctx.param("roleId"), ctx.param("userId"));
+    public void postFlow(Context ctx, String instanceId, String chainId, String nodeId, int nodeState) throws Throwable {
+        StatefulFlowContext context = new StatefulFlowContext(instanceId, ctx.param("operator"));
 
-        flowEngine.postState(context, chainId, nodeId, state);
+        flowEngine.postState(context, chainId, nodeId, nodeState);
     }
 }

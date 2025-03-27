@@ -117,7 +117,8 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
     }
 
     protected boolean isMyTask(StatefulFlowContext context, Task task) {
-        return Objects.equals(context.getUserId(), task.node().meta("userId")) ||
-                Objects.equals(context.getRoleId(), task.node().meta("roleId"));
+        String operator = task.node().meta("operator");
+
+        return Objects.equals(context.getOperator(), operator);
     }
 }

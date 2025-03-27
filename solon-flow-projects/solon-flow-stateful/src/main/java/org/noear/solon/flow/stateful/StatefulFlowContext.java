@@ -28,12 +28,11 @@ public class StatefulFlowContext extends FlowContext {
         super(); //兼容无状态模式
     }
 
-    public StatefulFlowContext(String instanceId, String roleId, String userId) {
+    public StatefulFlowContext(String instanceId, String operator) {
         super();
 
         put("instanceId", (instanceId == null ? "" : instanceId));
-        put("roleId", (roleId == null ? "" : roleId));
-        put("userId", (userId == null ? "" : userId));
+        put("operator", (operator == null ? "" : operator));
     }
 
     /**
@@ -58,16 +57,9 @@ public class StatefulFlowContext extends FlowContext {
     }
 
     /**
-     * 获取角色id
+     * 获取操作员
      */
-    public String getRoleId() {
-        return get("roleId");
-    }
-
-    /**
-     * 获取用户id
-     */
-    public String getUserId() {
-        return get("userId");
+    public String getOperator() {
+        return get("operator");
     }
 }

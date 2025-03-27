@@ -27,14 +27,14 @@ public class FlowStateRecord implements Serializable {
     private String chainId;
     private String nodeId;
     private int nodeState;
-    private String userId;
+    private String operator;
     private long created;
 
-    public FlowStateRecord(String chainId, String nodeId, int nodeState, String userId, long created) {
+    public FlowStateRecord(String chainId, String nodeId, int nodeState, String operator, long created) {
         this.chainId = chainId;
         this.nodeId = nodeId;
         this.nodeState = nodeState;
-        this.userId = userId;
+        this.operator = operator;
         this.created = created;
     }
 
@@ -60,10 +60,10 @@ public class FlowStateRecord implements Serializable {
     }
 
     /**
-     * 用户Id
+     * 操作员
      */
-    public String getUserId() {
-        return userId;
+    public String getOperator() {
+        return operator;
     }
 
     /**
