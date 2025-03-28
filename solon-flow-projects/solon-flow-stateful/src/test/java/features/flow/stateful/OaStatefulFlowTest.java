@@ -11,8 +11,10 @@ import org.slf4j.LoggerFactory;
 /**
  * @author noear 2025/3/27 created
  */
-public class OaStatefulFlowDriverTest {
-    static final Logger log = LoggerFactory.getLogger(OaStatefulFlowDriverTest.class);
+public class OaStatefulFlowTest {
+    static final Logger log = LoggerFactory.getLogger(OaStatefulFlowTest.class);
+
+    final String chainId = "f1";
 
     //初始化引擎
     StatefulFlowEngine flowEngine = buildFlowDriver();
@@ -27,13 +29,10 @@ public class OaStatefulFlowDriverTest {
                 .container(container)
                 .build());
 
-        try {
-            fe.load("classpath:demo/*.yml");
 
-            return fe;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+        fe.load("classpath:flow/*.yml");
+
+        return fe;
     }
 
     @Test
@@ -42,7 +41,7 @@ public class OaStatefulFlowDriverTest {
         StatefulNode statefulNode;
 
         context = getContext("陈鑫");
-        statefulNode = flowEngine.getActivityNode("f1", context);
+        statefulNode = flowEngine.getActivityNode(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step2".equals(statefulNode.getNode().getId());
@@ -50,7 +49,7 @@ public class OaStatefulFlowDriverTest {
 
         //二次测试
         context = getContext("陈鑫");
-        statefulNode = flowEngine.getActivityNode("f1", context);
+        statefulNode = flowEngine.getActivityNode(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step2".equals(statefulNode.getNode().getId());
@@ -58,10 +57,10 @@ public class OaStatefulFlowDriverTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postNodeState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
+        flowEngine.postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
 
         context = getContext("陈鑫");
-        statefulNode = flowEngine.getActivityNode("f1", context);
+        statefulNode = flowEngine.getActivityNode(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -69,7 +68,7 @@ public class OaStatefulFlowDriverTest {
 
         //二次测试
         context = getContext("陈鑫");
-        statefulNode = flowEngine.getActivityNode("f1", context);
+        statefulNode = flowEngine.getActivityNode(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -78,11 +77,11 @@ public class OaStatefulFlowDriverTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postNodeState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
+        flowEngine.postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
 
 
         context = getContext("陈鑫");
-        statefulNode = flowEngine.getActivityNode("f1", context);
+        statefulNode = flowEngine.getActivityNode(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4");
@@ -90,7 +89,7 @@ public class OaStatefulFlowDriverTest {
 
 
         context = getContext("陈宇");
-        statefulNode = flowEngine.getActivityNode("f1", context);
+        statefulNode = flowEngine.getActivityNode(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_1");
@@ -98,11 +97,11 @@ public class OaStatefulFlowDriverTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postNodeState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
+        flowEngine.postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
 
 
         context = getContext("吕方");
-        statefulNode = flowEngine.getActivityNode("f1", context);
+        statefulNode = flowEngine.getActivityNode(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_2");
@@ -110,21 +109,21 @@ public class OaStatefulFlowDriverTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postNodeState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
+        flowEngine.postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
 
 
         context = getContext("吕方");
-        statefulNode = flowEngine.getActivityNode("f1", context);
+        statefulNode = flowEngine.getActivityNode(chainId, context);
         log.warn("{}", statefulNode);
         assert "step5".equals(statefulNode.getNode().getId()); //抄送节点
         assert NodeStates.UNDEFINED == statefulNode.getState();
 
         /// ////////////////
         //提交状态
-        flowEngine.postNodeState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
+        flowEngine.postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
 
         context = getContext("吕方");
-        statefulNode = flowEngine.getActivityNode("f1", context);
+        statefulNode = flowEngine.getActivityNode(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode == null; //抄送节点
     }
@@ -141,17 +140,17 @@ public class OaStatefulFlowDriverTest {
         StatefulNode statefulNode;
 
         context = new StatefulFlowContext("i1").put("actor", "陈鑫");
-        statefulNode = flowEngine.getActivityNode("f1", context);
+        statefulNode = flowEngine.getActivityNode(chainId, context);
 
         assert "step2".equals(statefulNode.getNode().getId());
         assert NodeStates.UNDEFINED == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
 
         /// ////////////////
         //提交状态
-        flowEngine.postNodeState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
+        flowEngine.postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
 
         context = new StatefulFlowContext("i1").put("actor", "陈鑫");
-        statefulNode = flowEngine.getActivityNode("f1", context);
+        statefulNode = flowEngine.getActivityNode(chainId, context);
 
         assert "step3".equals(statefulNode.getNode().getId());
         assert NodeStates.WAIT == statefulNode.getState(); //等待当前用户处理（有权限操作）

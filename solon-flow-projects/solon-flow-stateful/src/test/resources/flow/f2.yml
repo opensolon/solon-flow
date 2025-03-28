@@ -1,0 +1,11 @@
+id: f2
+layout:
+  - {id: step1, title: "发起审批", type: "start"}
+  - {id: step2, title: "抄送"}
+  - {id: step3, title: "审批"}
+  - {id: step4, title: "审批", type: "parallel", link: [step4_1, step4_2]}
+  - {id: step4_1, link: step4_end}
+  - {id: step4_2, link: step4_end}
+  - {id: step4_end, type: "parallel"}
+  - {id: step5, title: "抄送"}
+  - {id: step6, title: "结束", type: "end"}
