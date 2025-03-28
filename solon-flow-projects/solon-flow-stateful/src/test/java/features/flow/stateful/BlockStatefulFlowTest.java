@@ -31,9 +31,9 @@ public class BlockStatefulFlowTest {
         statefulNode = flowEngine.getActivityNode(chainId, context);
         assertNode(statefulNode, "step2");
 
-        //根据节点干活
+        //根据节点干活。。。。
 
-        //提交节点状态
+        //（干完后）提交节点状态
         flowEngine.postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
 
 
@@ -42,9 +42,9 @@ public class BlockStatefulFlowTest {
         statefulNode = flowEngine.getActivityNode(chainId, context);
         assertNode(statefulNode, "step3");
 
-        //根据节点干活
+        //根据节点干活。。。。
 
-        //提交节点状态
+        //（干完后）提交节点状态
         flowEngine.postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
 
 
