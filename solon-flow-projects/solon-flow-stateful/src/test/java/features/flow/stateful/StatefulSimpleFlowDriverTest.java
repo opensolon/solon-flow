@@ -16,7 +16,7 @@ public class StatefulSimpleFlowDriverTest {
     @Test
     public void case1() throws Throwable {
         MapContainer container = new MapContainer();
-        container.putComponent("oa_task", new OaTask());
+        container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
         //初始化引擎
         StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()

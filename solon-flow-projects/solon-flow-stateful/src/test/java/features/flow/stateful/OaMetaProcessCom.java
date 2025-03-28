@@ -8,7 +8,7 @@ import org.noear.solon.flow.TaskComponent;
 /**
  * @author noear 2025/3/28 created
  */
-public class OaTask implements TaskComponent {
+public class OaMetaProcessCom implements TaskComponent {
     @Override
     public void run(FlowContext context, Node node) throws Throwable {
         String cc = node.getMeta("cc");
