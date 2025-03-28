@@ -16,6 +16,7 @@
 package org.noear.solon.flow.stateful;
 
 import org.noear.solon.flow.FlowEngineDefault;
+import org.noear.solon.flow.FlowException;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.Task;
 import org.noear.solon.lang.Preview;
@@ -43,7 +44,7 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     /**
      * 获取活动节点
      */
-    public StatefulNode getActivityNode(String chainId, StatefulFlowContext context) throws Throwable {
+    public StatefulNode getActivityNode(String chainId, StatefulFlowContext context) {
         eval(chainId, context);
         return context.getActivityNode();
     }
@@ -72,14 +73,14 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     /**
      * 提交节点状态
      */
-    public void postNodeState(StatefulFlowContext context, Node node, int nodeState) throws Throwable {
+    public void postNodeState(StatefulFlowContext context, Node node, int nodeState) {
         postNodeState(context, node.getChain().getId(), node.getId(), nodeState);
     }
 
     /**
      * 提交节点状态
      */
-    public void postNodeState(StatefulFlowContext context, String chainId, String nodeId, int nodeState) throws Throwable {
+    public void postNodeState(StatefulFlowContext context, String chainId, String nodeId, int nodeState) {
         LOCKER.lock();
 
         try {
@@ -92,7 +93,7 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     /**
      * 提交节点状态
      */
-    protected void postNodeStateDo(StatefulFlowContext context, String chainId, String nodeId, int nodeState) throws Throwable {
+    protected void postNodeStateDo(StatefulFlowContext context, String chainId, String nodeId, int nodeState) {
         int oldNodeState = driver.getStateRepository().getState(context, chainId, nodeId);
         if (oldNodeState == nodeState) {
             //如果要状态没变化，不处理
@@ -123,7 +124,11 @@ public class StatefulFlowEngine extends FlowEngineDefault {
 
         //如果是通过，则提交任务
         if (nodeState == NodeStates.PASS) {
-            postHandleTask(context, node.getTask());
+            try {
+                postHandleTask(context, node.getTask());
+            } catch (Throwable e) {
+                throw new FlowException("Task handle failed: " + node.getChain().getId() + " / " + node.getId(), e);
+            }
         }
     }
 
