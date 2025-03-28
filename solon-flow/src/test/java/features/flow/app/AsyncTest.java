@@ -1,7 +1,6 @@
 package features.flow.app;
 
 import org.junit.jupiter.api.Test;
-import org.noear.solon.Solon;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.flow.Chain;
 import org.noear.solon.flow.FlowContext;
@@ -17,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @SolonTest
 public class AsyncTest {
     @Inject
-    private DemoTaskComponent demoTaskComponent;
+    private AsyncTaskComponent asyncTaskComponent;
 
     @Test
     public void case7_1() throws Throwable {
@@ -39,7 +38,7 @@ public class AsyncTest {
         chain.addNode(new NodeDecl("01", NodeType.start).linkAdd("02"));
 
         nodeDecl = new NodeDecl("02", NodeType.activity);
-        nodeDecl.task("@demoTaskComponent");
+        nodeDecl.task("@asyncTaskComponent");
         nodeDecl.title("视频同步切片（异步）");
         nodeDecl.metaPut("isAsync", 1); // 异步任务
         nodeDecl.metaPut("isBlock", 0); // 堵塞任务
@@ -47,14 +46,14 @@ public class AsyncTest {
         chain.addNode(nodeDecl.linkAdd("03"));
 
         nodeDecl = new NodeDecl("03", NodeType.activity);
-        nodeDecl.task("@demoTaskComponent");
+        nodeDecl.task("@asyncTaskComponent");
         nodeDecl.title("片段分析");
         nodeDecl.metaPut("isAsync", 0); // 异步任务
         nodeDecl.metaPut("isBlock", 0); // 堵塞任务
         chain.addNode(nodeDecl.linkAdd("04"));
 
         nodeDecl = new NodeDecl("04", NodeType.activity);
-        nodeDecl.task("@demoTaskComponent");
+        nodeDecl.task("@asyncTaskComponent");
         nodeDecl.title("异常汇总(堵塞、同步)");
         nodeDecl.metaPut("isAsync", 0); // 异步任务
         nodeDecl.metaPut("isBlock", 1); // 堵塞任务
