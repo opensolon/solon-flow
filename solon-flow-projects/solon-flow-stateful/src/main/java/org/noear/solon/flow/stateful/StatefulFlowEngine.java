@@ -41,10 +41,11 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     }
 
     /**
-     * 获取状态
+     * 获取活动节点
      */
-    public int getState(StatefulFlowContext context, String chainId, String nodeId) {
-        return driver.getStateRepository().getState(context, chainId, nodeId);
+    public StatefulNode getActivityNode(String chainId, StatefulFlowContext context) throws Throwable {
+        eval(chainId, context);
+        return context.getActivityNode();
     }
 
     /**
@@ -55,22 +56,29 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     }
 
     /**
-     * 提交状态
+     * 获取节点状态
      */
-    public void postState(StatefulFlowContext context, String chainId, String nodeId, int nodeState) throws Throwable {
+    public int getNodeState(StatefulFlowContext context, String chainId, String nodeId) {
+        return driver.getStateRepository().getState(context, chainId, nodeId);
+    }
+
+    /**
+     * 提交节点状态
+     */
+    public void postNodeState(StatefulFlowContext context, String chainId, String nodeId, int nodeState) throws Throwable {
         LOCKER.lock();
 
         try {
-            postStateDo(context, chainId, nodeId, nodeState);
+            postNodeStateDo(context, chainId, nodeId, nodeState);
         } finally {
             LOCKER.unlock();
         }
     }
 
     /**
-     * 提交状态
+     * 提交节点状态
      */
-    protected void postStateDo(StatefulFlowContext context, String chainId, String nodeId, int nodeState) throws Throwable {
+    protected void postNodeStateDo(StatefulFlowContext context, String chainId, String nodeId, int nodeState) throws Throwable {
         int oldNodeState = driver.getStateRepository().getState(context, chainId, nodeId);
         if (oldNodeState == nodeState) {
             //如果要状态没变化，不处理

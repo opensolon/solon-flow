@@ -31,8 +31,7 @@ public class StatefulSimpleFlowDriverTest {
         StatefulNode statefulNode;
 
         context = getContext("陈鑫");
-        flowEngine.eval("f1", context);
-        statefulNode = context.getTaskNode();
+        statefulNode = flowEngine.getActivityNode("f1", context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step2".equals(statefulNode.getNode().getId());
@@ -40,8 +39,7 @@ public class StatefulSimpleFlowDriverTest {
 
         //二次测试
         context = getContext("陈鑫");
-        flowEngine.eval("f1", context);
-        statefulNode = context.getTaskNode();
+        statefulNode = flowEngine.getActivityNode("f1", context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step2".equals(statefulNode.getNode().getId());
@@ -49,11 +47,10 @@ public class StatefulSimpleFlowDriverTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
+        flowEngine.postNodeState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
 
         context = getContext("陈鑫");
-        flowEngine.eval("f1", context);
-        statefulNode = context.getTaskNode();
+        statefulNode = flowEngine.getActivityNode("f1", context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -61,8 +58,7 @@ public class StatefulSimpleFlowDriverTest {
 
         //二次测试
         context = getContext("陈鑫");
-        flowEngine.eval("f1", context);
-        statefulNode = context.getTaskNode();
+        statefulNode = flowEngine.getActivityNode("f1", context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -71,12 +67,11 @@ public class StatefulSimpleFlowDriverTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
+        flowEngine.postNodeState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
 
 
         context = getContext("陈鑫");
-        flowEngine.eval("f1", context);
-        statefulNode = context.getTaskNode();
+        statefulNode = flowEngine.getActivityNode("f1", context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4");
@@ -84,8 +79,7 @@ public class StatefulSimpleFlowDriverTest {
 
 
         context = getContext("陈宇");
-        flowEngine.eval("f1", context);
-        statefulNode = context.getTaskNode();
+        statefulNode = flowEngine.getActivityNode("f1", context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_1");
@@ -93,12 +87,11 @@ public class StatefulSimpleFlowDriverTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
+        flowEngine.postNodeState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
 
 
-        context = getContext("吕跃");
-        flowEngine.eval("f1", context);
-        statefulNode = context.getTaskNode();
+        context = getContext("吕方");
+        statefulNode = flowEngine.getActivityNode("f1", context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_2");
@@ -106,23 +99,21 @@ public class StatefulSimpleFlowDriverTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
+        flowEngine.postNodeState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
 
 
-        context = getContext("吕跃");
-        flowEngine.eval("f1", context);
-        statefulNode = context.getTaskNode();
+        context = getContext("吕方");
+        statefulNode = flowEngine.getActivityNode("f1", context);
         log.warn("{}", statefulNode);
         assert "step5".equals(statefulNode.getNode().getId()); //抄送节点
         assert NodeStates.UNDEFINED == statefulNode.getState();
 
         /// ////////////////
         //提交状态
-        flowEngine.postState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
+        flowEngine.postNodeState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
 
-        context = getContext("吕跃");
-        flowEngine.eval("f1", context);
-        statefulNode = context.getTaskNode();
+        context = getContext("吕方");
+        statefulNode = flowEngine.getActivityNode("f1", context);
         log.warn("{}", statefulNode);
         assert statefulNode == null; //抄送节点
     }
