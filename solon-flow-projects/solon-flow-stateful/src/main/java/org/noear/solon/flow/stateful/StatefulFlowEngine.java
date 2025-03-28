@@ -17,6 +17,7 @@ package org.noear.solon.flow.stateful;
 
 import org.noear.solon.flow.FlowEngineDefault;
 import org.noear.solon.flow.Node;
+import org.noear.solon.flow.Task;
 import org.noear.solon.lang.Preview;
 
 import java.util.List;
@@ -54,15 +55,16 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     /**
      * 提交状态
      */
-    public void postState(StatefulFlowContext context, String chainId, String nodeId, int nodeState) {
+    public void postState(StatefulFlowContext context, String chainId, String nodeId, int nodeState) throws Throwable {
         //添加记录
         StateRecord stateRecord = driver.getStateOperator().createRecord(context, chainId, nodeId, nodeState);
         driver.getStateRepository().addStateRecord(context, stateRecord);
 
+        //节点
+        Node node = getChain(chainId).getNode(nodeId);
+
         //更新状态
         if (nodeState == NodeStates.WITHDRAW) {
-            //撤回
-            Node node = getChain(chainId).getNode(nodeId);
             //撤回之前的节点
             for (Node n1 : node.getPrveNodes()) {
                 //移除状态（要求重来）
@@ -75,5 +77,17 @@ public class StatefulFlowEngine extends FlowEngineDefault {
             //其它（等待或通过或拒绝）
             driver.getStateRepository().putState(context, chainId, nodeId, nodeState);
         }
+
+        //如果是通过，则提交任务
+        if (nodeState == NodeStates.PASS) {
+            postHandleTask(context, node.getTask());
+        }
+    }
+
+    /**
+     * 提交处理任务
+     */
+    protected void postHandleTask(StatefulFlowContext context, Task task) throws Throwable {
+        driver.postHandleTask(context, task);
     }
 }

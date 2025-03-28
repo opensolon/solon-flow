@@ -68,7 +68,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                         //停止流程
                         context.stop();
                         //设置状态为待办
-                        ((StatefulFlowEngine)context0.engine()).postState(
+                        ((StatefulFlowEngine) context0.engine()).postState(
                                 context,
                                 task.getNode().getChain().getId(),
                                 task.getNode().getId(),
@@ -97,8 +97,15 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
             }
         }
 
-        //当无状态的用
-        super.handleTask(context0, task);
+        //提交处理任务
+        postHandleTask(context0, task);
+    }
+
+    /**
+     * 提交处理任务
+     */
+    protected void postHandleTask(FlowContext context, Task task) throws Throwable {
+        super.handleTask(context, task);
     }
 
     public static Builder builder() {
