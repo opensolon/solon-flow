@@ -38,7 +38,7 @@ public class AsyncTest {
 
         chain.addNode(new NodeDecl("01", NodeType.start).linkAdd("02"));
 
-        nodeDecl = new NodeDecl("02", NodeType.exclusive);
+        nodeDecl = new NodeDecl("02", NodeType.activity);
         nodeDecl.task("@demoTaskComponent");
         nodeDecl.title("视频同步切片（异步）");
         nodeDecl.metaPut("isAsync", 1); // 异步任务
@@ -46,21 +46,21 @@ public class AsyncTest {
         nodeDecl.metaPut("iterations", 5); // 迭代次数
         chain.addNode(nodeDecl.linkAdd("03"));
 
-        nodeDecl = new NodeDecl("03", NodeType.exclusive);
+        nodeDecl = new NodeDecl("03", NodeType.activity);
         nodeDecl.task("@demoTaskComponent");
         nodeDecl.title("片段分析");
         nodeDecl.metaPut("isAsync", 0); // 异步任务
         nodeDecl.metaPut("isBlock", 0); // 堵塞任务
         chain.addNode(nodeDecl.linkAdd("04"));
 
-        nodeDecl = new NodeDecl("04", NodeType.exclusive);
+        nodeDecl = new NodeDecl("04", NodeType.activity);
         nodeDecl.task("@demoTaskComponent");
         nodeDecl.title("异常汇总(堵塞、同步)");
         nodeDecl.metaPut("isAsync", 0); // 异步任务
         nodeDecl.metaPut("isBlock", 1); // 堵塞任务
         chain.addNode(nodeDecl.linkAdd("05"));
 
-        nodeDecl = new NodeDecl("05", NodeType.exclusive);
+        nodeDecl = new NodeDecl("05", NodeType.activity);
         nodeDecl.title("邮件通知");
         nodeDecl.metaPut("isAsync", 0); // 异步任务
         nodeDecl.metaPut("isBlock", 0); // 堵塞任务
