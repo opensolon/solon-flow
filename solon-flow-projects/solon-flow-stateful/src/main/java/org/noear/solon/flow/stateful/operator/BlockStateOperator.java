@@ -13,27 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.stateful;
+package org.noear.solon.flow.stateful.operator;
 
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
+import org.noear.solon.flow.stateful.StateOperator;
 
 /**
- * 状态操作员
+ * 阻塞状态操作员
  *
  * @author noear
  * @since 3.1
  */
-public interface StateOperator {
-    /**
-     * 是否可操作的
-     */
-    boolean isOperatable(FlowContext context, Node node);
-
-    /**
-     * 创建状态记录
-     */
-    default StateRecord createRecord(FlowContext context, String chainId, String nodeId, int nodeState) {
-        return new StateRecord(chainId, nodeId, nodeState, System.currentTimeMillis());
+public class BlockStateOperator implements StateOperator {
+    @Override
+    public boolean isOperatable(FlowContext context, Node node) {
+        return true;
     }
 }

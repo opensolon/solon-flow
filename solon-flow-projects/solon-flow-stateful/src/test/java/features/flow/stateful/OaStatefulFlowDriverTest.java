@@ -3,6 +3,7 @@ package features.flow.stateful;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.*;
+import org.noear.solon.flow.stateful.operator.SimpleStateOperator;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +11,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author noear 2025/3/27 created
  */
-public class StatefulSimpleFlowDriverTest {
-    static final Logger log = LoggerFactory.getLogger(StatefulSimpleFlowDriverTest.class);
+public class OaStatefulFlowDriverTest {
+    static final Logger log = LoggerFactory.getLogger(OaStatefulFlowDriverTest.class);
 
     //初始化引擎
     StatefulFlowEngine flowEngine = buildFlowDriver();

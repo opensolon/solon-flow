@@ -21,6 +21,7 @@ import org.noear.solon.flow.Evaluation;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Task;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
+import org.noear.solon.flow.stateful.operator.SimpleStateOperator;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 
 /**

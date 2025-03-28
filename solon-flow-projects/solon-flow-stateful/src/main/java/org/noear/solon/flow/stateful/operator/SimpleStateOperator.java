@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.stateful;
+package org.noear.solon.flow.stateful.operator;
 
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
+import org.noear.solon.flow.stateful.StateOperator;
 
 import java.util.*;
 
 /**
- * 简单的状态操作员
+ * 简单状态操作员
  *
  * @author noear
  * @since 3.1
@@ -49,10 +50,5 @@ public class SimpleStateOperator implements StateOperator {
         }
 
         return false;
-    }
-
-    @Override
-    public StateRecord createRecord(FlowContext context, String chainId, String nodeId, int nodeState) {
-        return new StateRecord(chainId, nodeId, nodeState, System.currentTimeMillis());
     }
 }
