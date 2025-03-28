@@ -26,7 +26,8 @@ public class AsyncTaskComponent implements TaskComponent{
         if(isBlock!=null && isBlock==1){
             if(context.get("hasFinish")!=null && (Boolean)context.get("hasFinish")==true){
                 System.out.println("demoTaskComponent block finish test:["+node.getTitle() + "]" + ((AtomicInteger)context.get("count")).get());
-                next(context,node);
+                //next(context,node);
+                return; //不阻断，且要到下一步。就用返回（或者下一步前，加个阻断）//返回更好
             }else{
                 context.interrupt();
                 System.out.println("demoTaskComponent block no finish test:["+node.getTitle() + "]" + ((AtomicInteger)context.get("count")).get());
@@ -51,7 +52,8 @@ public class AsyncTaskComponent implements TaskComponent{
                 });
             }else{
                 System.out.println("demoTaskComponent test:["+node.getTitle() + "]" + ((AtomicInteger)context.get("count")).get());
-                next(context,node);
+                //next(context,node);
+                return; //不阻断，且要到下一步。就用返回（或者下一步前，加个阻断）//返回更好
             }
         }
     }

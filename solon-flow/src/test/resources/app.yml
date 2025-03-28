@@ -2,3 +2,6 @@
 
 solon.flow:
   - "classpath:flow/*"
+
+
+solon.logging.logger.root.level: INFO
