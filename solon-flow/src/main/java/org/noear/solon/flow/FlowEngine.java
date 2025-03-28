@@ -74,7 +74,7 @@ public interface FlowEngine {
      *
      * @param chainUri 链资源地址
      */
-    default void load(String chainUri) throws IOException {
+    default void load(String chainUri) {
         if (chainUri.contains("*")) {
             for (String u1 : ResourceUtil.scanResources(chainUri)) {
                 load(Chain.parseByUri(u1));

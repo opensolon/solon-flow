@@ -170,14 +170,18 @@ public class Chain {
     /**
      * 解析配置文件
      */
-    public static Chain parseByUri(String uri) throws IOException {
+    public static Chain parseByUri(String uri) {
         URL url = ResourceUtil.findResource(uri, false);
         if (url == null) {
             throw new IllegalArgumentException("Can't find resource: " + uri);
         }
 
         if (uri.endsWith(".json")) {
-            return parseByDom(ONode.load(ResourceUtil.getResourceAsString(url)));
+            try {
+                return parseByDom(ONode.load(ResourceUtil.getResourceAsString(url)));
+            } catch (Throwable ex) {
+                throw new IllegalArgumentException("Failed to load resource: " + url, ex);
+            }
         } else if (uri.endsWith(".yml") || uri.endsWith(".yaml") || uri.endsWith(".properties")) {
             return parseByProperties(Utils.loadProperties(url));
         } else {
