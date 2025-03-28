@@ -13,20 +13,30 @@ import org.slf4j.LoggerFactory;
 public class StatefulSimpleFlowDriverTest {
     static final Logger log = LoggerFactory.getLogger(StatefulSimpleFlowDriverTest.class);
 
-    @Test
-    public void case1() throws Throwable {
+    //初始化引擎
+    StatefulFlowEngine flowEngine = buildFlowDriver();
+
+    private StatefulFlowEngine buildFlowDriver() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
-        //初始化引擎
-        StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
+        StatefulFlowEngine fe = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
                 .stateOperator(new SimpleStateOperator())
                 .stateRepository(new InMemoryStateRepository())
                 .container(container)
                 .build());
 
-        flowEngine.load("classpath:demo/*.yml");
+        try {
+            fe.load("classpath:demo/*.yml");
 
+            return fe;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Test
+    public void case1() throws Throwable {
         StatefulFlowContext context;
         StatefulNode statefulNode;
 
@@ -122,5 +132,27 @@ public class StatefulSimpleFlowDriverTest {
         StatefulFlowContext context = new StatefulFlowContext("i1");
         context.put("actor", actor);
         return context;
+    }
+
+    //@Test //只看看
+    public void case2() throws Throwable {
+        StatefulFlowContext context;
+        StatefulNode statefulNode;
+
+        context = new StatefulFlowContext("i1").put("actor", "陈鑫");
+        statefulNode = flowEngine.getActivityNode("f1", context);
+
+        assert "step2".equals(statefulNode.getNode().getId());
+        assert NodeStates.UNDEFINED == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
+
+        /// ////////////////
+        //提交状态
+        flowEngine.postNodeState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
+
+        context = new StatefulFlowContext("i1").put("actor", "陈鑫");
+        statefulNode = flowEngine.getActivityNode("f1", context);
+
+        assert "step3".equals(statefulNode.getNode().getId());
+        assert NodeStates.WAIT == statefulNode.getState(); //等待当前用户处理（有权限操作）
     }
 }

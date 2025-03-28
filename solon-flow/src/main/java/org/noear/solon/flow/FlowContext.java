@@ -155,25 +155,25 @@ public class FlowContext {
     /**
      * 推入
      */
-    public FlowContext put(String key, Object value) {
+    public <Slf extends FlowContext> Slf put(String key, Object value) {
         model.put(key, value);
-        return this;
+        return (Slf) this;
     }
 
     /**
      * 推入
      */
-    public FlowContext putIfAbsent(String key, Object value) {
+    public <Slf extends FlowContext> Slf putIfAbsent(String key, Object value) {
         model.putIfAbsent(key, value);
-        return this;
+        return (Slf) this;
     }
 
     /**
      * 推入全部
      */
-    public FlowContext putAll(Map<String, Object> model) {
+    public <Slf extends FlowContext> Slf putAll(Map<String, Object> model) {
         model.putAll(model);
-        return this;
+        return (Slf) this;
     }
 
     /**
