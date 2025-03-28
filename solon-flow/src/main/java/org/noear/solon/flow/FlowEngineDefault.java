@@ -87,7 +87,7 @@ public class FlowEngineDefault implements FlowEngine {
      * @param context 上下文
      */
     @Override
-    public void eval(String chainId, String startId, int depth, FlowContext context) throws Throwable {
+    public void eval(String chainId, String startId, int depth, FlowContext context) throws FlowException {
         Chain chain = chainMap.get(chainId);
         if (chain == null) {
             throw new IllegalArgumentException("No chain found for id: " + chainId);
@@ -105,7 +105,7 @@ public class FlowEngineDefault implements FlowEngine {
      * @param context 上下文
      */
     @Override
-    public void eval(Chain chain, String startId, int depth, FlowContext context) throws Throwable {
+    public void eval(Chain chain, String startId, int depth, FlowContext context) throws FlowException {
         Node start;
         if (startId == null) {
             start = chain.getStart();
@@ -134,16 +134,22 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 执行评估
      */
-    protected void evalDo(ChainInvocation inv) throws Throwable {
+    protected void evalDo(ChainInvocation inv) throws FlowException {
         node_run(inv.getDriver(), inv.getContext(), inv.getStartNode(), inv.getEvalDepth());
     }
 
     /**
      * 条件检测
      */
-    private boolean condition_test(FlowDriver driver, FlowContext context, Condition condition, boolean def) throws Throwable {
+    private boolean condition_test(FlowDriver driver, FlowContext context, Condition condition, boolean def) throws FlowException {
         if (Utils.isNotEmpty(condition.getDescription())) {
-            return driver.handleTest(context, condition);
+            try {
+                return driver.handleTest(context, condition);
+            } catch (FlowException e) {
+                throw e;
+            } catch (Throwable e) {
+                throw new FlowException("The test handle failed: " + condition.getChain().getId() + " / " + condition.getDescription(), e);
+            }
         } else {
             return def;
         }
@@ -152,18 +158,24 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 执行任务
      */
-    private void task_exec(FlowDriver driver, FlowContext context, Node node) throws Throwable {
+    private void task_exec(FlowDriver driver, FlowContext context, Node node) throws FlowException {
         //尝试检测条件；缺省为 true
         if (condition_test(driver, context, node.getWhen(), true)) {
             //起到触发事件的作用 //处理方会“过滤”空任务
-            driver.handleTask(context, node.getTask());
+            try {
+                driver.handleTask(context, node.getTask());
+            } catch (FlowException e) {
+                throw e;
+            } catch (Throwable e) {
+                throw new FlowException("The task handle failed: " + node.getChain().getId() + " / " + node.getId(), e);
+            }
         }
     }
 
     /**
      * 运行节点
      */
-    private boolean node_run(FlowDriver driver, FlowContext context, Node node, int depth) throws Throwable {
+    private boolean node_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
         if (node == null) {
             return false;
         }
@@ -238,7 +250,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 运行包容网关
      */
-    private boolean inclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws Throwable {
+    private boolean inclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
         Stack<Integer> inclusive_stack = context.counter().stack(node.getChain(), "inclusive_run");
 
         //::流入
@@ -290,7 +302,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 运行排他网关
      */
-    private boolean exclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws Throwable {
+    private boolean exclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
         //::流出
         Link def_line = null; //默认线
         for (Link l : node.getNextLinks()) {
@@ -316,7 +328,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 运行并行网关
      */
-    private boolean parallel_run(FlowDriver driver, FlowContext context, Node node, int depth) throws Throwable {
+    private boolean parallel_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
         //::流入
         int count = context.counter().incr(node.getChain(), node.getId());//运行次数累计
         if (node.getPrveLinks().size() > count) { //等待所有支线计数完成

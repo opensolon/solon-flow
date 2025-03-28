@@ -182,7 +182,7 @@ public class Node {
      */
     public Condition getWhen() {
         if (when == null) {
-            when = new Condition(decl.when);
+            when = new Condition(chain, decl.when);
         }
 
         return when;

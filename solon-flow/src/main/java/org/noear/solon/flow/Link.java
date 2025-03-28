@@ -72,7 +72,7 @@ public class Link implements Comparable<Link> {
      */
     public Condition getCondition() {
         if (condition == null) {
-            condition = new Condition(decl.condition);
+            condition = new Condition(chain, decl.condition);
         }
 
         return condition;

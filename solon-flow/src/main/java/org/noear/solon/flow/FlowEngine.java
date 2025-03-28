@@ -19,7 +19,6 @@ import org.noear.solon.core.util.ResourceUtil;
 import org.noear.solon.flow.intercept.ChainInterceptor;
 import org.noear.solon.lang.Preview;
 
-import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -113,7 +112,7 @@ public interface FlowEngine {
      *
      * @param chainId 链Id
      */
-    default void eval(String chainId) throws Throwable {
+    default void eval(String chainId) throws FlowException {
         eval(chainId, new FlowContext());
     }
 
@@ -123,7 +122,7 @@ public interface FlowEngine {
      * @param chainId 链Id
      * @param context 上下文
      */
-    default void eval(String chainId, FlowContext context) throws Throwable {
+    default void eval(String chainId, FlowContext context) throws FlowException {
         eval(chainId, null, -1, context);
     }
 
@@ -135,14 +134,14 @@ public interface FlowEngine {
      * @param depth   执行深度
      * @param context 上下文
      */
-    void eval(String chainId, String startId, int depth, FlowContext context) throws Throwable;
+    void eval(String chainId, String startId, int depth, FlowContext context) throws FlowException;
 
     /**
      * 评估
      *
      * @param chain 链
      */
-    default void eval(Chain chain) throws Throwable {
+    default void eval(Chain chain) throws FlowException {
         eval(chain, new FlowContext());
     }
 
@@ -152,7 +151,7 @@ public interface FlowEngine {
      * @param chain   链
      * @param context 上下文
      */
-    default void eval(Chain chain, FlowContext context) throws Throwable {
+    default void eval(Chain chain, FlowContext context) throws FlowException {
         eval(chain, null, -1, context);
     }
 
@@ -164,5 +163,5 @@ public interface FlowEngine {
      * @param depth   执行深度
      * @param context 上下文
      */
-    void eval(Chain chain, String startId, int depth, FlowContext context) throws Throwable;
+    void eval(Chain chain, String startId, int depth, FlowContext context) throws FlowException;
 }

@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.intercept;
-
-import org.noear.solon.flow.FlowException;
-import org.noear.solon.lang.Preview;
+package org.noear.solon.flow;
 
 /**
- * 链拦截器
+ * 流异常
  *
  * @author noear
  * @since 3.1
  */
-@Preview("3.1")
-public interface ChainInterceptor {
-    /**
-     * 拦截
-     *
-     * @param invocation 调用者
-     */
-    void doIntercept(ChainInvocation invocation) throws FlowException;
+public class FlowException extends RuntimeException {
+    public FlowException(String message) {
+        super(message);
+    }
+
+    public FlowException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public FlowException(Throwable cause) {
+        super(cause);
+    }
 }

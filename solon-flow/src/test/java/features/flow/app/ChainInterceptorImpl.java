@@ -10,7 +10,7 @@ import org.noear.solon.flow.intercept.ChainInvocation;
 @Component
 public class ChainInterceptorImpl implements ChainInterceptor {
     @Override
-    public void doIntercept(ChainInvocation invocation) throws Throwable {
+    public void doIntercept(ChainInvocation invocation)  {
         System.out.println("doIntercept---------------");
         invocation.invoke();
     }

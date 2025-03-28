@@ -26,6 +26,7 @@ import org.noear.solon.Utils;
  * */
 public class Condition {
     private final String description;
+    private final Chain chain;
 
     /**
      * 附件（按需定制使用）
@@ -35,8 +36,16 @@ public class Condition {
     /**
      * @param description 条件描述
      */
-    public Condition(String description) {
+    public Condition(Chain chain, String description) {
+        this.chain = chain;
         this.description = description;
+    }
+
+    /**
+     * 获取链
+     */
+    public Chain getChain() {
+        return chain;
     }
 
     /**

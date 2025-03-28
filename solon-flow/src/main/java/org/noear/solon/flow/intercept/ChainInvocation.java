@@ -19,6 +19,7 @@ import org.noear.solon.core.util.ConsumerEx;
 import org.noear.solon.core.util.RankEntity;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowDriver;
+import org.noear.solon.flow.FlowException;
 import org.noear.solon.flow.Node;
 
 import java.util.List;
@@ -36,17 +37,17 @@ public class ChainInvocation {
     private final int evalDepth;
 
     private final List<RankEntity<ChainInterceptor>> interceptorList;
-    private final ConsumerEx<ChainInvocation> handler;
+    private final ChainInterceptor lastInterceptor;
     private int index;
 
-    public ChainInvocation(FlowDriver driver, FlowContext context, Node startNode, int evalDepth, List<RankEntity<ChainInterceptor>> interceptorList, ConsumerEx<ChainInvocation> handler) {
+    public ChainInvocation(FlowDriver driver, FlowContext context, Node startNode, int evalDepth, List<RankEntity<ChainInterceptor>> interceptorList, ChainInterceptor lastInterceptor) {
         this.driver = driver;
         this.context = context;
         this.startNode = startNode;
         this.evalDepth = evalDepth;
 
         this.interceptorList = interceptorList;
-        this.handler = handler;
+        this.lastInterceptor = lastInterceptor;
         this.index = 0;
     }
 
@@ -81,11 +82,11 @@ public class ChainInvocation {
     /**
      * 调用
      */
-    public void invoke() throws Throwable {
+    public void invoke() throws FlowException {
         if (index < interceptorList.size()) {
             interceptorList.get(index++).target.doIntercept(this);
         } else {
-            handler.accept(this);
+            lastInterceptor.doIntercept(this);
         }
     }
 }
