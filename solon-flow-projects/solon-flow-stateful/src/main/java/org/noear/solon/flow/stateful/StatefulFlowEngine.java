@@ -58,8 +58,22 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     /**
      * 获取节点状态
      */
+    public int getNodeState(StatefulFlowContext context, Node node) {
+        return getNodeState(context, node.getChain().getId(), node.getId());
+    }
+
+    /**
+     * 获取节点状态
+     */
     public int getNodeState(StatefulFlowContext context, String chainId, String nodeId) {
         return driver.getStateRepository().getState(context, chainId, nodeId);
+    }
+
+    /**
+     * 提交节点状态
+     */
+    public void postNodeState(StatefulFlowContext context, Node node, int nodeState) throws Throwable {
+        postNodeState(context, node.getChain().getId(), node.getId(), nodeState);
     }
 
     /**
