@@ -1,6 +1,7 @@
 package features.flow.stateful;
 
 import org.junit.jupiter.api.Test;
+import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.*;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.slf4j.Logger;
@@ -14,10 +15,14 @@ public class StatefulSimpleFlowDriverTest {
 
     @Test
     public void case1() throws Throwable {
+        MapContainer container = new MapContainer();
+        container.putComponent("oa_task", new OaTask());
+
         //初始化引擎
         StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
                 .stateOperator(new SimpleStateOperator())
                 .stateRepository(new InMemoryStateRepository())
+                .container(container)
                 .build());
 
         flowEngine.load("classpath:demo/*.yml");
