@@ -21,6 +21,7 @@ import org.noear.solon.flow.Task;
 import org.noear.solon.lang.Preview;
 
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 有状态的流引擎（也可以用于无状态）
@@ -31,6 +32,7 @@ import java.util.List;
 @Preview("3.1")
 public class StatefulFlowEngine extends FlowEngineDefault {
     private StatefulSimpleFlowDriver driver;
+    private ReentrantLock LOCKER = new ReentrantLock();
 
     public StatefulFlowEngine(StatefulSimpleFlowDriver driver) {
         super();
@@ -56,6 +58,25 @@ public class StatefulFlowEngine extends FlowEngineDefault {
      * 提交状态
      */
     public void postState(StatefulFlowContext context, String chainId, String nodeId, int nodeState) throws Throwable {
+        LOCKER.lock();
+
+        try {
+            postStateDo(context, chainId, nodeId, nodeState);
+        } finally {
+            LOCKER.unlock();
+        }
+    }
+
+    /**
+     * 提交状态
+     */
+    protected void postStateDo(StatefulFlowContext context, String chainId, String nodeId, int nodeState) throws Throwable {
+        int oldNodeState = driver.getStateRepository().getState(context, chainId, nodeId);
+        if (oldNodeState == nodeState) {
+            //如果要状态没变化，不处理
+            return;
+        }
+
         //添加记录
         StateRecord stateRecord = driver.getStateOperator().createRecord(context, chainId, nodeId, nodeState);
         driver.getStateRepository().addStateRecord(context, stateRecord);
