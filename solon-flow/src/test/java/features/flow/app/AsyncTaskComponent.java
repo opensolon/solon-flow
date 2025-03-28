@@ -19,6 +19,9 @@ public class AsyncTaskComponent implements TaskComponent{
         Integer isAsync = node.getMeta("isAsync");
         final Integer iterations = node.getMeta("iterations");
         Integer isBlock = node.getMeta("isBlock");
+
+        context.interrupt(); //取消自动档（中断引擎驱动）。改为手动档
+
         /**
          * isBlock 表示该节点是堵塞节点，一般用于汇总数据；isAsync表示该节点是异步节点，一般只会存在其中一种
          * 如果isBlock和isAsync都为0，那就是普通的节点，处理完当前任务后直接进入下一步
@@ -26,17 +29,13 @@ public class AsyncTaskComponent implements TaskComponent{
         if(isBlock!=null && isBlock==1){
             if(context.get("hasFinish")!=null && (Boolean)context.get("hasFinish")==true){
                 System.out.println("demoTaskComponent block finish test:["+node.getTitle() + "]" + ((AtomicInteger)context.get("count")).get());
-                //next(context,node);
-                return; //不阻断，且要到下一步。就用返回（或者下一步前，加个阻断）//返回更好
+                next(context,node);
             }else{
-                context.interrupt();
                 System.out.println("demoTaskComponent block no finish test:["+node.getTitle() + "]" + ((AtomicInteger)context.get("count")).get());
             }
         }else{
             // 异步测试
             if(isAsync!=null && isAsync==1){
-            
-                context.interrupt();
                 RunUtil.async(() -> {
                     context.put("hasFinish", false);
                     AtomicInteger count = new AtomicInteger(0);
@@ -52,8 +51,7 @@ public class AsyncTaskComponent implements TaskComponent{
                 });
             }else{
                 System.out.println("demoTaskComponent test:["+node.getTitle() + "]" + ((AtomicInteger)context.get("count")).get());
-                //next(context,node);
-                return; //不阻断，且要到下一步。就用返回（或者下一步前，加个阻断）//返回更好
+                next(context,node);
             }
         }
     }
