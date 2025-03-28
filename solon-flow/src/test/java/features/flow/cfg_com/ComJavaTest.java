@@ -39,9 +39,9 @@ public class ComJavaTest {
 
 
         chain.addNode(new NodeDecl("n1", NodeType.start).linkAdd("n2"));
-        chain.addNode(new NodeDecl("n2", NodeType.execute).task("@a").linkAdd("n3"));
-        chain.addNode(new NodeDecl("n3", NodeType.execute).task("@b").linkAdd("n4"));
-        chain.addNode(new NodeDecl("n4", NodeType.execute).task("@c").linkAdd("n5"));
+        chain.addNode(new NodeDecl("n2", NodeType.activity).task("@a").linkAdd("n3"));
+        chain.addNode(new NodeDecl("n3", NodeType.activity).task("@b").linkAdd("n4"));
+        chain.addNode(new NodeDecl("n4", NodeType.activity).task("@c").linkAdd("n5"));
         chain.addNode(new NodeDecl("n5", NodeType.end));
 
         FlowContext context = new FlowContext();

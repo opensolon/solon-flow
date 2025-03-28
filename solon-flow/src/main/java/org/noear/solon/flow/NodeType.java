@@ -27,9 +27,9 @@ public enum NodeType {
      */
     start(0),
     /**
-     * 执行节点
+     * 活动节点
      */
-    execute(1),
+    activity(1),
     /**
      * 包容网关（多选）
      */
@@ -65,7 +65,7 @@ public enum NodeType {
             }
         }
 
-        return execute;
+        return activity;
     }
 
     public static NodeType nameOf(String name) {
@@ -76,6 +76,6 @@ public enum NodeType {
             }
         }
 
-        return execute;
+        return activity;
     }
 }

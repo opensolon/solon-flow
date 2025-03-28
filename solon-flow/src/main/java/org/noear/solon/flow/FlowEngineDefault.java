@@ -209,7 +209,7 @@ public class FlowEngineDefault implements FlowEngine {
                 break;
             case end:
                 break;
-            case execute:
+            case activity:
                 //尝试执行任务（可能为空）
                 task_exec(driver, context, node);
                 //转到下个节点

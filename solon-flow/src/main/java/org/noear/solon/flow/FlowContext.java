@@ -91,7 +91,7 @@ public class FlowContext {
      * @param node 节点
      */
     public void next(Node node) throws Throwable {
-        if (node.getType() != NodeType.execute) {
+        if (node.getType() != NodeType.activity) {
             throw new IllegalArgumentException(node.getId() + " is not execute");
         }
 

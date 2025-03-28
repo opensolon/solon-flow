@@ -88,7 +88,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
 
     @Override
     public void handleTask(FlowContext context, Task task) throws Throwable {
-        //默认过滤空任务（执行节点可能没有配置任务）
+        //默认过滤空任务（活动节点可能没有配置任务）
         if (Utils.isEmpty(task.getDescription())) {
             return;
         }
