@@ -127,9 +127,9 @@ public class StatefulSimpleFlowDriverTest {
         assert statefulNode == null; //抄送节点
     }
 
-    private StatefulFlowContext getContext(String operator) throws Throwable {
+    private StatefulFlowContext getContext(String actor) throws Throwable {
         StatefulFlowContext context = new StatefulFlowContext("i1");
-        context.put("operator", operator);
+        context.put("actor", actor);
         return context;
     }
 }

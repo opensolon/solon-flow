@@ -30,7 +30,7 @@ public class SimpleStateOperator implements StateOperator {
     private final Set<String> keys = new HashSet<>();
 
     public SimpleStateOperator() {
-        this("operator");
+        this("actor");
     }
 
     public SimpleStateOperator(String... keys) {
