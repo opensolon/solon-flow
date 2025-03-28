@@ -18,10 +18,7 @@ package org.noear.solon.flow.stateful;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 简单的状态操作员
@@ -30,7 +27,7 @@ import java.util.Objects;
  * @since 3.1
  */
 public class SimpleStateOperator implements StateOperator {
-    private final List<String> keys = new ArrayList<>();
+    private final Set<String> keys = new HashSet<>();
 
     public SimpleStateOperator() {
         this("operator");
