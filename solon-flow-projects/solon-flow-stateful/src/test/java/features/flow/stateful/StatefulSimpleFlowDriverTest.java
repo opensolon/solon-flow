@@ -108,7 +108,18 @@ public class StatefulSimpleFlowDriverTest {
         flowEngine.eval("f1", context);
         statefulNode = context.getTaskNode();
         log.warn("{}", statefulNode);
-        assert statefulNode == null; //结束了，没有任务节点了
+        assert "step5".equals(statefulNode.getNode().getId()); //抄送节点
+        assert NodeStates.UNDEFINED == statefulNode.getState();
+
+        /// ////////////////
+        //提交状态
+        flowEngine.postState(context, "f1", statefulNode.getNode().getId(), NodeStates.PASS);
+
+        context = getContext("吕跃");
+        flowEngine.eval("f1", context);
+        statefulNode = context.getTaskNode();
+        log.warn("{}", statefulNode);
+        assert statefulNode == null; //抄送节点
     }
 
     private StatefulFlowContext getContext(String operator) throws Throwable {

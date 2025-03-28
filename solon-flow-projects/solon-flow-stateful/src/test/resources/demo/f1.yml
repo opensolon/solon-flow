@@ -7,4 +7,5 @@ layout:
   - {id: step4_1, meta: {operator: "陈宇"}, link: step4_end}
   - {id: step4_2, meta: {operator: "吕跃"}, link: step4_end}
   - {id: step4_end, type: "parallel"}
-  - {id: step5, title: "结束", type: "end", meta: {cc: "吕跃"}}
+  - {id: step5, title: "抄送", meta: {cc: "吕跃"}}
+  - {id: step6, title: "结束", type: "end"}
