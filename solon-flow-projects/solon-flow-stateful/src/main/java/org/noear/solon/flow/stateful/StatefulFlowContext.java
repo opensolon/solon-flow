@@ -35,17 +35,17 @@ public class StatefulFlowContext extends FlowContext {
     }
 
     /**
-     * 获取任务节点
+     * 获取活动节点
      */
-    protected void setTaskNode(StatefulNode taskNode) {
-        put("taskNode", taskNode);
+    protected void setActivityNode(StatefulNode activityNode) {
+        put("activityNode", activityNode);
     }
 
     /**
-     * 获取任务节点
+     * 获取活动节点
      */
-    public StatefulNode getTaskNode() {
-        return get("taskNode");
+    public StatefulNode getActivityNode() {
+        return get("activityNode");
     }
 
     /**
