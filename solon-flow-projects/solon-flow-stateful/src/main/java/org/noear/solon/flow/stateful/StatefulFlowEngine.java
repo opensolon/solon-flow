@@ -43,7 +43,7 @@ public class StatefulFlowEngine extends FlowEngineDefault {
      */
     public StatefulNode getActivityNode(String chainId, FlowContext context) {
         eval(chainId, context);
-        return context.get(StatefulSimpleFlowDriver.KEY_ACTIVITY_NODE);
+        return context.get(StatefulNode.KEY_ACTIVITY_NODE);
     }
 
     /**
@@ -51,7 +51,7 @@ public class StatefulFlowEngine extends FlowEngineDefault {
      */
     public StatefulNode getActivityNode(Chain chain, FlowContext context) {
         eval(chain, context);
-        return context.get(StatefulSimpleFlowDriver.KEY_ACTIVITY_NODE);
+        return context.get(StatefulNode.KEY_ACTIVITY_NODE);
     }
 
     /**

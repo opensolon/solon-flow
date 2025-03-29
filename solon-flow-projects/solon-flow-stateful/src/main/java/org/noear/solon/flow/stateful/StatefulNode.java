@@ -24,6 +24,8 @@ import org.noear.solon.flow.Node;
  * @since 3.1
  */
 public class StatefulNode {
+    public static final String KEY_ACTIVITY_NODE = "activityNode";
+
     private final Node node;
     private final int state;
 
