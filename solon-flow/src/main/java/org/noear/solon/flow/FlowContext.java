@@ -86,11 +86,11 @@ public class FlowContext {
     }
 
     /**
-     * 下一步
+     * 手动下一步（可能要配合中断使用 {@link #interrupt()}）
      *
      * @param node 节点
      */
-    public void next(Node node) throws Throwable {
+    public void manualNext(Node node) throws FlowException {
         if (node.getType() != NodeType.activity) {
             throw new IllegalArgumentException(node.getId() + " is not execute");
         }

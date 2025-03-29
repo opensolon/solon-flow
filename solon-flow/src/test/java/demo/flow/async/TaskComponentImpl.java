@@ -12,7 +12,7 @@ public class TaskComponentImpl extends TaskComponentPlus {
         System.out.println("do...: " + node.getId());
 
         if (async) {
-            context.next(node);
+            context.manualNext(node);
         }
     }
 }
