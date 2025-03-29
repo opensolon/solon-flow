@@ -1,5 +1,6 @@
 package features.flow.stateful;
 
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.*;
 
@@ -14,7 +15,7 @@ public class OaActionTest {
 
     //审批
     public void case1() throws Exception {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId);
+        FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         flowEngine.postNodeState(context, node.getNode(), NodeStates.PASS);
@@ -22,7 +23,7 @@ public class OaActionTest {
 
     //回退
     public void case2() throws Exception {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId);
+        FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         flowEngine.postNodeState(context, node.getNode(), NodeStates.WITHDRAW);
@@ -30,7 +31,7 @@ public class OaActionTest {
 
     //任意跳转（通过）
     public void case3_1() throws Exception {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId);
+        FlowContext context = new FlowContext(instanceId);
 
         String nodeId = "demo1";
         Node node = flowEngine.getChain(chainId).getNode(nodeId);
@@ -39,7 +40,7 @@ public class OaActionTest {
 
     //任意跳转（退回）
     public void case3_2() throws Exception {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId);
+        FlowContext context = new FlowContext(instanceId);
 
         String nodeId = "demo1"; //实际可能需要遍历节点树，并检查各节点状态；再回退
         Node node = flowEngine.getChain(chainId).getNode(nodeId);
@@ -48,7 +49,7 @@ public class OaActionTest {
 
     //委派
     public void case4() throws Exception {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId);
+        FlowContext context = new FlowContext(instanceId);
         context.put("actor", "A");
         context.put("delegate", "B"); //需要定制下状态操作员（用A检测，但留下B的状态记录）
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
@@ -58,7 +59,7 @@ public class OaActionTest {
 
     //转办（与委派技术实现差不多）
     public void case5() throws Exception {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId);
+        FlowContext context = new FlowContext(instanceId);
         context.put("actor", "A");
         context.put("delegate", "B"); //需要定制下状态操作员（用A检测，但留下B的状态记录）
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
@@ -68,7 +69,7 @@ public class OaActionTest {
 
     //催办
     public void case6() throws Exception {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId);
+        FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         String actor = node.getNode().getMeta("actor");
@@ -77,7 +78,7 @@ public class OaActionTest {
 
     //取回（技术上与回退差不多）
     public void case7() throws Exception {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId);
+        FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         //回退到顶（给发起人）；相当于重新开始走流程
@@ -86,7 +87,7 @@ public class OaActionTest {
 
     //撤销（和回退没啥区别）
     public void case8() throws Exception {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId);
+        FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         flowEngine.postNodeState(context, node.getNode(), NodeStates.WITHDRAW);
@@ -94,7 +95,7 @@ public class OaActionTest {
 
     //中止
     public void case9() throws Exception {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId);
+        FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         flowEngine.postNodeState(context, node.getNode(), NodeStates.REJECT);
@@ -102,7 +103,7 @@ public class OaActionTest {
 
     //抄送
     public void case10() throws Exception {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId);
+        FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         flowEngine.postNodeState(context, node.getNode(), NodeStates.PASS);
@@ -117,7 +118,7 @@ public class OaActionTest {
     //减签
     public void case12() throws Exception {
         //通过状态操作员和驱动定制，让某个节点不需要处理
-        StatefulFlowContext context = new StatefulFlowContext(instanceId);
+        FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         flowEngine.postNodeState(context, node.getNode(), NodeStates.PASS);

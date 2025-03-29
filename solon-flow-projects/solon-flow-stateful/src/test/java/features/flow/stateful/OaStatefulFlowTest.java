@@ -1,6 +1,7 @@
 package features.flow.stateful;
 
 import org.junit.jupiter.api.Test;
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.*;
 import org.noear.solon.flow.stateful.operator.SimpleStateOperator;
@@ -37,7 +38,7 @@ public class OaStatefulFlowTest {
 
     @Test
     public void case1() throws Throwable {
-        StatefulFlowContext context;
+        FlowContext context;
         StatefulNode statefulNode;
 
         context = getContext("陈鑫");
@@ -128,18 +129,18 @@ public class OaStatefulFlowTest {
         assert statefulNode == null; //抄送节点
     }
 
-    private StatefulFlowContext getContext(String actor) throws Throwable {
-        StatefulFlowContext context = new StatefulFlowContext("i1");
+    private FlowContext getContext(String actor) throws Throwable {
+        FlowContext context = new FlowContext("i1");
         context.put("actor", actor);
         return context;
     }
 
     //@Test //只看看
     public void case2() throws Throwable {
-        StatefulFlowContext context;
+        FlowContext context;
         StatefulNode statefulNode;
 
-        context = new StatefulFlowContext("i1").put("actor", "陈鑫");
+        context = new FlowContext("i1").put("actor", "陈鑫");
         statefulNode = flowEngine.getActivityNode(chainId, context);
 
         assert "step2".equals(statefulNode.getNode().getId());
@@ -149,7 +150,7 @@ public class OaStatefulFlowTest {
         //提交状态
         flowEngine.postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
 
-        context = new StatefulFlowContext("i1").put("actor", "陈鑫");
+        context = new FlowContext("i1").put("actor", "陈鑫");
         statefulNode = flowEngine.getActivityNode(chainId, context);
 
         assert "step3".equals(statefulNode.getNode().getId());

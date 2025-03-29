@@ -5,9 +5,8 @@ import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
 import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.ModelAndView;
-import org.noear.solon.flow.Node;
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.stateful.StateRecord;
-import org.noear.solon.flow.stateful.StatefulFlowContext;
 import org.noear.solon.flow.stateful.StatefulFlowEngine;
 import org.noear.solon.flow.stateful.StatefulNode;
 
@@ -24,13 +23,11 @@ public class DemoController {
     //操作展示
     @Mapping("display")
     public ModelAndView displayFlow(Context ctx, String instanceId, String chainId) throws Throwable {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId);
-        context.put("operator", ctx.param("operator"));
-
-        flowEngine.eval(chainId, context);
+        FlowContext context = new FlowContext(instanceId);
+        context.put("actor", ctx.param("actor"));
 
         //获取展示节点及装态
-        StatefulNode activityNode = context.getActivityNode(); // if null: 界面显示只读; no null: 界面显示操作：同意，拒绝，撤回到上一节点，撤回到起始节点（给发起人）
+        StatefulNode activityNode = flowEngine.getActivityNode(chainId, context);// if null: 界面显示只读; no null: 界面显示操作：同意，拒绝，撤回到上一节点，撤回到起始节点（给发起人）
         //获得历史状态记录
         List<StateRecord> records = flowEngine.getStateRecords(context);
         return null;
@@ -39,10 +36,9 @@ public class DemoController {
     //操作提交
     @Mapping("post")
     public void postFlow(Context ctx, String instanceId, String chainId, String nodeId, int nodeState) throws Throwable {
-        StatefulFlowContext context = new StatefulFlowContext(instanceId);
-        context.put("operator", ctx.param("operator"));
+        FlowContext context = new FlowContext(instanceId);
+        context.put("actor", ctx.param("actor"));
 
-        Node node = flowEngine.getChain(chainId).getNode(nodeId);
-        flowEngine.postNodeState(context, node, nodeState);
+        flowEngine.postNodeState(context, chainId, nodeId, nodeState);
     }
 }

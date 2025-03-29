@@ -41,30 +41,30 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     /**
      * 获取活动节点
      */
-    public StatefulNode getActivityNode(String chainId, StatefulFlowContext context) {
+    public StatefulNode getActivityNode(String chainId, FlowContext context) {
         eval(chainId, context);
-        return context.getActivityNode();
+        return context.get(StatefulSimpleFlowDriver.KEY_ACTIVITY_NODE);
     }
 
     /**
      * 获取活动节点
      */
-    public StatefulNode getActivityNode(Chain chain, StatefulFlowContext context) {
+    public StatefulNode getActivityNode(Chain chain, FlowContext context) {
         eval(chain, context);
-        return context.getActivityNode();
+        return context.get(StatefulSimpleFlowDriver.KEY_ACTIVITY_NODE);
     }
 
     /**
      * 获取状态记录
      */
-    public List<StateRecord> getStateRecords(StatefulFlowContext context) {
+    public List<StateRecord> getStateRecords(FlowContext context) {
         return driver.getStateRepository().getStateRecords(context);
     }
 
     /**
      * 获取节点状态
      */
-    public int getNodeState(StatefulFlowContext context, String chainId, String nodeId) {
+    public int getNodeState(FlowContext context, String chainId, String nodeId) {
         Node node = getChain(chainId).getNode(nodeId);
         return getNodeState(context, node);
     }
@@ -72,14 +72,14 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     /**
      * 获取节点状态
      */
-    public int getNodeState(StatefulFlowContext context, Node node) {
+    public int getNodeState(FlowContext context, Node node) {
         return driver.getStateRepository().getState(context, node);
     }
 
     /**
      * 提交节点状态
      */
-    public void postNodeState(StatefulFlowContext context, String chainId, String nodeId, int nodeState) {
+    public void postNodeState(FlowContext context, String chainId, String nodeId, int nodeState) {
         Node node = getChain(chainId).getNode(nodeId);
         postNodeState(context, node, nodeState);
     }
@@ -87,7 +87,7 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     /**
      * 提交节点状态
      */
-    public void postNodeState(StatefulFlowContext context, Node node, int nodeState) {
+    public void postNodeState(FlowContext context, Node node, int nodeState) {
         LOCKER.lock();
 
         try {
@@ -100,7 +100,7 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     /**
      * 提交节点状态
      */
-    protected void postNodeStateDo(StatefulFlowContext context, Node node, int nodeState) {
+    protected void postNodeStateDo(FlowContext context, Node node, int nodeState) {
         int oldNodeState = driver.getStateRepository().getState(context, node);
         if (oldNodeState == nodeState) {
             //如果要状态没变化，不处理
@@ -141,7 +141,7 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     /**
      * 提交处理任务
      */
-    protected void postHandleTask(StatefulFlowContext context, Task task) throws Throwable {
+    protected void postHandleTask(FlowContext context, Task task) throws Throwable {
         driver.postHandleTask(context, task);
     }
 }

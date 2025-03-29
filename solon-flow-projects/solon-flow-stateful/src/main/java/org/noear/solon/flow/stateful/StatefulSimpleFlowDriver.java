@@ -31,6 +31,8 @@ import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
  * @since 3.1
  */
 public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
+    public static final String KEY_ACTIVITY_NODE = "activityNode";
+
     private final StateRepository stateRepository;
     private final StateOperator stateOperator;
 
@@ -50,9 +52,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
 
 
     @Override
-    public void handleTask(FlowContext context0, Task task) throws Throwable {
-        if (context0 instanceof StatefulFlowContext) {
-            StatefulFlowContext context = (StatefulFlowContext) context0;
+    public void handleTask(FlowContext context, Task task) throws Throwable {
             String instanceId = context.getInstanceId();
 
             if (Utils.isNotEmpty(instanceId)) {
@@ -64,40 +64,40 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                     //检查是否为当前用户的任务
                     if (stateOperator.isOperatable(context, task.getNode())) {
                         //记录当前流程节点（用于展示）
-                        context.setActivityNode(new StatefulNode(task.getNode(), NodeStates.WAIT));
+                        context.put(KEY_ACTIVITY_NODE,new StatefulNode(task.getNode(), NodeStates.WAIT));
                         //停止流程
                         context.stop();
                         //设置状态为待办
-                        ((StatefulFlowEngine) context0.engine()).postNodeState(
+                        ((StatefulFlowEngine) context.engine()).postNodeState(
                                 context,
                                 task.getNode(),
                                 NodeStates.WAIT);
 
                     } else {
                         //阻断当前分支（等待别的用户办理）
-                        context.setActivityNode(new StatefulNode(task.getNode(), NodeStates.UNDEFINED));
+                        context.put(KEY_ACTIVITY_NODE,new StatefulNode(task.getNode(), NodeStates.UNDEFINED));
                         context.interrupt();
                     }
                 } else if (nodeState == NodeStates.WAIT) {
                     //检查是否为当前用户的任务
                     if (stateOperator.isOperatable(context, task.getNode())) {
                         //记录当前流程节点（用于展示）
-                        context.setActivityNode(new StatefulNode(task.getNode(), nodeState)); //说明之前没有结办
+                        context.put(KEY_ACTIVITY_NODE,new StatefulNode(task.getNode(), nodeState)); //说明之前没有结办
                         //停止流程
                         context.stop();
                     } else {
                         //阻断当前分支（等待别的用户办理）
-                        context.setActivityNode(new StatefulNode(task.getNode(), NodeStates.UNDEFINED));
+                        context.put(KEY_ACTIVITY_NODE,new StatefulNode(task.getNode(), NodeStates.UNDEFINED));
                         context.interrupt();
                     }
                 }
 
                 return;
             }
-        }
+
 
         //提交处理任务
-        postHandleTask(context0, task);
+        postHandleTask(context, task);
     }
 
     /**

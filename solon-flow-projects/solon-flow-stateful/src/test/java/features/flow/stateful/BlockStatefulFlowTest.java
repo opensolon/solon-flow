@@ -1,6 +1,7 @@
 package features.flow.stateful;
 
 import org.junit.jupiter.api.Test;
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.stateful.*;
 import org.noear.solon.flow.stateful.operator.BlockStateOperator;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
@@ -20,14 +21,14 @@ public class BlockStatefulFlowTest {
 
         flowEngine.load("classpath:flow/*.yml");
 
-        StatefulFlowContext context;
+        FlowContext context;
         StatefulNode statefulNode;
         String instanceId1 = "i1";
         String instanceId2 = "i2";
 
 
         //获取节点
-        context = new StatefulFlowContext(instanceId1);
+        context = new FlowContext(instanceId1);
         statefulNode = flowEngine.getActivityNode(chainId, context);
         assertNode(statefulNode, "step2");
 
@@ -38,7 +39,7 @@ public class BlockStatefulFlowTest {
 
 
         //获取节点
-        context = new StatefulFlowContext(instanceId1);
+        context = new FlowContext(instanceId1);
         statefulNode = flowEngine.getActivityNode(chainId, context);
         assertNode(statefulNode, "step3");
 
@@ -49,7 +50,7 @@ public class BlockStatefulFlowTest {
 
 
         //获取节点
-        context = new StatefulFlowContext(instanceId1);
+        context = new FlowContext(instanceId1);
         statefulNode = flowEngine.getActivityNode(chainId, context);
         assertNode(statefulNode, "step4_1");
 
@@ -61,14 +62,14 @@ public class BlockStatefulFlowTest {
 
         ///  （换一个实例）
 
-        context = new StatefulFlowContext(instanceId2);
+        context = new FlowContext(instanceId2);
         statefulNode = flowEngine.getActivityNode(chainId, context);
         assertNode(statefulNode, "step2");
 
         flowEngine.postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
 
 
-        context = new StatefulFlowContext(instanceId2);
+        context = new FlowContext(instanceId2);
         statefulNode = flowEngine.getActivityNode(chainId, context);
         assertNode(statefulNode, "step3");
 
@@ -76,7 +77,7 @@ public class BlockStatefulFlowTest {
         // （再换回实例）
 
         //获取节点
-        context = new StatefulFlowContext(instanceId1);
+        context = new FlowContext(instanceId1);
         statefulNode = flowEngine.getActivityNode(chainId, context);
         assertNode(statefulNode, "step4_2");
     }

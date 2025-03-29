@@ -49,11 +49,9 @@ public class FlowContext {
         this(null);
     }
 
-    public FlowContext(Map<String, Object> model) {
-        this.model.put("context", this);
-        if (model != null) {
-            this.model.putAll(model);
-        }
+    public FlowContext(String instanceId) {
+        put("context", this);
+        put("instanceId", (instanceId == null ? "" : instanceId));
     }
 
     /**
@@ -156,7 +154,9 @@ public class FlowContext {
      * 推入
      */
     public <Slf extends FlowContext> Slf put(String key, Object value) {
-        model.put(key, value);
+        if (value != null) {
+            model.put(key, value);
+        }
         return (Slf) this;
     }
 
@@ -164,7 +164,9 @@ public class FlowContext {
      * 推入
      */
     public <Slf extends FlowContext> Slf putIfAbsent(String key, Object value) {
-        model.putIfAbsent(key, value);
+        if (value != null) {
+            model.putIfAbsent(key, value);
+        }
         return (Slf) this;
     }
 
@@ -195,5 +197,12 @@ public class FlowContext {
      */
     public void remove(String key) {
         model.remove(key);
+    }
+
+    /**
+     * 获取实例id
+     */
+    public String getInstanceId() {
+        return get("instanceId");
     }
 }

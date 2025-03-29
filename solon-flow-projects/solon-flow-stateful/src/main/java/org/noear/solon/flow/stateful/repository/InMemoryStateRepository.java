@@ -15,11 +15,11 @@
  */
 package org.noear.solon.flow.stateful.repository;
 
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.StateRecord;
 import org.noear.solon.flow.stateful.StateRepository;
 import org.noear.solon.flow.stateful.NodeStates;
-import org.noear.solon.flow.stateful.StatefulFlowContext;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +43,7 @@ public class InMemoryStateRepository<T extends StateRecord> implements StateRepo
     }
 
     @Override
-    public int getState(StatefulFlowContext context, Node node) {
+    public int getState(FlowContext context, Node node) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
 
         Integer rst = getStates(context.getInstanceId()).get(stateKey);
@@ -55,29 +55,29 @@ public class InMemoryStateRepository<T extends StateRecord> implements StateRepo
     }
 
     @Override
-    public void putState(StatefulFlowContext context, Node node, int nodeState) {
+    public void putState(FlowContext context, Node node, int nodeState) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
         getStates(context.getInstanceId()).put(stateKey, nodeState);
     }
 
     @Override
-    public void removeState(StatefulFlowContext context, Node node) {
+    public void removeState(FlowContext context, Node node) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
         getStates(context.getInstanceId()).remove(stateKey);
     }
 
     @Override
-    public void clearState(StatefulFlowContext context) {
+    public void clearState(FlowContext context) {
         getStates(context.getInstanceId()).clear();
     }
 
     @Override
-    public List<T> getStateRecords(StatefulFlowContext context) {
+    public List<T> getStateRecords(FlowContext context) {
         return Collections.unmodifiableList(getHistory(context.getInstanceId()));
     }
 
     @Override
-    public void addStateRecord(StatefulFlowContext context, T record) {
+    public void addStateRecord(FlowContext context, T record) {
         getHistory(context.getInstanceId()).add(record);
     }
 }
