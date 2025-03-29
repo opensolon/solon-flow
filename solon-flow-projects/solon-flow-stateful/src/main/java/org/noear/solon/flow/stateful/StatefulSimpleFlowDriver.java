@@ -58,8 +58,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
             if (Utils.isNotEmpty(instanceId)) {
                 int nodeState = getStateRepository().getState(
                         context,
-                        task.getNode().getChain().getId(),
-                        task.getNode().getId());
+                        task.getNode());
 
                 if (nodeState == NodeStates.UNDEFINED) {
                     //检查是否为当前用户的任务
@@ -71,8 +70,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                         //设置状态为待办
                         ((StatefulFlowEngine) context0.engine()).postNodeState(
                                 context,
-                                task.getNode().getChain().getId(),
-                                task.getNode().getId(),
+                                task.getNode(),
                                 NodeStates.WAIT);
 
                     } else {

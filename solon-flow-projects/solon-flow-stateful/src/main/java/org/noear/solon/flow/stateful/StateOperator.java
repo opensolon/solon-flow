@@ -33,7 +33,7 @@ public interface StateOperator {
     /**
      * 创建状态记录
      */
-    default StateRecord createRecord(FlowContext context, String chainId, String nodeId, int nodeState) {
-        return new StateRecord(chainId, nodeId, nodeState, System.currentTimeMillis());
+    default StateRecord createRecord(FlowContext context, Node node, int nodeState) {
+        return new StateRecord(node.getChain().getId(), node.getId(), nodeState, System.currentTimeMillis());
     }
 }

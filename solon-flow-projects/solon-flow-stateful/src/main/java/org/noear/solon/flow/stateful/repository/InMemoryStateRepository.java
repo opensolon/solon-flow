@@ -15,6 +15,7 @@
  */
 package org.noear.solon.flow.stateful.repository;
 
+import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.StateRecord;
 import org.noear.solon.flow.stateful.StateRepository;
 import org.noear.solon.flow.stateful.NodeStates;
@@ -42,8 +43,8 @@ public class InMemoryStateRepository<T extends StateRecord> implements StateRepo
     }
 
     @Override
-    public int getState(StatefulFlowContext context, String chainId, String nodeId) {
-        String stateKey = chainId + ":" + nodeId;
+    public int getState(StatefulFlowContext context, Node node) {
+        String stateKey = node.getChain().getId() + ":" + node.getId();
 
         Integer rst = getStates(context.getInstanceId()).get(stateKey);
         if (rst == null) {
@@ -54,14 +55,14 @@ public class InMemoryStateRepository<T extends StateRecord> implements StateRepo
     }
 
     @Override
-    public void putState(StatefulFlowContext context, String chainId, String nodeId, int nodeState) {
-        String stateKey = chainId + ":" + nodeId;
+    public void putState(StatefulFlowContext context, Node node, int nodeState) {
+        String stateKey = node.getChain().getId() + ":" + node.getId();
         getStates(context.getInstanceId()).put(stateKey, nodeState);
     }
 
     @Override
-    public void removeState(StatefulFlowContext context, String chainId, String nodeId) {
-        String stateKey = chainId + ":" + nodeId;
+    public void removeState(StatefulFlowContext context, Node node) {
+        String stateKey = node.getChain().getId() + ":" + node.getId();
         getStates(context.getInstanceId()).remove(stateKey);
     }
 

@@ -1,5 +1,6 @@
 package features.flow.stateful;
 
+import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.*;
 
 /**
@@ -32,7 +33,8 @@ public class OaActionTest {
         StatefulFlowContext context = new StatefulFlowContext(instanceId);
 
         String nodeId = "demo1";
-        flowEngine.postNodeState(context, chainId, nodeId, NodeStates.PASS);
+        Node node = flowEngine.getChain(chainId).getNode(nodeId);
+        flowEngine.postNodeState(context, node, NodeStates.PASS);
     }
 
     //任意跳转（退回）
@@ -40,7 +42,8 @@ public class OaActionTest {
         StatefulFlowContext context = new StatefulFlowContext(instanceId);
 
         String nodeId = "demo1"; //实际可能需要遍历节点树，并检查各节点状态；再回退
-        flowEngine.postNodeState(context, chainId, nodeId, NodeStates.WITHDRAW);
+        Node node = flowEngine.getChain(chainId).getNode(nodeId);
+        flowEngine.postNodeState(context, node, NodeStates.WITHDRAW);
     }
 
     //委派

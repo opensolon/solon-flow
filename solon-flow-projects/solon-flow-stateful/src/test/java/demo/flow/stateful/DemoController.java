@@ -5,6 +5,7 @@ import org.noear.solon.annotation.Inject;
 import org.noear.solon.annotation.Mapping;
 import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.ModelAndView;
+import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.StateRecord;
 import org.noear.solon.flow.stateful.StatefulFlowContext;
 import org.noear.solon.flow.stateful.StatefulFlowEngine;
@@ -41,6 +42,7 @@ public class DemoController {
         StatefulFlowContext context = new StatefulFlowContext(instanceId);
         context.put("operator", ctx.param("operator"));
 
-        flowEngine.postNodeState(context, chainId, nodeId, nodeState);
+        Node node = flowEngine.getChain(chainId).getNode(nodeId);
+        flowEngine.postNodeState(context, node, nodeState);
     }
 }

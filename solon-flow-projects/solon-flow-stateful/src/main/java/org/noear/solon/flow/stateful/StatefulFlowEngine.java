@@ -15,10 +15,7 @@
  */
 package org.noear.solon.flow.stateful;
 
-import org.noear.solon.flow.FlowEngineDefault;
-import org.noear.solon.flow.FlowException;
-import org.noear.solon.flow.Node;
-import org.noear.solon.flow.Task;
+import org.noear.solon.flow.*;
 import org.noear.solon.lang.Preview;
 
 import java.util.List;
@@ -50,6 +47,14 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     }
 
     /**
+     * 获取活动节点
+     */
+    public StatefulNode getActivityNode(Chain chain, StatefulFlowContext context) {
+        eval(chain, context);
+        return context.getActivityNode();
+    }
+
+    /**
      * 获取状态记录
      */
     public List<StateRecord> getStateRecords(StatefulFlowContext context) {
@@ -59,32 +64,34 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     /**
      * 获取节点状态
      */
-    public int getNodeState(StatefulFlowContext context, Node node) {
-        return getNodeState(context, node.getChain().getId(), node.getId());
+    public int getNodeState(StatefulFlowContext context, String chainId, String nodeId) {
+        Node node = getChain(chainId).getNode(nodeId);
+        return getNodeState(context, node);
     }
 
     /**
      * 获取节点状态
      */
-    public int getNodeState(StatefulFlowContext context, String chainId, String nodeId) {
-        return driver.getStateRepository().getState(context, chainId, nodeId);
-    }
-
-    /**
-     * 提交节点状态
-     */
-    public void postNodeState(StatefulFlowContext context, Node node, int nodeState) {
-        postNodeState(context, node.getChain().getId(), node.getId(), nodeState);
+    public int getNodeState(StatefulFlowContext context, Node node) {
+        return driver.getStateRepository().getState(context, node);
     }
 
     /**
      * 提交节点状态
      */
     public void postNodeState(StatefulFlowContext context, String chainId, String nodeId, int nodeState) {
+        Node node = getChain(chainId).getNode(nodeId);
+        postNodeState(context, node, nodeState);
+    }
+
+    /**
+     * 提交节点状态
+     */
+    public void postNodeState(StatefulFlowContext context, Node node, int nodeState) {
         LOCKER.lock();
 
         try {
-            postNodeStateDo(context, chainId, nodeId, nodeState);
+            postNodeStateDo(context, node, nodeState);
         } finally {
             LOCKER.unlock();
         }
@@ -93,33 +100,32 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     /**
      * 提交节点状态
      */
-    protected void postNodeStateDo(StatefulFlowContext context, String chainId, String nodeId, int nodeState) {
-        int oldNodeState = driver.getStateRepository().getState(context, chainId, nodeId);
+    protected void postNodeStateDo(StatefulFlowContext context, Node node, int nodeState) {
+        int oldNodeState = driver.getStateRepository().getState(context, node);
         if (oldNodeState == nodeState) {
             //如果要状态没变化，不处理
             return;
         }
 
         //添加记录
-        StateRecord stateRecord = driver.getStateOperator().createRecord(context, chainId, nodeId, nodeState);
+        StateRecord stateRecord = driver.getStateOperator().createRecord(context, node, nodeState);
         driver.getStateRepository().addStateRecord(context, stateRecord);
 
         //节点
-        Node node = getChain(chainId).getNode(nodeId);
 
         //更新状态
         if (nodeState == NodeStates.WITHDRAW) {
             //撤回之前的节点
             for (Node n1 : node.getPrveNodes()) {
                 //移除状态（要求重来）
-                driver.getStateRepository().removeState(context, chainId, n1.getId());
+                driver.getStateRepository().removeState(context, node);
             }
         } else if (nodeState == NodeStates.WITHDRAW_ALL) {
             //撤回全部（重新开始）
             driver.getStateRepository().clearState(context);
         } else {
             //其它（等待或通过或拒绝）
-            driver.getStateRepository().putState(context, chainId, nodeId, nodeState);
+            driver.getStateRepository().putState(context, node, nodeState);
         }
 
         //如果是通过，则提交任务

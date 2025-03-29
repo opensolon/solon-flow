@@ -15,6 +15,7 @@
  */
 package org.noear.solon.flow.stateful;
 
+import org.noear.solon.flow.Node;
 import org.noear.solon.lang.Preview;
 
 import java.util.List;
@@ -30,17 +31,17 @@ public interface StateRepository<T extends StateRecord> {
     /**
      * 获取状态
      */
-    int getState(StatefulFlowContext context, String chainId, String nodeId);
+    int getState(StatefulFlowContext context, Node node);
 
     /**
      * 推入状态
      */
-    void putState(StatefulFlowContext context, String chainId, String nodeId, int nodeState);
+    void putState(StatefulFlowContext context, Node node, int nodeState);
 
     /**
      * 移除状态
      */
-    void removeState(StatefulFlowContext context, String chainId, String nodeId);
+    void removeState(StatefulFlowContext context, Node node);
 
     /**
      * 清空
