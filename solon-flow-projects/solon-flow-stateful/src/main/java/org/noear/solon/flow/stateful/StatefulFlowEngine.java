@@ -39,11 +39,31 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     }
 
     /**
+     * 执行单步
+     */
+    public StatefulNode evalStep(String chainId, FlowContext context) {
+        return evalStep(getChain(chainId), context);
+    }
+
+    /**
+     * 执行单步
+     */
+    public StatefulNode evalStep(Chain chain, FlowContext context) {
+        StatefulNode statefulNode = getActivityNode(chain, context);
+
+        if (statefulNode != null) {
+            postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
+            statefulNode = new StatefulNode(statefulNode.getNode(), NodeStates.PASS);
+        }
+
+        return statefulNode;
+    }
+
+    /**
      * 获取活动节点
      */
     public StatefulNode getActivityNode(String chainId, FlowContext context) {
-        eval(chainId, context);
-        return context.get(StatefulNode.KEY_ACTIVITY_NODE);
+        return getActivityNode(getChain(chainId), context);
     }
 
     /**
@@ -118,7 +138,7 @@ public class StatefulFlowEngine extends FlowEngineDefault {
             //撤回之前的节点
             for (Node n1 : node.getPrveNodes()) {
                 //移除状态（要求重来）
-                driver.getStateRepository().removeState(context, node);
+                driver.getStateRepository().removeState(context, n1);
             }
         } else if (nodeState == NodeStates.WITHDRAW_ALL) {
             //撤回全部（重新开始）
