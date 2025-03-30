@@ -131,6 +131,17 @@ public interface FlowEngine {
      *
      * @param chainId 链Id
      * @param startId 开始Id
+     * @param context 上下文
+     */
+    default void eval(String chainId, String startId, FlowContext context) throws FlowException {
+        eval(chainId, startId, -1, context);
+    }
+
+    /**
+     * 评估
+     *
+     * @param chainId 链Id
+     * @param startId 开始Id
      * @param depth   执行深度
      * @param context 上下文
      */
@@ -153,6 +164,16 @@ public interface FlowEngine {
      */
     default void eval(Chain chain, FlowContext context) throws FlowException {
         eval(chain, null, -1, context);
+    }
+
+    /**
+     * 评估
+     *
+     * @param chain   链
+     * @param context 上下文
+     */
+    default void eval(Chain chain, String startId, FlowContext context) throws FlowException {
+        eval(chain, startId, -1, context);
     }
 
     /**
