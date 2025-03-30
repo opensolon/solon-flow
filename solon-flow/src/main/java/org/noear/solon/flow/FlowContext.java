@@ -141,7 +141,7 @@ public class FlowContext {
         this.interrupted = interrupted;
     }
 
-    /// ////////
+    /// //////////////////////////////////////////////////
 
     /**
      * 数据模型
@@ -200,7 +200,7 @@ public class FlowContext {
     }
 
     /**
-     * 获取实例id
+     * 获取流实例id
      */
     public String getInstanceId() {
         return get("instanceId");
