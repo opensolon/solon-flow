@@ -93,27 +93,26 @@ public class FlowEngineDefault implements FlowEngine {
             throw new IllegalArgumentException("No chain found for id: " + chainId);
         }
 
-        eval(chain, startId, depth, context);
+        Node startNode;
+        if (startId == null) {
+            startNode = chain.getStart();
+        } else {
+            startNode = chain.getNode(startId);
+        }
+
+        eval(startNode, depth, context);
     }
 
     /**
      * 评估
      *
-     * @param chain   链
-     * @param startId 开始Id
-     * @param depth   执行深度
-     * @param context 上下文
+     * @param startNode 开始节点
+     * @param depth     执行深度
+     * @param context   上下文
      */
     @Override
-    public void eval(Chain chain, String startId, int depth, FlowContext context) throws FlowException {
-        Node start;
-        if (startId == null) {
-            start = chain.getStart();
-        } else {
-            start = chain.getNode(startId);
-        }
-
-        if (start == null) {
+    public void eval(Node startNode, int depth, FlowContext context) throws FlowException {
+        if (startNode == null) {
             throw new IllegalArgumentException("The start node was not found.");
         }
 
@@ -121,14 +120,14 @@ public class FlowEngineDefault implements FlowEngine {
             context.engine = this;
         }
 
-        FlowDriver driver = driverMap.get(chain.getDriver());
+        FlowDriver driver = driverMap.get(startNode.getChain().getDriver());
 
         if (driver == null) {
-            throw new IllegalArgumentException("No driver found for: '" + chain.getDriver() + "'");
+            throw new IllegalArgumentException("No driver found for: '" + startNode.getChain().getDriver() + "'");
         }
 
         //开始执行
-        new ChainInvocation(driver, context, start, depth, this.interceptorList, this::evalDo).invoke();
+        new ChainInvocation(driver, context, startNode, depth, this.interceptorList, this::evalDo).invoke();
     }
 
     /**

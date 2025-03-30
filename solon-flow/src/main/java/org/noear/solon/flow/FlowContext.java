@@ -94,7 +94,7 @@ public class FlowContext {
         }
 
         for (Node node1 : node.getNextNodes()) {
-            engine.eval(node.getChain(), node1.getId(), -1, this);
+            engine.eval(node1, this);
         }
     }
 

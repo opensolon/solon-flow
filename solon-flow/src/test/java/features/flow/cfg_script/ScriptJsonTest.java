@@ -51,7 +51,7 @@ public class ScriptJsonTest {
         context.put("c", 14);
 
         //执行一层
-        flowEngine.eval(chain, "n-2", 1, context);
+        flowEngine.eval(chain.getNode("n-2"), 1, context);
         assert context.result.equals(123);
     }
 

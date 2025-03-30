@@ -37,6 +37,6 @@ public class ComJsonTest {
         context.put("c", 14);
 
         //执行一层
-        flowEngine.eval(chain, "n2", 1, context);
+        flowEngine.eval(chain.getNode("n2"), 1, context);
     }
 }
