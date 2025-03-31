@@ -34,16 +34,24 @@ import java.util.List;
  */
 public class RedisStateRepository<T extends StateRecord> implements StateRepository<T> {
     private final RedisClient client;
+    private final String statePrefix;
+    private final String recordPrefix;
 
     public RedisStateRepository(RedisClient client) {
+        this(client, "state:", "record:");
+    }
+
+    public RedisStateRepository(RedisClient client, String statePrefix, String recordPrefix) {
         this.client = client;
+        this.statePrefix = statePrefix;
+        this.recordPrefix = recordPrefix;
     }
 
     @Override
     public int getState(FlowContext context, Node node) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
 
-        Integer rst = client.getHash(context.getInstanceId()).getAsInt(stateKey);
+        Integer rst = client.getHash(statePrefix + context.getInstanceId()).getAsInt(stateKey);
         if (rst == null) {
             return NodeState.UNDEFINED;
         } else {
@@ -54,23 +62,23 @@ public class RedisStateRepository<T extends StateRecord> implements StateReposit
     @Override
     public void putState(FlowContext context, Node node, int nodeState) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
-        client.getHash(context.getInstanceId()).put(stateKey, nodeState);
+        client.getHash(statePrefix + context.getInstanceId()).put(stateKey, nodeState);
     }
 
     @Override
     public void removeState(FlowContext context, Node node) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
-        client.getHash(context.getInstanceId()).remove(stateKey);
+        client.getHash(statePrefix + context.getInstanceId()).remove(stateKey);
     }
 
     @Override
     public void clearState(FlowContext context) {
-        client.getHash(context.getInstanceId()).clear();
+        client.getHash(statePrefix + context.getInstanceId()).clear();
     }
 
     @Override
     public List<T> getStateRecords(FlowContext context) {
-        List<String> list = client.getList(context.getInstanceId()).getAll();
+        List<String> list = client.getList(recordPrefix + context.getInstanceId()).getAll();
         List<T> list1 = new ArrayList<>(list.size());
         for (String str : list) {
             list1.add(ONode.deserialize(str));
@@ -80,11 +88,11 @@ public class RedisStateRepository<T extends StateRecord> implements StateReposit
 
     @Override
     public void addStateRecord(FlowContext context, T record) {
-        client.getList(context.getInstanceId()).add(ONode.serialize(record));
+        client.getList(recordPrefix + context.getInstanceId()).add(ONode.serialize(record));
     }
 
     @Override
     public void clearStateRecords(FlowContext context) {
-        client.getList(context.getInstanceId()).clear();
+        client.getList(recordPrefix + context.getInstanceId()).clear();
     }
 }
