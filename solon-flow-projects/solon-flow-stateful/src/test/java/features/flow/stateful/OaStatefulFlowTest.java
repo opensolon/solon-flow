@@ -6,12 +6,14 @@ import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.*;
 import org.noear.solon.flow.stateful.operator.MetaStateOperator;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
+import org.noear.solon.test.SolonTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author noear 2025/3/27 created
  */
+@SolonTest
 public class OaStatefulFlowTest {
     static final Logger log = LoggerFactory.getLogger(OaStatefulFlowTest.class);
 
@@ -23,6 +25,13 @@ public class OaStatefulFlowTest {
     private StatefulFlowEngine buildFlowDriver() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
+
+
+        // 创建 Redis 客户端
+//        RedisClient redisClient = Solon.cfg().getBean("solon.repo.redis", RedisClient.class);
+//        if (redisClient == null) {
+//            throw new IllegalStateException("Redis client configuration not found!");
+//        }
 
         StatefulFlowEngine fe = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
                 .stateOperator(new MetaStateOperator())
@@ -127,10 +136,12 @@ public class OaStatefulFlowTest {
         statefulNode = flowEngine.getActivityNode(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode == null; //抄送节点
+
+        flowEngine.getRepository().getStateRecords(context);
     }
 
     private FlowContext getContext(String actor) throws Throwable {
-        FlowContext context = new FlowContext("i1");
+        FlowContext context = new FlowContext("ins2");
         context.put("actor", actor);
         return context;
     }

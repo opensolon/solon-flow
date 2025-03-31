@@ -29,6 +29,10 @@ public class StateRecord implements Serializable {
     private int nodeState;
     private long created;
 
+    public StateRecord() {
+        //用于反序列化
+    }
+
     public StateRecord(String chainId, String nodeId, int nodeState, long created) {
         this.chainId = chainId;
         this.nodeId = nodeId;
