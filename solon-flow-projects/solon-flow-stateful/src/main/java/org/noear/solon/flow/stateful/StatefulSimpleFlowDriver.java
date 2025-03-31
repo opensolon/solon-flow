@@ -115,26 +115,41 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
         private Evaluation evaluation;
         private Container container;
 
+        /**
+         * 设置状态仓库
+         */
         public Builder stateRepository(StateRepository stateRepository) {
             this.stateRepository = stateRepository;
             return this;
         }
 
+        /**
+         * 设置状态操作员
+         */
         public Builder stateOperator(StateOperator stateOperator) {
             this.stateOperator = stateOperator;
             return this;
         }
 
+        /**
+         * 设置评估器
+         */
         public Builder evaluation(Evaluation evaluation) {
             this.evaluation = evaluation;
             return this;
         }
 
+        /**
+         * 设置容器
+         */
         public Builder container(Container container) {
             this.container = container;
             return this;
         }
 
+        /**
+         * 构建
+         */
         public StatefulSimpleFlowDriver build() {
             return new StatefulSimpleFlowDriver(
                     stateRepository,
