@@ -176,7 +176,7 @@ public class StatefulFlowEngine extends FlowEngineDefault {
                 postHandleTask(context, node.getTask());
 
                 Node nextNode = node.getNextNode();
-                if (nextNode != null && nextNode.getType() == NodeType.end) {
+                if (nextNode != null && nextNode.getType() == NodeType.END) {
                     //如果下个节点是 end
                     eval(nextNode, context);
                 }

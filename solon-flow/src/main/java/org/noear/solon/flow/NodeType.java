@@ -25,27 +25,27 @@ public enum NodeType {
     /**
      * 开始
      */
-    start(0),
+    START(0),
     /**
      * 活动节点
      */
-    activity(1),
+    ACTIVITY(1),
     /**
      * 包容网关（多选）
      */
-    inclusive(2),
+    INCLUSIVE(2),
     /**
      * 排他网关（单选）
      */
-    exclusive(3),
+    EXCLUSIVE(3),
     /**
      * 并行网关（全选）
      */
-    parallel(4),
+    PARALLEL(4),
     /**
      * 结束
      */
-    end(9);
+    END(9);
 
     private int code;
 
@@ -65,17 +65,17 @@ public enum NodeType {
             }
         }
 
-        return activity;
+        return ACTIVITY;
     }
 
     public static NodeType nameOf(String name) {
         NodeType[] values = NodeType.values();
         for (NodeType v : values) {
-            if (v.name().equals(name)) {
+            if (v.name().equalsIgnoreCase(name)) {
                 return v;
             }
         }
 
-        return activity;
+        return ACTIVITY;
     }
 }

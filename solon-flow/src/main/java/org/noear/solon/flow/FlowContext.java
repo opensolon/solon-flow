@@ -89,7 +89,7 @@ public class FlowContext {
      * @param node 节点
      */
     public void manualNext(Node node) throws FlowException {
-        if (node.getType() != NodeType.activity) {
+        if (node.getType() != NodeType.ACTIVITY) {
             throw new IllegalArgumentException(node.getId() + " is not execute");
         }
 

@@ -38,11 +38,11 @@ public class ComJavaTest {
         Chain chain = new Chain("c1", "c1");
 
 
-        chain.addNode(new NodeDecl("n1", NodeType.start).linkAdd("n2"));
-        chain.addNode(new NodeDecl("n2", NodeType.activity).task("@a").linkAdd("n3"));
-        chain.addNode(new NodeDecl("n3", NodeType.activity).task("@b").linkAdd("n4"));
-        chain.addNode(new NodeDecl("n4", NodeType.activity).task("@c").linkAdd("n5"));
-        chain.addNode(new NodeDecl("n5", NodeType.end));
+        chain.addNode(new NodeDecl("n1", NodeType.START).linkAdd("n2"));
+        chain.addNode(new NodeDecl("n2", NodeType.ACTIVITY).task("@a").linkAdd("n3"));
+        chain.addNode(new NodeDecl("n3", NodeType.ACTIVITY).task("@b").linkAdd("n4"));
+        chain.addNode(new NodeDecl("n4", NodeType.ACTIVITY).task("@c").linkAdd("n5"));
+        chain.addNode(new NodeDecl("n5", NodeType.END));
 
         FlowContext context = new FlowContext();
         context.put("a", 2);

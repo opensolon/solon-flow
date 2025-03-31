@@ -20,7 +20,6 @@ import org.noear.solon.Utils;
 import org.noear.solon.core.util.ResourceUtil;
 import org.noear.solon.lang.Preview;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -133,7 +132,7 @@ public class Chain {
 
         Node node = new Node(this, nodeDecl, linkAry);
         nodes.put(node.getId(), node);
-        if (nodeDecl.type == NodeType.start) {
+        if (nodeDecl.type == NodeType.START) {
             start = node;
         }
     }

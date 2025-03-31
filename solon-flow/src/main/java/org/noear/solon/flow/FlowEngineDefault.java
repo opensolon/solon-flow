@@ -214,25 +214,25 @@ public class FlowEngineDefault implements FlowEngine {
         boolean node_end = true;
 
         switch (node.getType()) {
-            case start:
+            case START:
                 //转到下个节点
                 node_run(driver, context, node.getNextNode(), depth);
                 break;
-            case end:
+            case END:
                 break;
-            case activity:
+            case ACTIVITY:
                 //尝试执行任务（可能为空）
                 task_exec(driver, context, node);
                 //转到下个节点
                 node_run(driver, context, node.getNextNode(), depth);
                 break;
-            case inclusive: //包容网关（多选）
+            case INCLUSIVE: //包容网关（多选）
                 node_end = inclusive_run(driver, context, node, depth);
                 break;
-            case exclusive: //排他网关（单选）
+            case EXCLUSIVE: //排他网关（单选）
                 node_end = exclusive_run(driver, context, node, depth);
                 break;
-            case parallel: //并行网关（全选）
+            case PARALLEL: //并行网关（全选）
                 node_end = parallel_run(driver, context, node, depth);
                 break;
         }

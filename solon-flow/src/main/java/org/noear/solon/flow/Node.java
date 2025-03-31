@@ -104,7 +104,7 @@ public class Node {
         if (prveLinks == null) {
             List<Link> tmp = new ArrayList<>();
 
-            if (getType() != NodeType.start) {
+            if (getType() != NodeType.START) {
                 for (Link l : chain.getLinks()) {
                     if (getId().equals(l.getNextId())) { //by nextID
                         tmp.add(l);
@@ -135,7 +135,7 @@ public class Node {
         if (prveNodes == null) {
             List<Node> tmp = new ArrayList<>();
 
-            if (getType() != NodeType.start) {
+            if (getType() != NodeType.START) {
                 for (Link l : chain.getLinks()) { //要从链处找
                     if (getId().equals(l.getNextId())) {
                         tmp.add(chain.getNode(l.getPrveId()));
@@ -155,7 +155,7 @@ public class Node {
         if (nextNodes == null) {
             List<Node> tmp = new ArrayList<>();
 
-            if (getType() != NodeType.end) {
+            if (getType() != NodeType.END) {
                 for (Link l : this.getNextLinks()) { //从自由处找
                     tmp.add(chain.getNode(l.getNextId()));
                 }
