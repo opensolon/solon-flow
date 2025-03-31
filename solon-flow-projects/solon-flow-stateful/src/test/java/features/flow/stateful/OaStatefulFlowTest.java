@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.*;
-import org.noear.solon.flow.stateful.operator.SimpleStateOperator;
+import org.noear.solon.flow.stateful.operator.MetaStateOperator;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ public class OaStatefulFlowTest {
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
         StatefulFlowEngine fe = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
-                .stateOperator(new SimpleStateOperator())
+                .stateOperator(new MetaStateOperator())
                 .stateRepository(new InMemoryStateRepository())
                 .container(container)
                 .build());

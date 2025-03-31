@@ -26,6 +26,9 @@ import org.noear.solon.flow.stateful.StateOperator;
  * @since 3.1
  */
 public class BlockStateOperator implements StateOperator {
+    /**
+     * 是否可操作的
+     */
     @Override
     public boolean isOperatable(FlowContext context, Node node) {
         return true;

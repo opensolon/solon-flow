@@ -57,12 +57,12 @@ public abstract class AbstractFlowDriver implements FlowDriver {
 
     @Override
     public void onNodeStart(FlowContext context, Node node) {
-        log.debug("on-node-start: chain={}, node={}", node.getChain().getId(), node);
+        log.debug("on-node-start: chain={}, node={}", node.getChain().getId(), node.getId());
     }
 
     @Override
     public void onNodeEnd(FlowContext context, Node node) {
-        log.debug("on-node-end: chain={}, node={}", node.getChain().getId(), node);
+        log.debug("on-node-end: chain={}, node={}", node.getChain().getId(), node.getId());
     }
 
     /// //////////////

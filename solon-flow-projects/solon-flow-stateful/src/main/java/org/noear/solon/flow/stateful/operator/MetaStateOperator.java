@@ -22,22 +22,25 @@ import org.noear.solon.flow.stateful.StateOperator;
 import java.util.*;
 
 /**
- * 简单状态操作员
+ * 元信息状态操作员
  *
  * @author noear
  * @since 3.1
  */
-public class SimpleStateOperator implements StateOperator {
+public class MetaStateOperator implements StateOperator {
     private final Set<String> keys = new HashSet<>();
 
-    public SimpleStateOperator() {
+    public MetaStateOperator() {
         this("actor");
     }
 
-    public SimpleStateOperator(String... keys) {
+    public MetaStateOperator(String... keys) {
         this.keys.addAll(Arrays.asList(keys));
     }
 
+    /**
+     * 是否可操作的
+     */
     @Override
     public boolean isOperatable(FlowContext context, Node node) {
         for (String key : keys) {

@@ -21,7 +21,7 @@ import org.noear.solon.flow.Evaluation;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Task;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
-import org.noear.solon.flow.stateful.operator.SimpleStateOperator;
+import org.noear.solon.flow.stateful.operator.MetaStateOperator;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 
 /**
@@ -45,7 +45,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
     public StatefulSimpleFlowDriver(StateRepository stateRepository, StateOperator stateOperator, Evaluation evaluation, Container container) {
         super(evaluation, container);
         this.stateRepository = (stateRepository == null ? new InMemoryStateRepository() : stateRepository);
-        this.stateOperator = (stateOperator == null ? new SimpleStateOperator() : stateOperator);
+        this.stateOperator = (stateOperator == null ? new MetaStateOperator() : stateOperator);
     }
 
 
