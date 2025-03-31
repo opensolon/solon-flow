@@ -58,25 +58,25 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                     context,
                     task.getNode());
 
-            if (nodeState == NodeStates.UNDEFINED) {
+            if (nodeState == NodeState.UNDEFINED) {
                 //检查是否为当前用户的任务
                 if (stateOperator.isOperatable(context, task.getNode())) {
                     //记录当前流程节点（用于展示）
-                    context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeStates.WAIT));
+                    context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeState.WAIT));
                     //停止流程
                     context.stop();
                     //设置状态为待办
-                    ((StatefulFlowEngine) context.engine()).postNodeState(
+                    ((StatefulFlowEngine) context.engine()).postActivityState(
                             context,
                             task.getNode(),
-                            NodeStates.WAIT);
+                            NodeState.WAIT);
 
                 } else {
                     //阻断当前分支（等待别的用户办理）
-                    context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeStates.UNDEFINED));
+                    context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeState.UNDEFINED));
                     context.interrupt();
                 }
-            } else if (nodeState == NodeStates.WAIT) {
+            } else if (nodeState == NodeState.WAIT) {
                 //检查是否为当前用户的任务
                 if (stateOperator.isOperatable(context, task.getNode())) {
                     //记录当前流程节点（用于展示）
@@ -85,7 +85,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                     context.stop();
                 } else {
                     //阻断当前分支（等待别的用户办理）
-                    context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeStates.UNDEFINED));
+                    context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeState.UNDEFINED));
                     context.interrupt();
                 }
             }

@@ -19,7 +19,7 @@ import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.StateRecord;
 import org.noear.solon.flow.stateful.StateRepository;
-import org.noear.solon.flow.stateful.NodeStates;
+import org.noear.solon.flow.stateful.NodeState;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +48,7 @@ public class InMemoryStateRepository<T extends StateRecord> implements StateRepo
 
         Integer rst = getStates(context.getInstanceId()).get(stateKey);
         if (rst == null) {
-            return NodeStates.UNDEFINED;
+            return NodeState.UNDEFINED;
         } else {
             return rst;
         }

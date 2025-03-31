@@ -18,7 +18,6 @@ package org.noear.solon.flow.stateful;
 import org.noear.solon.flow.*;
 import org.noear.solon.lang.Preview;
 
-import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -39,6 +38,15 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     }
 
     /**
+     * 获取状态仓库
+     */
+    public StateRepository getRepository() {
+        return driver.getStateRepository();
+    }
+
+    /// //////////////
+
+    /**
      * 单步前进
      */
     public StatefulNode stepForward(String chainId, FlowContext context) {
@@ -52,8 +60,8 @@ public class StatefulFlowEngine extends FlowEngineDefault {
         StatefulNode statefulNode = getActivityNode(chain, context);
 
         if (statefulNode != null) {
-            postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
-            statefulNode = new StatefulNode(statefulNode.getNode(), NodeStates.PASS);
+            postActivityState(context, statefulNode.getNode(), NodeState.PASS);
+            statefulNode = new StatefulNode(statefulNode.getNode(), NodeState.PASS);
         }
 
         return statefulNode;
@@ -73,13 +81,14 @@ public class StatefulFlowEngine extends FlowEngineDefault {
         StatefulNode statefulNode = getActivityNode(chain, context);
 
         if (statefulNode != null) {
-            postNodeState(context, statefulNode.getNode(), NodeStates.BACK);
-            statefulNode = new StatefulNode(statefulNode.getNode(), NodeStates.BACK);
+            postActivityState(context, statefulNode.getNode(), NodeState.BACK);
+            statefulNode = new StatefulNode(statefulNode.getNode(), NodeState.BACK);
         }
 
         return statefulNode;
     }
 
+    /// ////////////////////////
 
     /**
      * 获取活动节点
@@ -97,91 +106,69 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     }
 
     /**
-     * 获取状态记录
+     * 提交活动状态
      */
-    public List<StateRecord> getStateRecords(FlowContext context) {
-        return driver.getStateRepository().getStateRecords(context);
+    public void postActivityState(FlowContext context, String chainId, String activityNodeId, int state) {
+        Node node = getChain(chainId).getNode(activityNodeId);
+        postActivityState(context, node, state);
     }
 
     /**
-     * 获取节点状态
+     * 提交活动状态
      */
-    public int getNodeState(FlowContext context, String chainId, String nodeId) {
-        Node node = getChain(chainId).getNode(nodeId);
-        return getNodeState(context, node);
-    }
-
-    /**
-     * 获取节点状态
-     */
-    public int getNodeState(FlowContext context, Node node) {
-        return driver.getStateRepository().getState(context, node);
-    }
-
-    /**
-     * 提交节点状态
-     */
-    public void postNodeState(FlowContext context, String chainId, String nodeId, int nodeState) {
-        Node node = getChain(chainId).getNode(nodeId);
-        postNodeState(context, node, nodeState);
-    }
-
-    /**
-     * 提交节点状态
-     */
-    public void postNodeState(FlowContext context, Node node, int nodeState) {
+    public void postActivityState(FlowContext context, Node activity, int state) {
         LOCKER.lock();
 
         try {
-            postNodeStateDo(context, node, nodeState);
+            postActivityStateDo(context, activity, state);
         } finally {
             LOCKER.unlock();
         }
     }
 
     /**
-     * 提交节点状态
+     * 提交活动状态
      */
-    protected void postNodeStateDo(FlowContext context, Node node, int nodeState) {
-        int oldNodeState = driver.getStateRepository().getState(context, node);
-        if (oldNodeState == nodeState) {
+    protected void postActivityStateDo(FlowContext context, Node activity, int state) {
+        int oldNodeState = driver.getStateRepository().getState(context, activity);
+        if (oldNodeState == state) {
             //如果要状态没变化，不处理
             return;
         }
 
         //添加记录
-        StateRecord stateRecord = driver.getStateOperator().createRecord(context, node, nodeState);
+        StateRecord stateRecord = driver.getStateOperator().createRecord(context, activity, state);
         driver.getStateRepository().addStateRecord(context, stateRecord);
 
         //节点
 
         //更新状态
-        if (nodeState == NodeStates.BACK) {
+        if (state == NodeState.BACK) {
             //撤回之前的节点
-            for (Node n1 : node.getPrveNodes()) {
+            for (Node n1 : activity.getPrveNodes()) {
                 //移除状态（要求重来）
                 driver.getStateRepository().removeState(context, n1);
             }
-        } else if (nodeState == NodeStates.BACK_ALL) {
+        } else if (state == NodeState.BACK_ALL) {
             //撤回全部（重新开始）
             driver.getStateRepository().clearState(context);
         } else {
             //其它（等待或通过或拒绝）
-            driver.getStateRepository().putState(context, node, nodeState);
+            driver.getStateRepository().putState(context, activity, state);
         }
 
         //如果是通过，则提交任务
-        if (nodeState == NodeStates.PASS) {
+        if (state == NodeState.PASS) {
             try {
-                postHandleTask(context, node.getTask());
+                postHandleTask(context, activity.getTask());
 
-                Node nextNode = node.getNextNode();
+                Node nextNode = activity.getNextNode();
                 if (nextNode != null && nextNode.getType() == NodeType.END) {
                     //如果下个节点是 end
                     eval(nextNode, context);
                 }
             } catch (Throwable e) {
-                throw new FlowException("Task handle failed: " + node.getChain().getId() + " / " + node.getId(), e);
+                throw new FlowException("Task handle failed: " + activity.getChain().getId() + " / " + activity.getId(), e);
             }
         }
     }

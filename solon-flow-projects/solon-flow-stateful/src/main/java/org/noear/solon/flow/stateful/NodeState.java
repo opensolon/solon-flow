@@ -21,7 +21,7 @@ package org.noear.solon.flow.stateful;
  * @author noear
  * @since 3.1
  */
-public class NodeStates {
+public class NodeState {
     /**
      * 未定义
      */

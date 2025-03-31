@@ -3,7 +3,7 @@ package features.flow.stateful;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.container.MapContainer;
-import org.noear.solon.flow.stateful.NodeStates;
+import org.noear.solon.flow.stateful.NodeState;
 import org.noear.solon.flow.stateful.StatefulFlowEngine;
 import org.noear.solon.flow.stateful.StatefulNode;
 import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
@@ -50,7 +50,7 @@ public class AiBlockFlowTest {
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step2".equals(statefulNode.getNode().getId());
-        assert NodeStates.PASS == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
+        assert NodeState.PASS == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
 
         /// ////////////////
 
@@ -59,7 +59,7 @@ public class AiBlockFlowTest {
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
-        assert NodeStates.PASS == statefulNode.getState(); //等待当前用户处理
+        assert NodeState.PASS == statefulNode.getState(); //等待当前用户处理
 
 
         /// ////////////////
@@ -69,7 +69,7 @@ public class AiBlockFlowTest {
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_1");
-        assert NodeStates.PASS == statefulNode.getState(); //没有权限
+        assert NodeState.PASS == statefulNode.getState(); //没有权限
 
 
         context = new FlowContext(instanceId);
@@ -77,7 +77,7 @@ public class AiBlockFlowTest {
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_2");
-        assert NodeStates.PASS == statefulNode.getState(); //等待当前用户处理
+        assert NodeState.PASS == statefulNode.getState(); //等待当前用户处理
 
         /// ////////////////
 
@@ -85,7 +85,7 @@ public class AiBlockFlowTest {
         statefulNode = flowEngine.stepForward(chainId, context);
         log.warn("{}", statefulNode);
         assert "step5".equals(statefulNode.getNode().getId()); //抄送节点
-        assert NodeStates.PASS == statefulNode.getState();
+        assert NodeState.PASS == statefulNode.getState();
 
         /// ////////////////
 

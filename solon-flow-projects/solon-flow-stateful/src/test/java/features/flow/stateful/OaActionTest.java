@@ -18,7 +18,7 @@ public class OaActionTest {
         FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postNodeState(context, node.getNode(), NodeStates.PASS);
+        flowEngine.postActivityState(context, node.getNode(), NodeState.PASS);
     }
 
     //回退
@@ -26,7 +26,7 @@ public class OaActionTest {
         FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postNodeState(context, node.getNode(), NodeStates.BACK);
+        flowEngine.postActivityState(context, node.getNode(), NodeState.BACK);
     }
 
     //任意跳转（通过）
@@ -35,7 +35,7 @@ public class OaActionTest {
 
         String nodeId = "demo1";
         Node node = flowEngine.getChain(chainId).getNode(nodeId);
-        flowEngine.postNodeState(context, node, NodeStates.PASS);
+        flowEngine.postActivityState(context, node, NodeState.PASS);
     }
 
     //任意跳转（退回）
@@ -44,7 +44,7 @@ public class OaActionTest {
 
         String nodeId = "demo1"; //实际可能需要遍历节点树，并检查各节点状态；再回退
         Node node = flowEngine.getChain(chainId).getNode(nodeId);
-        flowEngine.postNodeState(context, node, NodeStates.BACK);
+        flowEngine.postActivityState(context, node, NodeState.BACK);
     }
 
     //委派
@@ -54,7 +54,7 @@ public class OaActionTest {
         context.put("delegate", "B"); //需要定制下状态操作员（用A检测，但留下B的状态记录）
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postNodeState(context, node.getNode(), NodeStates.PASS);
+        flowEngine.postActivityState(context, node.getNode(), NodeState.PASS);
     }
 
     //转办（与委派技术实现差不多）
@@ -64,7 +64,7 @@ public class OaActionTest {
         context.put("delegate", "B"); //需要定制下状态操作员（用A检测，但留下B的状态记录）
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postNodeState(context, node.getNode(), NodeStates.PASS);
+        flowEngine.postActivityState(context, node.getNode(), NodeState.PASS);
     }
 
     //催办
@@ -82,7 +82,7 @@ public class OaActionTest {
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         //回退到顶（给发起人）；相当于重新开始走流程
-        flowEngine.postNodeState(context, node.getNode(), NodeStates.BACK_ALL);
+        flowEngine.postActivityState(context, node.getNode(), NodeState.BACK_ALL);
     }
 
     //撤销（和回退没啥区别）
@@ -90,7 +90,7 @@ public class OaActionTest {
         FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postNodeState(context, node.getNode(), NodeStates.BACK);
+        flowEngine.postActivityState(context, node.getNode(), NodeState.BACK);
     }
 
     //中止
@@ -98,7 +98,7 @@ public class OaActionTest {
         FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postNodeState(context, node.getNode(), NodeStates.ABORT);
+        flowEngine.postActivityState(context, node.getNode(), NodeState.ABORT);
     }
 
     //抄送
@@ -106,7 +106,7 @@ public class OaActionTest {
         FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postNodeState(context, node.getNode(), NodeStates.PASS);
+        flowEngine.postActivityState(context, node.getNode(), NodeState.PASS);
         //提交后，会自动触发任务（如果有抄送配置，自动执行）
     }
 
@@ -121,7 +121,7 @@ public class OaActionTest {
         FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postNodeState(context, node.getNode(), NodeStates.PASS);
+        flowEngine.postActivityState(context, node.getNode(), NodeState.PASS);
     }
 
     //会签

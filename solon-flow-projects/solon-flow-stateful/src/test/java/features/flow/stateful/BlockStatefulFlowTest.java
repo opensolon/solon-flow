@@ -35,7 +35,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活。。。。
 
         //（干完后）提交节点状态
-        flowEngine.postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
+        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.PASS);
 
 
         //获取节点
@@ -46,7 +46,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活。。。。
 
         //（干完后）提交节点状态
-        flowEngine.postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
+        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.PASS);
 
 
         //获取节点
@@ -57,7 +57,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活
 
         //提交节点状态
-        flowEngine.postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
+        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.PASS);
 
 
         ///  （换一个实例）
@@ -66,7 +66,7 @@ public class BlockStatefulFlowTest {
         statefulNode = flowEngine.getActivityNode(chainId, context);
         assertNode(statefulNode, "step2");
 
-        flowEngine.postNodeState(context, statefulNode.getNode(), NodeStates.PASS);
+        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.PASS);
 
 
         context = new FlowContext(instanceId2);
@@ -83,7 +83,7 @@ public class BlockStatefulFlowTest {
     }
 
     private void assertNode(StatefulNode node, String id)  {
-        assert node.getState() == NodeStates.WAIT;
+        assert node.getState() == NodeState.WAIT;
         assert id.equals(node.getNode().getId());
     }
 }
