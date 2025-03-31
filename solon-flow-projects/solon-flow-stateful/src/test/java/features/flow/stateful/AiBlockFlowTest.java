@@ -46,7 +46,7 @@ public class AiBlockFlowTest {
         StatefulNode statefulNode;
 
         context = new FlowContext(instanceId);
-        statefulNode = flowEngine.evalStep(chainId, context);
+        statefulNode = flowEngine.stepForward(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step2".equals(statefulNode.getNode().getId());
@@ -55,7 +55,7 @@ public class AiBlockFlowTest {
         /// ////////////////
 
         context = new FlowContext(instanceId);
-        statefulNode = flowEngine.evalStep(chainId, context);
+        statefulNode = flowEngine.stepForward(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -65,7 +65,7 @@ public class AiBlockFlowTest {
         /// ////////////////
 
         context = new FlowContext(instanceId);
-        statefulNode = flowEngine.evalStep(chainId, context);
+        statefulNode = flowEngine.stepForward(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_1");
@@ -73,7 +73,7 @@ public class AiBlockFlowTest {
 
 
         context = new FlowContext(instanceId);
-        statefulNode = flowEngine.evalStep(chainId, context);
+        statefulNode = flowEngine.stepForward(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_2");
@@ -82,7 +82,7 @@ public class AiBlockFlowTest {
         /// ////////////////
 
         context = new FlowContext(instanceId);
-        statefulNode = flowEngine.evalStep(chainId, context);
+        statefulNode = flowEngine.stepForward(chainId, context);
         log.warn("{}", statefulNode);
         assert "step5".equals(statefulNode.getNode().getId()); //抄送节点
         assert NodeStates.PASS == statefulNode.getState();
@@ -90,7 +90,7 @@ public class AiBlockFlowTest {
         /// ////////////////
 
         context = new FlowContext(instanceId);
-        statefulNode = flowEngine.evalStep(chainId, context);
+        statefulNode = flowEngine.stepForward(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode == null; //抄送节点
     }

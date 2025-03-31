@@ -39,16 +39,16 @@ public class StatefulFlowEngine extends FlowEngineDefault {
     }
 
     /**
-     * 执行单步
+     * 单步前进
      */
-    public StatefulNode evalStep(String chainId, FlowContext context) {
-        return evalStep(getChain(chainId), context);
+    public StatefulNode stepForward(String chainId, FlowContext context) {
+        return stepForward(getChain(chainId), context);
     }
 
     /**
-     * 执行单步
+     * 单步前进
      */
-    public StatefulNode evalStep(Chain chain, FlowContext context) {
+    public StatefulNode stepForward(Chain chain, FlowContext context) {
         StatefulNode statefulNode = getActivityNode(chain, context);
 
         if (statefulNode != null) {
@@ -58,6 +58,28 @@ public class StatefulFlowEngine extends FlowEngineDefault {
 
         return statefulNode;
     }
+
+    /**
+     * 单步后退
+     */
+    public StatefulNode stepBack(String chainId, FlowContext context) {
+        return stepBack(getChain(chainId), context);
+    }
+
+    /**
+     * 单步后退
+     */
+    public StatefulNode stepBack(Chain chain, FlowContext context) {
+        StatefulNode statefulNode = getActivityNode(chain, context);
+
+        if (statefulNode != null) {
+            postNodeState(context, statefulNode.getNode(), NodeStates.BACK);
+            statefulNode = new StatefulNode(statefulNode.getNode(), NodeStates.BACK);
+        }
+
+        return statefulNode;
+    }
+
 
     /**
      * 获取活动节点
@@ -134,13 +156,13 @@ public class StatefulFlowEngine extends FlowEngineDefault {
         //节点
 
         //更新状态
-        if (nodeState == NodeStates.WITHDRAW) {
+        if (nodeState == NodeStates.BACK) {
             //撤回之前的节点
             for (Node n1 : node.getPrveNodes()) {
                 //移除状态（要求重来）
                 driver.getStateRepository().removeState(context, n1);
             }
-        } else if (nodeState == NodeStates.WITHDRAW_ALL) {
+        } else if (nodeState == NodeStates.BACK_ALL) {
             //撤回全部（重新开始）
             driver.getStateRepository().clearState(context);
         } else {

@@ -26,7 +26,7 @@ public class OaActionTest {
         FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postNodeState(context, node.getNode(), NodeStates.WITHDRAW);
+        flowEngine.postNodeState(context, node.getNode(), NodeStates.BACK);
     }
 
     //任意跳转（通过）
@@ -44,7 +44,7 @@ public class OaActionTest {
 
         String nodeId = "demo1"; //实际可能需要遍历节点树，并检查各节点状态；再回退
         Node node = flowEngine.getChain(chainId).getNode(nodeId);
-        flowEngine.postNodeState(context, node, NodeStates.WITHDRAW);
+        flowEngine.postNodeState(context, node, NodeStates.BACK);
     }
 
     //委派
@@ -82,7 +82,7 @@ public class OaActionTest {
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         //回退到顶（给发起人）；相当于重新开始走流程
-        flowEngine.postNodeState(context, node.getNode(), NodeStates.WITHDRAW_ALL);
+        flowEngine.postNodeState(context, node.getNode(), NodeStates.BACK_ALL);
     }
 
     //撤销（和回退没啥区别）
@@ -90,7 +90,7 @@ public class OaActionTest {
         FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postNodeState(context, node.getNode(), NodeStates.WITHDRAW);
+        flowEngine.postNodeState(context, node.getNode(), NodeStates.BACK);
     }
 
     //中止
@@ -98,7 +98,7 @@ public class OaActionTest {
         FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postNodeState(context, node.getNode(), NodeStates.REJECT);
+        flowEngine.postNodeState(context, node.getNode(), NodeStates.ABORT);
     }
 
     //抄送
