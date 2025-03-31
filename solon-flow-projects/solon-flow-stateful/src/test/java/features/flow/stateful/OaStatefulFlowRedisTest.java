@@ -1,12 +1,18 @@
 package features.flow.stateful;
 
 import org.junit.jupiter.api.Test;
+import org.noear.redisx.RedisClient;
+import org.noear.solon.Solon;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.container.MapContainer;
-import org.noear.solon.flow.stateful.*;
+import org.noear.solon.flow.stateful.NodeState;
+import org.noear.solon.flow.stateful.StatefulFlowEngine;
+import org.noear.solon.flow.stateful.StatefulNode;
+import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
 import org.noear.solon.flow.stateful.operator.MetaStateOperator;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
+import org.noear.solon.flow.stateful.repository.RedisStateRepository;
 import org.noear.solon.test.SolonTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +21,8 @@ import org.slf4j.LoggerFactory;
  * @author noear 2025/3/27 created
  */
 @SolonTest
-public class OaStatefulFlowTest {
-    static final Logger log = LoggerFactory.getLogger(OaStatefulFlowTest.class);
+public class OaStatefulFlowRedisTest {
+    static final Logger log = LoggerFactory.getLogger(OaStatefulFlowRedisTest.class);
 
     final String chainId = "f1";
     final String instanceId = Utils.uuid();
@@ -28,9 +34,16 @@ public class OaStatefulFlowTest {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
+
+        // 创建 Redis 客户端
+        RedisClient redisClient = Solon.cfg().getBean("solon.repo.redis", RedisClient.class);
+        if (redisClient == null) {
+            throw new IllegalStateException("Redis client configuration not found!");
+        }
+
         StatefulFlowEngine fe = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
                 .stateOperator(new MetaStateOperator())
-                .stateRepository(new InMemoryStateRepository())
+                .stateRepository(new RedisStateRepository(redisClient))
                 .container(container)
                 .build());
 
@@ -133,6 +146,9 @@ public class OaStatefulFlowTest {
         assert statefulNode == null; //抄送节点
 
         flowEngine.getRepository().getStateRecords(context);
+
+        flowEngine.getRepository().clearState(context);
+        flowEngine.getRepository().clearStateRecords(context);
     }
 
     private FlowContext getContext(String actor) throws Throwable {
