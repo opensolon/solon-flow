@@ -15,38 +15,35 @@
  */
 package org.noear.solon.flow.stateful.repository;
 
+import org.noear.redisx.RedisClient;
+import org.noear.snack.ONode;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
+import org.noear.solon.flow.stateful.NodeState;
 import org.noear.solon.flow.stateful.StateRecord;
 import org.noear.solon.flow.stateful.StateRepository;
-import org.noear.solon.flow.stateful.NodeState;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * 内存状态仓库
+ * Redis 状态仓库
  *
  * @author noear
  * @since 3.1
  */
-public class InMemoryStateRepository<T extends StateRecord> implements StateRepository<T> {
-    private final Map<String, List<T>> historyMap = new ConcurrentHashMap<>();
-    private final Map<String, Map<String, Integer>> stateMap = new ConcurrentHashMap<>();
+public class RedisStateRepository<T extends StateRecord> implements StateRepository<T> {
+    private final RedisClient client;
 
-    private List<T> getHistory(String instanceId) {
-        return historyMap.computeIfAbsent(instanceId, k -> new ArrayList<>());
-    }
-
-    public Map<String, Integer> getStates(String instanceId) {
-        return stateMap.computeIfAbsent(instanceId, k -> new ConcurrentHashMap<>());
+    public RedisStateRepository(RedisClient client) {
+        this.client = client;
     }
 
     @Override
     public int getState(FlowContext context, Node node) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
 
-        Integer rst = getStates(context.getInstanceId()).get(stateKey);
+        Integer rst = client.getHash(context.getInstanceId()).getAsInt(stateKey);
         if (rst == null) {
             return NodeState.UNDEFINED;
         } else {
@@ -57,32 +54,37 @@ public class InMemoryStateRepository<T extends StateRecord> implements StateRepo
     @Override
     public void putState(FlowContext context, Node node, int nodeState) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
-        getStates(context.getInstanceId()).put(stateKey, nodeState);
+        client.getHash(context.getInstanceId()).put(stateKey, nodeState);
     }
 
     @Override
     public void removeState(FlowContext context, Node node) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
-        getStates(context.getInstanceId()).remove(stateKey);
+        client.getHash(context.getInstanceId()).remove(stateKey);
     }
 
     @Override
     public void clearState(FlowContext context) {
-        getStates(context.getInstanceId()).clear();
+        client.getHash(context.getInstanceId()).clear();
     }
 
     @Override
     public List<T> getStateRecords(FlowContext context) {
-        return Collections.unmodifiableList(getHistory(context.getInstanceId()));
+        List<String> list = client.getList(context.getInstanceId()).getAll();
+        List<T> list1 = new ArrayList<>(list.size());
+        for (String str : list) {
+            list1.add(ONode.deserialize(str));
+        }
+        return list1;
     }
 
     @Override
     public void addStateRecord(FlowContext context, T record) {
-        getHistory(context.getInstanceId()).add(record);
+        client.getList(context.getInstanceId()).add(ONode.serialize(record));
     }
 
     @Override
     public void clearStateRecords(FlowContext context) {
-        getHistory(context.getInstanceId()).clear();
+        client.getList(context.getInstanceId()).clear();
     }
 }
