@@ -23,10 +23,9 @@ package org.noear.solon.flow.stateful;
  */
 public class NodeStates {
     /**
-     * 未定议
+     * 未定义
      */
     public static int UNDEFINED = 0;
-
     /**
      * 等待
      */
@@ -36,15 +35,15 @@ public class NodeStates {
      */
     public static int PASS = 1002;
     /**
-     * 拒绝
+     * 中止（拒绝）
      */
-    public static int REJECT = 1003;
+    public static int ABORT = 1003;
     /**
-     * 撤回
+     * 回退（撤回）
      */
-    public static int WITHDRAW = 1004;
+    public static int BACK = 1004;
     /**
-     * 撤回全部
+     * 回退全部（重新开始）
      */
-    public static int WITHDRAW_ALL = 1005;
+    public static int BACK_ALL = 1005;
 }
