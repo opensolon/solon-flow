@@ -48,12 +48,12 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
         this.stateOperator = (stateOperator == null ? new MetaStateOperator() : stateOperator);
     }
 
-
     @Override
     public void handleTask(FlowContext context, Task task) throws Throwable {
         String instanceId = context.getInstanceId();
 
-        if (Utils.isNotEmpty(instanceId)) {
+        //有实例id，且没有自动提交
+        if (Utils.isNotEmpty(instanceId) && stateOperator.isAutoForward(context, task.getNode()) == false) {
             int nodeState = getStateRepository().getState(
                     context,
                     task.getNode());
