@@ -34,7 +34,8 @@ public class AiBlockFlowTest {
                     @Override
                     public boolean isAutoForward(FlowContext context, Node node) {
                         return super.isAutoForward(context, node)
-                                || node.getMetaOrDefault("auto",false);
+                                || node.getMetaOrDefault("auto",false)
+                                || context.getOrDefault("all_auto",false);
                     }
                 }) //换了一个
                 .stateRepository(new InMemoryStateRepository())
