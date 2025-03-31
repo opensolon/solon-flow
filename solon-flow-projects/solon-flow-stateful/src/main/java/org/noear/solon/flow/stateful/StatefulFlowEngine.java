@@ -163,9 +163,11 @@ public class StatefulFlowEngine extends FlowEngineDefault {
                 postHandleTask(context, activity.getTask());
 
                 Node nextNode = activity.getNextNode();
-                if (nextNode != null && nextNode.getType() == NodeType.END) {
-                    //如果下个节点是 end
-                    eval(nextNode, context);
+                if (nextNode != null) {
+                    if (driver.getStateOperator().isAutoForward(context, nextNode)) {
+                        //如果下个节点是 end
+                        eval(nextNode, context);
+                    }
                 }
             } catch (Throwable e) {
                 throw new FlowException("Task handle failed: " + activity.getChain().getId() + " / " + activity.getId(), e);

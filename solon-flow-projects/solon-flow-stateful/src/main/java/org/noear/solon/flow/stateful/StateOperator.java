@@ -17,6 +17,7 @@ package org.noear.solon.flow.stateful;
 
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
+import org.noear.solon.flow.NodeType;
 
 /**
  * 状态操作员
@@ -29,6 +30,13 @@ public interface StateOperator {
      * 是否可操作的
      */
     boolean isOperatable(FlowContext context, Node node);
+
+    /**
+     * 是否自动前进
+     */
+    default boolean isAutoForward(FlowContext context, Node node) {
+        return node.getType() == NodeType.END;
+    }
 
     /**
      * 创建状态记录

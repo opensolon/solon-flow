@@ -2,6 +2,7 @@ package features.flow.stateful;
 
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.Node;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.NodeState;
 import org.noear.solon.flow.stateful.StatefulFlowEngine;
@@ -29,7 +30,13 @@ public class AiBlockFlowTest {
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
         StatefulFlowEngine fe = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
-                .stateOperator(new BlockStateOperator()) //换了一个
+                .stateOperator(new BlockStateOperator(){
+                    @Override
+                    public boolean isAutoForward(FlowContext context, Node node) {
+                        return super.isAutoForward(context, node)
+                                || node.getMetaOrDefault("auto",false);
+                    }
+                }) //换了一个
                 .stateRepository(new InMemoryStateRepository())
                 .container(container)
                 .build());
