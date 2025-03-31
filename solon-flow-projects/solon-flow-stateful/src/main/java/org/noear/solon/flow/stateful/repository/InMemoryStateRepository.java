@@ -80,4 +80,9 @@ public class InMemoryStateRepository<T extends StateRecord> implements StateRepo
     public void addStateRecord(FlowContext context, T record) {
         getHistory(context.getInstanceId()).add(record);
     }
+
+    @Override
+    public void clearStateRecords(FlowContext context) {
+        getHistory(context.getInstanceId()).clear();
+    }
 }

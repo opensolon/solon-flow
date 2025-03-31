@@ -55,7 +55,12 @@ public interface StateRepository<T extends StateRecord> {
     List<T> getStateRecords(FlowContext context);
 
     /**
-     * 添加记录
+     * 添加状态记录
      */
     void addStateRecord(FlowContext context, T record);
+
+    /**
+     * 清空状态记录
+     */
+    void clearStateRecords(FlowContext context);
 }
