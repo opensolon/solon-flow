@@ -34,12 +34,14 @@ public class AutoForwardTest {
 
         Chain chain = buildChain();
 
-        FlowContext context = new FlowContext("Test"+new Date().getTime());
+        String chainId = "Test"+new Date().getTime();
+        FlowContext context = new FlowContext(chainId);
         context.put("all_auto", true);
-
         StatefulNode statefulNode = flowEngine.stepForward(chain, context);
+        assert statefulNode==null;
 
-        context = new FlowContext("Test"+new Date().getTime());
+        context = new FlowContext(chainId);
+        context.put("all_auto", true);
         statefulNode = flowEngine.stepForward(chain, context);
         assert statefulNode==null;
     }
@@ -51,8 +53,10 @@ public class AutoForwardTest {
         nodeDecl = new NodeDecl("start",NodeType.START).title("开始").linkAdd("01");
         chain.addNode(nodeDecl);
 
-        // .metaPut("auto", true)
-        nodeDecl = new NodeDecl("01",NodeType.ACTIVITY).title("01").linkAdd("end");
+        
+        nodeDecl = new NodeDecl("01",NodeType.ACTIVITY).title("01").linkAdd("end")
+        //.metaPut("auto", true)
+        ;
         nodeDecl.task("@oaMetaProcessCom");
         chain.addNode(nodeDecl);
 
