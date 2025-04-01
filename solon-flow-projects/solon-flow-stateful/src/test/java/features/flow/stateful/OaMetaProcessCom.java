@@ -1,6 +1,9 @@
 package features.flow.stateful;
 
+import java.util.Date;
+
 import org.noear.solon.Utils;
+import org.noear.solon.annotation.Component;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.TaskComponent;
@@ -8,9 +11,11 @@ import org.noear.solon.flow.TaskComponent;
 /**
  * @author noear 2025/3/28 created
  */
+@Component("oaMetaProcessCom")
 public class OaMetaProcessCom implements TaskComponent {
     @Override
     public void run(FlowContext context, Node node) throws Throwable {
+        System.out.println("----------执行OaMetaProcessCom: " + new Date().getTime());
         String cc = node.getMeta("cc");
         if (Utils.isNotEmpty(cc)) {
             //发送邮件...
