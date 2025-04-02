@@ -48,7 +48,7 @@ public class InMemoryStateRepository<T extends StateRecord> implements StateRepo
 
         Integer rst = getStates(context.getInstanceId()).get(stateKey);
         if (rst == null) {
-            return NodeState.UNDEFINED;
+            return NodeState.UNKNOWN;
         } else {
             return rst;
         }

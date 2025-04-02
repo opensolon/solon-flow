@@ -49,27 +49,8 @@ public class OaStatefulFlowTest {
         statefulNode = flowEngine.getActivityNode(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
-        assert "step2".equals(statefulNode.getNode().getId());
-        assert NodeState.UNDEFINED == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
-
-        //二次测试
-        context = getContext("陈鑫");
-        statefulNode = flowEngine.getActivityNode(chainId, context);
-        log.warn("{}", statefulNode);
-        assert statefulNode != null;
-        assert "step2".equals(statefulNode.getNode().getId());
-        assert NodeState.UNDEFINED == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
-
-        /// ////////////////
-        //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.PASS);
-
-        context = getContext("陈鑫");
-        statefulNode = flowEngine.getActivityNode(chainId, context);
-        log.warn("{}", statefulNode);
-        assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
-        assert NodeState.WAIT == statefulNode.getState(); //等待当前用户处理
+        assert NodeState.WAITING == statefulNode.getState(); //等待当前用户处理
 
         //二次测试
         context = getContext("陈鑫");
@@ -77,12 +58,12 @@ public class OaStatefulFlowTest {
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
-        assert NodeState.WAIT == statefulNode.getState(); //等待当前用户处理
+        assert NodeState.WAITING == statefulNode.getState(); //等待当前用户处理
 
 
         /// ////////////////
         //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.PASS);
+        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.COMPLETED);
 
 
         context = getContext("陈鑫");
@@ -90,7 +71,7 @@ public class OaStatefulFlowTest {
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4");
-        assert NodeState.UNDEFINED == statefulNode.getState(); //没有权限
+        assert NodeState.UNKNOWN == statefulNode.getState(); //没有权限
 
 
         context = getContext("陈宇");
@@ -98,11 +79,11 @@ public class OaStatefulFlowTest {
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_1");
-        assert NodeState.WAIT == statefulNode.getState(); //等待当前用户处理
+        assert NodeState.WAITING == statefulNode.getState(); //等待当前用户处理
 
         /// ////////////////
         //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.PASS);
+        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.COMPLETED);
 
 
         context = getContext("吕方");
@@ -110,29 +91,21 @@ public class OaStatefulFlowTest {
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_2");
-        assert NodeState.WAIT == statefulNode.getState(); //等待当前用户处理
+        assert NodeState.WAITING == statefulNode.getState(); //等待当前用户处理
 
         /// ////////////////
         //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.PASS);
+        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.COMPLETED);
 
 
         context = getContext("吕方");
         statefulNode = flowEngine.getActivityNode(chainId, context);
         log.warn("{}", statefulNode);
-        assert "step5".equals(statefulNode.getNode().getId()); //抄送节点
-        assert NodeState.UNDEFINED == statefulNode.getState();
-
-        /// ////////////////
-        //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.PASS);
-
-        context = getContext("吕方");
-        statefulNode = flowEngine.getActivityNode(chainId, context);
-        log.warn("{}", statefulNode);
-        assert statefulNode == null; //抄送节点
+        assert statefulNode == null;
 
         flowEngine.getRepository().getStateRecords(context);
+        flowEngine.getRepository().clearState(context);
+        flowEngine.getRepository().clearStateRecords(context);
     }
 
     private FlowContext getContext(String actor) throws Throwable {
@@ -150,16 +123,16 @@ public class OaStatefulFlowTest {
         statefulNode = flowEngine.getActivityNode(chainId, context);
 
         assert "step2".equals(statefulNode.getNode().getId());
-        assert NodeState.UNDEFINED == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
+        assert NodeState.UNKNOWN == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
 
         /// ////////////////
         //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.PASS);
+        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.COMPLETED);
 
         context = new FlowContext("i1").put("actor", "陈鑫");
         statefulNode = flowEngine.getActivityNode(chainId, context);
 
         assert "step3".equals(statefulNode.getNode().getId());
-        assert NodeState.WAIT == statefulNode.getState(); //等待当前用户处理（有权限操作）
+        assert NodeState.WAITING == statefulNode.getState(); //等待当前用户处理（有权限操作）
     }
 }

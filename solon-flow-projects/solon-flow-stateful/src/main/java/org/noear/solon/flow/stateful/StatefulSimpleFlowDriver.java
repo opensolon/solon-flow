@@ -58,25 +58,25 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                     context,
                     task.getNode());
 
-            if (nodeState == NodeState.UNDEFINED) {
+            if (nodeState == NodeState.UNKNOWN) {
                 //检查是否为当前用户的任务
                 if (stateOperator.isOperatable(context, task.getNode())) {
                     //记录当前流程节点（用于展示）
-                    context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeState.WAIT));
+                    context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeState.WAITING));
                     //停止流程
                     context.stop();
                     //设置状态为待办
                     ((StatefulFlowEngine) context.engine()).postActivityState(
                             context,
                             task.getNode(),
-                            NodeState.WAIT);
+                            NodeState.WAITING);
 
                 } else {
                     //阻断当前分支（等待别的用户办理）
-                    context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeState.UNDEFINED));
+                    context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeState.UNKNOWN));
                     context.interrupt();
                 }
-            } else if (nodeState == NodeState.WAIT) {
+            } else if (nodeState == NodeState.WAITING) {
                 //检查是否为当前用户的任务
                 if (stateOperator.isOperatable(context, task.getNode())) {
                     //记录当前流程节点（用于展示）
@@ -85,7 +85,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                     context.stop();
                 } else {
                     //阻断当前分支（等待别的用户办理）
-                    context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeState.UNDEFINED));
+                    context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeState.UNKNOWN));
                     context.interrupt();
                 }
             }

@@ -60,8 +60,8 @@ public class StatefulFlowEngine extends FlowEngineDefault {
         StatefulNode statefulNode = getActivityNode(chain, context);
 
         if (statefulNode != null) {
-            postActivityState(context, statefulNode.getNode(), NodeState.PASS);
-            statefulNode = new StatefulNode(statefulNode.getNode(), NodeState.PASS);
+            postActivityState(context, statefulNode.getNode(), NodeState.COMPLETED);
+            statefulNode = new StatefulNode(statefulNode.getNode(), NodeState.COMPLETED);
         }
 
         return statefulNode;
@@ -81,8 +81,8 @@ public class StatefulFlowEngine extends FlowEngineDefault {
         StatefulNode statefulNode = getActivityNode(chain, context);
 
         if (statefulNode != null) {
-            postActivityState(context, statefulNode.getNode(), NodeState.BACK);
-            statefulNode = new StatefulNode(statefulNode.getNode(), NodeState.BACK);
+            postActivityState(context, statefulNode.getNode(), NodeState.RETURNED);
+            statefulNode = new StatefulNode(statefulNode.getNode(), NodeState.RETURNED);
         }
 
         return statefulNode;
@@ -143,13 +143,13 @@ public class StatefulFlowEngine extends FlowEngineDefault {
         //节点
 
         //更新状态
-        if (state == NodeState.BACK) {
+        if (state == NodeState.RETURNED) {
             //撤回之前的节点
             for (Node n1 : activity.getPrveNodes()) {
                 //移除状态（要求重来）
                 driver.getStateRepository().removeState(context, n1);
             }
-        } else if (state == NodeState.BACK_ALL) {
+        } else if (state == NodeState.RESTART) {
             //撤回全部（重新开始）
             driver.getStateRepository().clearState(context);
         } else {
@@ -158,7 +158,7 @@ public class StatefulFlowEngine extends FlowEngineDefault {
         }
 
         //如果是通过，则提交任务
-        if (state == NodeState.PASS) {
+        if (state == NodeState.COMPLETED) {
             try {
                 postHandleTask(context, activity.getTask());
 

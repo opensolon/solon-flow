@@ -53,7 +53,7 @@ public class RedisStateRepository<T extends StateRecord> implements StateReposit
 
         Integer rst = client.getHash(statePrefix + context.getInstanceId()).getAsInt(stateKey);
         if (rst == null) {
-            return NodeState.UNDEFINED;
+            return NodeState.UNKNOWN;
         } else {
             return rst;
         }

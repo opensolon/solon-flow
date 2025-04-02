@@ -23,27 +23,27 @@ package org.noear.solon.flow.stateful;
  */
 public class NodeState {
     /**
-     * 未定义
+     * 未知
      */
-    public static int UNDEFINED = 0;
+    public static int UNKNOWN = 0;
     /**
      * 等待
      */
-    public static int WAIT = 1001;
+    public static int WAITING = 1001;
     /**
-     * 通过
+     * 完成（通过）
      */
-    public static int PASS = 1002;
+    public static int COMPLETED = 1002;
     /**
-     * 中止（拒绝）
+     * 终止（拒绝）
      */
-    public static int ABORT = 1003;
+    public static int TERMINATED = 1003;
     /**
-     * 回退（撤回）
+     * 退回（撤回）
      */
-    public static int BACK = 1004;
+    public static int RETURNED = 1004;
     /**
-     * 回退全部（重新开始）
+     * 重新开始
      */
-    public static int BACK_ALL = 1005;
+    public static int RESTART = 1005;
 }
