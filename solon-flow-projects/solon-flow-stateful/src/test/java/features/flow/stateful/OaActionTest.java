@@ -1,7 +1,6 @@
 package features.flow.stateful;
 
-import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.Node;
+import org.noear.solon.flow.*;
 import org.noear.solon.flow.stateful.*;
 
 /**
@@ -128,7 +127,14 @@ public class OaActionTest {
 
     //加签
     public void case11() throws Exception {
-        //todo: 暂时不支持
+        String gatewayId= "g1";
+        Chain chain = Chain.parseByText(flowEngine.getChain(chainId).toJson()); //复制
+        //添加节点
+        chain.addNode(new NodeDecl("a3", NodeType.ACTIVITY).linkAdd("b2"));
+        //替代旧的网关（加上 a3 节点）
+        chain.addNode(new NodeDecl(gatewayId, NodeType.PARALLEL).linkAdd("a1").linkAdd("a2").linkAdd("a3"));
+
+        //把新的链配置，做为实例对应的流配置
     }
 
     //减签
@@ -152,7 +158,7 @@ public class OaActionTest {
 
     //或签
     public void case16() throws Exception {
-        //todo: 暂时不支持，但可能加一个：“或网关”实现
+        //配置时，使用并行网关 //驱动定制时，如果元数据申明是或签：一个分支“完成”，另一分支自动为“跳过”
     }
 
     //暂存
