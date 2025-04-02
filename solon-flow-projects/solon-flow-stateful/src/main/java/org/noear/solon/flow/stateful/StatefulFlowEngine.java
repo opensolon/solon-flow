@@ -165,7 +165,7 @@ public class StatefulFlowEngine extends FlowEngineDefault {
                 Node nextNode = activity.getNextNode();
                 if (nextNode != null) {
                     if (driver.getStateOperator().isAutoForward(context, nextNode)) {
-                        //如果下个节点是 end
+                        //如果要自动前进
                         eval(nextNode, context);
                     }
                 }
