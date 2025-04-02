@@ -256,7 +256,7 @@ public class FlowEngineDefault implements FlowEngine {
         Stack<Integer> inclusive_stack = context.counter().stack(node.getChain(), "inclusive_run");
 
         //::流入
-        if (node.getPrveLinks().size() > 1) { //如果是多个输入链接（尝试等待）
+        if (node.getPrevLinks().size() > 1) { //如果是多个输入链接（尝试等待）
             if (inclusive_stack.size() > 0) {
                 int start_size = inclusive_stack.peek();
                 int in_size = context.counter().incr(node.getChain(), node.getId());//运行次数累计
@@ -333,7 +333,7 @@ public class FlowEngineDefault implements FlowEngine {
     private boolean parallel_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
         //::流入
         int count = context.counter().incr(node.getChain(), node.getId());//运行次数累计
-        if (node.getPrveLinks().size() > count) { //等待所有支线计数完成
+        if (node.getPrevLinks().size() > count) { //等待所有支线计数完成
             return false;
         }
 

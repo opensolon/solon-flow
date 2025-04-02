@@ -145,7 +145,7 @@ public class StatefulFlowEngine extends FlowEngineDefault {
         //更新状态
         if (state == NodeState.RETURNED) {
             //撤回之前的节点
-            for (Node n1 : activity.getPrveNodes()) {
+            for (Node n1 : activity.getPrevNodes()) {
                 //移除状态（要求重来）
                 driver.getStateRepository().removeState(context, n1);
             }

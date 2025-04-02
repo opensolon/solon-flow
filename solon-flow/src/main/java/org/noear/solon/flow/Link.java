@@ -27,15 +27,15 @@ import java.util.Map;
  */
 public class Link implements Comparable<Link> {
     private final Chain chain;
-    private final String prveId;
+    private final String prevId;
     private final LinkDecl decl;
 
-    private Node prveNode, nextNode;
+    private Node prevNode, nextNode;
     private Condition condition;
 
-    public Link(Chain chain, String prveId, LinkDecl decl) {
+    public Link(Chain chain, String prevId, LinkDecl decl) {
         this.chain = chain;
-        this.prveId = prveId;
+        this.prevId = prevId;
         this.decl = decl;
     }
 
@@ -88,8 +88,8 @@ public class Link implements Comparable<Link> {
     /**
      * 前面的节点Id
      */
-    public String getPrveId() {
-        return prveId;
+    public String getPrevId() {
+        return prevId;
     }
 
     /**
@@ -102,12 +102,12 @@ public class Link implements Comparable<Link> {
     /**
      * 前面的节点
      */
-    public Node getPrveNode() {
-        if (prveNode == null) {
-            prveNode = chain.getNode(getPrveId()); //by id query
+    public Node getPrevNode() {
+        if (prevNode == null) {
+            prevNode = chain.getNode(getPrevId()); //by id query
         }
 
-        return prveNode;
+        return prevNode;
     }
 
     /**
@@ -138,7 +138,7 @@ public class Link implements Comparable<Link> {
 
         buf.append("{");
         buf.append("priority=").append(decl.priority);
-        buf.append(", prveId='").append(getPrveId()).append('\'');
+        buf.append(", prevId='").append(getPrevId()).append('\'');
         buf.append(", nextId='").append(getNextId()).append('\'');
 
         if (Utils.isNotEmpty(decl.title)) {
