@@ -3,6 +3,7 @@ package features.flow.stateful;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.Node;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.*;
 import org.noear.solon.flow.stateful.operator.MetaStateOperator;
@@ -29,7 +30,14 @@ public class OaStatefulFlowTest {
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
         StatefulFlowEngine fe = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
-                .stateOperator(new MetaStateOperator())
+                .stateOperator(new MetaStateOperator() {
+                    @Override
+                    public StateRecord createRecord(FlowContext context, Node node, int nodeState) {
+                        //实现状态实体扩展
+                        int oaState = context.getOrDefault("oaState", 1);
+                        return new StateRecordExt(node.getChain().getId(), node.getId(), nodeState, System.currentTimeMillis(), oaState);
+                    }
+                })
                 .stateRepository(new InMemoryStateRepository())
                 .container(container)
                 .build());
@@ -55,8 +63,8 @@ public class OaStatefulFlowTest {
 
         /// ////////////////
         //提交状态
+        context.put("oaState", 2); //用于扩展状态记录
         flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.COMPLETED);
-
 
 
         context = getContext("陈鑫");
