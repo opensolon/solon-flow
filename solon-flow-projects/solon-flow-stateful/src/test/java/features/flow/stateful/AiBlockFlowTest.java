@@ -57,6 +57,12 @@ public class AiBlockFlowTest {
         statefulNode = flowEngine.stepForward(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
+        assert "step1".equals(statefulNode.getNode().getId());
+
+        context = new FlowContext(instanceId);
+        statefulNode = flowEngine.stepForward(chainId, context);
+        log.warn("{}", statefulNode);
+        assert statefulNode != null;
         assert "step2".equals(statefulNode.getNode().getId());
 
         /// ////////////////

@@ -30,6 +30,16 @@ public class BlockStatefulFlowTest {
         //获取节点
         context = new FlowContext(instanceId1);
         statefulNode = flowEngine.getActivityNode(chainId, context);
+        assertNode(statefulNode, "step1");
+
+        //根据节点干活。。。。
+
+        //（干完后）提交节点状态
+        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.COMPLETED);
+
+        //获取节点
+        context = new FlowContext(instanceId1);
+        statefulNode = flowEngine.getActivityNode(chainId, context);
         assertNode(statefulNode, "step2");
 
         //根据节点干活。。。。
@@ -61,6 +71,12 @@ public class BlockStatefulFlowTest {
 
 
         ///  （换一个实例）
+
+        context = new FlowContext(instanceId2);
+        statefulNode = flowEngine.getActivityNode(chainId, context);
+        assertNode(statefulNode, "step1");
+
+        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.COMPLETED);
 
         context = new FlowContext(instanceId2);
         statefulNode = flowEngine.getActivityNode(chainId, context);

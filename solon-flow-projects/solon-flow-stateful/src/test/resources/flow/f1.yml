@@ -1,6 +1,6 @@
 id: f1
 layout:
-  - {id: step1, title: "发起审批", type: "start"}
+  - {id: step1, title: "发起审批", meta: {actor: "刘涛", form: "form1"}}
   - {id: step2, title: "抄送", meta: {cc: "吕方"}, task: "@OaMetaProcessCom"}
   - {id: step3, title: "审批", meta: {actor: "陈鑫", cc: "吕方"}, task: "@OaMetaProcessCom"}
   - {id: step4, title: "审批", type: "parallel", link: [step4_1, step4_2]}

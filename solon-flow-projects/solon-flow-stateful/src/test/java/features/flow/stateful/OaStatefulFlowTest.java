@@ -45,6 +45,20 @@ public class OaStatefulFlowTest {
         FlowContext context;
         StatefulNode statefulNode;
 
+
+        context = getContext("刘涛");
+        statefulNode = flowEngine.getActivityNode(chainId, context);
+        log.warn("{}", statefulNode);
+        assert statefulNode != null;
+        assert "step1".equals(statefulNode.getNode().getId());
+        assert NodeState.WAITING == statefulNode.getState(); //等待当前用户处理
+
+        /// ////////////////
+        //提交状态
+        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.COMPLETED);
+
+
+
         context = getContext("陈鑫");
         statefulNode = flowEngine.getActivityNode(chainId, context);
         log.warn("{}", statefulNode);
