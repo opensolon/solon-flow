@@ -157,8 +157,8 @@ public class StatefulFlowEngine extends FlowEngineDefault {
             driver.getStateRepository().putState(context, activity, state);
         }
 
-        //如果是通过，则提交任务
-        if (state == NodeState.COMPLETED) {
+        //如果是完成或跳过，则向前流动
+        if (state == NodeState.COMPLETED || state == NodeState.SKIP) {
             try {
                 postHandleTask(context, activity.getTask());
 
