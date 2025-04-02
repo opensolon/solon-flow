@@ -36,7 +36,7 @@ public class OaActionTest {
 
         while (true) {
             StatefulNode statefulNode = flowEngine.getActivityNode(chainId, context);
-            flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.SKIP);
+            flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.SKIPPED);
 
             //到目标节点了
             if(statefulNode.getNode().getId().equals(nodeId)) {

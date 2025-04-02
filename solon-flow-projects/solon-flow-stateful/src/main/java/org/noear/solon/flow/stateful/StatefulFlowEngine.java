@@ -158,7 +158,7 @@ public class StatefulFlowEngine extends FlowEngineDefault {
         }
 
         //如果是完成或跳过，则向前流动
-        if (state == NodeState.COMPLETED || state == NodeState.SKIP) {
+        if (state == NodeState.COMPLETED || state == NodeState.SKIPPED) {
             try {
                 postHandleTask(context, activity.getTask());
 

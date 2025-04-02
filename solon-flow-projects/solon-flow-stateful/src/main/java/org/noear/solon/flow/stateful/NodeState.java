@@ -21,33 +21,33 @@ package org.noear.solon.flow.stateful;
  * @author noear
  * @since 3.1
  */
-public class NodeState {
+public interface NodeState {
     /**
      * 未知
      */
-    public static final int UNKNOWN = 0;
+    int UNKNOWN = 0;
     /**
      * 等待
      */
-    public static final int WAITING = 1001;
+    int WAITING = 1001;
     /**
      * 完成（通过）
      */
-    public static final int COMPLETED = 1002;
+    int COMPLETED = 1002;
     /**
      * 跳过（乎略）
      */
-    public static final int SKIP = 1003;
+    int SKIPPED = 1003;
     /**
      * 终止（拒绝）
      */
-    public static final int TERMINATED = 1004;
+    int TERMINATED = 1004;
     /**
      * 退回（撤回）
      */
-    public static final int RETURNED = 1005;
+    int RETURNED = 1005;
     /**
      * 重新开始
      */
-    public static final int RESTART = 1006;
+    int RESTART = 1006;
 }
