@@ -179,14 +179,15 @@ public class FlowEngineDefault implements FlowEngine {
             return false;
         }
 
+        //如果停止
+        if (context.isStopped()) {
+            return false;
+        }
+
         //如果阻断，当前分支不再后流
         if (context.isInterrupted()) {
             //重置阻断（不影响别的分支）
             context.interrupt(false);
-            return false;
-        }
-        //如果停止
-        if (context.isStopped()) {
             return false;
         }
 
@@ -200,16 +201,18 @@ public class FlowEngineDefault implements FlowEngine {
         //节点运行之前事件
         driver.onNodeStart(context, node);
 
+        //如果停止
+        if (context.isStopped()) {
+            return false;
+        }
+
         //如果阻断，就不再执行了（onNodeBefore 可能会触发中断）
         if (context.isInterrupted()) {
             //重置阻断（不影响别的分支）
             context.interrupt(false);
             return false;
         }
-        //如果停止
-        if (context.isStopped()) {
-            return false;
-        }
+
 
         boolean node_end = true;
 

@@ -89,12 +89,22 @@ public class FlowContext {
      * @param node 节点
      */
     public void manualNext(Node node) throws FlowException {
+        manualNext(node, -1);
+    }
+
+    /**
+     * 手动下一步（可能要配合中断使用 {@link #interrupt()}）
+     *
+     * @param node  节点
+     * @param depth 执行深度
+     */
+    public void manualNext(Node node, int depth) throws FlowException {
         if (node.getType() != NodeType.ACTIVITY) {
             throw new IllegalArgumentException(node.getId() + " is not execute");
         }
 
         for (Node node1 : node.getNextNodes()) {
-            engine.eval(node1, this);
+            engine.eval(node1, depth, this);
         }
     }
 
