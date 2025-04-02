@@ -17,6 +17,7 @@ package org.noear.solon.flow.stateful.operator;
 
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
+import org.noear.solon.flow.NodeType;
 import org.noear.solon.flow.stateful.StateOperator;
 
 import java.util.*;
@@ -53,5 +54,21 @@ public class MetaStateOperator implements StateOperator {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean isAutoForward(FlowContext context, Node node) {
+        if (node.getType() == NodeType.END) {
+            return true;
+        } else {
+            for (String key : keys) {
+                if (node.hasMeta(key)) {
+                    return false;
+                }
+            }
+
+            //如果需要的 key，则自动前进
+            return true;
+        }
     }
 }

@@ -91,6 +91,13 @@ public class Node {
     }
 
     /**
+     * 是否有元信息键
+     */
+    public boolean hasMeta(String key) {
+        return decl.meta.containsKey(key);
+    }
+
+    /**
      * 获取元信息或默认
      */
     public <T> T getMetaOrDefault(String key, T def) {
