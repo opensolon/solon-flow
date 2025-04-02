@@ -297,4 +297,49 @@ public class Chain {
                 .meta(l1.get("meta").toObject(Map.class))
                 .condition(l1.get("condition").getString()));
     }
+
+    /**
+     * 转为 json
+     */
+    public String toJson() {
+        ONode oNode = new ONode();
+        oNode.set("id", id);
+        oNode.set("title", title);
+        oNode.set("driver", driver);
+
+        oNode.getOrNew("meta").fill(meta);
+        oNode.getOrNew("layout").asArray().build(n1 -> {
+            for (Map.Entry<String, Node> kv : nodes.entrySet()) {
+                ONode n2 = n1.addNew();
+                n2.set("id", kv.getKey());
+                n2.set("title", kv.getValue().getTitle());
+                n2.set("type", kv.getValue().getType().toString().toLowerCase());
+                n2.getOrNew("meta").fill(kv.getValue().getMetas());
+
+                if (kv.getValue().getWhen() != null) {
+                    n2.set("when", kv.getValue().getWhen().getDescription());
+                }
+
+                if (kv.getValue().getTask() != null) {
+                    n2.set("task", kv.getValue().getTask().getDescription());
+                }
+
+                if (Utils.isNotEmpty(kv.getValue().getNextLinks())) {
+                    n2.getOrNew("link").asArray().build(n3 -> {
+                        for (Link link : kv.getValue().getNextLinks()) {
+                            ONode n4 = n3.addNew();
+                            n4.set("nextId", link.getNextId());
+                            n4.set("title", link.getTitle());
+                            n4.getOrNew("meta").fill(link.getMetas());
+                            if (link.getCondition() != null) {
+                                n4.set("condition", link.getCondition().getDescription());
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        return oNode.toJson();
+    }
 }

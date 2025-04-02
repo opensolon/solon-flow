@@ -47,6 +47,13 @@ public class Link implements Comparable<Link> {
     }
 
     /**
+     * 获取标题
+     */
+    public String getTitle() {
+        return decl.title;
+    }
+
+    /**
      * 获取所有元信息
      */
     public Map<String, Object> getMetas() {
