@@ -25,25 +25,25 @@ public class NodeState {
     /**
      * 未知
      */
-    public static int UNKNOWN = 0;
+    public static final int UNKNOWN = 0;
     /**
      * 等待
      */
-    public static int WAITING = 1001;
+    public static final int WAITING = 1001;
     /**
      * 完成（通过）
      */
-    public static int COMPLETED = 1002;
+    public static final int COMPLETED = 1002;
     /**
      * 终止（拒绝）
      */
-    public static int TERMINATED = 1003;
+    public static final int TERMINATED = 1003;
     /**
      * 退回（撤回）
      */
-    public static int RETURNED = 1004;
+    public static final int RETURNED = 1004;
     /**
      * 重新开始
      */
-    public static int RESTART = 1005;
+    public static final int RESTART = 1005;
 }
