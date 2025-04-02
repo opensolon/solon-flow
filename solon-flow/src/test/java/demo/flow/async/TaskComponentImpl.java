@@ -13,6 +13,9 @@ public class TaskComponentImpl extends TaskComponentPlus {
 
         if (async) {
             context.manualNext(node);
+
+            //要阻断下后续
+            context.interrupt();
         }
     }
 }
