@@ -35,15 +35,19 @@ public class NodeState {
      */
     public static final int COMPLETED = 1002;
     /**
+     * 跳过（乎略）
+     */
+    public static final int SKIP = 1003;
+    /**
      * 终止（拒绝）
      */
-    public static final int TERMINATED = 1003;
+    public static final int TERMINATED = 1004;
     /**
      * 退回（撤回）
      */
-    public static final int RETURNED = 1004;
+    public static final int RETURNED = 1005;
     /**
      * 重新开始
      */
-    public static final int RESTART = 1005;
+    public static final int RESTART = 1006;
 }

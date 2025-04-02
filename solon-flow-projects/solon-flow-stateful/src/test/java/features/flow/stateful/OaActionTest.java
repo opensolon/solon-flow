@@ -34,8 +34,16 @@ public class OaActionTest {
         FlowContext context = new FlowContext(instanceId);
 
         String nodeId = "demo1";
-        Node node = flowEngine.getChain(chainId).getNode(nodeId);
-        flowEngine.postActivityState(context, node, NodeState.COMPLETED);
+
+        while (true) {
+            StatefulNode statefulNode = flowEngine.getActivityNode(chainId, context);
+            flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.SKIP);
+
+            //到目标节点了
+            if(statefulNode.getNode().getId().equals(nodeId)) {
+                break;
+            }
+        }
     }
 
     //任意跳转（退回）
@@ -43,8 +51,16 @@ public class OaActionTest {
         FlowContext context = new FlowContext(instanceId);
 
         String nodeId = "demo1"; //实际可能需要遍历节点树，并检查各节点状态；再回退
-        Node node = flowEngine.getChain(chainId).getNode(nodeId);
-        flowEngine.postActivityState(context, node, NodeState.RETURNED);
+
+        while (true) {
+            StatefulNode statefulNode = flowEngine.getActivityNode(chainId, context);
+            flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.RETURNED);
+
+            //到目标节点了
+            if (statefulNode.getNode().getId().equals(nodeId)) {
+                break;
+            }
+        }
     }
 
     //委派
