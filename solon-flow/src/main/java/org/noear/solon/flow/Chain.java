@@ -152,7 +152,7 @@ public class Chain {
         if (start == null) {
             //找到没有流入链接的节点，作为开始节点
             for (Node node : nodes.values()) {
-                if (Utils.isEmpty(node.getPrveLinks())) {
+                if (Utils.isEmpty(node.getPrevLinks())) {
                     start = node;
                     break;
                 }

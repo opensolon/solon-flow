@@ -31,8 +31,8 @@ public class Node {
     private final NodeDecl decl;
     private final List<Link> nextLinks = new ArrayList<>(); //as nextLinks
 
-    private List<Node> prveNodes, nextNodes;
-    private List<Link> prveLinks;
+    private List<Node> prevNodes, nextNodes;
+    private List<Link> prevLinks;
     private Condition when;
     private Task task;
 
@@ -107,8 +107,8 @@ public class Node {
     /**
      * 前面的连接（流入连接）
      */
-    public List<Link> getPrveLinks() {
-        if (prveLinks == null) {
+    public List<Link> getPrevLinks() {
+        if (prevLinks == null) {
             List<Link> tmp = new ArrayList<>();
 
             if (getType() != NodeType.START) {
@@ -122,10 +122,10 @@ public class Node {
                 Collections.reverse(tmp);
             }
 
-            prveLinks = Collections.unmodifiableList(tmp);
+            prevLinks = Collections.unmodifiableList(tmp);
         }
 
-        return prveLinks;
+        return prevLinks;
     }
 
     /**
@@ -138,21 +138,21 @@ public class Node {
     /**
      * 前面的节点
      */
-    public List<Node> getPrveNodes() {
-        if (prveNodes == null) {
+    public List<Node> getPrevNodes() {
+        if (prevNodes == null) {
             List<Node> tmp = new ArrayList<>();
 
             if (getType() != NodeType.START) {
                 for (Link l : chain.getLinks()) { //要从链处找
                     if (getId().equals(l.getNextId())) {
-                        tmp.add(chain.getNode(l.getPrveId()));
+                        tmp.add(chain.getNode(l.getPrevId()));
                     }
                 }
             }
-            prveNodes = Collections.unmodifiableList(tmp);
+            prevNodes = Collections.unmodifiableList(tmp);
         }
 
-        return prveNodes;
+        return prevNodes;
     }
 
     /**
