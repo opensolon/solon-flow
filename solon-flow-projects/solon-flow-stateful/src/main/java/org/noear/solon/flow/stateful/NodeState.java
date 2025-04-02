@@ -16,7 +16,7 @@
 package org.noear.solon.flow.stateful;
 
 /**
- * 流节点状态（用整型方便扩展和调整）
+ * 流节点技术状态（状态可分为：技术状态，业务状态）
  *
  * @author noear
  * @since 3.1
@@ -35,19 +35,15 @@ public interface NodeState {
      */
     int COMPLETED = 1002;
     /**
-     * 跳过（乎略）
-     */
-    int SKIPPED = 1003;
-    /**
      * 终止（拒绝）
      */
-    int TERMINATED = 1004;
+    int TERMINATED = 1003;
     /**
      * 退回（撤回）
      */
-    int RETURNED = 1005;
+    int RETURNED = 1004;
     /**
      * 重新开始
      */
-    int RESTART = 1006;
+    int RESTART = 1004;
 }
