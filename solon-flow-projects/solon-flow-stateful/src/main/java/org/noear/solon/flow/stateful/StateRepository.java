@@ -17,6 +17,7 @@ package org.noear.solon.flow.stateful;
 
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
+import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
 import java.util.List;
@@ -57,7 +58,7 @@ public interface StateRepository<T extends StateRecord> {
     /**
      * 添加状态记录
      */
-    void addStateRecord(FlowContext context, T record);
+    void addStateRecord(FlowContext context, @Nullable T record);
 
     /**
      * 清空状态记录

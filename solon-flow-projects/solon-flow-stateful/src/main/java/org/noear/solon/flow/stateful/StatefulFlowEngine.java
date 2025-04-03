@@ -16,6 +16,7 @@
 package org.noear.solon.flow.stateful;
 
 import org.noear.solon.flow.*;
+import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
 import java.util.concurrent.locks.ReentrantLock;
@@ -137,7 +138,7 @@ public class StatefulFlowEngine extends FlowEngineDefault {
         }
 
         //添加记录
-        StateRecord stateRecord = driver.getStateOperator().createRecord(context, activity, state);
+        @Nullable StateRecord stateRecord = driver.getStateOperator().createRecord(context, activity, state);
         driver.getStateRepository().addStateRecord(context, stateRecord);
 
         //节点

@@ -20,6 +20,7 @@ import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.StateRecord;
 import org.noear.solon.flow.stateful.StateRepository;
 import org.noear.solon.flow.stateful.NodeState;
+import org.noear.solon.lang.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -77,7 +78,11 @@ public class InMemoryStateRepository<T extends StateRecord> implements StateRepo
     }
 
     @Override
-    public void addStateRecord(FlowContext context, T record) {
+    public void addStateRecord(FlowContext context, @Nullable T record) {
+        if(record == null) {
+            return;
+        }
+
         getHistory(context.getInstanceId()).add(record);
     }
 
