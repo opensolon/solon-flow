@@ -77,3 +77,115 @@ Solon
 |                                                 |                                  |
 | https://gitee.com/dromara/solon-plugins         | Solon 第三方扩展插件代码仓库                | 
 
+## 应用示例
+
+solon-flow 是一个通用的流处理引擎，支持：计算编排、业务规则、行政审批，等多场景支持。
+
+### 1、计算编排（Hello world）
+
+```yaml
+# classpath:flow/c1.chain.yml
+id: "c1"
+layout: 
+  - { id: "n1", type: "start", link: "n2"}
+  - { id: "n2", type: "execute", link: "n3", task: "System.out.println(\"hello world!\");"}
+  - { id: "n3", type: "end"}
+```
+
+```java
+@Component
+public class DemoCom implements LifecycleBean {
+    @Inject 
+    private FlowEngine flowEngine;
+    
+    @Override
+    public void start() throws Throwable {
+        flowEngine.eval("c1");
+    }
+}
+```
+
+### 2、业务评分示例
+
+```yaml
+# r1.chain.yml
+id: "r1"
+title: "评分规则"
+layout:
+  - { type: "start"}
+  - { when: "order.getAmount() >= 100", task: "order.setScore(0);"}
+  - { when: "order.getAmount() > 100 && order.getAmount() <= 500", task: "order.setScore(100);"}
+  - { when: "order.getAmount() > 500 && order.getAmount() <= 1000", task: "order.setScore(500);"}
+  - { type: "end"}
+```
+
+```java
+@Component
+public class DemoCom implements LifecycleBean {
+    @Inject 
+    private FlowEngine flowEngine;
+    
+    @Override
+    public void start() throws Throwable {
+        FlowContext context = new FlowContext();
+        context.put("order", new OrderModel());
+        
+        flowEngine.eval("r1", context);
+    }
+}
+```
+
+### 3、行政审批示例（支持状态持久化）
+
+```yaml
+# e1.chain.yml
+id: e1
+layout:
+  - {id: step1, title: "发起审批", meta: {actor: "刘涛", form: "form1"}}
+  - {id: step2, title: "抄送", meta: {cc: "吕方"}, task: "@OaMetaProcessCom"}
+  - {id: step3, title: "审批", meta: {actor: "陈鑫", cc: "吕方"}, task: "@OaMetaProcessCom"}
+  - {id: step4, title: "审批", type: "parallel", link: [step4_1, step4_2]}
+  - {id: step4_1, meta: {actor: "陈宇"}, link: step4_end}
+  - {id: step4_2, meta: {actor: "吕方"}, link: step4_end}
+  - {id: step4_end, type: "parallel"}
+  - {id: step5, title: "抄送", meta: {cc: "吕方"}, task: "@OaMetaProcessCom"}
+  - {id: step6, title: "结束", type: "end"}
+```
+
+```java
+@Configuration
+public class DemoConfig {
+    @Bean
+    public StatefulFlowEngine statefulFlowEngine() {
+        StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
+                .stateOperator(new MetaStateOperator())
+                .stateRepository(new InMemoryStateRepository()) //状态仓库（支持持久化）
+                .build());
+
+        flowEngine.load("classpath:flow/*.yml");
+        
+        return flowEngine;
+    }
+
+    @Bean
+    public void test(StatefulFlowEngine flowEngine) {
+        String instanceId = Utils.uuid();
+        String chainId = "e1";
+
+        FlowContext context = getContext(instanceId,"刘涛");
+        StatefulNode statefulNode = flowEngine.getActivityNode(chainId, context);
+        assert "step1".equals(statefulNode.getNode().getId());
+        assert NodeState.WAITING == statefulNode.getState(); //等待当前用户处理
+
+        //提交状态
+        context.put("op", "通过"); //用于扩展状态记录
+        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.COMPLETED);
+    }
+
+    private FlowContext getContext(String instanceId, String actor) {
+        FlowContext context = new FlowContext(instanceId);
+        context.put("actor", actor);
+        return context;
+    }
+}
+```
