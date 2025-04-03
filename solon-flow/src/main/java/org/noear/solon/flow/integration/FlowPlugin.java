@@ -15,6 +15,7 @@
  */
 package org.noear.solon.flow.integration;
 
+import org.noear.solon.Utils;
 import org.noear.solon.core.AppContext;
 import org.noear.solon.core.Plugin;
 import org.noear.solon.flow.FlowDriver;
@@ -33,8 +34,15 @@ public class FlowPlugin implements Plugin {
         FlowEngine flowEngine = FlowEngine.newInstance();
 
         List<String> chainList = context.cfg().getList("solon.flow");
-        for (String chainUri : chainList) {
-            flowEngine.load(chainUri);
+        if (Utils.isEmpty(chainList)) {
+            //默认
+            flowEngine.load("classpath:flow/*.yml");
+            flowEngine.load("classpath:flow/*.json");
+        } else {
+            //按配置加载
+            for (String chainUri : chainList) {
+                flowEngine.load(chainUri);
+            }
         }
 
         context.wrapAndPut(FlowEngine.class, flowEngine);
