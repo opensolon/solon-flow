@@ -189,3 +189,38 @@ public class DemoConfig {
     }
 }
 ```
+
+
+### 4、单步前进与后退支持示例（支持调试或离散场景）
+
+
+```java
+@Configuration
+public class DemoConfig {
+    @Bean
+    public StatefulFlowEngine statefulFlowEngine() {
+        StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
+                .stateOperator(new BlockStateOperator())
+                .stateRepository(new InMemoryStateRepository()) //状态仓库（支持持久化）
+                .build());
+
+        flowEngine.load("classpath:flow/*.yml");
+
+        return flowEngine;
+    }
+
+    @Bean
+    public void test(StatefulFlowEngine flowEngine) {
+        String instanceId = Utils.uuid();
+        String chainId = "e1";
+
+        //单步前进
+        FlowContext context = new FlowContext(instanceId);
+        StatefulNode statefulNode = flowEngine.stepForward(chainId, context);
+        
+        //单步后退
+        context = new FlowContext(instanceId);
+        statefulNode = flowEngine.stepBack(chainId, context);
+    }
+}
+```
