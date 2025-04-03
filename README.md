@@ -108,7 +108,7 @@ public class DemoCom implements LifecycleBean {
 ### 2、业务评分示例
 
 ```yaml
-# r1.chain.yml
+# classpath:flow/r1.chain.yml
 id: "r1"
 title: "评分规则"
 layout:
@@ -138,7 +138,7 @@ public class DemoCom implements LifecycleBean {
 ### 3、行政审批示例（支持状态持久化）
 
 ```yaml
-# e1.chain.yml
+# classpath:flow/e1.chain.yml
 id: e1
 layout:
   - {id: step1, title: "发起审批", meta: {actor: "刘涛", form: "form1"}}
