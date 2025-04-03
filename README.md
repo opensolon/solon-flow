@@ -105,7 +105,7 @@ public class DemoCom implements LifecycleBean {
 }
 ```
 
-### 2、业务评分示例
+### 2、业务规则处理示例
 
 ```yaml
 # classpath:flow/r1.chain.yml
@@ -135,7 +135,7 @@ public class DemoCom implements LifecycleBean {
 }
 ```
 
-### 3、行政审批示例（支持状态持久化）
+### 3、行政审批支持示例（支持状态持久化）
 
 ```yaml
 # classpath:flow/e1.chain.yml
