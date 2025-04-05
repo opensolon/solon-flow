@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 3.1
  */
 @Preview("3.1")
-public class StatefulFlowEngine extends FlowEngineDefault {
+public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine {
     private StatefulSimpleFlowDriver driver;
     private ReentrantLock LOCKER = new ReentrantLock();
 
