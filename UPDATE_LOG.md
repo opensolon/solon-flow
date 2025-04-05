@@ -1,3 +1,7 @@
+### 3.1.3
+
+* 添加 FlowEngine 直接支持节点执行支持
+
 ### 3.1.2
 
 * 新增 solon-flow-stateful 插件

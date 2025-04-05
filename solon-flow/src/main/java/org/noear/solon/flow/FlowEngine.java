@@ -170,6 +170,15 @@ public interface FlowEngine {
      * 评估
      *
      * @param startNode 开始节点
+     */
+    default void eval(Node startNode) throws FlowException {
+        eval(startNode, -1, new FlowContext());
+    }
+
+    /**
+     * 评估
+     *
+     * @param startNode 开始节点
      * @param context   上下文
      */
     default void eval(Node startNode, FlowContext context) throws FlowException {
