@@ -54,9 +54,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
 
         //有实例id，且没有自动提交
         if (Utils.isNotEmpty(instanceId) && stateOperator.isAutoForward(context, task.getNode()) == false) {
-            int nodeState = getStateRepository().getState(
-                    context,
-                    task.getNode());
+            int nodeState = getStateRepository().getState(context, task.getNode());
 
             if (nodeState == NodeState.UNKNOWN) {
                 //检查是否为当前用户的任务
@@ -65,12 +63,6 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                     context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeState.WAITING));
                     //停止流程
                     context.stop();
-                    //设置状态为待办
-                    ((StatefulFlowEngine) context.engine()).postActivityState(
-                            context,
-                            task.getNode(),
-                            NodeState.WAITING);
-
                 } else {
                     //阻断当前分支（等待别的用户办理）
                     context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeState.UNKNOWN));

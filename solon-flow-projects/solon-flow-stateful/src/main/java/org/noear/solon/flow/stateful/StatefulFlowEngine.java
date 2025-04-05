@@ -79,11 +79,13 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
      * 单步后退
      */
     public StatefulNode stepBack(Chain chain, FlowContext context) {
+        context.backup();
         StatefulNode statefulNode = getActivityNode(chain, context);
 
         if (statefulNode != null) {
             postActivityState(context, statefulNode.getNode(), NodeState.RETURNED);
-            statefulNode = new StatefulNode(statefulNode.getNode(), NodeState.RETURNED);
+            context.recovery();
+            statefulNode = getActivityNode(chain, context);
         }
 
         return statefulNode;
@@ -146,10 +148,7 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
         //更新状态
         if (state == NodeState.RETURNED) {
             //撤回之前的节点
-            for (Node n1 : activity.getPrevNodes()) {
-                //移除状态（要求重来）
-                driver.getStateRepository().removeState(context, n1);
-            }
+            backHandle(activity, context);
         } else if (state == NodeState.RESTART) {
             //撤回全部（重新开始）
             driver.getStateRepository().clearState(context);
@@ -172,6 +171,25 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
                 }
             } catch (Throwable e) {
                 throw new FlowException("Task handle failed: " + activity.getChain().getId() + " / " + activity.getId(), e);
+            }
+        }
+    }
+
+    protected void backHandle(Node activity, FlowContext context) {
+        //撤回之前的节点
+        for (Node n1 : activity.getPrevNodes()) {
+            //移除状态（要求重来）
+            if (n1.getType() == NodeType.ACTIVITY) {
+                driver.getStateRepository().removeState(context, n1);
+            } else if (NodeType.isGateway(n1.getType())) {
+                //回退所有子节点
+                for (Node n2 : n1.getNextNodes()) {
+                    if (n2.getType() == NodeType.ACTIVITY) {
+                        driver.getStateRepository().removeState(context, n2);
+                    }
+                }
+                //再到前一级
+                backHandle(n1, context);
             }
         }
     }
