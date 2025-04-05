@@ -54,6 +54,35 @@ public class FlowContext {
         put("instanceId", (instanceId == null ? "" : instanceId));
     }
 
+    private FlowContext bak;
+
+    /**
+     * 备份
+     */
+    public void backup() {
+        bak = new FlowContext();
+        bak.putAll(this.model);
+        bak.result = this.result;
+        bak.interrupted = this.interrupted;
+        bak.stopped = this.stopped;
+        bak.counter.from(this.counter);
+    }
+
+    /**
+     * 恢复
+     */
+    public void recovery() {
+        if (bak != null) {
+            this.model.clear();
+            this.putAll(bak.model);
+            this.put("context", this);
+            this.result = bak.result;
+            this.interrupted = bak.interrupted;
+            this.stopped = bak.stopped;
+            this.counter.from(bak.counter);
+        }
+    }
+
     /**
      * 设置临时结果（有些脚本引擎必须用属性方式）
      */
@@ -184,7 +213,7 @@ public class FlowContext {
      * 推入全部
      */
     public <Slf extends FlowContext> Slf putAll(Map<String, Object> model) {
-        model.putAll(model);
+        this.model.putAll(model);
         return (Slf) this;
     }
 

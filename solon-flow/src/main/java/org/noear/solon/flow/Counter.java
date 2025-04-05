@@ -31,6 +31,17 @@ public class Counter {
     private final Map<String, Stack<Integer>> stacks = new LinkedHashMap<>();
 
     /**
+     * 清空
+     */
+    public void from(Counter counter) {
+        counts.clear();
+        stacks.clear();
+
+        counts.putAll(counter.counts);
+        stacks.putAll(counter.stacks);
+    }
+
+    /**
      * 记录栈
      */
     public Stack<Integer> stack(Chain chain, String key) {
