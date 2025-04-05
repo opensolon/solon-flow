@@ -6,7 +6,7 @@ import org.noear.solon.flow.stateful.*;
 /**
  * @author noear 2025/3/28 created
  */
-public class OaActionTest {
+public class OaActionDemo {
     StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder().build());
 
     String instanceId = "guid1";
