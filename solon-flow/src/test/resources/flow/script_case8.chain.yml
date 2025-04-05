@@ -1,0 +1,13 @@
+id: "c8"
+title: "计算编排"
+layout:
+  - { type: "start"}
+  - { task: '$script.script1'}
+  - { task: '$script2'}
+  - { type: "end"}
+meta:
+  script:
+    script1: |
+      context.result=((int)context.result)+1;
+  script2: |
+    context.result=((int)context.result)+1;

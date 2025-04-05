@@ -20,6 +20,8 @@ import org.noear.solon.flow.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 /**
  * 流驱动器基类（方便定制）
  *
@@ -145,6 +147,16 @@ public abstract class AbstractFlowDriver implements FlowDriver {
      */
     protected void tryAsScriptTask(FlowContext context, Task task, String description) throws Throwable {
         //按脚本运行
+        if (description.startsWith("$")) {
+            String metaName = description.substring(1);
+            description = (String) getDepthMeta(task.getNode().getChain().getMetas(), metaName);
+
+            if (Utils.isEmpty(description)) {
+                throw new FlowException("Chain meta not found: " + metaName);
+            }
+        }
+
+
         try {
             context.put("node", task.getNode());
 
@@ -152,5 +164,28 @@ public abstract class AbstractFlowDriver implements FlowDriver {
         } finally {
             context.remove("node");
         }
+    }
+
+    /**
+     * 获取深度元信息
+     */
+    protected Object getDepthMeta(Map metas, String key) {
+        String[] fragments = key.split("\\.");
+        Object rst = null;
+
+        for (int i = 0, len = fragments.length; i < len; i++) {
+            String key1 = fragments[i];
+            if (i == 0) {
+                rst = metas.get(key1);
+            } else {
+                rst = ((Map) rst).get(key1);
+            }
+
+            if (rst == null) {
+                break;
+            }
+        }
+
+        return rst;
     }
 }
