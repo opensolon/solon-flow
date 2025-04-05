@@ -49,7 +49,7 @@ Solon
 <hr />
 
 <p align="center">
-并发高 300%；内存省 50%；启动快 10 倍；打包小 90%；同时支持 java8 ~ java23, native 运行时。
+并发高 700%；内存省 50%；启动快 10 倍；打包小 90%；同时支持 java8 ~ java24, native 运行时。
 <br/>
 从零开始构建，有更灵活的接口规范与开放生态
 </p>
@@ -57,6 +57,7 @@ Solon
 <hr />
 
 ## 主要代码仓库
+
 
 
 | 代码仓库                                            | 描述                               | 
@@ -68,7 +69,7 @@ Solon
 | https://gitee.com/opensolon/solon-flow          | Solon Flow ,代码仓库                 | 
 | https://gitee.com/opensolon/solon-cloud         | Solon Cloud ,代码仓库                | 
 | https://gitee.com/opensolon/solon-admin         | Solon Admin ,代码仓库                | 
-| https://gitee.com/opensolon/solon-jakarta       | Solon Jakarta ,代码仓库（base java17） | 
+| https://gitee.com/opensolon/solon-jakarta       | Solon Jakarta ,代码仓库（base java21） | 
 | https://gitee.com/opensolon/solon-integration   | Solon Integration ,代码仓库          | 
 |                                                 |                                  |
 | https://gitee.com/opensolon/solon-gradle-plugin | Solon Gradle ,插件代码仓库             | 
@@ -77,7 +78,7 @@ Solon
 |                                                 |                                  |
 | https://gitee.com/dromara/solon-plugins         | Solon 第三方扩展插件代码仓库                | 
 
-## 应用示例
+## Solon Flow 应用示例
 
 solon-flow 是一个通用的流处理引擎，支持：计算编排、业务规则处理、行政审批支持，等多场景支持。通过元信息与驱动定制，可实现自由的扩展能力。
 
