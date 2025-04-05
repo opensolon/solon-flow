@@ -200,10 +200,7 @@ public class DemoConfig {
 public class DemoConfig {
     @Bean
     public StatefulFlowEngine statefulFlowEngine() {
-        StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
-                .stateOperator(new BlockStateOperator())
-                .stateRepository(new InMemoryStateRepository()) //状态仓库（支持持久化）
-                .build());
+        StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder().build());
 
         flowEngine.load("classpath:flow/*.yml");
 
