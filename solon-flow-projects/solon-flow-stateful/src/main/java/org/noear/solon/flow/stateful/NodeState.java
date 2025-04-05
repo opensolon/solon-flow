@@ -45,5 +45,5 @@ public interface NodeState {
     /**
      * 重新开始
      */
-    int RESTART = 1004;
+    int RESTART = 1005;
 }
