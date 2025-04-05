@@ -48,7 +48,7 @@ public class LinkTest {
 
         //动态构建链，并执行
         Chain chain = new Chain("c1");
-        chain.addNode(new NodeDecl("n1", NodeType.ACTIVITY).task("@DemoCom"));
+        chain.addNode(NodeDecl.activityOf("n1").task("@DemoCom"));
 
         engine.eval(chain.getNode("n1"));
     }

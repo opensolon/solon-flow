@@ -115,4 +115,48 @@ public class NodeDecl {
         this.task = task;
         return this;
     }
+
+    /// ///////////////
+
+    /**
+     * 构建开始节点
+     */
+    public static NodeDecl startOf(String id) {
+        return new NodeDecl(id, NodeType.START);
+    }
+
+    /**
+     * 构建结束节点
+     */
+    public static NodeDecl endOf(String id) {
+        return new NodeDecl(id, NodeType.END);
+    }
+
+    /**
+     * 构建活动节点
+     */
+    public static NodeDecl activityOf(String id) {
+        return new NodeDecl(id, NodeType.ACTIVITY);
+    }
+
+    /**
+     * 构建包容网关节点
+     */
+    public static NodeDecl inclusiveOf(String id) {
+        return new NodeDecl(id, NodeType.INCLUSIVE);
+    }
+
+    /**
+     * 构建排他网关节点
+     */
+    public static NodeDecl exclusiveOf(String id) {
+        return new NodeDecl(id, NodeType.EXCLUSIVE);
+    }
+
+    /**
+     * 构建并行网关节点
+     */
+    public static NodeDecl parallelOf(String id) {
+        return new NodeDecl(id, NodeType.PARALLEL);
+    }
 }

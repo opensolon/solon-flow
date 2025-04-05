@@ -15,9 +15,9 @@ public class ScriptJavaTest {
     public void case1() throws Throwable {
         Chain chain = new Chain("c1");
 
-        chain.addNode(new NodeDecl("n1", NodeType.START).linkAdd("n2"));
-        chain.addNode(new NodeDecl("n2", NodeType.ACTIVITY).task("context.result=111 + a;").linkAdd("n3"));
-        chain.addNode(new NodeDecl("n3", NodeType.END));
+        chain.addNode(NodeDecl.startOf("n1").linkAdd("n2"));
+        chain.addNode(NodeDecl.activityOf("n2").task("context.result=111 + a;").linkAdd("n3"));
+        chain.addNode(NodeDecl.endOf("n2"));
 
 
         FlowContext context = new FlowContext();
