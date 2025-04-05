@@ -1,6 +1,11 @@
 ### 3.1.3
 
 * 添加 FlowEngine 直接支持节点执行支持
+* 添加 FlowContext:backup,recovery 备份和恢复方法
+* 添加 NodeDecl 快捷构建器
+* 优化 NodeType 编号设计
+* 优化 StatefulFlowEngine 添加 FlowEngine 实现
+* 修复 StatefulFlowEngine stepBack 当遇到网关时，没有回到上一级的问题
 
 ### 3.1.2
 
