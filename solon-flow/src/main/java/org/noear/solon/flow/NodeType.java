@@ -27,25 +27,27 @@ public enum NodeType {
      */
     START(0),
     /**
+     * 结束
+     */
+    END(1),
+
+    /**
      * 活动节点
      */
-    ACTIVITY(1),
+    ACTIVITY(11),
+
     /**
      * 包容网关（多选）
      */
-    INCLUSIVE(2),
+    INCLUSIVE(21),
     /**
      * 排他网关（单选）
      */
-    EXCLUSIVE(3),
+    EXCLUSIVE(22),
     /**
      * 并行网关（全选）
      */
-    PARALLEL(4),
-    /**
-     * 结束
-     */
-    END(9);
+    PARALLEL(23);
 
     private int code;
 
@@ -77,5 +79,12 @@ public enum NodeType {
         }
 
         return ACTIVITY;
+    }
+
+    /**
+     * 是否为网关
+     */
+    public static boolean isGateway(NodeType nodeType) {
+        return nodeType.getCode() > ACTIVITY.getCode();
     }
 }
