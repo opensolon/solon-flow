@@ -35,7 +35,7 @@ public interface NodeState {
      */
     int COMPLETED = 1002;
     /**
-     * 终止（拒绝）
+     * 终止（否决）
      */
     int TERMINATED = 1003;
     /**
