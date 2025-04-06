@@ -1,13 +1,8 @@
 package features.flow.stateful;
 
-import java.util.Date;
-
 import org.junit.jupiter.api.Test;
-import org.noear.solon.flow.Chain;
-import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.Node;
-import org.noear.solon.flow.NodeDecl;
-import org.noear.solon.flow.NodeType;
+import org.noear.solon.flow.*;
+import org.noear.solon.flow.stateful.StatefulFlowEngine;
 import org.noear.solon.flow.stateful.StatefulFlowEngineDefault;
 import org.noear.solon.flow.stateful.StatefulNode;
 import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
@@ -15,12 +10,14 @@ import org.noear.solon.flow.stateful.controller.BlockStateController;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.test.SolonTest;
 
+import java.util.Date;
+
 @SolonTest
 public class AutoForwardTest {
 
     @Test
     public void case11() throws Exception {
-        StatefulFlowEngineDefault flowEngine = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
+        StatefulFlowEngine flowEngine = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
                 .stateController(new BlockStateController() {
                     @Override
                     public boolean isAutoForward(FlowContext context, Node node) {

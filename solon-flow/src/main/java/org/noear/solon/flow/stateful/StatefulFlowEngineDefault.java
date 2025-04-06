@@ -249,6 +249,11 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
         }
     }
 
+    @Override
+    public void clearActivityState(FlowContext context) {
+        getRepository().clearState(context);
+    }
+
     protected void backHandle(Node activity, FlowContext context) {
         //撤回之前的节点
         for (Node n1 : activity.getPrevNodes()) {

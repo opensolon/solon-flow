@@ -1,4 +1,4 @@
-id: f2
+id: sf2
 layout:
   - {id: step1, title: "发起审批"}
   - {id: step2, title: "抄送"}

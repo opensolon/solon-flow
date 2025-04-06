@@ -10,11 +10,11 @@ import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
  * @author noear 2025/3/28 created
  */
 public class BlockStatefulFlowTest {
-    final String chainId = "f2";
+    final String chainId = "sf2";
 
     @Test
     public void case1() throws Throwable {
-        StatefulFlowEngineDefault flowEngine = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
+        StatefulFlowEngine flowEngine = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
                 .stateController(new BlockStateController())
                 .stateRepository(new InMemoryStateRepository())
                 .build());

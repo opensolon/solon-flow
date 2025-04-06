@@ -18,7 +18,6 @@
     <modules>
         <module>../../solon-flow</module>
         <module>../../solon-flow-parent</module>
-        <module>../../solon-flow-projects/solon-flow-stateful</module>
 
         <module>../../solon-flow-projects/solon-flow-eval-aviator</module>
         <module>../../solon-flow-projects/solon-flow-eval-beetl</module>

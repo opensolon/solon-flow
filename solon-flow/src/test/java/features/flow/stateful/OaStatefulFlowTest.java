@@ -1,48 +1,36 @@
 package features.flow.stateful;
 
 import org.junit.jupiter.api.Test;
-import org.noear.redisx.RedisClient;
-import org.noear.solon.Solon;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.container.MapContainer;
-import org.noear.solon.flow.stateful.StateType;
-import org.noear.solon.flow.stateful.StatefulFlowEngineDefault;
-import org.noear.solon.flow.stateful.StatefulNode;
-import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
+import org.noear.solon.flow.stateful.*;
 import org.noear.solon.flow.stateful.controller.MetaStateController;
-import org.noear.solon.flow.stateful.repository.RedisStateRepository;
+import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.test.SolonTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 /**
  * @author noear 2025/3/27 created
  */
 @SolonTest
-public class OaStatefulFlowRedisTest {
-    static final Logger log = LoggerFactory.getLogger(OaStatefulFlowRedisTest.class);
+public class OaStatefulFlowTest {
+    static final Logger log = LoggerFactory.getLogger(OaStatefulFlowTest.class);
 
-    final String chainId = "f1";
+    final String chainId = "sf1";
     final String instanceId = Utils.uuid();
 
-    //初始化引擎
-    StatefulFlowEngineDefault flowEngine = buildFlowDriver();
 
-    private StatefulFlowEngineDefault buildFlowDriver() {
+    private StatefulFlowEngine buildFlowDriver() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
-
-        // 创建 Redis 客户端
-        RedisClient redisClient = Solon.cfg().getBean("solon.repo.redis", RedisClient.class);
-        if (redisClient == null) {
-            throw new IllegalStateException("Redis client configuration not found!");
-        }
-
-        StatefulFlowEngineDefault fe = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
+        StatefulFlowEngine fe = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
                 .stateController(new MetaStateController())
-                .stateRepository(new RedisStateRepository(redisClient))
+                .stateRepository(new InMemoryStateRepository())
                 .container(container)
                 .build());
 
@@ -54,8 +42,12 @@ public class OaStatefulFlowRedisTest {
 
     @Test
     public void case1() throws Throwable {
+        //初始化引擎
+        StatefulFlowEngine flowEngine = buildFlowDriver();
+
         FlowContext context;
         StatefulNode statefulNode;
+
 
         context = getContext("刘涛");
         statefulNode = flowEngine.getActivityNode(chainId, context);
@@ -66,6 +58,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
+        context.put("oaState", 2); //用于扩展状态记录
         flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
 
 
@@ -88,6 +81,17 @@ public class OaStatefulFlowRedisTest {
         /// ////////////////
         //提交状态
         flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
+
+
+        context = getContext(null);
+        Collection<StatefulNode> nodes = flowEngine.getActivityNodes(chainId, context);
+        assert nodes.size() == 2;
+        assert 0 == nodes.stream().filter(n -> n.getState() == StateType.WAITING).count();
+
+        context = getContext("陈宇");
+        nodes = flowEngine.getActivityNodes(chainId, context);
+        assert nodes.size() == 2;
+        assert 1 == nodes.stream().filter(n -> n.getState() == StateType.WAITING).count();
 
 
         context = getContext("陈鑫");
@@ -125,9 +129,9 @@ public class OaStatefulFlowRedisTest {
         context = getContext("吕方");
         statefulNode = flowEngine.getActivityNode(chainId, context);
         log.warn("{}", statefulNode);
-        assert statefulNode == null; //抄送节点
+        assert statefulNode == null;
 
-        flowEngine.getRepository().clearState(context);
+        flowEngine.clearActivityState(context);
     }
 
     private FlowContext getContext(String actor) throws Throwable {
@@ -136,25 +140,25 @@ public class OaStatefulFlowRedisTest {
         return context;
     }
 
-    //@Test //只看看
-    public void case2() throws Throwable {
-        FlowContext context;
-        StatefulNode statefulNode;
-
-        context = new FlowContext("i1").put("actor", "陈鑫");
-        statefulNode = flowEngine.getActivityNode(chainId, context);
-
-        assert "step2".equals(statefulNode.getNode().getId());
-        assert StateType.UNKNOWN == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
-
-        /// ////////////////
-        //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
-
-        context = new FlowContext("i1").put("actor", "陈鑫");
-        statefulNode = flowEngine.getActivityNode(chainId, context);
-
-        assert "step3".equals(statefulNode.getNode().getId());
-        assert StateType.WAITING == statefulNode.getState(); //等待当前用户处理（有权限操作）
-    }
+//    //@Test //只看看
+//    public void case2() throws Throwable {
+//        FlowContext context;
+//        StatefulNode statefulNode;
+//
+//        context = new FlowContext("i1").put("actor", "陈鑫");
+//        statefulNode = flowEngine.getActivityNode(chainId, context);
+//
+//        assert "step2".equals(statefulNode.getNode().getId());
+//        assert StateType.UNKNOWN == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
+//
+//        /// ////////////////
+//        //提交状态
+//        flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
+//
+//        context = new FlowContext("i1").put("actor", "陈鑫");
+//        statefulNode = flowEngine.getActivityNode(chainId, context);
+//
+//        assert "step3".equals(statefulNode.getNode().getId());
+//        assert StateType.WAITING == statefulNode.getState(); //等待当前用户处理（有权限操作）
+//    }
 }

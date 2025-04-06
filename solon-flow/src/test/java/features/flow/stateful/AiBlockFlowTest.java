@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.container.MapContainer;
+import org.noear.solon.flow.stateful.StatefulFlowEngine;
 import org.noear.solon.flow.stateful.StatefulFlowEngineDefault;
 import org.noear.solon.flow.stateful.StatefulNode;
 import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
@@ -18,17 +19,14 @@ import org.slf4j.LoggerFactory;
 public class AiBlockFlowTest {
     static final Logger log = LoggerFactory.getLogger(AiBlockFlowTest.class);
 
-    final String chainId = "f1";
+    final String chainId = "sf1";
     final String instanceId = "i2";
 
-    //初始化引擎
-    StatefulFlowEngineDefault flowEngine = buildFlowDriver();
-
-    private StatefulFlowEngineDefault buildFlowDriver() {
+    private StatefulFlowEngine buildFlowDriver() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
-        StatefulFlowEngineDefault fe = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
+        StatefulFlowEngine fe = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
                 .stateController(new BlockStateController(){
                     @Override
                     public boolean isAutoForward(FlowContext context, Node node) {
@@ -49,6 +47,9 @@ public class AiBlockFlowTest {
 
     @Test
     public void case1() throws Throwable {
+        //初始化引擎
+        StatefulFlowEngine flowEngine = buildFlowDriver();
+
         FlowContext context;
         StatefulNode statefulNode;
 
