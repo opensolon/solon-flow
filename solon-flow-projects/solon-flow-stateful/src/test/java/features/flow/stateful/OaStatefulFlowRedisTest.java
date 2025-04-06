@@ -10,7 +10,7 @@ import org.noear.solon.flow.stateful.NodeState;
 import org.noear.solon.flow.stateful.StatefulFlowEngine;
 import org.noear.solon.flow.stateful.StatefulNode;
 import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
-import org.noear.solon.flow.stateful.operator.MetaStateOperator;
+import org.noear.solon.flow.stateful.controller.MetaStateController;
 import org.noear.solon.flow.stateful.repository.RedisStateRepository;
 import org.noear.solon.test.SolonTest;
 import org.slf4j.Logger;
@@ -41,7 +41,7 @@ public class OaStatefulFlowRedisTest {
         }
 
         StatefulFlowEngine fe = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
-                .stateOperator(new MetaStateOperator())
+                .stateController(new MetaStateController())
                 .stateRepository(new RedisStateRepository(redisClient))
                 .container(container)
                 .build());

@@ -13,29 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.stateful.operator;
+package org.noear.solon.flow.stateful.controller;
 
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.NodeType;
-import org.noear.solon.flow.stateful.StateOperator;
+import org.noear.solon.flow.stateful.StateController;
 
 import java.util.*;
 
 /**
- * 元信息状态操作员
+ * 元信息状态控制器
  *
  * @author noear
  * @since 3.1
  */
-public class MetaStateOperator implements StateOperator {
+public class MetaStateController implements StateController {
     private final Set<String> keys = new HashSet<>();
 
-    public MetaStateOperator() {
+    public MetaStateController() {
         this("actor");
     }
 
-    public MetaStateOperator(String... keys) {
+    public MetaStateController(String... keys) {
         this.keys.addAll(Arrays.asList(keys));
     }
 

@@ -20,12 +20,12 @@ import org.noear.solon.flow.Node;
 import org.noear.solon.flow.NodeType;
 
 /**
- * 状态操作员
+ * 状态控制器
  *
  * @author noear
  * @since 3.1
  */
-public interface StateOperator {
+public interface StateController {
     /**
      * 是否可操作的
      */

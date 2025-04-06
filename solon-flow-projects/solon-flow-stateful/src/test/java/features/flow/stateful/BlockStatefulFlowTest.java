@@ -2,9 +2,8 @@ package features.flow.stateful;
 
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.*;
-import org.noear.solon.flow.stateful.operator.BlockStateOperator;
+import org.noear.solon.flow.stateful.controller.BlockStateController;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 
 /**
@@ -16,7 +15,7 @@ public class BlockStatefulFlowTest {
     @Test
     public void case1() throws Throwable {
         StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
-                .stateOperator(new BlockStateOperator())
+                .stateController(new BlockStateController())
                 .stateRepository(new InMemoryStateRepository())
                 .build());
 
@@ -102,7 +101,7 @@ public class BlockStatefulFlowTest {
     @Test
     public void case2() throws Throwable {
         StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
-                .stateOperator(new BlockStateOperator())
+                .stateController(new BlockStateController())
                 .stateRepository(new InMemoryStateRepository())
                 .build());
 

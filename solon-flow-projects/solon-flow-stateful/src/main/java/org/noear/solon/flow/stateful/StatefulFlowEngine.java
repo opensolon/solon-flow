@@ -226,7 +226,7 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
 
                 Node nextNode = activity.getNextNode();
                 if (nextNode != null) {
-                    if (driver.getStateOperator().isAutoForward(context, nextNode)) {
+                    if (driver.getStateController().isAutoForward(context, nextNode)) {
                         //如果要自动前进
                         eval(nextNode, context);
                     }

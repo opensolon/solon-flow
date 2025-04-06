@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.stateful.operator;
+package org.noear.solon.flow.stateful.controller;
 
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
-import org.noear.solon.flow.stateful.StateOperator;
+import org.noear.solon.flow.stateful.StateController;
 
 /**
- * 阻塞状态操作员
+ * 阻塞状态控制器
  *
  * @author noear
  * @since 3.1
  */
-public class BlockStateOperator implements StateOperator {
+public class BlockStateController implements StateController {
     /**
      * 是否可操作的
      */

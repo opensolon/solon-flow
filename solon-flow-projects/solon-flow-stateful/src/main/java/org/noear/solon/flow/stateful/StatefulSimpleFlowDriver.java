@@ -21,7 +21,7 @@ import org.noear.solon.flow.Evaluation;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Task;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
-import org.noear.solon.flow.stateful.operator.BlockStateOperator;
+import org.noear.solon.flow.stateful.controller.BlockStateController;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 
 import java.util.ArrayList;
@@ -35,29 +35,41 @@ import java.util.List;
  */
 public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
     private final StateRepository stateRepository;
-    private final StateOperator stateOperator;
+    private final StateController stateController;
 
+    public StatefulSimpleFlowDriver(StateRepository stateRepository, StateController stateController, Evaluation evaluation, Container container) {
+        super(evaluation, container);
+        this.stateRepository = (stateRepository == null ? new InMemoryStateRepository() : stateRepository);
+        this.stateController = (stateController == null ? new BlockStateController() : stateController);
+    }
+
+    /**
+     * 获取状态仓库
+     */
     public StateRepository getStateRepository() {
         return stateRepository;
     }
 
-    public StateOperator getStateOperator() {
-        return stateOperator;
+    /**
+     * 获取状态控制器
+     */
+    public StateController getStateController() {
+        return stateController;
     }
 
-    public StatefulSimpleFlowDriver(StateRepository stateRepository, StateOperator stateOperator, Evaluation evaluation, Container container) {
-        super(evaluation, container);
-        this.stateRepository = (stateRepository == null ? new InMemoryStateRepository() : stateRepository);
-        this.stateOperator = (stateOperator == null ? new BlockStateOperator() : stateOperator);
-    }
-
+    /**
+     * 处理任务
+     *
+     * @param context 流上下文
+     * @param task    任务
+     */
     @Override
     public void handleTask(FlowContext context, Task task) throws Throwable {
         String instanceId = context.getInstanceId();
 
         //有实例id，且没有自动提交
         if (Utils.isNotEmpty(instanceId)) {
-            if (stateOperator.isAutoForward(context, task.getNode())) {
+            if (stateController.isAutoForward(context, task.getNode())) {
                 //自动前进
                 NodeState nodeState = getStateRepository().getState(context, task.getNode());
                 if (nodeState == NodeState.UNKNOWN || nodeState == NodeState.WAITING) {
@@ -78,7 +90,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
 
                 if (nodeState == NodeState.UNKNOWN) {
                     //检查是否为当前用户的任务
-                    if (stateOperator.isOperatable(context, task.getNode())) {
+                    if (stateController.isOperatable(context, task.getNode())) {
                         //记录当前流程节点（用于展示）
                         StatefulNode statefulNode = new StatefulNode(task.getNode(), NodeState.WAITING);
                         context.put(StatefulNode.KEY_ACTIVITY_NODE, statefulNode);
@@ -99,7 +111,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                     }
                 } else if (nodeState == NodeState.WAITING) {
                     //检查是否为当前用户的任务
-                    if (stateOperator.isOperatable(context, task.getNode())) {
+                    if (stateController.isOperatable(context, task.getNode())) {
                         //记录当前流程节点（用于展示）
                         StatefulNode statefulNode = new StatefulNode(task.getNode(), nodeState);
                         context.put(StatefulNode.KEY_ACTIVITY_NODE, statefulNode); //说明之前没有结办
@@ -139,7 +151,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
 
     public static class Builder {
         private StateRepository stateRepository;
-        private StateOperator stateOperator;
+        private StateController stateController;
         private Evaluation evaluation;
         private Container container;
 
@@ -152,10 +164,10 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
         }
 
         /**
-         * 设置状态操作员
+         * 设置状态控制器
          */
-        public Builder stateOperator(StateOperator stateOperator) {
-            this.stateOperator = stateOperator;
+        public Builder stateController(StateController stateController) {
+            this.stateController = stateController;
             return this;
         }
 
@@ -181,7 +193,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
         public StatefulSimpleFlowDriver build() {
             return new StatefulSimpleFlowDriver(
                     stateRepository,
-                    stateOperator,
+                    stateController,
                     evaluation,
                     container);
         }

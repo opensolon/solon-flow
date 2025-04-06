@@ -4,11 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.container.MapContainer;
-import org.noear.solon.flow.stateful.NodeState;
 import org.noear.solon.flow.stateful.StatefulFlowEngine;
 import org.noear.solon.flow.stateful.StatefulNode;
 import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
-import org.noear.solon.flow.stateful.operator.BlockStateOperator;
+import org.noear.solon.flow.stateful.controller.BlockStateController;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,7 @@ public class AiBlockFlowTest {
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
         StatefulFlowEngine fe = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
-                .stateOperator(new BlockStateOperator(){
+                .stateController(new BlockStateController(){
                     @Override
                     public boolean isAutoForward(FlowContext context, Node node) {
                         return super.isAutoForward(context, node)

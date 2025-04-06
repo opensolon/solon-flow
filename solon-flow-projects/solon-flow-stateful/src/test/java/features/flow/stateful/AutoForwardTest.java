@@ -11,7 +11,7 @@ import org.noear.solon.flow.NodeType;
 import org.noear.solon.flow.stateful.StatefulFlowEngine;
 import org.noear.solon.flow.stateful.StatefulNode;
 import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
-import org.noear.solon.flow.stateful.operator.BlockStateOperator;
+import org.noear.solon.flow.stateful.controller.BlockStateController;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.test.SolonTest;
 
@@ -21,7 +21,7 @@ public class AutoForwardTest {
     @Test
     public void case11() throws Exception {
         StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
-                .stateOperator(new BlockStateOperator() {
+                .stateController(new BlockStateController() {
                     @Override
                     public boolean isAutoForward(FlowContext context, Node node) {
                         return super.isAutoForward(context, node)
