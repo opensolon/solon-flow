@@ -15,7 +15,7 @@
 * 修复 solon-flow-stateful StatefulSimpleFlowDriver 有状态执行时，任务可能会重复执行的问题
 * 调整 solon-flow-stateful NodeState 改为 enum 类型（约束性更强，int 约束太弱了）
 * 调整 solon-flow-stateful NodeState 更名为 StateType （更中性些；状态不一定与节点有关，有时像指令）
-* 调整 solon-flow-stateful StateOperator 更名为 StateController （意为状态控制器
+* 调整 solon-flow-stateful StateOperator 更名为 StateController （意为状态控制器）
 
 ### 3.1.2
 
