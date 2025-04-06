@@ -142,6 +142,39 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
     }
 
     /**
+     * 提交活动状态（如果当前节点为等待介入）
+     */
+    public boolean postActivityStateIfWaiting(FlowContext context, String chainId, String activityNodeId, int state) {
+        Node node = getChain(chainId).getNode(activityNodeId);
+        return postActivityStateIfWaiting(context, node, state);
+    }
+
+    /**
+     * 提交活动状态（如果当前节点为等待介入）
+     */
+    public boolean postActivityStateIfWaiting(FlowContext context, Node activity, int state) {
+        context.backup();
+
+        StatefulNode statefulNode = getActivityNode(activity.getChain(), context);
+        if (statefulNode == null) {
+            return false;
+        }
+
+        if (statefulNode.getState() != NodeState.WAITING) {
+            return false;
+        }
+
+        if (statefulNode.getNode().getId().equals(activity.getId()) == false) {
+            return false;
+        }
+
+        context.recovery();
+        postActivityState(context, statefulNode.getNode(), state);
+
+        return true;
+    }
+
+    /**
      * 提交活动状态
      */
     public void postActivityState(FlowContext context, String chainId, String activityNodeId, int state) {
