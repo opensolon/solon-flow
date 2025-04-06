@@ -15,6 +15,8 @@
  */
 package org.noear.solon.flow.stateful;
 
+import org.noear.solon.flow.Node;
+
 import java.io.Serializable;
 
 /**
@@ -31,6 +33,10 @@ public class StateRecord implements Serializable {
 
     public StateRecord() {
         //用于反序列化
+    }
+
+    public StateRecord(Node node, int nodeState) {
+        this(node.getChain().getId(), node.getId(), nodeState, System.currentTimeMillis());
     }
 
     public StateRecord(String chainId, String nodeId, int nodeState, long created) {
