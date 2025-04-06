@@ -38,21 +38,21 @@ public class InMemoryStateRepository implements StateRepository {
     }
 
     @Override
-    public int getState(FlowContext context, Node node) {
+    public NodeState getState(FlowContext context, Node node) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
 
-        Integer rst = getStates(context.getInstanceId()).get(stateKey);
-        if (rst == null) {
+        Integer code = getStates(context.getInstanceId()).get(stateKey);
+        if (code == null) {
             return NodeState.UNKNOWN;
         } else {
-            return rst;
+            return NodeState.codeOf(code);
         }
     }
 
     @Override
-    public void putState(FlowContext context, Node node, int nodeState) {
+    public void putState(FlowContext context, Node node, NodeState nodeState) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
-        getStates(context.getInstanceId()).put(stateKey, nodeState);
+        getStates(context.getInstanceId()).put(stateKey, nodeState.getCode());
     }
 
     @Override

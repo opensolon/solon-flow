@@ -30,12 +30,12 @@ public interface StateRepository {
     /**
      * 获取状态
      */
-    int getState(FlowContext context, Node node);
+    NodeState getState(FlowContext context, Node node);
 
     /**
      * 推入状态
      */
-    void putState(FlowContext context, Node node, int nodeState);
+    void putState(FlowContext context, Node node, NodeState nodeState);
 
     /**
      * 移除状态
@@ -50,7 +50,7 @@ public interface StateRepository {
     /**
      * 活动状态提交时（有些状态不需要推入）
      */
-    default void onPostActivityState(FlowContext context, Node node, int nodeState) {
+    default void onPostActivityState(FlowContext context, Node node, NodeState nodeState) {
 
     }
 }

@@ -6,10 +6,9 @@ import org.noear.solon.annotation.Mapping;
 import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.ModelAndView;
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.stateful.NodeState;
 import org.noear.solon.flow.stateful.StatefulFlowEngine;
 import org.noear.solon.flow.stateful.StatefulNode;
-
-import java.util.List;
 
 /**
  * @author noear 2025/3/27 created
@@ -36,6 +35,6 @@ public class DemoController {
         FlowContext context = new FlowContext(instanceId);
         context.put("actor", ctx.param("actor"));
 
-        flowEngine.postActivityState(context, chainId, nodeId, nodeState);
+        flowEngine.postActivityState(context, chainId, nodeId, NodeState.codeOf(nodeState));
     }
 }

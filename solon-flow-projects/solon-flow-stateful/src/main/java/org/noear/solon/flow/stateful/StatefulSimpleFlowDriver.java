@@ -59,7 +59,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
         if (Utils.isNotEmpty(instanceId)) {
             if (stateOperator.isAutoForward(context, task.getNode())) {
                 //自动前进
-                int nodeState = getStateRepository().getState(context, task.getNode());
+                NodeState nodeState = getStateRepository().getState(context, task.getNode());
                 if (nodeState == NodeState.UNKNOWN || nodeState == NodeState.WAITING) {
                     //添加状态
                     stateRepository.putState(context, task.getNode(), NodeState.COMPLETED);
@@ -72,7 +72,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                 }
             } else {
                 //控制前进
-                int nodeState = getStateRepository().getState(context, task.getNode());
+                NodeState nodeState = getStateRepository().getState(context, task.getNode());
                 List<StatefulNode> nodeList = context.computeIfAbsent(StatefulNode.KEY_ACTIVITY_LIST, k -> new ArrayList<>());
                 boolean nodeListGet = context.getOrDefault(StatefulNode.KEY_ACTIVITY_LIST_GET, false);
 

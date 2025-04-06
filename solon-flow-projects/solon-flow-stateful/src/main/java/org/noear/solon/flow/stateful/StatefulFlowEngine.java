@@ -143,7 +143,7 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
     /**
      * 提交活动状态（如果当前节点为等待介入）
      */
-    public boolean postActivityStateIfWaiting(FlowContext context, String chainId, String activityNodeId, int state) {
+    public boolean postActivityStateIfWaiting(FlowContext context, String chainId, String activityNodeId, NodeState state) {
         Node node = getChain(chainId).getNode(activityNodeId);
         return postActivityStateIfWaiting(context, node, state);
     }
@@ -151,7 +151,7 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
     /**
      * 提交活动状态（如果当前节点为等待介入）
      */
-    public boolean postActivityStateIfWaiting(FlowContext context, Node activity, int state) {
+    public boolean postActivityStateIfWaiting(FlowContext context, Node activity, NodeState state) {
         context.backup();
 
         StatefulNode statefulNode = getActivityNode(activity.getChain(), context);
@@ -176,7 +176,7 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
     /**
      * 提交活动状态
      */
-    public void postActivityState(FlowContext context, String chainId, String activityNodeId, int state) {
+    public void postActivityState(FlowContext context, String chainId, String activityNodeId, NodeState state) {
         Node node = getChain(chainId).getNode(activityNodeId);
         postActivityState(context, node, state);
     }
@@ -184,7 +184,7 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
     /**
      * 提交活动状态
      */
-    public void postActivityState(FlowContext context, Node activity, int state) {
+    public void postActivityState(FlowContext context, Node activity, NodeState state) {
         LOCKER.lock();
 
         try {
@@ -197,8 +197,8 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
     /**
      * 提交活动状态
      */
-    protected void postActivityStateDo(FlowContext context, Node activity, int state) {
-        int oldNodeState = driver.getStateRepository().getState(context, activity);
+    protected void postActivityStateDo(FlowContext context, Node activity, NodeState state) {
+        NodeState oldNodeState = driver.getStateRepository().getState(context, activity);
         if (oldNodeState == state) {
             //如果要状态没变化，不处理
             return;

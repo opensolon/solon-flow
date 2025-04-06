@@ -21,29 +21,59 @@ package org.noear.solon.flow.stateful;
  * @author noear
  * @since 3.1
  */
-public interface NodeState {
+public enum NodeState {
     /**
      * 未知
      */
-    int UNKNOWN = 0;
+    UNKNOWN(0),
     /**
      * 等待
      */
-    int WAITING = 1001;
+    WAITING(1001),
     /**
      * 完成（通过）
      */
-    int COMPLETED = 1002;
+    COMPLETED(1002),
     /**
      * 终止（否决）
      */
-    int TERMINATED = 1003;
+    TERMINATED(1003),
     /**
      * 退回（撤回）
      */
-    int RETURNED = 1004;
+    RETURNED(1004),
     /**
      * 重新开始
      */
-    int RESTART = 1005;
+    RESTART(1005);
+
+    private final int code;
+
+    NodeState(int code) {
+        this.code = code;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    /**
+     * 根据代码构建
+     */
+    public static NodeState codeOf(int code) {
+        switch (code) {
+            case 1001:
+                return WAITING;
+            case 1002:
+                return COMPLETED;
+            case 1003:
+                return TERMINATED;
+            case 1004:
+                return RESTART;
+            case 1005:
+                return RESTART;
+            default:
+                return UNKNOWN;
+        }
+    }
 }

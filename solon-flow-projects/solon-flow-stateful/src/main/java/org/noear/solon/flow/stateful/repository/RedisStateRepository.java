@@ -41,21 +41,21 @@ public class RedisStateRepository implements StateRepository {
     }
 
     @Override
-    public int getState(FlowContext context, Node node) {
+    public NodeState getState(FlowContext context, Node node) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
 
-        Integer rst = client.getHash(statePrefix + context.getInstanceId()).getAsInt(stateKey);
-        if (rst == null) {
+        Integer code = client.getHash(statePrefix + context.getInstanceId()).getAsInt(stateKey);
+        if (code == null) {
             return NodeState.UNKNOWN;
         } else {
-            return rst;
+            return NodeState.codeOf(code);
         }
     }
 
     @Override
-    public void putState(FlowContext context, Node node, int nodeState) {
+    public void putState(FlowContext context, Node node, NodeState nodeState) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
-        client.getHash(statePrefix + context.getInstanceId()).put(stateKey, nodeState);
+        client.getHash(statePrefix + context.getInstanceId()).put(stateKey, nodeState.getCode());
     }
 
     @Override
