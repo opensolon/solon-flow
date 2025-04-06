@@ -15,14 +15,8 @@
  */
 package org.noear.solon.flow.integration;
 
-import org.noear.solon.Utils;
 import org.noear.solon.core.AppContext;
 import org.noear.solon.core.Plugin;
-import org.noear.solon.flow.FlowDriver;
-import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.intercept.ChainInterceptor;
-
-import java.util.List;
 
 /**
  * @author noear
@@ -31,28 +25,6 @@ import java.util.List;
 public class FlowPlugin implements Plugin {
     @Override
     public void start(AppContext context) throws Throwable {
-        FlowEngine flowEngine = FlowEngine.newInstance();
-
-        List<String> chainList = context.cfg().getList("solon.flow");
-        if (Utils.isEmpty(chainList)) {
-            //默认
-            flowEngine.load("classpath:flow/*.yml");
-            flowEngine.load("classpath:flow/*.json");
-        } else {
-            //按配置加载
-            for (String chainUri : chainList) {
-                flowEngine.load(chainUri);
-            }
-        }
-
-        context.wrapAndPut(FlowEngine.class, flowEngine);
-
-        context.subWrapsOfType(FlowDriver.class, bw -> {
-            flowEngine.register(bw.name(), bw.raw());
-        });
-
-        context.subWrapsOfType(ChainInterceptor.class, bw -> {
-            flowEngine.addInterceptor(bw.raw(), bw.index());
-        });
+        context.beanMake(FlowConfig.class);
     }
 }
