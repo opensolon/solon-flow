@@ -18,7 +18,6 @@ package org.noear.solon.flow.stateful;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.NodeType;
-import org.noear.solon.lang.Nullable;
 
 /**
  * 状态操作员
@@ -37,12 +36,5 @@ public interface StateOperator {
      */
     default boolean isAutoForward(FlowContext context, Node node) {
         return node.getType() == NodeType.END;
-    }
-
-    /**
-     * 创建状态记录
-     */
-    default @Nullable StateRecord createRecord(FlowContext context, Node node, int nodeState) {
-        return new StateRecord(node, nodeState);
     }
 }

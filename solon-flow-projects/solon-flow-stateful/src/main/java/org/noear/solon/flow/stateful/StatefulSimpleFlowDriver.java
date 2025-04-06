@@ -23,7 +23,6 @@ import org.noear.solon.flow.Task;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.stateful.operator.BlockStateOperator;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
-import org.noear.solon.lang.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,12 +61,11 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                 //自动前进
                 int nodeState = getStateRepository().getState(context, task.getNode());
                 if (nodeState == NodeState.UNKNOWN || nodeState == NodeState.WAITING) {
-                    //添加记录
-                    @Nullable StateRecord stateRecord = stateOperator.createRecord(context, task.getNode(), NodeState.COMPLETED);
-                    stateRepository.addStateRecord(context, stateRecord);
-
                     //添加状态
                     stateRepository.putState(context, task.getNode(), NodeState.COMPLETED);
+
+                    //发送提交变更事件
+                    stateRepository.onPostActivityState(context, task.getNode(), NodeState.COMPLETED);
 
                     //确保任务只被执行一次
                     postHandleTask(context, task);

@@ -127,9 +127,7 @@ public class OaStatefulFlowRedisTest {
         log.warn("{}", statefulNode);
         assert statefulNode == null; //抄送节点
 
-        flowEngine.getRepository().getStateRecords(context);
         flowEngine.getRepository().clearState(context);
-        flowEngine.getRepository().clearStateRecords(context);
     }
 
     private FlowContext getContext(String actor) throws Throwable {

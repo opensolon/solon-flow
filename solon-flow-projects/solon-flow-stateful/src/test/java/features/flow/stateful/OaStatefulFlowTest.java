@@ -32,14 +32,7 @@ public class OaStatefulFlowTest {
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
         StatefulFlowEngine fe = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
-                .stateOperator(new MetaStateOperator() {
-                    @Override
-                    public StateRecord createRecord(FlowContext context, Node node, int nodeState) {
-                        //实现状态实体扩展
-                        int oaState = context.getOrDefault("oaState", 1);
-                        return new StateRecordExt(node.getChain().getId(), node.getId(), nodeState, System.currentTimeMillis(), oaState);
-                    }
-                })
+                .stateOperator(new MetaStateOperator())
                 .stateRepository(new InMemoryStateRepository())
                 .container(container)
                 .build());
@@ -138,9 +131,7 @@ public class OaStatefulFlowTest {
         log.warn("{}", statefulNode);
         assert statefulNode == null;
 
-        flowEngine.getRepository().getStateRecords(context);
         flowEngine.getRepository().clearState(context);
-        flowEngine.getRepository().clearStateRecords(context);
     }
 
     private FlowContext getContext(String actor) throws Throwable {

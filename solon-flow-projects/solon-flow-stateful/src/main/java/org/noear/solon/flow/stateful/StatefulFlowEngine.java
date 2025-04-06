@@ -16,7 +16,6 @@
 package org.noear.solon.flow.stateful;
 
 import org.noear.solon.flow.*;
-import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
 import java.util.Collection;
@@ -205,12 +204,6 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
             return;
         }
 
-        //添加记录
-        @Nullable StateRecord stateRecord = driver.getStateOperator().createRecord(context, activity, state);
-        driver.getStateRepository().addStateRecord(context, stateRecord);
-
-        //节点
-
         //更新状态
         if (state == NodeState.RETURNED) {
             //撤回之前的节点
@@ -222,6 +215,9 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
             //其它（等待或通过或拒绝）
             driver.getStateRepository().putState(context, activity, state);
         }
+
+        //发送提交变更事件
+        driver.getStateRepository().onPostActivityState(context, activity, state);
 
         //如果是完成或跳过，则向前流动
         if (state == NodeState.COMPLETED) {

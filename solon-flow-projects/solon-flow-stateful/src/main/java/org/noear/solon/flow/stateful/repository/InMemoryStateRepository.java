@@ -17,10 +17,8 @@ package org.noear.solon.flow.stateful.repository;
 
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
-import org.noear.solon.flow.stateful.StateRecord;
 import org.noear.solon.flow.stateful.StateRepository;
 import org.noear.solon.flow.stateful.NodeState;
-import org.noear.solon.lang.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,13 +29,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author noear
  * @since 3.1
  */
-public class InMemoryStateRepository<T extends StateRecord> implements StateRepository<T> {
-    private final Map<String, List<T>> historyMap = new ConcurrentHashMap<>();
+public class InMemoryStateRepository implements StateRepository {
     private final Map<String, Map<String, Integer>> stateMap = new ConcurrentHashMap<>();
 
-    private List<T> getHistory(String instanceId) {
-        return historyMap.computeIfAbsent(instanceId, k -> new ArrayList<>());
-    }
 
     public Map<String, Integer> getStates(String instanceId) {
         return stateMap.computeIfAbsent(instanceId, k -> new ConcurrentHashMap<>());
@@ -70,24 +64,5 @@ public class InMemoryStateRepository<T extends StateRecord> implements StateRepo
     @Override
     public void clearState(FlowContext context) {
         getStates(context.getInstanceId()).clear();
-    }
-
-    @Override
-    public List<T> getStateRecords(FlowContext context) {
-        return Collections.unmodifiableList(getHistory(context.getInstanceId()));
-    }
-
-    @Override
-    public void addStateRecord(FlowContext context, @Nullable T record) {
-        if(record == null) {
-            return;
-        }
-
-        getHistory(context.getInstanceId()).add(record);
-    }
-
-    @Override
-    public void clearStateRecords(FlowContext context) {
-        getHistory(context.getInstanceId()).clear();
     }
 }

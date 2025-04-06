@@ -17,10 +17,7 @@ package org.noear.solon.flow.stateful;
 
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
-import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
-
-import java.util.List;
 
 /**
  * 状态仓库
@@ -29,7 +26,7 @@ import java.util.List;
  * @since 3.1
  */
 @Preview("3.1")
-public interface StateRepository<T extends StateRecord> {
+public interface StateRepository {
     /**
      * 获取状态
      */
@@ -51,17 +48,9 @@ public interface StateRepository<T extends StateRecord> {
     void clearState(FlowContext context);
 
     /**
-     * 获取状态记录
+     * 活动状态提交时（有些状态不需要推入）
      */
-    List<T> getStateRecords(FlowContext context);
+    default void onPostActivityState(FlowContext context, Node node, int nodeState) {
 
-    /**
-     * 添加状态记录
-     */
-    void addStateRecord(FlowContext context, @Nullable T record);
-
-    /**
-     * 清空状态记录
-     */
-    void clearStateRecords(FlowContext context);
+    }
 }

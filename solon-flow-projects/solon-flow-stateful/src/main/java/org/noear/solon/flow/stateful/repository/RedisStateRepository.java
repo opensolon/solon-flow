@@ -16,16 +16,10 @@
 package org.noear.solon.flow.stateful.repository;
 
 import org.noear.redisx.RedisClient;
-import org.noear.snack.ONode;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.NodeState;
-import org.noear.solon.flow.stateful.StateRecord;
 import org.noear.solon.flow.stateful.StateRepository;
-import org.noear.solon.lang.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Redis 状态仓库
@@ -33,19 +27,17 @@ import java.util.List;
  * @author noear
  * @since 3.1
  */
-public class RedisStateRepository<T extends StateRecord> implements StateRepository<T> {
+public class RedisStateRepository implements StateRepository {
     private final RedisClient client;
     private final String statePrefix;
-    private final String recordPrefix;
 
     public RedisStateRepository(RedisClient client) {
-        this(client, "state:", "record:");
+        this(client, "state:");
     }
 
-    public RedisStateRepository(RedisClient client, String statePrefix, String recordPrefix) {
+    public RedisStateRepository(RedisClient client, String statePrefix) {
         this.client = client;
         this.statePrefix = statePrefix;
-        this.recordPrefix = recordPrefix;
     }
 
     @Override
@@ -75,29 +67,5 @@ public class RedisStateRepository<T extends StateRecord> implements StateReposit
     @Override
     public void clearState(FlowContext context) {
         client.getHash(statePrefix + context.getInstanceId()).clear();
-    }
-
-    @Override
-    public List<T> getStateRecords(FlowContext context) {
-        List<String> list = client.getList(recordPrefix + context.getInstanceId()).getAll();
-        List<T> list1 = new ArrayList<>(list.size());
-        for (String str : list) {
-            list1.add(ONode.deserialize(str));
-        }
-        return list1;
-    }
-
-    @Override
-    public void addStateRecord(FlowContext context, @Nullable T record) {
-        if(record == null) {
-            return;
-        }
-
-        client.getList(recordPrefix + context.getInstanceId()).add(ONode.serialize(record));
-    }
-
-    @Override
-    public void clearStateRecords(FlowContext context) {
-        client.getList(recordPrefix + context.getInstanceId()).clear();
     }
 }
