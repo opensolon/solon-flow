@@ -110,6 +110,8 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
      * @param context 流上下文（不要有人员配置）
      */
     public Collection<StatefulNode> getActivityNodes(Chain chain, FlowContext context) {
+        context.put(StatefulNode.KEY_ACTIVITY_LIST_GET, true);
+
         eval(chain, context);
         Collection<StatefulNode> tmp = context.get(StatefulNode.KEY_ACTIVITY_LIST);
 

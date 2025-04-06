@@ -93,6 +93,12 @@ public class OaStatefulFlowTest {
         context = getContext(null);
         Collection<StatefulNode> nodes = flowEngine.getActivityNodes(chainId, context);
         assert nodes.size() == 2;
+        assert 0 == nodes.stream().filter(n -> n.getState() == NodeState.WAITING).count();
+
+        context = getContext("陈宇");
+        nodes = flowEngine.getActivityNodes(chainId, context);
+        assert nodes.size() == 2;
+        assert 1 == nodes.stream().filter(n -> n.getState() == NodeState.WAITING).count();
 
 
         context = getContext("陈鑫");
