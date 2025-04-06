@@ -43,6 +43,6 @@ public interface StateOperator {
      * 创建状态记录
      */
     default @Nullable StateRecord createRecord(FlowContext context, Node node, int nodeState) {
-        return new StateRecord(node.getChain().getId(), node.getId(), nodeState, System.currentTimeMillis());
+        return new StateRecord(node, nodeState);
     }
 }
