@@ -8,7 +8,7 @@ import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.NodeDecl;
 import org.noear.solon.flow.NodeType;
-import org.noear.solon.flow.stateful.StatefulFlowEngine;
+import org.noear.solon.flow.stateful.StatefulFlowEngineDefault;
 import org.noear.solon.flow.stateful.StatefulNode;
 import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
 import org.noear.solon.flow.stateful.controller.BlockStateController;
@@ -20,7 +20,7 @@ public class AutoForwardTest {
 
     @Test
     public void case11() throws Exception {
-        StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
+        StatefulFlowEngineDefault flowEngine = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
                 .stateController(new BlockStateController() {
                     @Override
                     public boolean isAutoForward(FlowContext context, Node node) {

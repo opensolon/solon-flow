@@ -7,7 +7,7 @@ import org.noear.solon.Utils;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.StateType;
-import org.noear.solon.flow.stateful.StatefulFlowEngine;
+import org.noear.solon.flow.stateful.StatefulFlowEngineDefault;
 import org.noear.solon.flow.stateful.StatefulNode;
 import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
 import org.noear.solon.flow.stateful.controller.MetaStateController;
@@ -27,9 +27,9 @@ public class OaStatefulFlowRedisTest {
     final String instanceId = Utils.uuid();
 
     //初始化引擎
-    StatefulFlowEngine flowEngine = buildFlowDriver();
+    StatefulFlowEngineDefault flowEngine = buildFlowDriver();
 
-    private StatefulFlowEngine buildFlowDriver() {
+    private StatefulFlowEngineDefault buildFlowDriver() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
@@ -40,7 +40,7 @@ public class OaStatefulFlowRedisTest {
             throw new IllegalStateException("Redis client configuration not found!");
         }
 
-        StatefulFlowEngine fe = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
+        StatefulFlowEngineDefault fe = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
                 .stateController(new MetaStateController())
                 .stateRepository(new RedisStateRepository(redisClient))
                 .container(container)

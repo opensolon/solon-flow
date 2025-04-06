@@ -7,7 +7,7 @@ import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.ModelAndView;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.stateful.StateType;
-import org.noear.solon.flow.stateful.StatefulFlowEngine;
+import org.noear.solon.flow.stateful.StatefulFlowEngineDefault;
 import org.noear.solon.flow.stateful.StatefulNode;
 
 /**
@@ -16,7 +16,7 @@ import org.noear.solon.flow.stateful.StatefulNode;
 @Controller
 public class DemoController {
     @Inject
-    StatefulFlowEngine flowEngine;
+    StatefulFlowEngineDefault flowEngine;
 
     //操作展示
     @Mapping("display")

@@ -14,7 +14,7 @@ public class BlockStatefulFlowTest {
 
     @Test
     public void case1() throws Throwable {
-        StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
+        StatefulFlowEngineDefault flowEngine = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
                 .stateController(new BlockStateController())
                 .stateRepository(new InMemoryStateRepository())
                 .build());
@@ -100,7 +100,7 @@ public class BlockStatefulFlowTest {
 
     @Test
     public void case2() throws Throwable {
-        StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
+        StatefulFlowEngineDefault flowEngine = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
                 .stateController(new BlockStateController())
                 .stateRepository(new InMemoryStateRepository())
                 .build());

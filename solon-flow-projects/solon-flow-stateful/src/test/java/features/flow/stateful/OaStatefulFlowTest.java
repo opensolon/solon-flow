@@ -24,13 +24,13 @@ public class OaStatefulFlowTest {
     final String instanceId = Utils.uuid();
 
     //初始化引擎
-    StatefulFlowEngine flowEngine = buildFlowDriver();
+    StatefulFlowEngineDefault flowEngine = buildFlowDriver();
 
-    private StatefulFlowEngine buildFlowDriver() {
+    private StatefulFlowEngineDefault buildFlowDriver() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
-        StatefulFlowEngine fe = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
+        StatefulFlowEngineDefault fe = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
                 .stateController(new MetaStateController())
                 .stateRepository(new InMemoryStateRepository())
                 .container(container)
