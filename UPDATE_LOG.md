@@ -8,6 +8,7 @@
 * 优化 solon-flow-stateful StatefulFlowEngine 添加 FlowEngine 实现
 * 修复 solon-flow-stateful StatefulFlowEngine stepBack 当遇到网关时，没有回到上一级的问题
 * 修复 solon-flow-stateful NodeState.RESTART 代码编号的错标问题
+* 修复 solon-flow-stateful StatefulSimpleFlowDriver 有状态执行时，任务可能会重复执行的问题
 
 ### 3.1.2
 
