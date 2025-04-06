@@ -12,6 +12,8 @@ import org.noear.solon.test.SolonTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+
 /**
  * @author noear 2025/3/27 created
  */
@@ -86,6 +88,11 @@ public class OaStatefulFlowTest {
         /// ////////////////
         //提交状态
         flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.COMPLETED);
+
+
+        context = getContext(null);
+        Collection<StatefulNode> nodes = flowEngine.getActivityNodes(chainId, context);
+        assert nodes.size() == 2;
 
 
         context = getContext("陈鑫");

@@ -221,11 +221,8 @@ public class FlowContext {
     /**
      * 尝试完成
      */
-    public <Slf extends FlowContext> Slf computeIfAbsent(String key, Function<String, Object> mappingFunction) {
-        if (mappingFunction != null) {
-            model.computeIfAbsent(key, mappingFunction);
-        }
-        return (Slf) this;
+    public <T> T computeIfAbsent(String key, Function<String, T> mappingFunction) {
+        return (T) model.computeIfAbsent(key, mappingFunction);
     }
 
     /**

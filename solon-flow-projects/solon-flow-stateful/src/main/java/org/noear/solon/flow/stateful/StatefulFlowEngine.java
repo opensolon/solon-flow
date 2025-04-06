@@ -19,6 +19,8 @@ import org.noear.solon.flow.*;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -94,14 +96,43 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
     /// ////////////////////////
 
     /**
-     * 获取活动节点
+     * 获取多个活动节点
+     *
+     * @param context 流上下文（不要有人员配置）
+     */
+    public Collection<StatefulNode> getActivityNodes(String chainId, FlowContext context) {
+        return getActivityNodes(getChain(chainId), context);
+    }
+
+    /**
+     * 获取多个活动节点
+     *
+     * @param context 流上下文（不要有人员配置）
+     */
+    public Collection<StatefulNode> getActivityNodes(Chain chain, FlowContext context) {
+        eval(chain, context);
+        Collection<StatefulNode> tmp = context.get(StatefulNode.KEY_ACTIVITY_LIST);
+
+        if (tmp == null) {
+            return Collections.emptyList();
+        } else {
+            return tmp;
+        }
+    }
+
+    /**
+     * 获取当前活动节点
+     *
+     * @param context 流上下文（要有人员配置）
      */
     public StatefulNode getActivityNode(String chainId, FlowContext context) {
         return getActivityNode(getChain(chainId), context);
     }
 
     /**
-     * 获取活动节点
+     * 获取当前活动节点
+     *
+     * @param context 流上下文（要有人员配置）
      */
     public StatefulNode getActivityNode(Chain chain, FlowContext context) {
         eval(chain, context);

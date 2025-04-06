@@ -25,6 +25,9 @@ import org.noear.solon.flow.stateful.operator.BlockStateOperator;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.lang.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 有状态的简单流驱动器
  *
@@ -69,11 +72,10 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                     //确保任务只被执行一次
                     postHandleTask(context, task);
                 }
-
-                return;
             } else {
                 //控制前进
                 int nodeState = getStateRepository().getState(context, task.getNode());
+                List<StatefulNode> nodeList = context.computeIfAbsent(StatefulNode.KEY_ACTIVITY_LIST, k -> new ArrayList<>());
 
                 if (nodeState == NodeState.UNKNOWN) {
                     //检查是否为当前用户的任务
@@ -84,7 +86,9 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                         context.stop();
                     } else {
                         //阻断当前分支（等待别的用户办理）
-                        context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeState.UNKNOWN));
+                        StatefulNode statefulNode = new StatefulNode(task.getNode(), NodeState.UNKNOWN);
+                        context.put(StatefulNode.KEY_ACTIVITY_NODE, statefulNode);
+                        nodeList.add(statefulNode);
                         context.interrupt();
                     }
                 } else if (nodeState == NodeState.WAITING) {
@@ -96,18 +100,17 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                         context.stop();
                     } else {
                         //阻断当前分支（等待别的用户办理）
-                        context.put(StatefulNode.KEY_ACTIVITY_NODE, new StatefulNode(task.getNode(), NodeState.UNKNOWN));
+                        StatefulNode statefulNode = new StatefulNode(task.getNode(), NodeState.UNKNOWN);
+                        context.put(StatefulNode.KEY_ACTIVITY_NODE, statefulNode);
+                        nodeList.add(statefulNode); //同时添加到列表
                         context.interrupt();
                     }
                 }
-
-                return;
             }
+        } else {
+            //提交处理任务
+            postHandleTask(context, task);
         }
-
-
-        //提交处理任务
-        postHandleTask(context, task);
     }
 
     /**
