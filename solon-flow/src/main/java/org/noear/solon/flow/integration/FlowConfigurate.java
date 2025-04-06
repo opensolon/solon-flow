@@ -33,7 +33,7 @@ import java.util.List;
  * @since 3.1
  */
 @Configuration
-public class FlowConfig {
+public class FlowConfigurate {
     @Condition(onMissingBean = FlowEngine.class)
     @Bean
     public FlowEngine flowEngine() {

@@ -25,6 +25,6 @@ import org.noear.solon.core.Plugin;
 public class FlowPlugin implements Plugin {
     @Override
     public void start(AppContext context) throws Throwable {
-        context.beanMake(FlowConfig.class);
+        context.beanMake(FlowConfigurate.class);
     }
 }
