@@ -62,8 +62,8 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
         StatefulNode statefulNode = getActivityNode(chain, context);
 
         if (statefulNode != null) {
-            postActivityState(context, statefulNode.getNode(), NodeState.COMPLETED);
-            statefulNode = new StatefulNode(statefulNode.getNode(), NodeState.COMPLETED);
+            postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
+            statefulNode = new StatefulNode(statefulNode.getNode(), StateType.COMPLETED);
         }
 
         return statefulNode;
@@ -84,7 +84,7 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
         StatefulNode statefulNode = getActivityNode(chain, context);
 
         if (statefulNode != null) {
-            postActivityState(context, statefulNode.getNode(), NodeState.RETURNED);
+            postActivityState(context, statefulNode.getNode(), StateType.RETURNED);
             context.recovery();
             statefulNode = getActivityNode(chain, context);
         }
@@ -143,7 +143,7 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
     /**
      * 提交活动状态（如果当前节点为等待介入）
      */
-    public boolean postActivityStateIfWaiting(FlowContext context, String chainId, String activityNodeId, NodeState state) {
+    public boolean postActivityStateIfWaiting(FlowContext context, String chainId, String activityNodeId, StateType state) {
         Node node = getChain(chainId).getNode(activityNodeId);
         return postActivityStateIfWaiting(context, node, state);
     }
@@ -151,7 +151,7 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
     /**
      * 提交活动状态（如果当前节点为等待介入）
      */
-    public boolean postActivityStateIfWaiting(FlowContext context, Node activity, NodeState state) {
+    public boolean postActivityStateIfWaiting(FlowContext context, Node activity, StateType state) {
         context.backup();
 
         StatefulNode statefulNode = getActivityNode(activity.getChain(), context);
@@ -159,7 +159,7 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
             return false;
         }
 
-        if (statefulNode.getState() != NodeState.WAITING) {
+        if (statefulNode.getState() != StateType.WAITING) {
             return false;
         }
 
@@ -176,7 +176,7 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
     /**
      * 提交活动状态
      */
-    public void postActivityState(FlowContext context, String chainId, String activityNodeId, NodeState state) {
+    public void postActivityState(FlowContext context, String chainId, String activityNodeId, StateType state) {
         Node node = getChain(chainId).getNode(activityNodeId);
         postActivityState(context, node, state);
     }
@@ -184,7 +184,7 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
     /**
      * 提交活动状态
      */
-    public void postActivityState(FlowContext context, Node activity, NodeState state) {
+    public void postActivityState(FlowContext context, Node activity, StateType state) {
         LOCKER.lock();
 
         try {
@@ -197,18 +197,18 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
     /**
      * 提交活动状态
      */
-    protected void postActivityStateDo(FlowContext context, Node activity, NodeState state) {
-        NodeState oldNodeState = driver.getStateRepository().getState(context, activity);
-        if (oldNodeState == state) {
+    protected void postActivityStateDo(FlowContext context, Node activity, StateType state) {
+        StateType oldState = driver.getStateRepository().getState(context, activity);
+        if (oldState == state) {
             //如果要状态没变化，不处理
             return;
         }
 
         //更新状态
-        if (state == NodeState.RETURNED) {
+        if (state == StateType.RETURNED) {
             //撤回之前的节点
             backHandle(activity, context);
-        } else if (state == NodeState.RESTART) {
+        } else if (state == StateType.RESTART) {
             //撤回全部（重新开始）
             driver.getStateRepository().clearState(context);
         } else {
@@ -220,7 +220,7 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
         driver.getStateRepository().onPostActivityState(context, activity, state);
 
         //如果是完成或跳过，则向前流动
-        if (state == NodeState.COMPLETED) {
+        if (state == StateType.COMPLETED) {
             try {
                 postHandleTask(context, activity.getTask());
 

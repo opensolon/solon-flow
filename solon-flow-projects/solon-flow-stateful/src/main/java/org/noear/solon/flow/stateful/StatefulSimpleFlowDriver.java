@@ -71,28 +71,28 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
         if (Utils.isNotEmpty(instanceId)) {
             if (stateController.isAutoForward(context, task.getNode())) {
                 //自动前进
-                NodeState nodeState = getStateRepository().getState(context, task.getNode());
-                if (nodeState == NodeState.UNKNOWN || nodeState == NodeState.WAITING) {
+                StateType state = getStateRepository().getState(context, task.getNode());
+                if (state == StateType.UNKNOWN || state == StateType.WAITING) {
                     //添加状态
-                    stateRepository.putState(context, task.getNode(), NodeState.COMPLETED);
+                    stateRepository.putState(context, task.getNode(), StateType.COMPLETED);
 
                     //发送提交变更事件
-                    stateRepository.onPostActivityState(context, task.getNode(), NodeState.COMPLETED);
+                    stateRepository.onPostActivityState(context, task.getNode(), StateType.COMPLETED);
 
                     //确保任务只被执行一次
                     postHandleTask(context, task);
                 }
             } else {
                 //控制前进
-                NodeState nodeState = getStateRepository().getState(context, task.getNode());
+                StateType state = getStateRepository().getState(context, task.getNode());
                 List<StatefulNode> nodeList = context.computeIfAbsent(StatefulNode.KEY_ACTIVITY_LIST, k -> new ArrayList<>());
                 boolean nodeListGet = context.getOrDefault(StatefulNode.KEY_ACTIVITY_LIST_GET, false);
 
-                if (nodeState == NodeState.UNKNOWN) {
+                if (state == StateType.UNKNOWN) {
                     //检查是否为当前用户的任务
                     if (stateController.isOperatable(context, task.getNode())) {
                         //记录当前流程节点（用于展示）
-                        StatefulNode statefulNode = new StatefulNode(task.getNode(), NodeState.WAITING);
+                        StatefulNode statefulNode = new StatefulNode(task.getNode(), StateType.WAITING);
                         context.put(StatefulNode.KEY_ACTIVITY_NODE, statefulNode);
                         nodeList.add(statefulNode);
 
@@ -103,17 +103,17 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                         }
                     } else {
                         //阻断当前分支（等待别的用户办理）
-                        StatefulNode statefulNode = new StatefulNode(task.getNode(), NodeState.UNKNOWN);
+                        StatefulNode statefulNode = new StatefulNode(task.getNode(), StateType.UNKNOWN);
                         context.put(StatefulNode.KEY_ACTIVITY_NODE, statefulNode);
                         nodeList.add(statefulNode);
 
                         context.interrupt();
                     }
-                } else if (nodeState == NodeState.WAITING) {
+                } else if (state == StateType.WAITING) {
                     //检查是否为当前用户的任务
                     if (stateController.isOperatable(context, task.getNode())) {
                         //记录当前流程节点（用于展示）
-                        StatefulNode statefulNode = new StatefulNode(task.getNode(), nodeState);
+                        StatefulNode statefulNode = new StatefulNode(task.getNode(), state);
                         context.put(StatefulNode.KEY_ACTIVITY_NODE, statefulNode); //说明之前没有结办
                         nodeList.add(statefulNode); //同时添加到列表
 
@@ -124,7 +124,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                         }
                     } else {
                         //阻断当前分支（等待别的用户办理）
-                        StatefulNode statefulNode = new StatefulNode(task.getNode(), NodeState.UNKNOWN);
+                        StatefulNode statefulNode = new StatefulNode(task.getNode(), StateType.UNKNOWN);
                         context.put(StatefulNode.KEY_ACTIVITY_NODE, statefulNode);
                         nodeList.add(statefulNode); //同时添加到列表
 

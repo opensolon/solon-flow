@@ -29,9 +29,9 @@ public class StatefulNode {
     public static final String KEY_ACTIVITY_LIST_GET = "ACTIVITY_LIST_GET";
 
     private final Node node;
-    private final NodeState state;
+    private final StateType state;
 
-    public StatefulNode(Node node, NodeState state) {
+    public StatefulNode(Node node, StateType state) {
         this.node = node;
         this.state = state;
     }
@@ -46,7 +46,7 @@ public class StatefulNode {
     /**
      * 状态
      */
-    public NodeState getState() {
+    public StateType getState() {
         return state;
     }
 

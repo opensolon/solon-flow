@@ -18,7 +18,7 @@ package org.noear.solon.flow.stateful.repository;
 import org.noear.redisx.RedisClient;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
-import org.noear.solon.flow.stateful.NodeState;
+import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.flow.stateful.StateRepository;
 
 /**
@@ -41,21 +41,21 @@ public class RedisStateRepository implements StateRepository {
     }
 
     @Override
-    public NodeState getState(FlowContext context, Node node) {
+    public StateType getState(FlowContext context, Node node) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
 
         Integer code = client.getHash(statePrefix + context.getInstanceId()).getAsInt(stateKey);
         if (code == null) {
-            return NodeState.UNKNOWN;
+            return StateType.UNKNOWN;
         } else {
-            return NodeState.codeOf(code);
+            return StateType.codeOf(code);
         }
     }
 
     @Override
-    public void putState(FlowContext context, Node node, NodeState nodeState) {
+    public void putState(FlowContext context, Node node, StateType state) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
-        client.getHash(statePrefix + context.getInstanceId()).put(stateKey, nodeState.getCode());
+        client.getHash(statePrefix + context.getInstanceId()).put(stateKey, state.getCode());
     }
 
     @Override

@@ -21,7 +21,7 @@ public class OaActionDemo {
         //展示界面，操作。然后：
 
         context.put("op", "审批");//作为状态的一部分
-        flowEngine.postActivityState(context, node.getNode(), NodeState.COMPLETED);
+        flowEngine.postActivityState(context, node.getNode(), StateType.COMPLETED);
     }
 
     //回退
@@ -31,7 +31,7 @@ public class OaActionDemo {
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         context.put("op", "回退");//作为状态的一部分
-        flowEngine.postActivityState(context, node.getNode(), NodeState.RETURNED);
+        flowEngine.postActivityState(context, node.getNode(), StateType.RETURNED);
     }
 
     //任意跳转（通过）
@@ -43,7 +43,7 @@ public class OaActionDemo {
         while (true) {
             StatefulNode statefulNode = flowEngine.getActivityNode(chainId, context);
             context.put("op", "任意转跳");//作为状态的一部分
-            flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.COMPLETED);
+            flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
 
             //到目标节点了
             if(statefulNode.getNode().getId().equals(nodeId)) {
@@ -61,7 +61,7 @@ public class OaActionDemo {
         while (true) {
             StatefulNode statefulNode = flowEngine.getActivityNode(chainId, context);
             context.put("op", "任意转跳");//作为状态的一部分
-            flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.RETURNED);
+            flowEngine.postActivityState(context, statefulNode.getNode(), StateType.RETURNED);
 
             //到目标节点了
             if (statefulNode.getNode().getId().equals(nodeId)) {
@@ -78,7 +78,7 @@ public class OaActionDemo {
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         context.put("op", "委派");//作为状态的一部分
-        flowEngine.postActivityState(context, node.getNode(), NodeState.COMPLETED);
+        flowEngine.postActivityState(context, node.getNode(), StateType.COMPLETED);
     }
 
     //转办（与委派技术实现差不多）
@@ -89,7 +89,7 @@ public class OaActionDemo {
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         context.put("op", "转办");//作为状态的一部分
-        flowEngine.postActivityState(context, node.getNode(), NodeState.COMPLETED);
+        flowEngine.postActivityState(context, node.getNode(), StateType.COMPLETED);
     }
 
     //催办
@@ -108,7 +108,7 @@ public class OaActionDemo {
 
         //回退到顶（给发起人）；相当于重新开始走流程
         context.put("op", "取回");//作为状态的一部分
-        flowEngine.postActivityState(context, node.getNode(), NodeState.RESTART);
+        flowEngine.postActivityState(context, node.getNode(), StateType.RESTART);
     }
 
     //撤销（和回退没啥区别）
@@ -117,7 +117,7 @@ public class OaActionDemo {
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         context.put("op", "撤销");//作为状态的一部分
-        flowEngine.postActivityState(context, node.getNode(), NodeState.RETURNED);
+        flowEngine.postActivityState(context, node.getNode(), StateType.RETURNED);
     }
 
     //中止
@@ -126,7 +126,7 @@ public class OaActionDemo {
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         context.put("op", "中止");//作为状态的一部分
-        flowEngine.postActivityState(context, node.getNode(), NodeState.TERMINATED);
+        flowEngine.postActivityState(context, node.getNode(), StateType.TERMINATED);
     }
 
     //抄送
@@ -134,7 +134,7 @@ public class OaActionDemo {
         FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postActivityState(context, node.getNode(), NodeState.COMPLETED);
+        flowEngine.postActivityState(context, node.getNode(), StateType.COMPLETED);
         //提交后，会自动触发任务（如果有抄送配置，自动执行）
     }
 
@@ -156,7 +156,7 @@ public class OaActionDemo {
         FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postActivityState(context, node.getNode(), NodeState.COMPLETED);
+        flowEngine.postActivityState(context, node.getNode(), StateType.COMPLETED);
     }
 
     //会签

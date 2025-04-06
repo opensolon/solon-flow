@@ -16,12 +16,12 @@
 package org.noear.solon.flow.stateful;
 
 /**
- * 流节点技术状态（状态可分为：技术状态，业务状态）
+ * 状态类型
  *
  * @author noear
  * @since 3.1
  */
-public enum NodeState {
+public enum StateType {
     /**
      * 未知
      */
@@ -49,7 +49,7 @@ public enum NodeState {
 
     private final int code;
 
-    NodeState(int code) {
+    StateType(int code) {
         this.code = code;
     }
 
@@ -60,7 +60,7 @@ public enum NodeState {
     /**
      * 根据代码构建
      */
-    public static NodeState codeOf(int code) {
+    public static StateType codeOf(int code) {
         switch (code) {
             case 1001:
                 return WAITING;
