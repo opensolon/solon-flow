@@ -222,7 +222,7 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
         //如果是完成或跳过，则向前流动
         if (state == StateType.COMPLETED) {
             try {
-                postHandleTask(context, activity.getTask());
+                driver.postHandleTask(context, activity.getTask());
 
                 Node nextNode = activity.getNextNode();
                 if (nextNode != null) {
@@ -254,12 +254,5 @@ public class StatefulFlowEngine extends FlowEngineDefault implements FlowEngine 
                 backHandle(n1, context);
             }
         }
-    }
-
-    /**
-     * 提交处理任务
-     */
-    protected void postHandleTask(FlowContext context, Task task) throws Throwable {
-        driver.postHandleTask(context, task);
     }
 }
