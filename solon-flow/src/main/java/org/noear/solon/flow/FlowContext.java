@@ -21,6 +21,7 @@ import org.noear.solon.lang.Preview;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * 流上下文（不支持序列化）
@@ -214,6 +215,16 @@ public class FlowContext {
      */
     public <Slf extends FlowContext> Slf putAll(Map<String, Object> model) {
         this.model.putAll(model);
+        return (Slf) this;
+    }
+
+    /**
+     * 尝试完成
+     */
+    public <Slf extends FlowContext> Slf computeIfAbsent(String key, Function<String, Object> mappingFunction) {
+        if (mappingFunction != null) {
+            model.computeIfAbsent(key, mappingFunction);
+        }
         return (Slf) this;
     }
 
