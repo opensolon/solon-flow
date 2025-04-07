@@ -32,7 +32,7 @@ public class RedisStateRepository implements StateRepository {
     private final String statePrefix;
 
     public RedisStateRepository(RedisClient client) {
-        this(client, "state:");
+        this(client, "flow:state:");
     }
 
     public RedisStateRepository(RedisClient client, String statePrefix) {
