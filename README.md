@@ -160,7 +160,7 @@ public class DemoConfig {
     @Bean
     public StatefulFlowEngine statefulFlowEngine() {
         return StatefulFlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
-                .stateOperator(new MetaStateOperator())
+                .stateController(new ActorStateController("actor"))
                 .stateRepository(new InMemoryStateRepository()) //状态仓库（支持持久化）
                 .build());
     }
@@ -199,7 +199,7 @@ public class DemoConfig {
     @Bean
     public StatefulFlowEngine statefulFlowEngine() {
         return StatefulFlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
-                .stateOperator(new MetaStateOperator())
+                .stateController(new ActorStateController("actor"))
                 .stateRepository(new InMemoryStateRepository()) //状态仓库（支持持久化）
                 .build());
     }
