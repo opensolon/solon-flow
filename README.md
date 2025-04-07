@@ -156,16 +156,13 @@ layout:
 ```java
 @Configuration
 public class DemoConfig {
+    //替换掉默认引擎（会自动加载 solon.flow 配置的链资源）//可用 StatefulFlowEngine 或 FlowEngine 注入
     @Bean
     public StatefulFlowEngine statefulFlowEngine() {
-        StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
+        return StatefulFlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
                 .stateOperator(new MetaStateOperator())
                 .stateRepository(new InMemoryStateRepository()) //状态仓库（支持持久化）
                 .build());
-
-        flowEngine.load("classpath:flow/*.yml");
-        
-        return flowEngine;
     }
 
     @Bean
@@ -198,13 +195,13 @@ public class DemoConfig {
 ```java
 @Configuration
 public class DemoConfig {
+    //替换掉默认引擎（会自动加载 solon.flow 配置的链资源）//可用 StatefulFlowEngine 或 FlowEngine 注入
     @Bean
     public StatefulFlowEngine statefulFlowEngine() {
-        StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder().build());
-
-        flowEngine.load("classpath:flow/*.yml");
-
-        return flowEngine;
+        return StatefulFlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
+                .stateOperator(new MetaStateOperator())
+                .stateRepository(new InMemoryStateRepository()) //状态仓库（支持持久化）
+                .build());
     }
 
     @Bean
