@@ -5,7 +5,7 @@ import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.NodeDecl;
 import org.noear.solon.flow.NodeType;
 import org.noear.solon.flow.stateful.StateType;
-import org.noear.solon.flow.stateful.StatefulFlowEngineDefault;
+import org.noear.solon.flow.stateful.StatefulFlowEngine;
 import org.noear.solon.flow.stateful.StatefulNode;
 import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
 
@@ -13,7 +13,7 @@ import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
  * @author noear 2025/3/28 created
  */
 public class OaActionDemo {
-    StatefulFlowEngineDefault flowEngine = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder().build());
+    StatefulFlowEngine flowEngine = StatefulFlowEngine.newInstance(StatefulSimpleFlowDriver.builder().build());
 
     String instanceId = "guid1";
     String chainId = "f1";
