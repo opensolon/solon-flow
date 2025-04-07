@@ -94,6 +94,9 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
 
                     //确保任务只被执行一次
                     postHandleTask(context, task);
+                } else if (state == StateType.TERMINATED) {
+                    //终止
+                    context.stop();
                 }
             } else {
                 //控制前进
@@ -101,7 +104,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
                 List<StatefulNode> nodeList = context.computeIfAbsent(StatefulNode.KEY_ACTIVITY_LIST, k -> new ArrayList<>());
                 boolean nodeListGet = context.getOrDefault(StatefulNode.KEY_ACTIVITY_LIST_GET, false);
 
-                if (state == StateType.UNKNOWN) {
+                if (state == StateType.UNKNOWN || state == StateType.WAITING) {
                     //检查是否为当前用户的任务
                     if (stateController.isOperatable(context, task.getNode())) {
                         //记录当前流程节点（用于展示）
@@ -122,26 +125,16 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
 
                         context.interrupt();
                     }
-                } else if (state == StateType.WAITING) {
-                    //检查是否为当前用户的任务
-                    if (stateController.isOperatable(context, task.getNode())) {
-                        //记录当前流程节点（用于展示）
-                        StatefulNode statefulNode = new StatefulNode(task.getNode(), state);
-                        context.put(StatefulNode.KEY_ACTIVITY_NODE, statefulNode); //说明之前没有结办
-                        nodeList.add(statefulNode); //同时添加到列表
+                } else if (state == StateType.TERMINATED) {
+                    //终止
+                    StatefulNode statefulNode = new StatefulNode(task.getNode(), StateType.TERMINATED);
+                    context.put(StatefulNode.KEY_ACTIVITY_NODE, statefulNode);
+                    nodeList.add(statefulNode);
 
-                        if (nodeListGet) {
-                            context.interrupt();
-                        } else {
-                            context.stop();
-                        }
-                    } else {
-                        //阻断当前分支（等待别的用户办理）
-                        StatefulNode statefulNode = new StatefulNode(task.getNode(), StateType.UNKNOWN);
-                        context.put(StatefulNode.KEY_ACTIVITY_NODE, statefulNode);
-                        nodeList.add(statefulNode); //同时添加到列表
-
+                    if (nodeListGet) {
                         context.interrupt();
+                    } else {
+                        context.stop();
                     }
                 }
             }
