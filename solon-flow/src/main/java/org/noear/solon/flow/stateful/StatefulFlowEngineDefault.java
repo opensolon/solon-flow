@@ -30,10 +30,10 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @Preview("3.1")
 public class StatefulFlowEngineDefault extends FlowEngineDefault implements FlowEngine, StatefulFlowEngine {
-    private StatefulSimpleFlowDriver driver;
+    private StatefulFlowDriver driver;
     private ReentrantLock LOCKER = new ReentrantLock();
 
-    public StatefulFlowEngineDefault(StatefulSimpleFlowDriver driver) {
+    public StatefulFlowEngineDefault(StatefulFlowDriver driver) {
         super();
         this.driver = driver;
         register(driver);
@@ -44,6 +44,20 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      */
     public StateRepository getRepository() {
         return driver.getStateRepository();
+    }
+
+    @Override
+    public void register(String name, FlowDriver driver) {
+        if ("".equals(name)) {
+            //如果是默认的
+            if (driver instanceof StatefulFlowDriver) {
+                this.driver = (StatefulFlowDriver) driver;
+            } else {
+                throw new IllegalArgumentException("Default driver must be a StatefulFlowDriver");
+            }
+        }
+
+        super.register(name, driver);
     }
 
     /// //////////////
@@ -254,6 +268,12 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
         getRepository().clearState(context);
     }
 
+    /**
+     * 后退处理
+     *
+     * @param activity 活动节点
+     * @param context  流上下文
+     */
     protected void backHandle(Node activity, FlowContext context) {
         //撤回之前的节点
         for (Node n1 : activity.getPrevNodes()) {

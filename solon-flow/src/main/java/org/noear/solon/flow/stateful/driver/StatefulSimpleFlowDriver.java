@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.stateful;
+package org.noear.solon.flow.stateful.driver;
 
 import org.noear.solon.Utils;
-import org.noear.solon.flow.Container;
-import org.noear.solon.flow.Evaluation;
-import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.Task;
+import org.noear.solon.flow.*;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
+import org.noear.solon.flow.stateful.*;
 import org.noear.solon.flow.stateful.controller.BlockStateController;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
+import org.noear.solon.lang.Preview;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,8 @@ import java.util.List;
  * @author noear
  * @since 3.1
  */
-public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
+@Preview("3.1")
+public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDriver, StatefulFlowDriver {
     private final StateRepository stateRepository;
     private final StateController stateController;
 
@@ -46,6 +46,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
     /**
      * 获取状态仓库
      */
+    @Override
     public StateRepository getStateRepository() {
         return stateRepository;
     }
@@ -53,8 +54,20 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
     /**
      * 获取状态控制器
      */
+    @Override
     public StateController getStateController() {
         return stateController;
+    }
+
+    /**
+     * 提交处理任务
+     *
+     * @param context 流上下文
+     * @param task    任务
+     */
+    @Override
+    public void postHandleTask(FlowContext context, Task task) throws Throwable {
+        super.handleTask(context, task);
     }
 
     /**
@@ -67,8 +80,8 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
     public void handleTask(FlowContext context, Task task) throws Throwable {
         String instanceId = context.getInstanceId();
 
-        //有实例id，且没有自动提交
         if (Utils.isNotEmpty(instanceId)) {
+            //有实例id，作有状态处理
             if (stateController.isAutoForward(context, task.getNode())) {
                 //自动前进
                 StateType state = getStateRepository().getState(context, task.getNode());
@@ -133,17 +146,11 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver {
                 }
             }
         } else {
-            //提交处理任务
+            //没有实例id，作无状态处理 //直接提交处理任务
             postHandleTask(context, task);
         }
     }
 
-    /**
-     * 提交处理任务
-     */
-    protected void postHandleTask(FlowContext context, Task task) throws Throwable {
-        super.handleTask(context, task);
-    }
 
     public static Builder builder() {
         return new Builder();
