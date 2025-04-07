@@ -14,7 +14,7 @@ v3.1.3 后
 * MetaStateController 变更为 ActorStateController（参与者状态控制器） 更表意
 
 
-ActorStateController 与 BlockStateController 的区别：
+ActorStateController 与 BlockStateController 的区别（可以按需再定制）：
 
 * BlockStateController，每个活动节点都有权操作，默认状态下每个活动都需要“手动前进”
 * ActorStateController，根据元数据配置检测是否有权操作，默认状态下无“参与者”配置的会“自动前进”
