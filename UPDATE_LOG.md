@@ -17,6 +17,7 @@
 * 调整 solon-flow-stateful NodeState 更名为 StateType （更中性些；状态不一定与节点有关，有时像指令）
 * 调整 solon-flow-stateful StateOperator 更名为 StateController （意为状态控制器）
 * 调整 solon-flow-stateful StatefulFlowEngine 拆分为接口与实现
+* 调整 solon-flow-stateful MetaStateController 更名为 ActorStateController 更表意
 * 调整 solon-flow-stateful 代码合并到 solon-flow（变成一个项目）
 
 ### 3.1.2
