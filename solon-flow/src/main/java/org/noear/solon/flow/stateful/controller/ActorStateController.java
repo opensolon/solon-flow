@@ -23,19 +23,19 @@ import org.noear.solon.flow.stateful.StateController;
 import java.util.*;
 
 /**
- * 元信息状态控制器
+ * 参与者状态控制器
  *
  * @author noear
  * @since 3.1
  */
-public class MetaStateController implements StateController {
+public class ActorStateController implements StateController {
     private final Set<String> keys = new HashSet<>();
 
-    public MetaStateController() {
+    public ActorStateController() {
         this("actor");
     }
 
-    public MetaStateController(String... keys) {
+    public ActorStateController(String... keys) {
         this.keys.addAll(Arrays.asList(keys));
     }
 
