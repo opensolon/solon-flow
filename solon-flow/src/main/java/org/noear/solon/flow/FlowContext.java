@@ -177,7 +177,7 @@ public class FlowContext {
     /**
      * 阻断重置
      */
-    protected void interrupt(boolean interrupted) {
+    public void interrupt(boolean interrupted) {
         this.interrupted = interrupted;
     }
 
