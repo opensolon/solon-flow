@@ -256,7 +256,7 @@ public class FlowContext {
     }
 
     /**
-     * 获取事件总线（需要引入 solon-flow-eventbus）
+     * 获取事件总线（based damibus）
      */
     public <C extends Object, R extends Object> DamiBus<C, R> eventBus() {
         //通过模型，可以被转移或替代
