@@ -9,7 +9,6 @@ import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author noear 2025/4/15 created
@@ -25,13 +24,15 @@ public class EventTest {
         flowEngine.load("classpath:flow/*.yml");
 
 
-        CountDownLatch latch = new CountDownLatch(2);
+        CountDownLatch latch = new CountDownLatch(3);
 
         FlowContext context = new FlowContext();
         context.eventBus().listen("demo.topic", event -> {
             System.out.println(event.getContent());
             latch.countDown();
         });
+
+        //context.<String,String>eventBus(); //泛型模式
 
         flowEngine.eval("event1", context);
 
@@ -42,7 +43,11 @@ public class EventTest {
 
         @Override
         public void run(FlowContext context, Node node) throws Throwable {
+            //通用类型模式
             context.eventBus().send("demo.topic", "hello-com");
+
+            //泛型模式
+            context.<String, String>eventBus().send("demo.topic", "hello-com2");
         }
     }
 }
