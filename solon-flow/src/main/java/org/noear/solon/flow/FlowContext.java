@@ -15,6 +15,8 @@
  */
 package org.noear.solon.flow;
 
+import org.noear.dami.Dami;
+import org.noear.dami.bus.DamiBus;
 import org.noear.liquor.eval.Scripts;
 import org.noear.solon.lang.Preview;
 
@@ -251,5 +253,13 @@ public class FlowContext {
      */
     public String getInstanceId() {
         return get("instanceId");
+    }
+
+    /**
+     * 获取事件总线（需要引入 solon-flow-eventbus）
+     */
+    public DamiBus<String, String> eventBus() {
+        //通过模型，可以被转移或替代
+        return computeIfAbsent("eventBus", k -> Dami.newBus());
     }
 }

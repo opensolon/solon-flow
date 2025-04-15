@@ -37,6 +37,12 @@
 
         <dependency>
             <groupId>org.noear</groupId>
+            <artifactId>dami</artifactId>
+            <version>${dami.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.noear</groupId>
             <artifactId>liquor-eval</artifactId>
             <version>${liquor.version}</version>
         </dependency>
