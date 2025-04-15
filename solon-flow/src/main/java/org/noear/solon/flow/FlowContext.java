@@ -258,7 +258,7 @@ public class FlowContext {
     /**
      * 获取事件总线（需要引入 solon-flow-eventbus）
      */
-    public DamiBus<String, String> eventBus() {
+    public DamiBus<Object, Object> eventBus() {
         //通过模型，可以被转移或替代
         return computeIfAbsent("eventBus", k -> Dami.newBus());
     }
