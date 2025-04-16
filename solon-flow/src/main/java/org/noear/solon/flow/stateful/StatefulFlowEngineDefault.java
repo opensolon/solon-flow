@@ -115,7 +115,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
     /**
      * 获取多个活动节点
      *
-     * @param context 流上下文（不需要有人员配置）
+     * @param context 流上下文（不需要有参与者配置）
      */
     @Override
     public Collection<StatefulNode> getActivityNodes(String chainId, FlowContext context) {
@@ -125,7 +125,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
     /**
      * 获取多个活动节点
      *
-     * @param context 流上下文（不需要有人员配置）
+     * @param context 流上下文（不需要有参与者配置）
      */
     @Override
     public Collection<StatefulNode> getActivityNodes(Chain chain, FlowContext context) {
@@ -144,7 +144,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
     /**
      * 获取当前活动节点
      *
-     * @param context 流上下文（要有人员配置）
+     * @param context 流上下文（要有参与者配置）
      */
     @Override
     public StatefulNode getActivityNode(String chainId, FlowContext context) {
@@ -154,7 +154,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
     /**
      * 获取当前活动节点
      *
-     * @param context 流上下文（要有人员配置）
+     * @param context 流上下文（要有参与者配置）
      */
     @Override
     public StatefulNode getActivityNode(Chain chain, FlowContext context) {
