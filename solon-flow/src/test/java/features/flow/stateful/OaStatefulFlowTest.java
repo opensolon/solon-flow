@@ -132,7 +132,7 @@ public class OaStatefulFlowTest {
         log.warn("{}", statefulNode);
         assert statefulNode == null;
 
-        flowEngine.clearActivityState(context);
+        flowEngine.clearState(context);
     }
 
     private FlowContext getContext(String actor) throws Throwable {

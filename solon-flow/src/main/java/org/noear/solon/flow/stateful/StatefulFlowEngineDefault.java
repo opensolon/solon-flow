@@ -40,10 +40,10 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
     }
 
     /**
-     * 获取状态仓库
+     * 获取驱动器
      */
-    public StateRepository getRepository() {
-        return driver.getStateRepository();
+    public StatefulFlowDriver getDriver() {
+        return driver;
     }
 
     @Override
@@ -264,8 +264,8 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
     }
 
     @Override
-    public void clearActivityState(FlowContext context) {
-        getRepository().clearState(context);
+    public void clearState(FlowContext context) {
+        driver.getStateRepository().clearState(context);
     }
 
     /**

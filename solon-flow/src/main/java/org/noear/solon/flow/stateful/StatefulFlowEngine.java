@@ -46,6 +46,20 @@ public interface StatefulFlowEngine extends FlowEngine {
         return newInstance(StatefulSimpleFlowDriver.builder().build());
     }
 
+    /// ////////////////////////////////
+
+    /**
+     * 获取驱动器
+     */
+    StatefulFlowDriver getDriver();
+
+    /**
+     * 清空状态
+     */
+    void clearState(FlowContext context);
+
+    /// ////////////////////////////////
+
     /**
      * 单步前进
      */
@@ -117,9 +131,4 @@ public interface StatefulFlowEngine extends FlowEngine {
      * 提交活动状态
      */
     void postActivityState(FlowContext context, Node activity, StateType state);
-
-    /**
-     * 清空活动状态
-     */
-    void clearActivityState(FlowContext context);
 }
