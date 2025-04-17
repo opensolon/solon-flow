@@ -89,7 +89,7 @@ solon-flow 是一个通用的流处理引擎，支持：计算编排、业务规
 id: "c1"
 layout: 
   - { id: "n1", type: "start", link: "n2"}
-  - { id: "n2", type: "execute", link: "n3", task: "System.out.println(\"hello world!\");"}
+  - { id: "n2", type: "activity", link: "n3", task: "System.out.println(\"hello world!\");"}
   - { id: "n3", type: "end"}
 ```
 
