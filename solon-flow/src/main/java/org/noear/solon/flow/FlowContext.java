@@ -132,7 +132,7 @@ public class FlowContext {
      */
     public void manualNext(Node node, int depth) throws FlowException {
         if (node.getType() != NodeType.ACTIVITY) {
-            throw new IllegalArgumentException(node.getId() + " is not execute");
+            throw new IllegalArgumentException(node.getId() + " is not activity");
         }
 
         for (Node node1 : node.getNextNodes()) {
