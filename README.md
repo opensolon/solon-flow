@@ -78,41 +78,40 @@ Solon
 |                                                 |                                  |
 | https://gitee.com/dromara/solon-plugins         | Solon 第三方扩展插件代码仓库                | 
 
-## Solon Flow 应用示例
+## Solon Flow 六大特点
 
-solon-flow 是一个通用的流处理引擎，支持：计算编排、业务规则处理、行政审批支持，等多场景支持。通过元信息与驱动定制，可实现自由的扩展能力。
+Solon Flow 是一个通用的流编排引擎。支持 java8 到 java24。
 
-### 1、计算编排（Hello world）
+### 1、使用 yaml 格式
+
+配置简洁，关系清晰
 
 ```yaml
-# classpath:flow/c1.chain.yml
+# c1.yml
 id: "c1"
 layout: 
   - { id: "n1", type: "start", link: "n2"}
-  - { id: "n2", type: "activity", link: "n3", task: "System.out.println(\"hello world!\");"}
+  - { id: "n2", type: "execute", link: "n3"}
   - { id: "n3", type: "end"}
 ```
 
-```java
-@Component
-public class DemoCom implements LifecycleBean {
-    @Inject 
-    private FlowEngine flowEngine;
-    
-    @Override
-    public void start() throws Throwable {
-        flowEngine.eval("c1");
-    }
-}
-```
-
-### 2、业务规则处理示例
+还支持简化模式（能自动推断的，都会自动处理），具体参考相关说明
 
 ```yaml
-# classpath:flow/r1.chain.yml
-id: "r1"
-title: "评分规则"
-layout:
+# c1.yml
+id: "c1"
+layout: 
+  - { type: "start"}
+  - { task: ""}
+  - { type: "end"}
+```
+
+### 2、表达式与脚本自由
+
+```yaml
+# c2.yml
+id: "c2"
+layout: 
   - { type: "start"}
   - { when: "order.getAmount() >= 100", task: "order.setScore(0);"}
   - { when: "order.getAmount() > 100 && order.getAmount() <= 500", task: "order.setScore(100);"}
@@ -120,29 +119,108 @@ layout:
   - { type: "end"}
 ```
 
+### 3、元信息配置，为扩展提供了无限空间
+
+```yaml
+# c3.yml
+id: "c3"
+layout: 
+  - { id: "n1", type: "start", link: "n2"}
+  - { id: "n2", type: "execute", link: "n3", meta: {cc: "demo@noear.org"}, task: "@MetaProcessCom"}
+  - { id: "n3", type: "end"}
+```
+
+通过组件方式，实现元信息的抄送配置效果
+
 ```java
-@Component
-public class DemoCom implements LifecycleBean {
-    @Inject 
-    private FlowEngine flowEngine;
-    
+@Component("MetaProcessCom")
+public class MetaProcessCom implements TaskComponent {
     @Override
-    public void start() throws Throwable {
-        FlowContext context = new FlowContext();
-        context.put("order", new OrderModel());
-        
-        flowEngine.eval("r1", context);
+    public void run(FlowContext context, Node node) throws Throwable {
+       String cc = node.getMeta("cc");
+       if(Utils.isNotEmpty(cc)){
+           //发送邮件...
+       }
     }
 }
 ```
 
-### 3、行政审批支持示例（支持状态持久化）
+也可通过驱动定制方式，实现抄送效果（显得重一些）
+
+```java
+public class OaFlowDriver extends SimpleFlowDriver {
+    @Override
+    public void handleTask(FlowContext context, Task task) throws Throwable {
+        if (Utils.isEmpty(task.getDescription())) {
+           String cc = task.getNode().getMeta("cc");
+           if(Utils.isNotEmpty(cc)){
+               //发送邮件
+           }
+        } else {
+            super.handleTask(context, task);
+        }
+    }
+}
+
+//FlowEngine flowEngine = FlowEngine.newInstance();
+//flowEngine.register(new OaFlowDriver()); //替换掉默认驱动
+```
+
+### 4、事件广播与回调支持
+
+广播（即只需要发送），回调（即发送后要求给答复）
 
 ```yaml
-# classpath:flow/e1.chain.yml
-id: e1
+id: f4
 layout:
-  - {id: step1, title: "发起审批", meta: {actor: "刘涛", form: "form1"}}
+  - task: |
+      //只发送
+      context.<String,String>eventBus().send("demo.topic", "hello");  //支持泛型（类型按需指定，不指定时为 object）
+  - task: |
+      //发送并要求响应（就是要给答复）
+      String rst = context.<String,String>eventBus().sendAndRequest("demo.topic.get", "hello");
+      System.out.println(rst);
+```
+
+### 5、支持无状态、有状态两种应用
+
+支持丰富的应用场景：
+
+* 可用于计算（或任务）的编排场景
+* 可用于业务规则和决策处理型的编排场景
+* 可用于办公审批型（有状态、可中断，人员参与）的编排场景
+* 可用于长时间流程（结合自动前进，等待介入）的编排场景
+
+自身也相当于一个低代码的运行引擎（单个 yml 文件，也可满足所有的执行需求）。
+
+
+### 6、驱动定制（是像 JDBC 有 MySql, PostgreSQL，还可能有 Elasticsearch）
+
+这是一个定制后的，支持基于状态驱动的流引擎效果。
+```java
+StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
+                .stateOperator(new MetaStateOperator("actor"))
+                .stateRepository(new InMemoryStateRepository())
+                .build());
+                
+var context = new StatefulFlowContext("i1").put("actor", "陈鑫");
+
+//获取上下文用户的活动节点
+var statefulNode = flowEngine.getActivityNode("f1", context);
+
+assert "step2".equals(statefulNode.getNode().getId());
+assert StateType.UNKNOWN == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
+
+//提交活动状态
+flowEngine.postActivityState(context, "f1", statefulNode.getNode().getId(), StateType.COMPLETED);
+```
+
+流程配置样例：
+
+```yaml
+id: f1
+layout:
+  - {id: step1, title: "发起审批", type: "start"}
   - {id: step2, title: "抄送", meta: {cc: "吕方"}, task: "@OaMetaProcessCom"}
   - {id: step3, title: "审批", meta: {actor: "陈鑫", cc: "吕方"}, task: "@OaMetaProcessCom"}
   - {id: step4, title: "审批", type: "parallel", link: [step4_1, step4_2]}
@@ -153,69 +231,5 @@ layout:
   - {id: step6, title: "结束", type: "end"}
 ```
 
-```java
-@Configuration
-public class DemoConfig {
-    //替换掉默认引擎（会自动加载 solon.flow 配置的链资源）//可用 StatefulFlowEngine 或 FlowEngine 注入
-    @Bean
-    public StatefulFlowEngine statefulFlowEngine() {
-        return StatefulFlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
-                .stateController(new ActorStateController("actor"))
-                .stateRepository(new InMemoryStateRepository()) //状态仓库（支持持久化）
-                .build());
-    }
+对于驱动器的定制，我们还可以：定制（或选择）不同的脚本执行器、组件容器实现等。
 
-    @Bean
-    public void test(StatefulFlowEngine flowEngine) {
-        String instanceId = Utils.uuid();
-        String chainId = "e1";
-
-        FlowContext context = getContext(instanceId,"刘涛");
-        StatefulNode statefulNode = flowEngine.getActivityNode(chainId, context);
-        assert "step1".equals(statefulNode.getNode().getId());
-        assert NodeState.WAITING == statefulNode.getState(); //等待当前用户处理
-
-        //提交状态
-        context.put("op", "通过"); //用于扩展状态记录
-        flowEngine.postActivityState(context, statefulNode.getNode(), NodeState.COMPLETED);
-    }
-
-    private FlowContext getContext(String instanceId, String actor) {
-        FlowContext context = new FlowContext(instanceId);
-        context.put("actor", actor);
-        return context;
-    }
-}
-```
-
-
-### 4、单步前进与后退支持示例（支持调试或离散场景）
-
-
-```java
-@Configuration
-public class DemoConfig {
-    //替换掉默认引擎（会自动加载 solon.flow 配置的链资源）//可用 StatefulFlowEngine 或 FlowEngine 注入
-    @Bean
-    public StatefulFlowEngine statefulFlowEngine() {
-        return StatefulFlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
-                .stateController(new ActorStateController("actor"))
-                .stateRepository(new InMemoryStateRepository()) //状态仓库（支持持久化）
-                .build());
-    }
-
-    @Bean
-    public void test(StatefulFlowEngine flowEngine) {
-        String instanceId = Utils.uuid();
-        String chainId = "e1";
-
-        //单步前进
-        FlowContext context = new FlowContext(instanceId);
-        StatefulNode statefulNode = flowEngine.stepForward(chainId, context);
-        
-        //单步后退
-        context = new FlowContext(instanceId);
-        statefulNode = flowEngine.stepBack(chainId, context);
-    }
-}
-```
