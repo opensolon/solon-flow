@@ -1,15 +1,15 @@
 <h1 align="center" style="text-align:center;">
 <img src="solon_icon.png" width="128" />
 <br />
-Solon
+Solon-Flow
 </h1>
 <p align="center">
-	<strong>面向全场景的 Java 企业级应用开发框架：克制、高效、开放、生态</strong>
+	<strong>Java Flow 通用流编排应用开发框架（支持已知流编排的各种场景）</strong>
     <br/>
-    <strong>【开放原子开源基金会，孵化项目】</strong>
+    <strong>【基于 Solon 应用开发框架构建】</strong>
 </p>
 <p align="center">
-	<a href="https://solon.noear.org/">https://solon.noear.org</a>
+	<a href="https://solon.noear.org/article/learn-solon-flow">https://solon.noear.org/article/learn-solon-flow</a>
 </p>
 
 <p align="center">
@@ -48,39 +48,20 @@ Solon
 
 <hr />
 
-<p align="center">
-并发高 700%；内存省 50%；启动快 10 倍；打包小 90%；同时支持 java8 ~ java24, native 运行时。
-<br/>
-从零开始构建，有更灵活的接口规范与开放生态
-</p>
 
-<hr />
+## 简介
 
-## 主要代码仓库
+面向全场景的 Java Flow （流编排）应用开发框架。是 Solon 项目的一部分。也可嵌入到 SpringBoot2、jFinal、Vert.x 等框架中使用。
 
+支持已知流编排的各种场景:
 
+* 可用于计算（或任务）的编排场景
+* 可用于业务规则和决策处理型的编排场景
+* 可用于办公审批型（有状态、可中断，人员参与）的编排场景
+* 可用于长时间流程（结合自动前进，等待介入）的编排场景
 
-| 代码仓库                                            | 描述                               | 
-|-------------------------------------------------|----------------------------------| 
-| https://gitee.com/opensolon/solon               | Solon ,主代码仓库                     | 
-| https://gitee.com/opensolon/solon-examples      | Solon ,官网配套示例代码仓库                |
-|                                                 |                                  |
-| https://gitee.com/opensolon/solon-ai            | Solon Ai ,代码仓库                   | 
-| https://gitee.com/opensolon/solon-flow          | Solon Flow ,代码仓库                 | 
-| https://gitee.com/opensolon/solon-cloud         | Solon Cloud ,代码仓库                | 
-| https://gitee.com/opensolon/solon-admin         | Solon Admin ,代码仓库                | 
-| https://gitee.com/opensolon/solon-jakarta       | Solon Jakarta ,代码仓库（base java21） | 
-| https://gitee.com/opensolon/solon-integration   | Solon Integration ,代码仓库          | 
-|                                                 |                                  |
-| https://gitee.com/opensolon/solon-gradle-plugin | Solon Gradle ,插件代码仓库             | 
-| https://gitee.com/opensolon/solon-idea-plugin   | Solon Idea ,插件代码仓库               | 
-| https://gitee.com/opensolon/solon-vscode-plugin | Solon VsCode ,插件代码仓库             | 
-|                                                 |                                  |
-| https://gitee.com/dromara/solon-plugins         | Solon 第三方扩展插件代码仓库                | 
+## 六大特性展示
 
-## Solon Flow 六大特点
-
-Solon Flow 是一个通用的流编排引擎。支持 java8 到 java24。
 
 ### 1、使用 yaml 格式
 
@@ -119,7 +100,7 @@ layout:
   - { type: "end"}
 ```
 
-### 3、元信息配置，为扩展提供了无限空间
+### 3、元信息配置，为扩展提供了无限空间（每个流程，相当于自带了元数据库）
 
 ```yaml
 # c3.yml
@@ -182,7 +163,7 @@ layout:
       System.out.println(rst);
 ```
 
-### 5、支持无状态、有状态两种应用
+### 5、支持“无状态”、“有状态”两种需求分类
 
 支持丰富的应用场景：
 
@@ -232,4 +213,29 @@ layout:
 ```
 
 对于驱动器的定制，我们还可以：定制（或选择）不同的脚本执行器、组件容器实现等。
+
+
+
+
+## Solon 项目相关代码仓库
+
+
+
+| 代码仓库                                            | 描述                               | 
+|-------------------------------------------------|----------------------------------| 
+| https://gitee.com/opensolon/solon               | Solon ,主代码仓库                     | 
+| https://gitee.com/opensolon/solon-examples      | Solon ,官网配套示例代码仓库                |
+|                                                 |                                  |
+| https://gitee.com/opensolon/solon-ai            | Solon Ai ,代码仓库                   | 
+| https://gitee.com/opensolon/solon-flow          | Solon Flow ,代码仓库                 | 
+| https://gitee.com/opensolon/solon-cloud         | Solon Cloud ,代码仓库                | 
+| https://gitee.com/opensolon/solon-admin         | Solon Admin ,代码仓库                | 
+| https://gitee.com/opensolon/solon-jakarta       | Solon Jakarta ,代码仓库（base java21） | 
+| https://gitee.com/opensolon/solon-integration   | Solon Integration ,代码仓库          | 
+|                                                 |                                  |
+| https://gitee.com/opensolon/solon-gradle-plugin | Solon Gradle ,插件代码仓库             | 
+| https://gitee.com/opensolon/solon-idea-plugin   | Solon Idea ,插件代码仓库               | 
+| https://gitee.com/opensolon/solon-vscode-plugin | Solon VsCode ,插件代码仓库             | 
+|                                                 |                                  |
+| https://gitee.com/dromara/solon-plugins         | Solon 第三方扩展插件代码仓库                | 
 
