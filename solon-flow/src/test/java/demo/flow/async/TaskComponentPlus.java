@@ -7,13 +7,13 @@ import org.noear.solon.flow.TaskComponent;
 
 /**
  * 任务组件增强（同时支持同步也异步）
- * */
+ */
 public abstract class TaskComponentPlus implements TaskComponent {
     @Override
     public void run(FlowContext context, Node node) throws Throwable {
         //通过 meta:{async:true} 来启用
-        boolean async = node.getMetaOrDefault("async", false);
-
+        String asyncMeta = node.getMetaOrDefault("async", "false");
+        boolean async = Boolean.parseBoolean(asyncMeta);
         if (async) {
             context.interrupt();
 
