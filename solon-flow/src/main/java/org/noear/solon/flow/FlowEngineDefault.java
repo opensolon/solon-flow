@@ -116,9 +116,7 @@ public class FlowEngineDefault implements FlowEngine {
             throw new IllegalArgumentException("The start node was not found.");
         }
 
-        if (context.engine == null) {
-            context.engine = this;
-        }
+        initContextDo(context);
 
         FlowDriver driver = driverMap.get(startNode.getChain().getDriver());
 
@@ -128,6 +126,15 @@ public class FlowEngineDefault implements FlowEngine {
 
         //开始执行
         new ChainInvocation(driver, context, startNode, depth, this.interceptorList, this::evalDo).invoke();
+    }
+
+    /**
+     * 初始化上下文
+     */
+    protected void initContextDo(FlowContext context) {
+        if (context.engine == null) {
+            context.engine = this;
+        }
     }
 
     /**
