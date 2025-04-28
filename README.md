@@ -79,7 +79,7 @@ Solon-Flow
 id: "c1"
 layout: 
   - { id: "n1", type: "start", link: "n2"}
-  - { id: "n2", type: "execute", link: "n3"}
+  - { id: "n2", type: "activity", link: "n3"}
   - { id: "n3", type: "end"}
 ```
 
@@ -114,7 +114,7 @@ layout:
 id: "c3"
 layout: 
   - { id: "n1", type: "start", link: "n2"}
-  - { id: "n2", type: "execute", link: "n3", meta: {cc: "demo@noear.org"}, task: "@MetaProcessCom"}
+  - { id: "n2", type: "activity", link: "n3", meta: {cc: "demo@noear.org"}, task: "@MetaProcessCom"}
   - { id: "n3", type: "end"}
 ```
 
