@@ -348,9 +348,14 @@ public class FlowEngineDefault implements FlowEngine {
         context.counter().set(node.getChain(), node.getId(), 0);
 
         //::流出
-        for (Node n : node.getNextNodes()) {
+//        for (Node n : node.getNextNodes()) {
+//            node_run(driver, context, n, depth);
+//        }
+
+        //::流出（多线程有序并行）
+        node.getNextNodes().parallelStream().forEachOrdered(n -> {
             node_run(driver, context, n, depth);
-        }
+        });
 
         return true;
     }
