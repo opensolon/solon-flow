@@ -21,8 +21,10 @@ import org.noear.liquor.eval.Scripts;
 import org.noear.solon.lang.Preview;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
@@ -34,7 +36,7 @@ import java.util.function.Function;
 @Preview("3.0")
 public class FlowContext {
     //存放数据模型
-    private transient final Map<String, Object> model = new LinkedHashMap<>();
+    private transient final Map<String, Object> model = new ConcurrentHashMap<>();
     //存放执行结果（可选）
     public transient Object result;
 
