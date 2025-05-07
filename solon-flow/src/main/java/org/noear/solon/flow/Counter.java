@@ -15,9 +15,9 @@
  */
 package org.noear.solon.flow;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -27,8 +27,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 3.0
  */
 public class Counter {
-    private final Map<String, AtomicInteger> counts = new LinkedHashMap<>();
-    private final Map<String, Stack<Integer>> stacks = new LinkedHashMap<>();
+    private final Map<String, AtomicInteger> counts = new ConcurrentHashMap<>();
+    private final Map<String, Stack<Integer>> stacks = new ConcurrentHashMap<>();
 
     /**
      * 清空

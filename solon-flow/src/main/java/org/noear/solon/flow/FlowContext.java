@@ -21,8 +21,6 @@ import org.noear.liquor.eval.Scripts;
 import org.noear.solon.lang.Preview;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
