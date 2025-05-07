@@ -17,12 +17,14 @@ package org.noear.solon.flow;
 
 import org.noear.solon.Utils;
 import org.noear.solon.core.util.RankEntity;
+import org.noear.solon.core.util.RunUtil;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.intercept.ChainInterceptor;
 import org.noear.solon.flow.intercept.ChainInvocation;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 /**
  * 流引擎实现
@@ -348,14 +350,9 @@ public class FlowEngineDefault implements FlowEngine {
         context.counter().set(node.getChain(), node.getId(), 0);
 
         //::流出
-//        for (Node n : node.getNextNodes()) {
-//            node_run(driver, context, n, depth);
-//        }
-
-        //::流出（多线程有序并行）
-        node.getNextNodes().parallelStream().forEachOrdered(n -> {
+        for (Node n : node.getNextNodes()) {
             node_run(driver, context, n, depth);
-        });
+        }
 
         return true;
     }
