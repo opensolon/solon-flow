@@ -4,14 +4,17 @@
       <Header ></Header>
     </div>
     <div class="editor-content">
-      <div class="editor-sider">2</div>
+      <div class="editor-sider">
+        <Sider></Sider>
+      </div>
       <div class="editor-canvas">3</div>
     </div>
   </div>
 </template>
 
 <script setup>
-import Header from './editor/header.vue';
+import Header from './editor/Header.vue';
+import Sider from './editor/Sider.vue';
 </script>
 
 <style scoped lang="less">
