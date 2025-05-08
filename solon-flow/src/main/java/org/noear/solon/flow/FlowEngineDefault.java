@@ -17,14 +17,12 @@ package org.noear.solon.flow;
 
 import org.noear.solon.Utils;
 import org.noear.solon.core.util.RankEntity;
-import org.noear.solon.core.util.RunUtil;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.intercept.ChainInterceptor;
 import org.noear.solon.flow.intercept.ChainInvocation;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 
 /**
  * 流引擎实现
@@ -149,7 +147,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 条件检测
      */
-    private boolean condition_test(FlowDriver driver, FlowContext context, Condition condition, boolean def) throws FlowException {
+    protected boolean condition_test(FlowDriver driver, FlowContext context, Condition condition, boolean def) throws FlowException {
         if (Utils.isNotEmpty(condition.getDescription())) {
             try {
                 return driver.handleTest(context, condition);
@@ -166,7 +164,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 执行任务
      */
-    private void task_exec(FlowDriver driver, FlowContext context, Node node) throws FlowException {
+    protected void task_exec(FlowDriver driver, FlowContext context, Node node) throws FlowException {
         //尝试检测条件；缺省为 true
         if (condition_test(driver, context, node.getWhen(), true)) {
             //起到触发事件的作用 //处理方会“过滤”空任务
@@ -183,7 +181,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 运行节点
      */
-    private boolean node_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
+    protected boolean node_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
         if (node == null) {
             return false;
         }
@@ -261,7 +259,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 运行包容网关
      */
-    private boolean inclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
+    protected boolean inclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
         Stack<Integer> inclusive_stack = context.counter().stack(node.getChain(), "inclusive_run");
 
         //::流入
@@ -313,7 +311,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 运行排他网关
      */
-    private boolean exclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
+    protected boolean exclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
         //::流出
         Link def_line = null; //默认线
         for (Link l : node.getNextLinks()) {
@@ -339,7 +337,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 运行并行网关
      */
-    private boolean parallel_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
+    protected boolean parallel_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
         //::流入
         int count = context.counter().incr(node.getChain(), node.getId());//运行次数累计
         if (node.getPrevLinks().size() > count) { //等待所有支线计数完成
