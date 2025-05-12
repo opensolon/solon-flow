@@ -25,6 +25,7 @@
     "@antv/x6-plugin-stencil": "^2.1.5",
     "@antv/x6-plugin-transform": "^2.1.8",
     "@antv/x6-vue-shape": "^2.1.2",
+    "codemirror": "^6.0.1",
     "@codemirror/commands": "^6.8.0",
     "@codemirror/lang-javascript": "^6.2.3",
     "@codemirror/lang-java": "^6.0.1",

@@ -1,4 +1,5 @@
 <template>
+  <a-config-provider :locale="zhCN">
   <a-layout>
     <a-layout-header>
       <div class="logo">Solon Flow Designer</div>
@@ -16,8 +17,10 @@
       </router-view>
     </a-layout-content>
   </a-layout>
+</a-config-provider>
 </template>
 <script setup>
+import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import { watch, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();

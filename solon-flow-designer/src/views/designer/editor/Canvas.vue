@@ -1,7 +1,9 @@
 <template>
-    <div class="canvasView" style="width: 100%; height: 100%">
+    <div class="canvasView" style="width: 100%; height: 100%;position: relative;">
         <div ref="flowContainerRef" style="width: 100%; height: 100%"></div>
         <TeleportContainer></TeleportContainer>
+        <NodeFormDialog ref="nodeFormDialogRef"></NodeFormDialog>
+        <EdgeFormDialog ref="edgeFormDialogRef"></EdgeFormDialog>
     </div>
 </template>
 <script setup>
@@ -15,6 +17,8 @@ import { register, getTeleport } from '@antv/x6-vue-shape'
 import {nodeTypeDef} from '../nodeTypeDef.js';
 import * as utils from '@/utils/index.js'
 import BaseNode from './BaseNode.vue'
+import NodeFormDialog from './NodeFormDialog.vue';
+import EdgeFormDialog from './EdgeFormDialog.vue';
 
 const props = defineProps({
     dndContainer:{
@@ -24,6 +28,8 @@ const props = defineProps({
 
 const TeleportContainer = defineComponent(getTeleport());
 const flowContainerRef = ref(null); // 画布容器的引用
+const nodeFormDialogRef = ref(null); // 节点表单对话框的引用
+const edgeFormDialogRef = ref(null); // 边表单对话框的引用
 let graph = null
 let dnd = null
 let currentEditEdge = null // 当前编辑的边
@@ -223,6 +229,8 @@ function initGraph() {
       target: graph,
       scaled: false,
       dndContainer: props.dndContainer.value,
+      getDragNode: (node) => node.clone({ keepId: true }),
+      getDropNode: (node) => node.clone({ keepId: true }),
     })
 
     graph.on('node:mouseenter', () => {
@@ -262,7 +270,7 @@ function initGraph() {
                     onClick: (e) => {
                         // e.edge.remove({ ui: true })
                         currentEditEdge = e.cell
-                        nodeFormDialogRef.value.toClose()
+                        closeAllFormDialog()
                         edgeFormDialogRef.value.show(graph, currentEditEdge)
                     }
                 }
@@ -274,6 +282,11 @@ function initGraph() {
             cell.removeTools()
         }
     })
+}
+
+function closeAllFormDialog() {
+    nodeFormDialogRef.value.toClose()
+    edgeFormDialogRef.value.toClose()
 }
 
 function showPorts( show) {
