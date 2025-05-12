@@ -36,6 +36,11 @@ public class Node {
     private Condition when;
     private Task task;
 
+    /**
+     * 附件（按需定制使用）
+     */
+    public Object attachment;//如果做扩展解析，用作存储位；
+
     protected Node(Chain chain, NodeDecl decl, List<Link> links) {
         this.chain = chain;
         this.decl = decl;
