@@ -1,4 +1,4 @@
 id: event1
 layout:
-  - task: '@DemoCom'
+  - type: '@DemoCom'
   - task: 'context.<String,String>eventBus().send("demo.topic", "hello");'
