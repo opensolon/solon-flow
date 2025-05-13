@@ -27,6 +27,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 3.0
  */
 public class Counter {
+    static final String ROOT = "_ROOT";
+
     private final Map<String, AtomicInteger> counts = new ConcurrentHashMap<>();
     private final Map<String, Stack<Integer>> stacks = new ConcurrentHashMap<>();
 
@@ -58,6 +60,14 @@ public class Counter {
     }
 
     /**
+     * 获取
+     */
+    public int get(String key) {
+        return counts.computeIfAbsent(ROOT + "/" + key, k -> new AtomicInteger(0))
+                .get();
+    }
+
+    /**
      * 设置
      */
     public void set(Chain chain, String key, int value) {
@@ -66,10 +76,26 @@ public class Counter {
     }
 
     /**
+     * 设置
+     */
+    public void set(String key, int value) {
+        counts.computeIfAbsent(ROOT + "/" + key, k -> new AtomicInteger(0))
+                .set(value);
+    }
+
+    /**
      * 增量
      */
     public int incr(Chain chain, String key) {
         return counts.computeIfAbsent(chain.getId() + "/" + key, k -> new AtomicInteger(0))
+                .incrementAndGet();
+    }
+
+    /**
+     * 增量
+     */
+    public int incr(String key) {
+        return counts.computeIfAbsent(ROOT + "/" + key, k -> new AtomicInteger(0))
                 .incrementAndGet();
     }
 
