@@ -160,7 +160,7 @@ public class Chain {
         }
 
         if (start == null) {
-            throw new IllegalStateException("No start node found");
+            throw new IllegalStateException("No start node found, chain: " + id);
         }
     }
 
