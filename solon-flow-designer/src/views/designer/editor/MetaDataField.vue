@@ -13,10 +13,10 @@
                     </a-row>
                     <a-row :gutter="5">
                         <a-col :span="10">
-                            <a-input v-model:value="state.tempMeta.key" />
+                            <a-input ref="tempMetaKeyRef" v-model:value="state.tempMeta.key" />
                         </a-col>
                         <a-col :span="10">
-                            <a-input v-model:value="state.tempMeta.value"/>
+                            <a-input v-model:value="state.tempMeta.value" @keyup.enter="toAddMeta"/>
                         </a-col>
                         <a-col :span="2">
                             <a-button type="link" @click="toAddMeta"><CheckOutlined /></a-button>
@@ -55,6 +55,7 @@ const state = reactive({
     metas: [],
     tempMeta: { key: null, value: null }
 })
+const tempMetaKeyRef = ref(null)
 
 
 function toAddMeta() {
@@ -62,6 +63,7 @@ function toAddMeta() {
     state.metas.push({ key: state.tempMeta.key, value: state.tempMeta.value })
     state.tempMeta.key = null
     state.tempMeta.value = null
+    tempMetaKeyRef.value.focus()
     onChange()
 }
 

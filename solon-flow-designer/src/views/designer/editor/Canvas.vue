@@ -4,6 +4,7 @@
         <TeleportContainer></TeleportContainer>
         <NodeFormDialog ref="nodeFormDialogRef"></NodeFormDialog>
         <EdgeFormDialog ref="edgeFormDialogRef"></EdgeFormDialog>
+        <ChainFormDialog ref="chainFormDialogRef"></ChainFormDialog>
     </div>
 </template>
 <script setup>
@@ -11,7 +12,6 @@ import { onMounted, defineComponent, ref, nextTick } from 'vue';
 import { Graph, Shape } from "@antv/x6";
 import { Snapline } from '@antv/x6-plugin-snapline'
 import { Selection } from '@antv/x6-plugin-selection'
-import { Scroller } from '@antv/x6-plugin-scroller'
 import { Dnd } from '@antv/x6-plugin-dnd'
 import { register, getTeleport } from '@antv/x6-vue-shape'
 import {nodeTypeDef} from '../nodeTypeDef.js';
@@ -19,6 +19,7 @@ import * as utils from '@/utils/index.js'
 import BaseNode from './BaseNode.vue'
 import NodeFormDialog from './NodeFormDialog.vue';
 import EdgeFormDialog from './EdgeFormDialog.vue';
+import ChainFormDialog from './ChainFormDialog.vue';
 
 const props = defineProps({
     dndContainer:{
@@ -30,16 +31,20 @@ const TeleportContainer = defineComponent(getTeleport());
 const flowContainerRef = ref(null); // 画布容器的引用
 const nodeFormDialogRef = ref(null); // 节点表单对话框的引用
 const edgeFormDialogRef = ref(null); // 边表单对话框的引用
+const chainFormDialogRef = ref(null); // chain表单对话框的引用
 let graph = null
 let dnd = null
 let currentEditEdge = null // 当前编辑的边
 let currentEditNode = null // 当前编辑的节点
+let currentEditChain = {} // 当前编辑的chain
 
 onMounted(() => {
     nextTick(() => {
         registerNode()
         initGraph()
         initStartNode()
+
+        currentEditChain.id = "chain_"+utils.uuid2()
     })
     
 })
@@ -192,7 +197,10 @@ function initGraph() {
                 const edgeId = 'edge_' + utils.uuid2()
                 return graph.createEdge({
                     id: edgeId,
-                    shape: 'flow-edge'
+                    shape: 'flow-edge',
+                    data:{
+                        id:edgeId,
+                    }
                 })
             },
             validateConnection({
@@ -297,6 +305,7 @@ function initGraph() {
 function closeAllFormDialog() {
     nodeFormDialogRef.value.toClose()
     edgeFormDialogRef.value.toClose()
+    chainFormDialogRef.value.toClose()
 }
 
 function showPorts( show) {
@@ -347,7 +356,21 @@ function onSiderStartDrag(e, nodeType) {
     dnd.start(node,e)
 }
 
+function onEditChainConfig() {
+    closeAllFormDialog()
+    chainFormDialogRef.value.show(graph,currentEditChain)
+}
+
+function getData() { // 导出当前画布的内容为 JSON 格式的字符串，用于保存或分享
+    return {
+        chain: currentEditChain,
+        graphData: graph.toJSON()
+    }
+}
+
 defineExpose({
     onSiderStartDrag,
+    onEditChainConfig,
+    getData
 })
 </script>
