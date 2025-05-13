@@ -3,9 +3,9 @@
         <div class="node-icon" :style="{'background-color':nodeInfo.color}">
             <font-awesome-icon :icon="nodeInfo.icon" />
         </div>
-        <div class="node-title">{{ nodeInfo.name }}</div>
+        <div class="node-title">{{ nodeInfo.title }}</div>
         <div class="node-tools">
-            <a-space>
+            <a-space >
                 <div class="wf-node-tool wf-node-tool-deleteNode" @click="deleteNode">
                     <font-awesome-icon icon="fa-solid fa-xmark" />
                 </div>
@@ -17,7 +17,7 @@
     </div>
 </template>
 <script setup>
-import { onMounted, reactive } from 'vue';
+import { onMounted, reactive,watch } from 'vue';
 import {nodeTypeDef,groupMap} from '../nodeTypeDef.js';
 const props = defineProps({
     node: {
@@ -30,7 +30,7 @@ const props = defineProps({
 var nodeInfo = reactive({
     id: null,
     "type": null,
-    "name": null,
+    "title": null,
     "color": "#0820e2",
     "icon": "fa-solid fa-play",
 })
@@ -42,11 +42,19 @@ onMounted(() => {
         "color": nodeType.color,
         "icon": nodeType.icon,
     })
+    props.node.on("node:data:changed", () => {
+        const nodeData = props.node.getData()
+        nodeInfo.title = nodeData.title
+    })
 })
 
 function deleteNode() {
+    // 确认是否删除
+    if (!confirm("确认删除该节点吗？")) { return }
+    props.graph.emit("node:toDel",props.node)
 }
 function editNode() {
+    props.graph.emit("node:toEdit",props.node)
 }
 </script>
 <style lang="less" >

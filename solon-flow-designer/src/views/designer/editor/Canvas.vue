@@ -33,6 +33,7 @@ const edgeFormDialogRef = ref(null); // 边表单对话框的引用
 let graph = null
 let dnd = null
 let currentEditEdge = null // 当前编辑的边
+let currentEditNode = null // 当前编辑的节点
 
 onMounted(() => {
     nextTick(() => {
@@ -282,6 +283,15 @@ function initGraph() {
             cell.removeTools()
         }
     })
+
+    graph.on('node:toDel', (node) => {
+        graph.removeNode(node)
+    })
+    graph.on('node:toEdit', (node) => {
+        currentEditNode = node
+        closeAllFormDialog()
+        nodeFormDialogRef.value.show(graph, currentEditNode)
+    })
 }
 
 function closeAllFormDialog() {
@@ -323,7 +333,7 @@ function createNode(type,isAdd=true,x=10,y=10) {
         data: {
             id: id,
             type: nodeType.type,
-            name: nodeType.name,
+            title: nodeType.title,
         },
     })
     if(isAdd) {
