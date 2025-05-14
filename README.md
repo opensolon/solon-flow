@@ -72,7 +72,7 @@ Solon-Flow
 
 ### 1、使用 yaml 格式
 
-配置简洁，关系清晰
+配置简洁，关系清晰。内容多了后会像 docker-compose。
 
 ```yaml
 # c1.yml
