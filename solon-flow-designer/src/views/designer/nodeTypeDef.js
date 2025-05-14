@@ -34,7 +34,9 @@ const nodeTypeDef = {
         "title": "活动节点",
         "color": "#047cc2",
         "icon": "fa-solid fa-user",
-    },
+    }
+    /*
+    ,
     "script": {
         "type": "script",
         "title": "脚本节点",
@@ -47,12 +49,13 @@ const nodeTypeDef = {
         "color": "#f4a63a",
         "icon": "fa-solid fa-diagram-next",
     },
+    */
 }
 
 const groupMap = [
     {"title":"开关节点","value":"switch","nodes":["start","end"]},
     {"title":"网关节点","value":"gateway","nodes":["inclusive","exclusive","parallel"]},
-    {"title":"活动节点","value":"activity","nodes":["activity","script","subFlow"]}
+    {"title":"活动节点","value":"activity","nodes":["activity"]}
 ]
 
 export {nodeTypeDef,groupMap}

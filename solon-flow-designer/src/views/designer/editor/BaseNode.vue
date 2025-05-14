@@ -41,6 +41,7 @@ onMounted(() => {
     nodeInfo = Object.assign(nodeInfo,{}, nodeData,{
         "color": nodeType.color,
         "icon": nodeType.icon,
+        title: nodeData.title || nodeType.title
     })
     props.node.on("node:data:changed", () => {
         const nodeData = props.node.getData()

@@ -42,9 +42,7 @@ onMounted(() => {
     nextTick(() => {
         registerNode()
         initGraph()
-        initStartNode()
-
-        currentEditChain.id = "chain_"+utils.uuid2()
+        clear()
     })
     
 })
@@ -368,9 +366,33 @@ function getData() { // 导出当前画布的内容为 JSON 格式的字符串�
     }
 }
 
+function clear(isInitStartNode = true) { // 清空画布内容，可选是否重新初始化开始节点
+    graph.clearCells()
+    if(isInitStartNode){
+        initStartNode()
+    }
+    currentEditChain = {
+        id : "chain_"+utils.uuid2()
+    }
+    closeAllFormDialog()
+}
+
+function setChain(chainData) { // 导入 JSON 格式的字符串，用于加载或分享的内容
+    currentEditChain = chainData.chain || {
+        id : "chain_"+utils.uuid2()
+    }
+}
+
+function setData(data) { // 导入 JSON 格式的字符串，用于加载或分享的内容
+    graph.fromJSON(data)
+}
+
 defineExpose({
     onSiderStartDrag,
     onEditChainConfig,
-    getData
+    getData,
+    setData,
+    clear,
+    setChain
 })
 </script>
