@@ -1,7 +1,7 @@
 <template>
   <div class="editor">
     <div class="editor-header">
-      <Header @editChainConfig="onEditChainConfig" @toExport="toExport"></Header>
+      <Header @editChainConfig="onEditChainConfig" @toExport="toExport" @toImport="toImport" @toClear="toClear"></Header>
     </div>
     <div class="editor-content">
       <div class="editor-sider">
@@ -9,8 +9,11 @@
       </div>
       <div class="editor-canvas">
         <FlowCanvas ref="flowCanvasRef" :dndContainer="siderRef"></FlowCanvas>
-        <a-modal v-model:visible="state.isExportDialogOpen" title="导出" :footer="null" @cancel="state.isExportDialogOpen = false">
+        <a-modal v-model:open="state.isExportDialogOpen" title="导出" :footer="null" @cancel="state.isExportDialogOpen = false">
           <a-textarea :rows="10" v-model:value="state.exportData" />
+        </a-modal>
+        <a-modal v-model:open="state.isImportDialogOpen" title="导入" @ok="handleImport" @cancel="state.isImportDialogOpen = false">
+          <a-textarea :rows="10" v-model:value="state.importData" />
         </a-modal>
       </div>
     </div>
@@ -22,6 +25,8 @@ import { ref,reactive } from 'vue';
 import Header from './editor/Header.vue';
 import Sider from './editor/Sider.vue';
 import FlowCanvas from './editor/Canvas.vue';
+import * as utils from '@/utils/index.js'
+import yamlUtils from 'js-yaml'
 
 const flowCanvasRef = ref(null); // 画布容器的引用
 const siderRef = ref(null); // 侧边栏容器的引用
@@ -29,6 +34,7 @@ const siderRef = ref(null); // 侧边栏容器的引用
 const state = reactive({
   isExportDialogOpen: false, // 导出对话框的状态
   exportData: '', // 导出的数据
+  importType: 'json'
 })
 
 const onStartDrag = ({e,nodeType}) => {
@@ -39,8 +45,8 @@ const onEditChainConfig = () => {
 }
 
 const toExport = () => {
+  // 组只数据，将antv-x6格式转换为solon-flow格式
   const data = flowCanvasRef.value.getData();
-  console.log('data',data)
   const nodeLinkMap = {}; // 用于存储节点和边的关联关系
   const nodes = [];
   data.graphData.cells.forEach(cell => {
@@ -51,6 +57,8 @@ const toExport = () => {
         sourcePort:cell.source.port,
         target:cell.target.cell,
         targetPort:cell.target.port,
+
+        nextId: cell.target.cell, // 边的目标节点
         id:cell.id,
         title:edgeData.title,
       }
@@ -81,6 +89,128 @@ const toExport = () => {
   console.log('chainData',chainData)
   state.exportData = JSON.stringify(chainData); // 格式化输出 JSON 数据
   state.isExportDialogOpen = true; // 打开导出对话框
+}
+
+function toImport(type) {
+  state.importType = type
+  state.isImportDialogOpen = true; // 打开导入对话框
+}
+
+function handleImport() {
+  let data = null
+  if(state.importType == 'json'){
+    data = JSON.parse(state.importData); // 解析导入的数据
+  }else{
+    data = yamlUtils.load(state.importData); // 解析导入的数据
+  }
+  
+  flowCanvasRef.value.clear(false); // 清空画布容器中的内容
+  flowCanvasRef.value.setChain(data); // 
+  // 组织数据，将solon-flow格式转换为antv-x6格式
+  if(data.layout){
+    const graphData = {
+      cells: [], // 存储节点和边的数组
+    };
+    let temp_x = 10;
+    let temp_y = 10;
+    data.layout.forEach(node => {
+      const nodeData = {
+        id: node.id, // 节点的唯一标识符
+        shape: node.type, // 节点的形状
+        data: { // 节点的自定义数据
+          id: node.id, // 节点的唯一标识符
+          type: node.type, // 节点的类型
+          title: node.title, // 节点的标题
+          task: node.task, // 节点的任务
+          when: node.when, // 节点的条件
+          meta: node.meta, // 节点的元数据
+        },
+        position: { // 节点的位置
+          x: node.x, // 节点的 x 坐标
+          y: node.y, // 节点的 y 坐标
+        },
+      }
+
+      if(!node.x || !node.y){
+        nodeData.position = {
+          x: temp_x, // 节点的 x 坐标
+          y: temp_y, // 节点的 y 坐标
+        }
+        temp_x += 100;
+        temp_y += 100;
+      }
+
+      graphData.cells.push(nodeData); // 将节点数据添加到数组中
+
+      if(node.link){
+        if(Array.isArray(node.link)){
+          node.link.forEach(link => {
+            if(typeof link == 'object'){
+              if(!link.id){
+                link.id = 'edge_'+utils.uuid2()
+              }
+              if(!link.source){
+                link.source = node.id,
+                link.sourcePort = 'port_b1'
+              }
+              if(!link.target){
+                link.target = link.nextId,
+                link.targetPort = 'port_t1'
+              }
+              const edgeData = {
+                id: link.id, // 边的唯一标识符
+                shape: 'flow-edge', // 边的形状
+                source: { cell: link.source, port: link.sourcePort }, // 边的源节点和端口
+                target: { cell: link.target, port: link.targetPort }, // 边的目标节点和端口
+                data: { // 边的自定义数据
+                  id: link.id, // 边的唯一标识符
+                  nextId: link.target, // 边的目标节点
+                  title: link.title, // 边的标题
+                },
+              }
+              if(link.title){
+                edgeData.labels=[link.title]
+              }
+              graphData.cells.push(edgeData); // 将边数据添加到数组中
+            }else{// string的情况
+              const edgeData = buildEdgeForStringType(node.id,link) // 构建边数据的函数
+              graphData.cells.push(edgeData); // 将边数据添加到数组中
+            }
+            
+
+          })
+        }else{
+          // string的情况
+          const edgeData = buildEdgeForStringType(node.id,node.link) // 构建边数据的函数
+          graphData.cells.push(edgeData); // 将边数据添加到数组中
+        }
+      }
+    })
+    console.log('graphData',graphData)
+    flowCanvasRef.value.setData(graphData); // 将节点和边数据设置到画布容器中
+  }
+  
+  state.isImportDialogOpen = false; // 关闭导入对话框
+}
+
+function toClear() {
+  flowCanvasRef.value.clear(); // 清空画布容器中的内容
+}
+
+function buildEdgeForStringType(source,target){
+  const edgeId = 'edge_'+utils.uuid2()
+  const edgeData = {
+    id: edgeId, // 边的唯一标识符
+    shape: 'flow-edge', // 边的形状
+    source: { cell: source, port: 'port_b1' }, // 边的源节点和端口
+    target: { cell: target, port: 'port_t1' }, // 边的目标节点和端口
+    data: { // 边的自定义数据
+      id: edgeId, // 边的唯一标识符
+      nextId: target, // 边的目标节点
+      title: null, // 边的标题
+    },
+  }
+  return edgeData
 }
 </script>
 

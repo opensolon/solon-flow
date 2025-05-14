@@ -1,71 +1,63 @@
 <template>
     <div class="formDialog" :style="{ 'display': state.isOpen ? 'block' : 'none' }" >
         <div class="header">
-            <div class="title">节点：{{ formData.title || "" }}</div>
+            <div class="title">节点：{{ state.title || "" }}</div>
             <div class="closeBtn" @click="toClose">
                 <font-awesome-icon icon="fa-solid fa-xmark" />
             </div>
         </div>
         <div class="content">
-        <a-form ref="formRef" :model="formData" layout="vertical">
-            <a-form-item label="节点ID" name="id">
-                {{ formData.id }}
-            </a-form-item>
-            <a-form-item label="标题">
-                <a-input v-model:value="formData.title" @change="onChange"/>
-            </a-form-item>
-            <a-form-item label="任务">
-                <ScriptInputField v-model:value="formData.task" @change="onChange">
-                </ScriptInputField>
-            </a-form-item>
-            <a-form-item label="任务条件">
-                <ScriptInputField v-model:value="formData.when" @change="onChange">
-                </ScriptInputField>
-            </a-form-item>
-            <a-form-item label="元信息">
-                <MetaDataField v-model:value="formData.meta" @change="onChange"></MetaDataField>
-            </a-form-item>
-        </a-form>
-    </div>
+            <Component ref="nodeFormRef" @change="onChange" :is="myComponent"></Component>
+        </div>
     </div>
 </template>
 <script setup>
 import { ref,reactive, nextTick,watch } from 'vue'
-import ScriptInputField from '@/components/CodeEditor/ScriptInputField.vue'
-import MetaDataField from './MetaDataField.vue';
+import StartNodeForm from '../nodeForm/StartNodeForm.vue'
+import EndNodeForm from '../nodeForm/EndNodeForm.vue'
+import InclusiveNodeForm from '../nodeForm/InclusiveNodeForm.vue'
+import ExclusiveNodeForm from '../nodeForm/ExclusiveNodeForm.vue'
+import ParallelNodeForm from '../nodeForm/ParallelNodeForm.vue'
+import ActivityNodeForm from '../nodeForm/ActivityNodeForm.vue'
 
+const nodeTypeFormMap = { // 节点类型与表单组件的映射关系，用于根据节点类型动态加载对应的表单组件
+    start: StartNodeForm, // 开始节点的表单组件
+    end: EndNodeForm, // 结束节点的表单组件
+    inclusive: InclusiveNodeForm, // 包容网关节点的表单组件
+    exclusive: ExclusiveNodeForm, // 排他网关节点的表单组件
+    parallel: ParallelNodeForm, // 并行网关节点的表单组件
+    activity: ActivityNodeForm, // 活动节点的表单组件
+    default: StartNodeForm // 默认表单组件
+}
+let myComponent = ref(null) // 动态加载的表单组件
 const state = reactive({ 
     isOpen: false, // 表单对话框的状态，默认为关闭状态
+    title: null,
 }) 
-const formRef = ref(null)
-const metaDataFieldRef = ref(null)
-let formData = reactive({ id: null, title: null, task: null, when: null,meta:null})
+const nodeFormRef = ref(null) // 表单组件的引用]
 let _graph = null
 let _currentEditNode = null // 当前编辑的节点
 
 function toClose() {
     state.isOpen = false
-    formRef.value.resetFields()
+    if(nodeFormRef.value.resetFields){
+        nodeFormRef.value.resetFields()
+    }
+    
 }
 function show(graph,currentEditNode) { 
     state.isOpen = true
     _graph = graph
     _currentEditNode = currentEditNode
+    myComponent=nodeTypeFormMap[_currentEditNode.shape]
     nextTick(() => {
-        formData.id = _currentEditNode.id
-        const data = _currentEditNode.getData()
-        if(data){
-            formData.title = data.title
-            formData.task = data.task
-            formData.when = data.when
-            formData.meta = data.meta
-        }
+        
+        nodeFormRef.value.onShow(_currentEditNode)
     })
 }
 
-function onChange() {
-    _currentEditNode.setData({ title: formData.title, task: formData.task, when: formData.when,meta:formData.meta })
-    _currentEditNode.emit("node:data:changed",{})
+function onChange(formData) { // 当表单数据发生变化时，更新当前节点的数据，并触发节点数据变化事件
+    state.title = formData.title || ""
 }
 
 defineExpose({
