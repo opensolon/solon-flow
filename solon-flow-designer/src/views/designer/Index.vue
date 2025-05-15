@@ -111,10 +111,14 @@ function handleImport() {
     const graphData = {
       cells: [], // 存储节点和边的数组
     };
+    // 简化模式，只有节点信息，没有边信息
+    let isSimpleMode = true; // 标记为非简单模式
+
     let temp_x = 10;
     let temp_y = 10;
     data.layout.forEach(node => {
       node.type = node.type || 'activity'
+      node.id = node.id || 'node_'+utils.uuid2()
       const nodeData = {
         id: node.id, // 节点的唯一标识符
         shape: node.type, // 节点的形状
@@ -144,6 +148,7 @@ function handleImport() {
       graphData.cells.push(nodeData); // 将节点数据添加到数组中
 
       if(node.link){
+        isSimpleMode = true;
         if(Array.isArray(node.link)){
           node.link.forEach(link => {
             if(typeof link == 'object'){
@@ -187,6 +192,20 @@ function handleImport() {
         }
       }
     })
+
+    if(isSimpleMode){
+      let edges = []
+      for(let i = 0;i<graphData.cells.length-1;i++){
+        const cell = graphData.cells[i]
+        const nextCell = graphData.cells[i+1]
+        
+        const edgeData = buildEdgeForStringType(cell.id,nextCell.id) // 构建边数据的函数
+        edges.push(edgeData); // 将边数据添加到数组中
+      }
+      graphData.cells = graphData.cells.concat(edges)
+    }
+
+
     console.log('graphData',graphData)
     flowCanvasRef.value.setData(graphData); // 将节点和边数据设置到画布容器中
   }
