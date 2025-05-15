@@ -114,6 +114,7 @@ function handleImport() {
     let temp_x = 10;
     let temp_y = 10;
     data.layout.forEach(node => {
+      node.type = node.type || 'activity'
       const nodeData = {
         id: node.id, // 节点的唯一标识符
         shape: node.type, // 节点的形状
