@@ -14,14 +14,15 @@
                   <ScriptInputField v-model:value="formData.when" @change="onChange">
                   </ScriptInputField>
               </a-form-item>
-              <a-form-item label="元信息">
-                  <MetaDataField v-model:value="formData.meta" @change="onChange"></MetaDataField>
+              <a-form-item label="元信息(JSON)">
+                  <JsonInputField v-model:value="formData.meta" @change="onChange"></JsonInputField>
               </a-form-item>
           </a-form>
   </template>
   <script setup>
   import { ref,reactive, nextTick,watch } from 'vue'
   import ScriptInputField from '@/components/CodeEditor/ScriptInputField.vue'
+  import JsonInputField from '@/components/CodeEditor/JsonInputField.vue';
   import MetaDataField from '../editor/MetaDataField.vue';
   
   const emit = defineEmits(['change'])

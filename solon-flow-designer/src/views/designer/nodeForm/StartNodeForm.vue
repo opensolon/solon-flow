@@ -7,7 +7,7 @@
                 <a-input v-model:value="formData.title" @change="onChange"/>
             </a-form-item>
             <a-form-item label="元信息">
-                <MetaDataField v-model:value="formData.meta" @change="onChange"></MetaDataField>
+                <JsonInputField v-model:value="formData.meta" @change="onChange"></JsonInputField>
             </a-form-item>
         </a-form>
 </template>
@@ -15,6 +15,7 @@
 import { ref,reactive, nextTick,watch } from 'vue'
 import ScriptInputField from '@/components/CodeEditor/ScriptInputField.vue'
 import MetaDataField from '../editor/MetaDataField.vue';
+import JsonInputField from '@/components/CodeEditor/JsonInputField.vue';
 
 const emit = defineEmits(['change'])
 const formRef = ref(null)
