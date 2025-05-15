@@ -148,7 +148,7 @@ function handleImport() {
       graphData.cells.push(nodeData); // 将节点数据添加到数组中
 
       if(node.link){
-        isSimpleMode = true;
+        isSimpleMode = false;
         if(Array.isArray(node.link)){
           node.link.forEach(link => {
             if(typeof link == 'object'){
