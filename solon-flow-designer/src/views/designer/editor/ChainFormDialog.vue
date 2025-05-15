@@ -18,7 +18,7 @@
                     <a-input v-model:value="formData.driver" @change="onChange"/>
                 </a-form-item>
                 <a-form-item label="元信息">
-                    <MetaDataField v-model:value="formData.meta" @change="onChange"></MetaDataField>
+                    <JsonInputField v-model:value="formData.meta" @change="onChange"></JsonInputField>
                 </a-form-item>
             </a-form>
         </div>
@@ -27,6 +27,8 @@
 <script setup>
 import { ref,reactive, nextTick,toRaw } from 'vue'
 import MetaDataField from './MetaDataField.vue';
+import JsonInputField from '@/components/CodeEditor/JsonInputField.vue';
+
 const emit = defineEmits(['change'])
 const state = reactive({ isOpen: false }) // 表单对话框的状态，默认为关闭状态
 const formRef = ref(null)

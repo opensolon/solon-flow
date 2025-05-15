@@ -53,10 +53,10 @@ const toExport = () => {
     if(cell.shape == 'flow-edge'){
       const edgeData = cell.data || {}
       const edge ={
-        source:cell.source.cell,
-        sourcePort:cell.source.port,
-        target:cell.target.cell,
-        targetPort:cell.target.port,
+        v_source:cell.source.cell,
+        v_sourcePort:cell.source.port,
+        v_target:cell.target.cell,
+        v_targetPort:cell.target.port,
 
         nextId: cell.target.cell, // 边的目标节点
         id:cell.id,
@@ -73,8 +73,8 @@ const toExport = () => {
         task:nodeData.task,
         when:nodeData.when,
         meta:nodeData.meta,
-        x: cell.position.x, // 节点的 x 坐标
-        y: cell.position.y, // 节点的 y 坐标
+        v_x: cell.position.x, // 节点的 x 坐标
+        v_y: cell.position.y, // 节点的 y 坐标
       })
     }
   })
@@ -87,7 +87,7 @@ const toExport = () => {
   chainData.layout = nodes
 
   console.log('chainData',chainData)
-  state.exportData = JSON.stringify(chainData); // 格式化输出 JSON 数据
+  state.exportData = JSON.stringify(chainData,null,4); // 格式化输出 JSON 数据
   state.isExportDialogOpen = true; // 打开导出对话框
 }
 
@@ -126,12 +126,12 @@ function handleImport() {
           meta: node.meta, // 节点的元数据
         },
         position: { // 节点的位置
-          x: node.x, // 节点的 x 坐标
-          y: node.y, // 节点的 y 坐标
+          x: node.v_x, // 节点的 x 坐标
+          y: node.v_y, // 节点的 y 坐标
         },
       }
 
-      if(!node.x || !node.y){
+      if(!node.v_x || !node.v_y){
         nodeData.position = {
           x: temp_x, // 节点的 x 坐标
           y: temp_y, // 节点的 y 坐标
@@ -149,19 +149,19 @@ function handleImport() {
               if(!link.id){
                 link.id = 'edge_'+utils.uuid2()
               }
-              if(!link.source){
-                link.source = node.id,
-                link.sourcePort = 'port_b1'
+              if(!link.v_source){
+                link.v_source = node.id,
+                link.v_sourcePort = 'port_b1'
               }
-              if(!link.target){
-                link.target = link.nextId,
-                link.targetPort = 'port_t1'
+              if(!link.v_target){
+                link.v_target = link.nextId,
+                link.v_targetPort = 'port_t1'
               }
               const edgeData = {
                 id: link.id, // 边的唯一标识符
                 shape: 'flow-edge', // 边的形状
-                source: { cell: link.source, port: link.sourcePort }, // 边的源节点和端口
-                target: { cell: link.target, port: link.targetPort }, // 边的目标节点和端口
+                source: { cell: link.v_source, port: link.v_sourcePort }, // 边的源节点和端口
+                target: { cell: link.v_target, port: link.v_targetPort }, // 边的目标节点和端口
                 data: { // 边的自定义数据
                   id: link.id, // 边的唯一标识符
                   nextId: link.target, // 边的目标节点

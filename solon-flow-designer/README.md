@@ -50,3 +50,35 @@ npm run dev
 - [ ] 提供一个简单的solon后端脚手架，支持流程的设计、导入、导出等功能
 - [ ] 支持单步调试
 - [ ] 支持solon-ai-flow
+
+# 代码说明
+
+## 1、节点定义
+
+如果有新的节点类型，需要在src/views/designer/nodeTypeDef.js中定义。
+
+nodeTypeDef属性定义节点的基本信息、样式、图标
+
+groupMap属性表示分组
+
+## 2、节点对应的编辑表单
+
+不同的节点类型，有不同的编辑表单
+一个表单就是一个vue组件
+
+首先在src/views/designer/nodeForm下面定义好表单文件vue
+
+然后在src/views/designer/editor/NodeFormDialog.vue中引入组件，并在nodeTypeFormMap中声明，key是节点定义的类型，value是组件
+
+
+
+
+# 注意
+
+1、配置上下文根
+
+在vite.config.js中，配置base属性，指定上下文根。
+
+```js
+base: '/solon-flow-designer/'
+```
