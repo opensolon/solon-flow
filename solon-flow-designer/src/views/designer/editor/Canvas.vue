@@ -147,6 +147,10 @@ function initGraph() {
         container: flowContainerRef.value,
         grid: true,
         mousewheel: true,
+        scaling:{
+            min: 0.5,
+            max: 16,
+        },
         selecting: {
             enabled: true,
             rubberband: true,
