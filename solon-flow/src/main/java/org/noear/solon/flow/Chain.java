@@ -245,7 +245,6 @@ public class Chain {
             }
 
             String n1_typeStr = n1.get("type").getString();
-
             NodeType n1_type = NodeType.nameOf(n1_typeStr);
 
             NodeDecl nodeDecl = new NodeDecl(n1_id, n1_type);
@@ -255,13 +254,6 @@ public class Chain {
             nodeDecl.when(n1.get("when").getString());
             nodeDecl.task(n1.get("task").getString());
 
-            if(Utils.isEmpty(nodeDecl.task) && Utils.isNotEmpty(n1_typeStr)) {
-                //支持 type: "@Com" 快捷方式
-                char ch = n1_typeStr.charAt(0);
-                if (ch == '@' || ch == '$' || ch == '#') {
-                    nodeDecl.task(n1_typeStr);
-                }
-            }
 
             ONode linkNode = n1.get("link");
             if (linkNode.isArray()) {
