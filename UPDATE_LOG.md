@@ -1,4 +1,9 @@
-### 3.1.3
+
+### 3.3.1
+
+* 新增 solon-flow-designer (设计器)
+
+### 3.2.0
 
 * 添加 solon-flow FlowEngine 直接支持节点执行支持
 * 添加 solon-flow FlowContext:backup,recovery 备份和恢复方法
