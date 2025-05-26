@@ -6,16 +6,14 @@
               <a-form-item label="标题">
                   <a-input v-model:value="formData.title" @change="onChange"/>
               </a-form-item>
-              <a-form-item label="任务条件">
-                  <ScriptInputField v-model:value="formData.when" @change="onChange">
-                  </ScriptInputField>
+              <a-form-item label="元信息">
+                <MetaInputField v-model:value="formData.meta" @change="onChange" />
               </a-form-item>
           </a-form>
   </template>
   <script setup>
   import { ref,reactive, nextTick,watch } from 'vue'
-  import ScriptInputField from '@/components/CodeEditor/ScriptInputField.vue'
-  import MetaDataField from '../editor/MetaDataField.vue';
+  import MetaInputField from "@/components/CodeEditor/MetaInputField.vue";
   
   const emit = defineEmits(['change'])
   const formRef = ref(null)
