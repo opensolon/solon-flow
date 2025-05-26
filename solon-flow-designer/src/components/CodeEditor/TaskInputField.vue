@@ -9,7 +9,7 @@
                 点击查看任务内容
             </template>
         </div>
-        <a-modal :width="780" :open="state.isOpenEditor" title="任务编辑（#子链、@组件、$脚本引用、脚本）" destroyOnClose
+        <a-modal :width="780" :open="state.isOpenEditor" title="任务编辑（#子链、@组件、$脚本引用、脚本代码）" destroyOnClose
             @cancel="state.isOpenEditor = false" @ok="submitScriptContent">
             <CodeEditor v-model:value="state.scriptContentShadow" @change="onChange" :lang="lang"
                 :contentHeight="contentHeight" />
