@@ -6,7 +6,6 @@
       <a-menu theme="dark" mode="horizontal" :selectedKeys="state.selectedKeys" @click="goTo">
         <a-menu-item key="Home">HOME</a-menu-item>
         <a-menu-item key="Design">设计工具</a-menu-item>
-        <a-menu-item key="AIFLOW">AI编排（未完成）</a-menu-item>
       </a-menu>
     </a-layout-header>
     <a-layout-content>
