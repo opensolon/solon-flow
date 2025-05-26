@@ -71,7 +71,9 @@ function onChange(value) {
 function submitScriptContent() {
     state.isOpenEditor = false;
     state.scriptContent = state.scriptContentShadow;
-    console.log(state.scriptContent)
+    if(!state.scriptContentShadow){
+        state.scriptContentShadow = '{}';
+    }
     try{
         emit('update:value', JSON.parse(state.scriptContent))
         emit('change', JSON.parse(state.scriptContent))

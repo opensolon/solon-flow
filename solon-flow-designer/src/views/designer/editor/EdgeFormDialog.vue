@@ -17,6 +17,10 @@
             <a-form-item label="连接条件">
                 <ConditionInputField v-model:value="formData.condition" @change="onChange" />
             </a-form-item>
+            <a-form-item label="元数据">
+                <JsonInputField v-model:value="formData.meta" @change="onChange">
+                </JsonInputField>
+            </a-form-item>
         </a-form>
     </div>
 </div>
@@ -40,7 +44,6 @@ function show(graph,currentEditEdge) {
     _graph = graph
     _currentEditEdge = currentEditEdge
     nextTick(() => {
-        debugger
         formData.nextId = _currentEditEdge.target.cell
         const data = _currentEditEdge.getData()
         if(data){
@@ -57,8 +60,11 @@ function onChange() {
     _currentEditEdge.setData({
         nextId: formData.nextId,
         title: formData.title,
-        condition: formData.condition
-    })
+        condition: formData.condition,
+        meta: formData.meta
+    },{
+        overwrite:true
+      })
     if(formData.title){
         _currentEditEdge.setLabels([formData.title])
     }else{
