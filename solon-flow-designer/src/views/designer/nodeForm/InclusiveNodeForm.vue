@@ -6,9 +6,6 @@
               <a-form-item label="标题">
                   <a-input v-model:value="formData.title" @change="onChange"/>
               </a-form-item>
-              <a-form-item label="任务条件">
-                  <ConditionInputField v-model:value="formData.when" @change="onChange" />
-              </a-form-item>
           </a-form>
   </template>
   <script setup>
