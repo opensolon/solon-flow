@@ -32,7 +32,7 @@ import JsonInputField from '@/components/CodeEditor/JsonInputField.vue';
 const emit = defineEmits(['change'])
 const state = reactive({ isOpen: false }) // 表单对话框的状态，默认为关闭状态
 const formRef = ref(null)
-let formData = reactive({ id: null, title: null, driver: null, meta:null})
+let formData = reactive({ id: null, title: null, driver: null, meta:{}})
 let _graph = null
 let _currentEditChain = null // 当前编辑的chain
 
