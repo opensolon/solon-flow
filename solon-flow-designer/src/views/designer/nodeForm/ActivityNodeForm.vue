@@ -37,6 +37,7 @@
       _currentEditNode = currentEditNode
       formData.id = _currentEditNode.id
       const data = _currentEditNode.getData()
+      console.log(data)
       if(data){
           formData.id = data.id
           formData.title = data.title || ''

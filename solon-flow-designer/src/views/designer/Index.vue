@@ -111,8 +111,8 @@ function handleImport() {
     const graphData = {
       cells: [], // 存储节点和边的数组
     };
-    // 简化模式，只有节点信息，没有边信息
-    let isSimpleMode = true; // 标记为非简单模式
+    
+    let preNode = null; // 记录上一个节点
 
     let temp_x = 10;
     let temp_y = 10;
@@ -148,7 +148,6 @@ function handleImport() {
       graphData.cells.push(nodeData); // 将节点数据添加到数组中
 
       if(node.link){
-        isSimpleMode = false;
         if(Array.isArray(node.link)){
           node.link.forEach(link => {
             if(typeof link == 'object'){
@@ -191,19 +190,29 @@ function handleImport() {
           graphData.cells.push(edgeData); // 将边数据添加到数组中
         }
       }
+
+      if(preNode && (!preNode.link || preNode.link.length==0)){
+          const cell = preNode
+          const nextCell = node
+          
+          const edgeData = buildEdgeForStringType(cell.id,nextCell.id) // 构建边数据的函数
+          graphData.cells.push(edgeData); 
+        }
+
+      preNode=node;
     })
 
-    if(isSimpleMode){
-      let edges = []
-      for(let i = 0;i<graphData.cells.length-1;i++){
-        const cell = graphData.cells[i]
-        const nextCell = graphData.cells[i+1]
+    // if(isSimpleMode){
+    //   let edges = []
+    //   for(let i = 0;i<graphData.cells.length-1;i++){
+    //     const cell = graphData.cells[i]
+    //     const nextCell = graphData.cells[i+1]
         
-        const edgeData = buildEdgeForStringType(cell.id,nextCell.id) // 构建边数据的函数
-        edges.push(edgeData); // 将边数据添加到数组中
-      }
-      graphData.cells = graphData.cells.concat(edges)
-    }
+    //     const edgeData = buildEdgeForStringType(cell.id,nextCell.id) // 构建边数据的函数
+    //     edges.push(edgeData); // 将边数据添加到数组中
+    //   }
+    //   graphData.cells = graphData.cells.concat(edges)
+    // }
 
 
     console.log('graphData',graphData)

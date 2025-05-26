@@ -18,8 +18,8 @@
                 <ConditionInputField v-model:value="formData.condition" @change="onChange" />
             </a-form-item>
             <a-form-item label="元数据">
-                <JsonInputField v-model:value="formData.meta" @change="onChange">
-                </JsonInputField>
+                <MetaInputField v-model:value="formData.meta" @change="onChange">
+                </MetaInputField>
             </a-form-item>
         </a-form>
     </div>
@@ -28,6 +28,7 @@
 <script setup>
 import { ref,reactive, nextTick } from 'vue'
 import ConditionInputField from '@/components/CodeEditor/ConditionInputField.vue'
+import MetaInputField from '@/components/CodeEditor/MetaInputField.vue'
 
 const state = reactive({ isOpen: false }) // 表单对话框的状态，默认为关闭状态
 const formRef = ref(null)
