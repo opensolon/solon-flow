@@ -171,6 +171,7 @@ function handleImport() {
                   id: link.id, // 边的唯一标识符
                   nextId: link.target, // 边的目标节点
                   title: link.title, // 边的标题
+                  condition: link.condition,
                 },
               }
               if(link.title){
@@ -218,7 +219,9 @@ function handleImport() {
     console.log('graphData',graphData)
     flowCanvasRef.value.setData(graphData); // 将节点和边数据设置到画布容器中
   }
-  
+
+
+  state.importData = '';
   state.isImportDialogOpen = false; // 关闭导入对话框
 }
 
