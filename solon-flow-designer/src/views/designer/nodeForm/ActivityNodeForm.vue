@@ -22,7 +22,6 @@
   import ConditionInputField from '@/components/CodeEditor/ConditionInputField.vue'
   import TaskInputField from '@/components/CodeEditor/TaskInputField.vue'
   import MetaInputField from '@/components/CodeEditor/MetaInputField.vue';
-  import MetaDataField from '../editor/MetaDataField.vue';
   
   const emit = defineEmits(['change'])
   const formRef = ref(null)
