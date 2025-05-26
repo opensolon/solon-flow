@@ -382,7 +382,7 @@ function clear(isInitStartNode = true) { // 清空画布内容，可选是否重
 }
 
 function setChain(chainData) { // 导入 JSON 格式的字符串，用于加载或分享的内容
-    currentEditChain = chainData.chain || {
+    currentEditChain = chainData || {
         id : "chain_"+utils.uuid2()
     }
 }
