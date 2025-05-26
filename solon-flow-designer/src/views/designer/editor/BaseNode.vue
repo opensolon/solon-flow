@@ -38,13 +38,23 @@ var nodeInfo = reactive({
 onMounted(() => {
     const nodeData = props.node.getData()
     const nodeType = nodeTypeDef[nodeData.type];
-    if(!nodeData.title){
-        // 如果没有title，就使用type的title
+    if(!nodeData.title) {
+      // 如果没有title，就使用 task 或者 type.title
+      if (nodeData.task) {
+        if (nodeData.task.startsWith('#') || nodeData.task.startsWith('@') || nodeData.task.startsWith('$')) {
+          nodeData.title = nodeData.task;
+        } else {
+          nodeData.title = '脚本代码';
+        }
+      } else {
         nodeData.title = nodeType.title
-        props.node.setData({
-            title: nodeData.title
-        })
+      }
+
+      props.node.setData({
+        title: nodeData.title
+      })
     }
+
     nodeInfo = Object.assign(nodeInfo,{}, nodeData,{
         "color": nodeType.color,
         "icon": nodeType.icon,
