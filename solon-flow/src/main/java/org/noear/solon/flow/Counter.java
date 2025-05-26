@@ -99,6 +99,16 @@ public class Counter {
                 .incrementAndGet();
     }
 
+    /**
+     * 增量
+     *
+     * @param delta 要添加的数值
+     */
+    public int incr(String key, int delta) {
+        return counts.computeIfAbsent(ROOT + "/" + key, k -> new AtomicInteger(0))
+                .addAndGet(delta);
+    }
+
     @Override
     public String toString() {
         return "{" +
