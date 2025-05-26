@@ -18,6 +18,10 @@
                 <ScriptInputField v-model:value="formData.condition" @change="onChange">
                 </ScriptInputField>
             </a-form-item>
+            <a-form-item label="元数据">
+                <JsonInputField v-model:value="formData.meta" @change="onChange">
+                </JsonInputField>
+            </a-form-item>
         </a-form>
     </div>
 </div>
@@ -25,6 +29,7 @@
 <script setup>
 import { ref,reactive, nextTick } from 'vue'
 import ScriptInputField from '@/components/CodeEditor/ScriptInputField.vue'
+  import JsonInputField from '@/components/CodeEditor/JsonInputField.vue';
 
 const state = reactive({ isOpen: false }) // 表单对话框的状态，默认为关闭状态
 const formRef = ref(null)
@@ -41,7 +46,6 @@ function show(graph,currentEditEdge) {
     _graph = graph
     _currentEditEdge = currentEditEdge
     nextTick(() => {
-        debugger
         formData.nextId = _currentEditEdge.target.cell
         const data = _currentEditEdge.getData()
         if(data){
@@ -58,7 +62,8 @@ function onChange() {
     _currentEditEdge.setData({
         nextId: formData.nextId,
         title: formData.title,
-        condition: formData.condition
+        condition: formData.condition,
+        meta: formData.meta
     })
     if(formData.title){
         _currentEditEdge.setLabels([formData.title])

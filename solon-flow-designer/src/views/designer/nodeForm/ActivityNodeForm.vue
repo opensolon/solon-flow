@@ -50,6 +50,7 @@
   }
   
   function onChange() {
+      console.log(formData)
       _currentEditNode.setData({ title: formData.title, task: formData.task, when: formData.when,meta:formData.meta })
       _currentEditNode.emit("node:data:changed",{})
       emit('change',formData)

@@ -149,7 +149,7 @@ function initGraph() {
         mousewheel: true,
         scaling:{
             min: 0.5,
-            max: 16,
+            max: 2,
         },
         selecting: {
             enabled: true,
