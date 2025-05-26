@@ -18,6 +18,7 @@ package org.noear.solon.flow;
 import org.noear.dami.Dami;
 import org.noear.dami.bus.DamiBus;
 import org.noear.liquor.eval.Scripts;
+import org.noear.solon.core.util.Assert;
 import org.noear.solon.lang.Preview;
 
 import java.lang.reflect.InvocationTargetException;
@@ -141,8 +142,40 @@ public class FlowContext {
     }
 
     /**
-     * 运行脚本
+     * 运行任务
+     *
+     * @param node        节点
+     * @param description 任务描述
      */
+    public void runTask(Node node, String description) throws FlowException {
+        Assert.notNull(node, "node is null");
+
+        try {
+            engine().getDriver(node.getChain()).handleTask(this, new Task(node, description));
+        } catch (FlowException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new FlowException("The task handle failed: " + node.getChain().getId() + " / " + node.getId(), e);
+        }
+    }
+
+    /**
+     * 运行脚本
+     *
+     * @param script 脚本
+     */
+    public Object runScript(String script) throws InvocationTargetException {
+        //按脚本运行
+        return Scripts.eval(script, this.model());
+    }
+
+    /**
+     * 运行脚本
+     *
+     * @param script 脚本
+     * @deprecated 3.3 {@link #runScript(String)}
+     */
+    @Deprecated
     public Object run(String script) throws InvocationTargetException {
         //按脚本运行
         return Scripts.eval(script, this.model());

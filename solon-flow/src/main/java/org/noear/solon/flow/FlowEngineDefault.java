@@ -16,6 +16,7 @@
 package org.noear.solon.flow;
 
 import org.noear.solon.Utils;
+import org.noear.solon.core.util.Assert;
 import org.noear.solon.core.util.RankEntity;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.intercept.ChainInterceptor;
@@ -38,6 +39,19 @@ public class FlowEngineDefault implements FlowEngine {
     public FlowEngineDefault() {
         //默认驱动器
         driverMap.put("", new SimpleFlowDriver());
+    }
+
+    @Override
+    public FlowDriver getDriver(Chain chain) {
+        Assert.notNull(chain, "chain is null");
+
+        FlowDriver driver = driverMap.get(chain.getDriver());
+
+        if (driver == null) {
+            throw new IllegalArgumentException("No driver found for: '" + chain.getDriver() + "'");
+        }
+
+        return driver;
     }
 
     @Override
@@ -118,11 +132,7 @@ public class FlowEngineDefault implements FlowEngine {
 
         initContextDo(context);
 
-        FlowDriver driver = driverMap.get(startNode.getChain().getDriver());
-
-        if (driver == null) {
-            throw new IllegalArgumentException("No driver found for: '" + startNode.getChain().getDriver() + "'");
-        }
+        FlowDriver driver = getDriver(startNode.getChain());
 
         //开始执行
         new ChainInvocation(driver, context, startNode, depth, this.interceptorList, this::evalDo).invoke();

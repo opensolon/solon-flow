@@ -37,6 +37,11 @@ public interface FlowEngine {
     }
 
     /**
+     * 获取驱动
+     */
+    FlowDriver getDriver(Chain chain);
+
+    /**
      * 添加拦截器
      *
      * @param index       顺序位
