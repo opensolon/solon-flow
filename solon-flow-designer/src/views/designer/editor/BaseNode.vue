@@ -38,10 +38,17 @@ var nodeInfo = reactive({
 onMounted(() => {
     const nodeData = props.node.getData()
     const nodeType = nodeTypeDef[nodeData.type];
+    if(!nodeData.title){
+        // 如果没有title，就使用type的title
+        nodeData.title = nodeType.title
+        props.node.setData({
+            title: nodeData.title
+        })
+    }
     nodeInfo = Object.assign(nodeInfo,{}, nodeData,{
         "color": nodeType.color,
         "icon": nodeType.icon,
-        title: nodeData.title || nodeType.title
+        title: nodeData.title
     })
     props.node.on("node:data:changed", () => {
         const nodeData = props.node.getData()
