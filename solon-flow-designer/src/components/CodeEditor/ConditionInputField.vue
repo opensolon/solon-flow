@@ -9,7 +9,7 @@
                 点击查看条件内容
             </template>
         </div>
-        <a-modal :width="780" :open="state.isOpenEditor" title="条件编辑（表达式）" destroyOnClose
+        <a-modal :width="780" :open="state.isOpenEditor" title="条件编辑（逻辑表达式）" destroyOnClose
             @cancel="state.isOpenEditor = false" @ok="submitScriptContent">
             <CodeEditor v-model:value="state.scriptContentShadow" @change="onChange" :lang="lang"
                 :contentHeight="contentHeight" />
