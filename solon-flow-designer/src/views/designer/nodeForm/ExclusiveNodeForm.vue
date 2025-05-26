@@ -7,14 +7,13 @@
                   <a-input v-model:value="formData.title" @change="onChange"/>
               </a-form-item>
               <a-form-item label="任务条件">
-                  <ScriptInputField v-model:value="formData.when" @change="onChange">
-                  </ScriptInputField>
+                  <ConditionInputField v-model:value="formData.when" @change="onChange" />
               </a-form-item>
           </a-form>
   </template>
   <script setup>
   import { ref,reactive, nextTick,watch } from 'vue'
-  import ScriptInputField from '@/components/CodeEditor/ScriptInputField.vue'
+  import ConditionInputField from '@/components/CodeEditor/ConditionInputField.vue'
   import MetaDataField from '../editor/MetaDataField.vue';
   
   const emit = defineEmits(['change'])

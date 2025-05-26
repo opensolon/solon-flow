@@ -7,22 +7,21 @@
                   <a-input v-model:value="formData.title" @change="onChange"/>
               </a-form-item>
               <a-form-item label="任务">
-                  <ScriptInputField v-model:value="formData.task" @change="onChange">
-                  </ScriptInputField>
+                  <TaskInputField v-model:value="formData.task" @change="onChange" />
               </a-form-item>
               <a-form-item label="任务条件">
-                  <ScriptInputField v-model:value="formData.when" @change="onChange">
-                  </ScriptInputField>
+                  <ConditionInputField v-model:value="formData.when" @change="onChange" />
               </a-form-item>
               <a-form-item label="元信息(JSON)">
-                  <JsonInputField v-model:value="formData.meta" @change="onChange"></JsonInputField>
+                  <MetaInputField v-model:value="formData.meta" @change="onChange" />
               </a-form-item>
           </a-form>
   </template>
   <script setup>
   import { ref,reactive, nextTick,watch } from 'vue'
-  import ScriptInputField from '@/components/CodeEditor/ScriptInputField.vue'
-  import JsonInputField from '@/components/CodeEditor/JsonInputField.vue';
+  import ConditionInputField from '@/components/CodeEditor/ConditionInputField.vue'
+  import TaskInputField from '@/components/CodeEditor/TaskInputField.vue'
+  import MetaInputField from '@/components/CodeEditor/MetaInputField.vue';
   import MetaDataField from '../editor/MetaDataField.vue';
   
   const emit = defineEmits(['change'])

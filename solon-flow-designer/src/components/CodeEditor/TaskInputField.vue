@@ -6,10 +6,10 @@
                 {{ state.scriptContent }}
             </template>
             <template v-else>
-                点击查看JSON内容
+                点击查看任务内容
             </template>
         </div>
-        <a-modal :width="780" :open="state.isOpenEditor" title="JSON编辑" destroyOnClose
+        <a-modal :width="780" :open="state.isOpenEditor" title="任务编辑（#子链、@组件、$脚本引用、脚本）" destroyOnClose
             @cancel="state.isOpenEditor = false" @ok="submitScriptContent">
             <CodeEditor v-model:value="state.scriptContentShadow" @change="onChange" :lang="lang"
                 :contentHeight="contentHeight" />
@@ -24,7 +24,7 @@ const emit = defineEmits(['update:value', 'change'])
 
 const props = defineProps({
     value: {
-        type: [String,Object],
+        type: String,
         default: null,
     },
     contentHeight: {
@@ -45,20 +45,12 @@ const state = reactive({
 });
 
 watch(() => props.value, (newValue) => {
-    let v = newValue;
-    if(typeof newValue === 'object'){
-        v = JSON.stringify(newValue,null,4)
-    }
-    state.scriptContent = v;
-    state.scriptContentShadow = v;
+    state.scriptContent = newValue;
+    state.scriptContentShadow = newValue;
 })
 onMounted(() => {
-    let v = props.value;
-    if(typeof props.value === 'object'){
-        v = JSON.stringify(props.value,null,4)
-    }
-    state.scriptContent = v;
-    state.scriptContentShadow = v;
+    state.scriptContent = props.value;
+    state.scriptContentShadow = props.value;
 })
 function openEditor() {
     state.isOpenEditor = true;
@@ -71,14 +63,8 @@ function onChange(value) {
 function submitScriptContent() {
     state.isOpenEditor = false;
     state.scriptContent = state.scriptContentShadow;
-    console.log(state.scriptContent)
-    try{
-        emit('update:value', JSON.parse(state.scriptContent))
-        emit('change', JSON.parse(state.scriptContent))
-    }catch(e){
-        alert('JSON格式错误，请检查')
-    }
-    
+    emit('update:value', state.scriptContentShadow)
+    emit('change', state.scriptContentShadow)
 }
 </script>
 <style scoped>

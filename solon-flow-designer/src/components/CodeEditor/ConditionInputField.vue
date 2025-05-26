@@ -6,10 +6,10 @@
                 {{ state.scriptContent }}
             </template>
             <template v-else>
-                点击查看脚本内容
+                点击查看条件内容
             </template>
         </div>
-        <a-modal :width="780" :open="state.isOpenEditor" title="脚本查看" destroyOnClose
+        <a-modal :width="780" :open="state.isOpenEditor" title="条件编辑（表达式）" destroyOnClose
             @cancel="state.isOpenEditor = false" @ok="submitScriptContent">
             <CodeEditor v-model:value="state.scriptContentShadow" @change="onChange" :lang="lang"
                 :contentHeight="contentHeight" />

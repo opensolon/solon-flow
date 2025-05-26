@@ -14,9 +14,8 @@
             <a-form-item label="标题">
                 <a-input v-model:value="formData.title" @change="onChange"/>
             </a-form-item>
-            <a-form-item label="条件">
-                <ScriptInputField v-model:value="formData.condition" @change="onChange">
-                </ScriptInputField>
+            <a-form-item label="连接条件">
+                <ConditionInputField v-model:value="formData.condition" @change="onChange" />
             </a-form-item>
         </a-form>
     </div>
@@ -24,7 +23,7 @@
 </template>
 <script setup>
 import { ref,reactive, nextTick } from 'vue'
-import ScriptInputField from '@/components/CodeEditor/ScriptInputField.vue'
+import ConditionInputField from '@/components/CodeEditor/ConditionInputField.vue'
 
 const state = reactive({ isOpen: false }) // 表单对话框的状态，默认为关闭状态
 const formRef = ref(null)
