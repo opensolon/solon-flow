@@ -68,8 +68,10 @@ function onChange() {
       })
     if(formData.title){
         _currentEditEdge.setLabels([formData.title])
+    }else if(formData.condition){
+        _currentEditEdge.setLabels([formData.condition])
     }else{
-        _currentEditEdge.setLabels([])
+      _currentEditEdge.setLabels([])
     }
     
 }

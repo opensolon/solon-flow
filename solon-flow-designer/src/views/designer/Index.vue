@@ -176,6 +176,8 @@ function handleImport() {
               }
               if(link.title){
                 edgeData.labels=[link.title]
+              } else if(link.condition){
+                edgeData.labels=[link.condition]
               }
               graphData.cells.push(edgeData); // 将边数据添加到数组中
             }else{// string的情况
@@ -202,19 +204,6 @@ function handleImport() {
 
       preNode=node;
     })
-
-    // if(isSimpleMode){
-    //   let edges = []
-    //   for(let i = 0;i<graphData.cells.length-1;i++){
-    //     const cell = graphData.cells[i]
-    //     const nextCell = graphData.cells[i+1]
-        
-    //     const edgeData = buildEdgeForStringType(cell.id,nextCell.id) // 构建边数据的函数
-    //     edges.push(edgeData); // 将边数据添加到数组中
-    //   }
-    //   graphData.cells = graphData.cells.concat(edges)
-    // }
-
 
     console.log('graphData',graphData)
     flowCanvasRef.value.setData(graphData); // 将节点和边数据设置到画布容器中
