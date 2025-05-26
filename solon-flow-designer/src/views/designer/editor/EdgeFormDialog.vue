@@ -62,7 +62,9 @@ function onChange() {
         title: formData.title,
         condition: formData.condition,
         meta: formData.meta
-    })
+    },{
+        overwrite:true
+      })
     if(formData.title){
         _currentEditEdge.setLabels([formData.title])
     }else{
