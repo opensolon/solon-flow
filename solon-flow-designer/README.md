@@ -1,5 +1,5 @@
 # 说明
-Solon flow designer是vue3 + vite + antd + x6开发的流程设计器。
+Solon flow designer 是 vue3 + vite + antd + x6 开发的流程设计器。
 
 目的是为了提供一个简单易用的流程设计器，支持流程的设计、导入、导出等功能。
 
@@ -47,28 +47,27 @@ npm run dev
 - [x] 节点拖拽功能
 - [x] 连线删除功能
 - [x] 连线编辑功能
-- [ ] 提供一个简单的solon后端脚手架，支持流程的设计、导入、导出等功能
+- [x] 支持流程的设计、导入、导出等功能
 - [ ] 支持单步调试
-- [ ] 支持solon-ai-flow
 
 # 代码说明
 
 ## 1、节点定义
 
-如果有新的节点类型，需要在src/views/designer/nodeTypeDef.js中定义。
+如果有新的节点类型，需要在 `src/views/designer/nodeTypeDef.js` 中定义。
 
-nodeTypeDef属性定义节点的基本信息、样式、图标
+nodeTypeDef 属性定义节点的基本信息、样式、图标
 
-groupMap属性表示分组
+groupMap 属性表示分组
 
 ## 2、节点对应的编辑表单
 
 不同的节点类型，有不同的编辑表单
 一个表单就是一个vue组件
 
-首先在src/views/designer/nodeForm下面定义好表单文件vue
+首先在 `src/views/designer/nodeForm` 下面定义好表单文件vue
 
-然后在src/views/designer/editor/NodeFormDialog.vue中引入组件，并在nodeTypeFormMap中声明，key是节点定义的类型，value是组件
+然后在 `src/views/designer/editor/NodeFormDialog.vue` 中引入组件，并在 nodeTypeFormMap 中声明，key 是节点定义的类型，value 是组件
 
 
 
@@ -77,7 +76,7 @@ groupMap属性表示分组
 
 1、配置上下文根
 
-在vite.config.js中，配置base属性，指定上下文根。
+在 `vite.config.js` 中，配置 base 属性，指定上下文根。
 
 ```js
 base: '/solon-flow-designer/'
