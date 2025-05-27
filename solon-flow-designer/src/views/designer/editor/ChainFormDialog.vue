@@ -17,7 +17,7 @@
                 <a-form-item label="驱动">
                     <a-input v-model:value="formData.driver" @change="onChange"/>
                 </a-form-item>
-                <a-form-item label="元信息">
+                <a-form-item label="元数据">
                     <MetaInputField v-model:value="formData.meta" @change="onChange" />
                 </a-form-item>
             </a-form>

@@ -6,10 +6,10 @@
                 {{ state.scriptContent }}
             </template>
             <template v-else>
-                点击查看元信息
+                点击查看元数据
             </template>
         </div>
-        <a-modal :width="780" :open="state.isOpenEditor" title="元信息编辑（JSON）" destroyOnClose
+        <a-modal :width="780" :open="state.isOpenEditor" title="元数据编辑（YAML or JSON）" destroyOnClose
             @cancel="state.isOpenEditor = false" @ok="submitScriptContent">
             <CodeEditor v-model:value="state.scriptContentShadow" @change="onChange" :lang="lang"
                 :contentHeight="contentHeight" />
@@ -19,6 +19,7 @@
 <script setup>
 import { onMounted, reactive, watch } from 'vue';
 import CodeEditor from './Index.vue';
+import yamlUtils from 'js-yaml'
 
 const emit = defineEmits(['update:value', 'change'])
 
@@ -47,7 +48,7 @@ const state = reactive({
 watch(() => props.value, (newValue) => {
     let v = newValue;
     if(typeof newValue === 'object'){
-        v = JSON.stringify(newValue,null,4)
+        v = yamlUtils.dump(newValue)
     }
     state.scriptContent = v;
     state.scriptContentShadow = v;
@@ -55,7 +56,7 @@ watch(() => props.value, (newValue) => {
 onMounted(() => {
     let v = props.value;
     if(typeof props.value === 'object'){
-        v = JSON.stringify(props.value,null,4)
+        v = yamlUtils.dump(props.value)
     }
     state.scriptContent = v;
     state.scriptContentShadow = v;
@@ -71,16 +72,18 @@ function onChange(value) {
 function submitScriptContent() {
     state.isOpenEditor = false;
     state.scriptContent = state.scriptContentShadow;
-    if(!state.scriptContentShadow){
-        state.scriptContentShadow = '{}';
+    if (!state.scriptContentShadow) {
+      state.scriptContentShadow = '{}';
     }
-    try{
-        emit('update:value', JSON.parse(state.scriptContent))
-        emit('change', JSON.parse(state.scriptContent))
-    }catch(e){
-        alert('JSON格式错误，请检查')
+
+    try {
+      let metaObj = yamlUtils.load(state.scriptContent);
+
+      emit('update:value', metaObj)
+      emit('change', metaObj)
+    } catch (e) {
+      alert('格式错误，请检查')
     }
-    
 }
 </script>
 <style scoped>

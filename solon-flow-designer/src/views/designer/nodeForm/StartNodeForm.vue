@@ -6,7 +6,7 @@
             <a-form-item label="标题">
                 <a-input v-model:value="formData.title" @change="onChange"/>
             </a-form-item>
-            <a-form-item label="元信息">
+            <a-form-item label="元数据">
                 <MetaInputField v-model:value="formData.meta" @change="onChange" />
             </a-form-item>
         </a-form>

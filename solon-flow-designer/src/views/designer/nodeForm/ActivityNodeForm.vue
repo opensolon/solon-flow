@@ -12,7 +12,7 @@
               <a-form-item label="任务条件">
                   <ConditionInputField v-model:value="formData.when" @change="onChange" />
               </a-form-item>
-              <a-form-item label="元信息(JSON)">
+              <a-form-item label="元数据">
                   <MetaInputField v-model:value="formData.meta" @change="onChange" />
               </a-form-item>
           </a-form>
