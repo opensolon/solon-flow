@@ -4,7 +4,7 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/show/solon-flow-designer/',
+  base: '/flow/designer/',
   plugins: [vue()],
   css: {
     preprocessorOptions: {
