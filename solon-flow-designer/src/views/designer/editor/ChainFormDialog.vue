@@ -26,7 +26,6 @@
 </template>
 <script setup>
 import { ref,reactive, nextTick,toRaw } from 'vue'
-import MetaDataField from './MetaDataField.vue';
 import MetaInputField from '@/components/CodeEditor/MetaInputField.vue';
 
 const emit = defineEmits(['change'])
@@ -41,7 +40,10 @@ function toClose() {
     formRef.value.resetFields()
 }
 function show(graph,currentEditChain) {
-    
+    if(!currentEditChain.title){
+      currentEditChain.title = "";
+    }
+
     state.isOpen = true
     _graph = graph
     _currentEditChain = currentEditChain
