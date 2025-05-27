@@ -160,7 +160,7 @@ function handleImport() {
         },
       }
 
-      if(!node.v_x || !node.v_y){
+      if(typeof node.v_x =='undefined' || typeof  node.v_y=='undefined' || node.v_x==null || node.v_y==null){
         nodeData.position = {
           x: temp_x, // 节点的 x 坐标
           y: temp_y, // 节点的 y 坐标
