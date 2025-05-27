@@ -30,11 +30,11 @@ const props = defineProps({
     },
     contentHeight: {
         type: String,
-        default: '500px',
+        default: '400px',
     },
     lang: {
         type: String,
-        default: 'javascript',
+        default: 'java',
     },
 })
 

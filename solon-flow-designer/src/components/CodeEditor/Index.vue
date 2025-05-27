@@ -21,7 +21,7 @@
     },
     lang: {
       type: String,
-      default: 'yaml',
+      default: 'java',
     },
   })
   const emit = defineEmits(['update:value', 'change'])
