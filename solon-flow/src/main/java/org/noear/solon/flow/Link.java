@@ -54,21 +54,21 @@ public class Link implements Comparable<Link> {
     }
 
     /**
-     * 获取所有元信息
+     * 获取所有元数据
      */
     public Map<String, Object> getMetas() {
         return decl.meta;
     }
 
     /**
-     * 获取元信息
+     * 获取元数据
      */
     public Object getMeta(String key) {
         return decl.meta.get(key);
     }
 
     /**
-     * 获取元信息或默认
+     * 获取元数据或默认
      */
     public Object getMetaOrDefault(String key, Object def) {
         return decl.meta.getOrDefault(key, def);

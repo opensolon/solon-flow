@@ -52,7 +52,7 @@ public class LinkDecl {
     }
 
     /**
-     * 配置元信息
+     * 配置元数据
      */
     public LinkDecl meta(Map<String, Object> meta) {
         this.meta = meta;
@@ -60,7 +60,7 @@ public class LinkDecl {
     }
 
     /**
-     * 配置元信息
+     * 配置元数据
      */
     public LinkDecl metaPut(String key, Object value) {
         if (meta == null) {

@@ -30,7 +30,7 @@ public class NodeDecl {
     protected final String id;
     protected String title;
     protected NodeType type;      //元素类型
-    protected final Map<String, Object> meta = new LinkedHashMap<>(); //元信息
+    protected final Map<String, Object> meta = new LinkedHashMap<>(); //元数据
     protected List<LinkDecl> links = new ArrayList<>();
     protected String when;
     protected String task;
@@ -56,7 +56,7 @@ public class NodeDecl {
     }
 
     /**
-     * 配置元信息
+     * 配置元数据
      */
     public NodeDecl meta(Map<String, Object> map) {
         if (Utils.isNotEmpty(map)) {
@@ -67,7 +67,7 @@ public class NodeDecl {
     }
 
     /**
-     * 配置元信息
+     * 配置元数据
      */
     public NodeDecl metaPut(String key, Object value) {
         if (Utils.isNotEmpty(key)) {

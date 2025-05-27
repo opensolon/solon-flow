@@ -82,28 +82,28 @@ public class Node {
     }
 
     /**
-     * 获取所有元信息
+     * 获取所有元数据
      */
     public Map<String, Object> getMetas() {
         return Collections.unmodifiableMap(decl.meta);
     }
 
     /**
-     * 获取元信息
+     * 获取元数据
      */
     public <T> T getMeta(String key) {
         return (T) decl.meta.get(key);
     }
 
     /**
-     * 是否有元信息键
+     * 是否有元数据键
      */
     public boolean hasMeta(String key) {
         return decl.meta.containsKey(key);
     }
 
     /**
-     * 获取元信息或默认
+     * 获取元数据或默认
      */
     public <T> T getMetaOrDefault(String key, T def) {
         return (T) decl.meta.getOrDefault(key, def);

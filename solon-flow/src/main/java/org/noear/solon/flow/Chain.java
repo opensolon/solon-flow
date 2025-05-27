@@ -34,7 +34,7 @@ public class Chain {
     private final String id;
     private final String title;
     private final String driver;
-    private final Map<String, Object> meta = new HashMap<>(); //元信息
+    private final Map<String, Object> meta = new HashMap<>(); //元数据
     private final Map<String, Node> nodes = new HashMap<>();
 
     private final List<Link> links = new ArrayList<>();
@@ -76,21 +76,21 @@ public class Chain {
     }
 
     /**
-     * 获取元信息
+     * 获取元数据
      */
     public Map<String, Object> getMetas() {
         return this.meta;
     }
 
     /**
-     * 获取元信息
+     * 获取元数据
      */
     public Object getMeta(String key) {
         return meta.get(key);
     }
 
     /**
-     * 获取元信息或默认
+     * 获取元数据或默认
      */
     public Object getMetaOrDefault(String key, Object def) {
         return meta.getOrDefault(key, def);
@@ -218,7 +218,7 @@ public class Chain {
 
         Chain chain = new Chain(id, title, driver);
 
-        //元信息
+        //元数据
         Map metaTmp = dom.get("meta").toObject(Map.class);
         if (Utils.isNotEmpty(metaTmp)) {
             chain.getMetas().putAll(metaTmp);

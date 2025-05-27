@@ -167,7 +167,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     }
 
     /**
-     * 获取深度元信息
+     * 获取深度元数据
      */
     protected Object getDepthMeta(Map metas, String key) {
         String[] fragments = key.split("\\.");
