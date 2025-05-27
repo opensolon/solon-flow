@@ -61,6 +61,7 @@ const toExport = (type) => {
         nextId: cell.target.cell, // 边的目标节点
         id:cell.id,
         title:edgeData.title,
+        condition: edgeData.condition
       }
       nodeLinkMap[cell.source.cell] = nodeLinkMap[cell.source.cell] || []; // 初始化节点的边数组
       nodeLinkMap[cell.source.cell].push(edge); // 将边添加到节点的边数组中
