@@ -392,14 +392,20 @@ function setData(data) { // 导入 JSON 格式的字符串，用于加载或分�
     graph.fromJSON(data)
 }
 
-function autoLayout() { // 自动布局
+// 自动布局 dir为布局类型，默认TB从上到下
+// Direction for rank nodes. Can be TB, BT, LR, or RL, where T = top, B = bottom, L = left, and R = right.
+function autoLayout(dir="TB") { // 自动布局
     const nodeWidth = 140; // 节点的宽度
     const nodeHeight = 40; // 节点的高度
-    const dir = 'TB' // Direction for rank nodes. Can be TB, BT, LR, or RL, where T = top, B = bottom, L = left, and R = right.
     const nodes = graph.getNodes()
     const edges = graph.getEdges()
     const g = new dagre.graphlib.Graph()
-    g.setGraph({ rankdir: dir, nodesep: 220, ranksep: 100 ,edgesep:200}) // 上下
+    if(dir=="TB"){
+        g.setGraph({ rankdir: dir, nodesep: 220, ranksep: 100 ,edgesep:200}) // 上下
+    }else if(dir == "LR"){
+        g.setGraph({ rankdir: dir, nodesep: 100, ranksep: 220,edgesep:200}) // 左右
+    }
+    
     // g.setGraph({ rankdir: dir, nodesep: 220, ranksep: 220 ,edgesep:200}) 左右
     g.setDefaultEdgeLabel(() => ({}))
 

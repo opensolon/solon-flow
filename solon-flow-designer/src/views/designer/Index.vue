@@ -13,7 +13,13 @@
           <a-textarea :rows="10" v-model:value="state.exportData" />
         </a-modal>
         <a-modal v-model:open="state.isImportDialogOpen" title="导入" @ok="handleImport" @cancel="state.isImportDialogOpen = false">
+          <a-divider orientation="left">1.黏贴内容</a-divider>
           <a-textarea :rows="10" v-model:value="state.importData" />
+          <a-divider orientation="left">2.选择布局</a-divider>
+          <a-select v-model:value="state.layoutType">
+                <a-select-option value="TB">从上到下</a-select-option>
+                <a-select-option value="LR">从左到右</a-select-option>
+              </a-select>
         </a-modal>
       </div>
     </div>
@@ -34,7 +40,8 @@ const siderRef = ref(null); // 侧边栏容器的引用
 const state = reactive({
   isExportDialogOpen: false, // 导出对话框的状态
   exportData: '', // 导出的数据
-  importType: 'json'
+  importType: 'json',
+  layoutType: 'TB', // 布局类型
 })
 
 const onStartDrag = ({e,nodeType}) => {
@@ -103,11 +110,18 @@ function toImport(type) {
 }
 
 function handleImport() {
+  let dirType = state.layoutType // TB 从上到下 LR 从左到右
   let data = null
+  let isAutoLayout = false;// 是否自动布局
   if(state.importType == 'json'){
     data = JSON.parse(state.importData); // 解析导入的数据
   }else{
     data = yamlUtils.load(state.importData); // 解析导入的数据
+  }
+
+  let portPosDef = [ 'port_b1','port_t1']
+  if(dirType == 'LR'){
+    portPosDef = [ 'port_r1','port_l1']
   }
   
   flowCanvasRef.value.clear(false); // 清空画布容器中的内容
@@ -122,6 +136,10 @@ function handleImport() {
 
     let temp_x = 10;
     let temp_y = 10;
+    if(typeof data.layout[0].v_x =='undefined' || typeof  data.layout[0].v_y=='undefined' || data.layout[0].v_x==null || data.layout[0].v_y==null){
+      isAutoLayout = true;
+    }
+
     data.layout.forEach(node => {
       node.type = node.type || 'activity'
       node.id = node.id || 'node_'+utils.uuid2()
@@ -142,7 +160,7 @@ function handleImport() {
         },
       }
 
-      if(!node.v_x || !node.v_y){
+      if(typeof node.v_x =='undefined' || typeof  node.v_y=='undefined' || node.v_x==null || node.v_y==null){
         nodeData.position = {
           x: temp_x, // 节点的 x 坐标
           y: temp_y, // 节点的 y 坐标
@@ -162,11 +180,11 @@ function handleImport() {
               }
               if(!link.v_source){
                 link.v_source = node.id,
-                link.v_sourcePort = 'port_b1'
+                link.v_sourcePort = portPosDef[0]
               }
               if(!link.v_target){
                 link.v_target = link.nextId,
-                link.v_targetPort = 'port_t1'
+                link.v_targetPort = portPosDef[1]
               }
               const edgeData = {
                 id: link.id, // 边的唯一标识符
@@ -187,7 +205,7 @@ function handleImport() {
               }
               graphData.cells.push(edgeData); // 将边数据添加到数组中
             }else{// string的情况
-              const edgeData = buildEdgeForStringType(node.id,link) // 构建边数据的函数
+              const edgeData = buildEdgeForStringType(node.id,link,portPosDef) // 构建边数据的函数
               graphData.cells.push(edgeData); // 将边数据添加到数组中
             }
             
@@ -195,7 +213,7 @@ function handleImport() {
           })
         }else{
           // string的情况
-          const edgeData = buildEdgeForStringType(node.id,node.link) // 构建边数据的函数
+          const edgeData = buildEdgeForStringType(node.id,node.link,portPosDef) // 构建边数据的函数
           graphData.cells.push(edgeData); // 将边数据添加到数组中
         }
       }
@@ -204,7 +222,7 @@ function handleImport() {
           const cell = preNode
           const nextCell = node
           
-          const edgeData = buildEdgeForStringType(cell.id,nextCell.id) // 构建边数据的函数
+          const edgeData = buildEdgeForStringType(cell.id,nextCell.id,portPosDef) // 构建边数据的函数
           graphData.cells.push(edgeData); 
         }
 
@@ -213,7 +231,9 @@ function handleImport() {
 
     console.log('graphData',graphData)
     flowCanvasRef.value.setData(graphData); // 将节点和边数据设置到画布容器中
-    flowCanvasRef.value.autoLayout(); // 自动缩放画布容器以适应所有节点和边
+    if(isAutoLayout){
+      flowCanvasRef.value.autoLayout(dirType); // 自动缩放画布容器以适应所有节点和边
+    }
   }
 
 
@@ -225,13 +245,14 @@ function toClear() {
   flowCanvasRef.value.clear(); // 清空画布容器中的内容
 }
 
-function buildEdgeForStringType(source,target){
+function buildEdgeForStringType(source,target,portPosDef){
   const edgeId = 'edge_'+utils.uuid2()
+  
   const edgeData = {
     id: edgeId, // 边的唯一标识符
     shape: 'flow-edge', // 边的形状
-    source: { cell: source, port: 'port_b1' }, // 边的源节点和端口
-    target: { cell: target, port: 'port_t1' }, // 边的目标节点和端口
+    source: { cell: source, port: portPosDef[0] }, // 边的源节点和端口
+    target: { cell: target, port: portPosDef[1] }, // 边的目标节点和端口
     data: { // 边的自定义数据
       id: edgeId, // 边的唯一标识符
       nextId: target, // 边的目标节点
