@@ -78,9 +78,9 @@ public class DemoCom {
 }
 ```
 
-### 4、AbstractFlowDriver 的脚本处理支持从链元信息里引用
+### 4、AbstractFlowDriver 的脚本处理支持从链元数据里引用
 
-如果任务的脚本太复杂，影响 layout 配置的观感。可以把它移到链的元信息上。然后通过 `$` 符引用链的元信息
+如果任务的脚本太复杂，影响 layout 配置的观感。可以把它移到链的元数据上。然后通过 `$` 符引用链的元数据
 
 ```yaml
 # demo.chain.yml

@@ -8,7 +8,7 @@
 * 添加 solon-flow FlowEngine 直接支持节点执行支持
 * 添加 solon-flow FlowContext:backup,recovery 备份和恢复方法
 * 添加 solon-flow NodeDecl 快捷构建器
-* 添加 solon-flow AbstractFlowDriver 对 `$xxx` 从链元信息引用脚本的支持
+* 添加 solon-flow AbstractFlowDriver 对 `$xxx` 从链元数据引用脚本的支持
 * 添加 solon-flow FlowContext:computeIfAbsent 方法
 * 添加 StatefulFlowEngine:getActivityNodes （获取多个活动节点）方法
 * 添加 StatefulFlowEngine:postActivityStateIfWaiting 提交活动状态（如果当前节点为等待介入）
