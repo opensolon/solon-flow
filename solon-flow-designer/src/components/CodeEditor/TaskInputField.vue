@@ -11,7 +11,7 @@
         </div>
         <a-modal :width="780" :open="state.isOpenEditor" title="任务编辑（#子链、@组件、$脚本引用、脚本代码）" destroyOnClose
             @cancel="state.isOpenEditor = false" @ok="submitScriptContent">
-            <CodeEditor v-model:value="state.scriptContentShadow" @change="onChange" :lang="lang"
+            <CodeEditor v-model:value="state.scriptContentShadow" @change="onChange" :lang="java"
                 :contentHeight="contentHeight" />
         </a-modal>
     </a-flex>

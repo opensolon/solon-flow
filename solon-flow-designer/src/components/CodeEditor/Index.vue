@@ -6,7 +6,7 @@
   import { EditorState } from "@codemirror/state"
   import { keymap } from '@codemirror/view'
   import { indentWithTab } from '@codemirror/commands'
-  import { javascript } from '@codemirror/lang-javascript'
+  import { yaml } from '@codemirror/lang-yaml'
   import { java } from '@codemirror/lang-java'
   import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
   
@@ -21,7 +21,7 @@
     },
     lang: {
       type: String,
-      default: 'javascript',
+      default: 'yaml',
     },
   })
   const emit = defineEmits(['update:value', 'change'])
@@ -39,8 +39,8 @@
     var langType = null
     if (props.lang === 'java') {
       langType = java()
-    } else if (props.lang === 'javascript') {
-      langType = javascript()
+    } else if (props.lang === 'yaml') {
+      langType = yaml()
     }
   
     view = new EditorView({
