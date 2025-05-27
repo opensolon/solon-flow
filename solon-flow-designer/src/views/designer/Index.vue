@@ -44,7 +44,7 @@ const onEditChainConfig = () => {
   flowCanvasRef.value.onEditChainConfig();
 }
 
-const toExport = () => {
+const toExport = (type) => {
   // 组只数据，将antv-x6格式转换为solon-flow格式
   const data = flowCanvasRef.value.getData();
   const nodeLinkMap = {}; // 用于存储节点和边的关联关系
@@ -87,7 +87,12 @@ const toExport = () => {
   chainData.layout = nodes
 
   console.log('chainData',chainData)
-  state.exportData = JSON.stringify(chainData,null,4); // 格式化输出 JSON 数据
+  if('json' == type){
+    state.exportData = JSON.stringify(chainData,null,4); // 格式化输出 JSON 数据
+  }else{
+    state.exportData = yamlUtils.dump(chainData); // 格式化输出 YAML 数据
+  }
+
   state.isExportDialogOpen = true; // 打开导出对话框
 }
 
