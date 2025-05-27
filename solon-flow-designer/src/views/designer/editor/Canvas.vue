@@ -20,6 +20,7 @@ import BaseNode from './BaseNode.vue'
 import NodeFormDialog from './NodeFormDialog.vue';
 import EdgeFormDialog from './EdgeFormDialog.vue';
 import ChainFormDialog from './ChainFormDialog.vue';
+import dagre from '@dagrejs/dagre';
 
 const props = defineProps({
     dndContainer:{
@@ -391,12 +392,81 @@ function setData(data) { // 导入 JSON 格式的字符串，用于加载或分�
     graph.fromJSON(data)
 }
 
+function autoLayout() { // 自动布局
+    const nodeWidth = 140; // 节点的宽度
+    const nodeHeight = 40; // 节点的高度
+    const dir = 'TB' // Direction for rank nodes. Can be TB, BT, LR, or RL, where T = top, B = bottom, L = left, and R = right.
+    const nodes = graph.getNodes()
+    const edges = graph.getEdges()
+    const g = new dagre.graphlib.Graph()
+    g.setGraph({ rankdir: dir, nodesep: 220, ranksep: 100 ,edgesep:200}) // 上下
+    // g.setGraph({ rankdir: dir, nodesep: 220, ranksep: 220 ,edgesep:200}) 左右
+    g.setDefaultEdgeLabel(() => ({}))
+
+    nodes.forEach((node) => {
+        g.setNode(node.id, { nodeWidth, nodeHeight })
+    })
+
+    edges.forEach((edge) => {
+        const source = edge.getSource()
+        const target = edge.getTarget()
+        g.setEdge(source.cell, target.cell)
+    })
+
+    dagre.layout(g)
+
+    g.nodes().forEach((id) => {
+        const node = graph.getCellById(id)
+        if (node) {
+            const pos = g.node(id)
+            node.position(pos.x, pos.y)
+        }
+    })
+
+    // edges.forEach((edge) => {
+    //     const source = edge.getSourceNode()
+    //     const target = edge.getTargetNode()
+    //     const sourceBBox = source.getBBox()
+    //     const targetBBox = target.getBBox()
+
+    //     if ((dir === 'LR' || dir === 'RL') && sourceBBox.y !== targetBBox.y) {
+    //     const gap =
+    //         dir === 'LR'
+    //         ? targetBBox.x - sourceBBox.x - sourceBBox.width
+    //         : -sourceBBox.x + targetBBox.x + targetBBox.width
+    //     const fix = dir === 'LR' ? sourceBBox.width : 0
+    //     const x = sourceBBox.x + fix + gap / 2
+    //     edge.setVertices([
+    //         { x, y: sourceBBox.center.y },
+    //         { x, y: targetBBox.center.y },
+    //     ])
+    //     } else if (
+    //     (dir === 'TB' || dir === 'BT') &&
+    //     sourceBBox.x !== targetBBox.x
+    //     ) {
+    //     const gap =
+    //         dir === 'TB'
+    //         ? targetBBox.y - sourceBBox.y - sourceBBox.height
+    //         : -sourceBBox.y + targetBBox.y + targetBBox.height
+    //     const fix = dir === 'TB' ? sourceBBox.height : 0
+    //     const y = sourceBBox.y + fix + gap / 2
+    //     edge.setVertices([
+    //         { x: sourceBBox.center.x, y },
+    //         { x: targetBBox.center.x, y },
+    //     ])
+    //     } else {
+    //     edge.setVertices([])
+    //     }
+    // })
+}
+
 defineExpose({
     onSiderStartDrag,
     onEditChainConfig,
     getData,
     setData,
     clear,
-    setChain
+    setChain,
+    autoLayout
 })
 </script>

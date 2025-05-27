@@ -213,6 +213,7 @@ function handleImport() {
 
     console.log('graphData',graphData)
     flowCanvasRef.value.setData(graphData); // 将节点和边数据设置到画布容器中
+    flowCanvasRef.value.autoLayout(); // 自动缩放画布容器以适应所有节点和边
   }
 
 
