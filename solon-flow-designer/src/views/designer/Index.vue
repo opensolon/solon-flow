@@ -199,7 +199,7 @@ function handleImport() {
                   id: link.id, // 边的唯一标识符
                   nextId: link.target, // 边的目标节点
                   title: link.title, // 边的标题
-                  condition: link.condition,
+                  condition: link.when || link.condition, //支持 when 配置（未来替代 condition）
                 },
               }
               if(link.title){
