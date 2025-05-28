@@ -40,7 +40,7 @@
   }
   
   function onChange() {
-      _currentEditNode.setData({ title: formData.title, task: formData.task, when: formData.when,meta:formData.meta },{
+      _currentEditNode.setData({ id:formData.id,title: formData.title, task: formData.task, when: formData.when,meta:formData.meta },{
         overwrite:true
       })
       _currentEditNode.emit("node:data:changed",{})
