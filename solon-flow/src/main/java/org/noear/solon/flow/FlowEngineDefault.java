@@ -244,13 +244,15 @@ public class FlowEngineDefault implements FlowEngine {
                 //尝试执行任务（可能为空）
                 task_exec(driver, context, node);
                 //转到下个节点
-                node_run(driver, context, node.getNextNode(), depth);
+                //node_run(driver, context, node.getNextNode(), depth);
+                //采用排它网关的逻辑
+                exclusive_run(driver, context, node, depth);
                 break;
             case INCLUSIVE: //包容网关（多选）
                 node_end = inclusive_run(driver, context, node, depth);
                 break;
             case EXCLUSIVE: //排他网关（单选）
-                node_end = exclusive_run(driver, context, node, depth);
+                exclusive_run(driver, context, node, depth);
                 break;
             case PARALLEL: //并行网关（全选）
                 node_end = parallel_run(driver, context, node, depth);
