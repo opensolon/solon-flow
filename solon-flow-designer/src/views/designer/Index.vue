@@ -271,13 +271,14 @@ async function handleCopyExport() {
     await navigator.clipboard.writeText(state.exportData); // 将数据复制到剪贴板
     notification.info({
       message: '提示',
-      description: '复制成功'
+      description: '复制成功',
+      duration:0.8,
     })
   }catch(e){
     console.log(e)
     notification.error({
       message: '提示',
-      description: '复制失败，请用ctrl + c'
+      description: '复制失败，请用ctrl + c',
     })
   }
 }
