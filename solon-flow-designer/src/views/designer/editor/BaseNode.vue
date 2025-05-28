@@ -39,6 +39,10 @@ onMounted(() => {
     const nodeData = props.node.getData()
     const nodeType = nodeTypeDef[nodeData.type];
     if(!nodeData.title) {
+      nodeData.title = nodeData.id;
+    }
+
+    if(!nodeData.title) {
       // 如果没有title，就使用 task 或者 type.title
       if (nodeData.task) {
         if (nodeData.task.startsWith('#') || nodeData.task.startsWith('@') || nodeData.task.startsWith('$')) {
