@@ -33,6 +33,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "ant-design-vue": "^4.2.6",
+    "clipboard": "^2.0.11",
     "codemirror": "^6.0.1",
     "js-yaml": "^4.1.0",
     "vue": "^3.5.13",

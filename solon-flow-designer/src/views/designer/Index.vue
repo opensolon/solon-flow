@@ -9,8 +9,11 @@
       </div>
       <div class="editor-canvas">
         <FlowCanvas ref="flowCanvasRef" :dndContainer="siderRef"></FlowCanvas>
-        <a-modal v-model:open="state.isExportDialogOpen" title="导出" :footer="null" @cancel="state.isExportDialogOpen = false">
+        <a-modal v-model:open="state.isExportDialogOpen" title="导出" @cancel="state.isExportDialogOpen = false">
           <a-textarea :rows="10" v-model:value="state.exportData" />
+          <template #footer>
+            <a-button type="primary" @click="handleCopyExport">复制</a-button>
+          </template>
         </a-modal>
         <a-modal v-model:open="state.isImportDialogOpen" title="导入" @ok="handleImport" @cancel="state.isImportDialogOpen = false">
           <a-divider orientation="left">1.黏贴内容</a-divider>
@@ -33,6 +36,7 @@ import Sider from './editor/Sider.vue';
 import FlowCanvas from './editor/Canvas.vue';
 import * as utils from '@/utils/index.js'
 import yamlUtils from 'js-yaml'
+import { notification } from 'ant-design-vue';
 
 const flowCanvasRef = ref(null); // 画布容器的引用
 const siderRef = ref(null); // 侧边栏容器的引用
@@ -260,6 +264,22 @@ function buildEdgeForStringType(source,target,portPosDef){
     },
   }
   return edgeData
+}
+
+async function handleCopyExport() {
+  try{
+    await navigator.clipboard.writeText(state.exportData); // 将数据复制到剪贴板
+    notification.info({
+      message: '提示',
+      description: '复制成功'
+    })
+  }catch(e){
+    console.log(e)
+    notification.error({
+      message: '提示',
+      description: '复制失败，请用ctrl + c'
+    })
+  }
 }
 </script>
 
