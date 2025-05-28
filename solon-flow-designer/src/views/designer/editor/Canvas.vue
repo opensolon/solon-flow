@@ -14,7 +14,7 @@ import { Snapline } from '@antv/x6-plugin-snapline'
 import { Selection } from '@antv/x6-plugin-selection'
 import { Dnd } from '@antv/x6-plugin-dnd'
 import { register, getTeleport } from '@antv/x6-vue-shape'
-import {nodeTypeDef} from '../nodeTypeDef.js';
+import { nodeTypeDef } from '../nodeTypeDef.js';
 import * as utils from '@/utils/index.js'
 import BaseNode from './BaseNode.vue'
 import NodeFormDialog from './NodeFormDialog.vue';
@@ -23,7 +23,7 @@ import ChainFormDialog from './ChainFormDialog.vue';
 import dagre from '@dagrejs/dagre';
 
 const props = defineProps({
-    dndContainer:{
+    dndContainer: {
         type: Object,
     }
 })
@@ -45,86 +45,86 @@ onMounted(() => {
         initGraph()
         clear()
     })
-    
+
 })
 
 let baseNodeInfo = {
-  width: 160,
-  height: 40,
-  attr: {
-    magnet: true,
-  },
-  ports: {
-    groups: {
-      top: {
-        position: 'top',
-        attrs: {
-          circle: {
-            magnet: true,
-            stroke: '#8f8f8f',
-            r: 5,
-          },
-        },
-      },
-      left: {
-        attrs: {
-          position: 'left',
-          circle: {
-            magnet: true,
-            stroke: '#8f8f8f',
-            r: 5,
-          },
-        },
-      },
-      right: {
-        position: 'right',
-        attrs: {
-          circle: {
-            magnet: true,
-            stroke: '#8f8f8f',
-            r: 5,
-          }
-        }
-      },
-      bottom: {
-        position: 'bottom',
-        attrs: {
-          circle: {
-            magnet: true,
-            stroke: '#8f8f8f',
-            r: 5,
-          }
-        }
-      }
+    width: 160,
+    height: 40,
+    attr: {
+        magnet: true,
     },
-    items: [
-      {
-        id: 'port_l1',
-        group: 'left',
-      },
-      {
-        id: 'port_t1',
-        group: 'top',
-      },
-      {
-        id: 'port_r1',
-        group: 'right'
-      },
-      {
-        id: 'port_b1',
-        group: 'bottom'
-      }
-    ]
-  }
+    ports: {
+        groups: {
+            top: {
+                position: 'top',
+                attrs: {
+                    circle: {
+                        magnet: true,
+                        stroke: '#8f8f8f',
+                        r: 5,
+                    },
+                },
+            },
+            left: {
+                attrs: {
+                    position: 'left',
+                    circle: {
+                        magnet: true,
+                        stroke: '#8f8f8f',
+                        r: 5,
+                    },
+                },
+            },
+            right: {
+                position: 'right',
+                attrs: {
+                    circle: {
+                        magnet: true,
+                        stroke: '#8f8f8f',
+                        r: 5,
+                    }
+                }
+            },
+            bottom: {
+                position: 'bottom',
+                attrs: {
+                    circle: {
+                        magnet: true,
+                        stroke: '#8f8f8f',
+                        r: 5,
+                    }
+                }
+            }
+        },
+        items: [
+            {
+                id: 'port_l1',
+                group: 'left',
+            },
+            {
+                id: 'port_t1',
+                group: 'top',
+            },
+            {
+                id: 'port_r1',
+                group: 'right'
+            },
+            {
+                id: 'port_b1',
+                group: 'bottom'
+            }
+        ]
+    }
 }
 
 function registerNode() {
     Object.keys(nodeTypeDef).forEach((key) => {
         const nodeType = nodeTypeDef[key]
         register(Object.assign({}, baseNodeInfo, {
-                shape: nodeType.type,
-                component: BaseNode
-            })
+            shape: nodeType.type,
+            component: BaseNode
+        })
         )
     })
 }
@@ -141,14 +141,20 @@ function initGraph() {
                     size: 7,
                 },
             },
-        }
+        },
+        router: {
+            name: 'manhattan',
+            args: {
+                padding: 20,
+            },
+        },
     }, true)
 
     graph = new Graph({
         container: flowContainerRef.value,
         grid: true,
         mousewheel: true,
-        scaling:{
+        scaling: {
             min: 0.5,
             max: 1,
         },
@@ -201,8 +207,8 @@ function initGraph() {
                 return graph.createEdge({
                     id: edgeId,
                     shape: 'flow-edge',
-                    data:{
-                        id:edgeId,
+                    data: {
+                        id: edgeId,
                     }
                 })
             },
@@ -238,18 +244,18 @@ function initGraph() {
     )
 
     dnd = new Dnd({
-      target: graph,
-      scaled: false,
-      dndContainer: props.dndContainer.value,
-      getDragNode: (node) => node.clone({ keepId: true }),
-      getDropNode: (node) => node.clone({ keepId: true }),
+        target: graph,
+        scaled: false,
+        dndContainer: props.dndContainer.value,
+        getDragNode: (node) => node.clone({ keepId: true }),
+        getDropNode: (node) => node.clone({ keepId: true }),
     })
 
     graph.on('node:mouseenter', () => {
-        showPorts( true)
+        showPorts(true)
     })
     graph.on('node:mouseleave', () => {
-        showPorts( false)
+        showPorts(false)
     })
 
     graph.on('cell:mouseenter', ({ cell }) => {
@@ -311,7 +317,7 @@ function closeAllFormDialog() {
     chainFormDialogRef.value.toClose()
 }
 
-function showPorts( show) {
+function showPorts(show) {
     const ports = flowContainerRef.value.querySelectorAll('.x6-port-body');
     for (let i = 0, len = ports.length; i < len; i++) {
         ports[i].style.visibility = show ? 'visible' : 'hidden';
@@ -329,12 +335,12 @@ function svgToDataURL(svgPath, fillColor = "#FFF") {
 }
 
 function initStartNode() {
-    createNode('start',true,10,10)
+    createNode('start', true, 10, 10)
     graph.centerContent();
-    showPorts( false)
+    showPorts(false)
 }
 
-function createNode(type,isAdd=true,x=10,y=10) {
+function createNode(type, isAdd = true, x = 10, y = 10) {
     const id = "node_" + utils.uuid2()
     const nodeType = nodeTypeDef[type]
     const node = graph.createNode({
@@ -348,20 +354,20 @@ function createNode(type,isAdd=true,x=10,y=10) {
             title: nodeType.title,
         },
     })
-    if(isAdd) {
+    if (isAdd) {
         graph.addNode(node)
     }
     return node
 }
 
 function onSiderStartDrag(e, nodeType) {
-    let node = createNode(nodeType.type,false, 10, 10)
-    dnd.start(node,e)
+    let node = createNode(nodeType.type, false, 10, 10)
+    dnd.start(node, e)
 }
 
 function onEditChainConfig() {
     closeAllFormDialog()
-    chainFormDialogRef.value.show(graph,currentEditChain)
+    chainFormDialogRef.value.show(graph, currentEditChain)
 }
 
 function getData() { // 导出当前画布的内容为 JSON 格式的字符串，用于保存或分享
@@ -373,18 +379,18 @@ function getData() { // 导出当前画布的内容为 JSON 格式的字符串�
 
 function clear(isInitStartNode = true) { // 清空画布内容，可选是否重新初始化开始节点
     graph.clearCells()
-    if(isInitStartNode){
+    if (isInitStartNode) {
         initStartNode()
     }
     currentEditChain = {
-        id : "chain_"+utils.uuid2()
+        id: "chain_" + utils.uuid2()
     }
     closeAllFormDialog()
 }
 
 function setChain(chainData) { // 导入 JSON 格式的字符串，用于加载或分享的内容
     currentEditChain = chainData || {
-        id : "chain_"+utils.uuid2()
+        id: "chain_" + utils.uuid2()
     }
 }
 
@@ -394,18 +400,18 @@ function setData(data) { // 导入 JSON 格式的字符串，用于加载或分�
 
 // 自动布局 dir为布局类型，默认TB从上到下
 // Direction for rank nodes. Can be TB, BT, LR, or RL, where T = top, B = bottom, L = left, and R = right.
-function autoLayout(dir="TB") { // 自动布局
+function autoLayout(dir = "TB") { // 自动布局
     const nodeWidth = 140; // 节点的宽度
     const nodeHeight = 40; // 节点的高度
     const nodes = graph.getNodes()
     const edges = graph.getEdges()
     const g = new dagre.graphlib.Graph()
-    if(dir=="TB"){
-        g.setGraph({ rankdir: dir, nodesep: 220, ranksep: 100 ,edgesep:200}) // 上下
-    }else if(dir == "LR"){
-        g.setGraph({ rankdir: dir, nodesep: 100, ranksep: 220,edgesep:200}) // 左右
+    if (dir == "TB") {
+        g.setGraph({ rankdir: dir, nodesep: 300, ranksep: 100, edgesep: 200,align:'DL' }) // 上下
+    } else if (dir == "LR") {
+        g.setGraph({ rankdir: dir, nodesep: 100, ranksep: 220, edgesep: 100,align:'DL' }) // 左右
     }
-    
+
     // g.setGraph({ rankdir: dir, nodesep: 220, ranksep: 220 ,edgesep:200}) 左右
     g.setDefaultEdgeLabel(() => ({}))
 
