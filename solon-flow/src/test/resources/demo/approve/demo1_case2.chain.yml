@@ -10,7 +10,7 @@ layout:
 - { id: "g2", type: "exclusive", link:[
     {nextId: "e"},
     {nextId: "n3", title: "7天以上", when: "day>=7"}]}
-- { id: "n3", type: "activity", title: "副总批", meta: {role: "vp"}, link: "g2"}
+- { id: "n3", type: "activity", title: "副总批", meta: {role: "vp"}, link: "e"}
 - { id: "e", type: "end"}
 
 
