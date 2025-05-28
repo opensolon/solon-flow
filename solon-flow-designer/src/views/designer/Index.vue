@@ -349,6 +349,11 @@ async function handleCopyExport() {
 
        .node-title {
             font-size: 14px;
+            overflow: hidden;
+            /** 不换行 自动省略 */
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            max-width: 100px;
         }
     }
 </style>
