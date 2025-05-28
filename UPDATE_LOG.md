@@ -1,4 +1,14 @@
 
+### 3.3.2
+
+* 优化 solon-flow-designer
+* 添加 solon-flow FlowContext:runScript 替代 run（旧名，标为弃用）
+* 添加 solon-flow FlowContext:runTask(node, description)方法
+* 添加 solon-flow link 支持 when 统一条件（替代 condition）
+* 添加 solon-flow activity 多分支流出时支持（逻辑与排他网关相同）
+* 添加 solon-flow Counter:incr(key, delta) 方法
+* 调整 solon-flow 取消 `type: "@Com"` 的快捷配置模式（示例调整）
+
 ### 3.3.1
 
 * 新增 solon-flow-designer (设计器)

@@ -1,11 +1,11 @@
 id: "MainTree"
-nodes:
+layout:
   - type: "start"
   - id: "begin"
     type: "exclusive"
     link:
-      - {nextId: "MoveToEnemy", title: "AttackEnemy", condition: "IsEnemyVisible"}
-      - {nextId: "CallUser", title: "CheckCallResponse", condition: "CallAnswered"}
+      - {nextId: "MoveToEnemy", title: "AttackEnemy", when: "IsEnemyVisible"}
+      - {nextId: "CallUser", title: "CheckCallResponse", when: "CallAnswered"}
       - {nextId: "LeaveInLocker"}
   - {id: "MoveToEnemy", meta: {distance: "2.0"}, link: "MeleeAttack"}
   - {id: "MeleeAttack", when: "IsEnemyAlive", link: "ReturnToStart"}

@@ -5,7 +5,7 @@ nodes:
 - { id: "n1", type: "activity", title: "主管批", meta: {role: "tl"}, link: "g1"}
 - { id: "g1", type: "exclusive", link:[
     {nextId: "e"},
-    {nextId: "n2", title: "3天以上", condition: "day>=3"}]}
+    {nextId: "n2", title: "3天以上", when: "day>=3"}]}
 - { id: "n2", type: "activity", title: "部门经理批",meta: {role: "dm"}, link: "e"}
 - { id: "e", type: "end"}
 

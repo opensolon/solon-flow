@@ -1,5 +1,5 @@
 id: "book_discount"
-nodes:
+layout:
   - id: "book_discount_1"
     when: |
       order.getOriginalPrice() < 100
