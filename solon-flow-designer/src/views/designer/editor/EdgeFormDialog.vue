@@ -45,6 +45,7 @@ function show(graph,currentEditEdge) {
     _graph = graph
     _currentEditEdge = currentEditEdge
     nextTick(() => {
+        formData.id = _currentEditEdge.id
         formData.nextId = _currentEditEdge.target.cell
         const data = _currentEditEdge.getData()
         if(data){
@@ -59,6 +60,7 @@ function show(graph,currentEditEdge) {
 
 function onChange() {
     _currentEditEdge.setData({
+        id:formData.id,
         nextId: formData.nextId,
         title: formData.title,
         condition: formData.condition,
