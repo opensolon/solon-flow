@@ -60,6 +60,12 @@ Solon-Flow
 * 可用于办公审批型（有状态、可中断，人员参与）的编排场景
 * 可用于长时间流程（结合自动前进，等待介入）的编排场景
 
+
+可视化设计器：
+
+* https://solon.noear.org/flow/designer/
+
+
 嵌入第三方框架的示例：
 
 * https://gitee.com/opensolon/solon-flow-embedded-examples
