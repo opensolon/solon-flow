@@ -38,8 +38,10 @@ var nodeInfo = reactive({
 onMounted(() => {
     const nodeData = props.node.getData()
     const nodeType = nodeTypeDef[nodeData.type];
-    if(!nodeData.title) {
-      nodeData.title = nodeData.id;
+    if(!nodeData.title && nodeData.id) {
+      if (!nodeData.id.startsWith('node_')) {
+        nodeData.title = nodeData.id;
+      }
     }
 
     if(!nodeData.title) {
