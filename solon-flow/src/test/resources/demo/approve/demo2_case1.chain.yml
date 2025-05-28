@@ -1,6 +1,6 @@
 id: "d1"
 title: "合同审批（条件会签）"
-nodes:
+layout:
 - { id: "s", type: "start", title: "发起人", meta: {role: "employee"}, link: "n1"}
 - { id: "n1", type: "activity", title: "主管批", meta: {role: "tl"}, link: "g1"}
 - { id: "g1-s", type: "inclusive", title: "会签" , link:[

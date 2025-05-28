@@ -1,6 +1,6 @@
 id: "d1"
 title: "请假审批"
-nodes:
+layout:
 - { id: "s", type: "start", title: "发起人", meta: {role: "employee"}, link: "n1"}
 - { id: "n1", type: "activity", title: "主管批", meta: {role: "tl"}, link: "g1"}
 - { id: "g1", type: "exclusive", link:[

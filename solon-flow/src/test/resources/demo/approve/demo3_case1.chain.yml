@@ -1,6 +1,6 @@
 id: "d1"
 title: "决议投票"
-nodes:
+layout:
 - { id: "s", type: "start", title: "发起人", meta: {role: "biz"}, link: "n1"}
 - { id: "n1", type: "activity", title: "主管核查", meta: {role: "tl"}, link: "g1"}
 - { id: "g1-s", type: "parallel", title: "投票", meta: {timeout: "7d", default: "false"}, link:[
