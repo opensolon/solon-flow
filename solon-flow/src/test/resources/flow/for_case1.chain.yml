@@ -1,0 +1,7 @@
+
+id: for_case1
+layout:
+  - type: 'start'
+  - task: 'System.out.println(context.counter().get("demo"));'
+    id: n1
+    link: [{nextId: n1, when: 'context.counter().incr("demo") < 5'}]

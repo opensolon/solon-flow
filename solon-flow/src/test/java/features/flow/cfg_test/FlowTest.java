@@ -48,4 +48,12 @@ public class FlowTest {
         System.out.println(log);
         assert "[数据预处理, 元数据填充, 汇总数据, 构建转发数据, Http转发, Mqtt转发, 汇总统计]".equals(log);
     }
+
+    @Test
+    public void for_case1() throws Throwable {
+        FlowEngine flow = FlowEngine.newInstance();
+        flow.load(Chain.parseByUri("classpath:flow/for_case1.chain.yml"));
+
+        flow.eval("for_case1", new FlowContext());
+    }
 }
