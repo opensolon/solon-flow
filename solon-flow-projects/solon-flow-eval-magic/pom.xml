@@ -12,6 +12,7 @@
     </parent>
 
     <artifactId>solon-flow-eval-magic</artifactId>
+    <name>${project.artifactId}</name>
     <packaging>jar</packaging>
 
     <dependencies>

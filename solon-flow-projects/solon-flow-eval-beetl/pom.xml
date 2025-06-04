@@ -12,6 +12,7 @@
     </parent>
 
     <artifactId>solon-flow-eval-beetl</artifactId>
+    <name>${project.artifactId}</name>
     <packaging>jar</packaging>
 
     <dependencies>
