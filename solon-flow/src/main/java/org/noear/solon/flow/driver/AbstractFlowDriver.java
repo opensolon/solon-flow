@@ -57,11 +57,17 @@ public abstract class AbstractFlowDriver implements FlowDriver {
 
     /// //////////////
 
+    /**
+     * 当节点开始（节点不是任务）
+     */
     @Override
     public void onNodeStart(FlowContext context, Node node) {
 
     }
 
+    /**
+     * 当节点结束
+     */
     @Override
     public void onNodeEnd(FlowContext context, Node node) {
 
@@ -69,25 +75,34 @@ public abstract class AbstractFlowDriver implements FlowDriver {
 
     /// //////////////
 
+    /**
+     * 处理条件
+     */
     @Override
-    public boolean handleTest(FlowContext context, Condition condition) throws Throwable {
+    public boolean handleCondition(FlowContext context, Condition condition) throws Throwable {
         //（不需要检测是否为空，引擎会把空条件作为默认，不会再传入）
 
         //如果 condition.description 有加密，可以转码后传入
-        return handleTestDo(context, condition, condition.getDescription());
+        return handleConditionDo(context, condition, condition.getDescription());
     }
 
-    protected boolean handleTestDo(FlowContext context, Condition condition, String description) throws Throwable {
+    protected boolean handleConditionDo(FlowContext context, Condition condition, String description) throws Throwable {
         //按脚本运行
-        return tryAsScriptTest(context, condition, description);
+        return tryAsScriptCondition(context, condition, description);
     }
 
-    protected boolean tryAsScriptTest(FlowContext context, Condition condition, String description) throws Throwable {
+    /**
+     * 尝试作为脚本条件运行
+     */
+    protected boolean tryAsScriptCondition(FlowContext context, Condition condition, String description) throws Throwable {
         return getEvaluation().runTest(context, description);
     }
 
     /// //////////////
 
+    /**
+     * 处理任务
+     */
     @Override
     public void handleTask(FlowContext context, Task task) throws Throwable {
         //默认过滤空任务（活动节点可能没有配置任务）
@@ -117,7 +132,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     }
 
     /**
-     * 尝试如果是链则运行
+     * 尝试作为子链任务运行
      */
     protected void tryAsChainTask(FlowContext context, Task task, String description) throws Throwable {
         //调用其它链
@@ -126,7 +141,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     }
 
     /**
-     * 尝试如果是组件则运行
+     * 尝试作为组件任务运行
      */
     protected void tryAsComponentTask(FlowContext context, Task task, String description) throws Throwable {
         //按组件运行
@@ -143,7 +158,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     }
 
     /**
-     * 尝试作为脚本运行
+     * 尝试作为脚本任务运行
      */
     protected void tryAsScriptTask(FlowContext context, Task task, String description) throws Throwable {
         //按脚本运行

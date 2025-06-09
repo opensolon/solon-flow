@@ -295,12 +295,12 @@ public class Chain {
      */
     private static void addLink(NodeDecl nodeDecl, ONode l1) {
         //支持 when 简写条件
-        String conditionStr = l1.contains("when") ? l1.get("when").getString() : l1.get("condition").getString();
+        String whenStr = l1.contains("when") ? l1.get("when").getString() : l1.get("condition").getString();
 
         nodeDecl.linkAdd(l1.get("nextId").getString(), ld -> ld
                 .title(l1.get("title").getString())
                 .meta(l1.get("meta").toObject(Map.class))
-                .condition(conditionStr));
+                .when(whenStr));
     }
 
     /**
@@ -336,8 +336,8 @@ public class Chain {
                             n4.set("nextId", link.getNextId());
                             n4.set("title", link.getTitle());
                             n4.getOrNew("meta").fill(link.getMetas());
-                            if (link.getCondition() != null) {
-                                n4.set("condition", link.getCondition().getDescription());
+                            if (link.getWhen() != null) {
+                                n4.set("when", link.getWhen().getDescription());
                             }
                         }
                     });

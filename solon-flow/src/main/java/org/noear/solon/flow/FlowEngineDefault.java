@@ -160,7 +160,7 @@ public class FlowEngineDefault implements FlowEngine {
     protected boolean condition_test(FlowDriver driver, FlowContext context, Condition condition, boolean def) throws FlowException {
         if (Utils.isNotEmpty(condition.getDescription())) {
             try {
-                return driver.handleTest(context, condition);
+                return driver.handleCondition(context, condition);
             } catch (FlowException e) {
                 throw e;
             } catch (Throwable e) {
@@ -294,10 +294,10 @@ public class FlowEngineDefault implements FlowEngine {
         List<Link> matched_lines = new ArrayList<>();
 
         for (Link l : node.getNextLinks()) {
-            if (l.getCondition().isEmpty()) {
+            if (l.getWhen().isEmpty()) {
                 def_line = l;
             } else {
-                if (condition_test(driver, context, l.getCondition(), false)) {
+                if (condition_test(driver, context, l.getWhen(), false)) {
                     matched_lines.add(l);
                 }
             }
@@ -327,10 +327,10 @@ public class FlowEngineDefault implements FlowEngine {
         //::流出
         Link def_line = null; //默认线
         for (Link l : node.getNextLinks()) {
-            if (l.getCondition().isEmpty()) {
+            if (l.getWhen().isEmpty()) {
                 def_line = l;
             } else {
-                if (condition_test(driver, context, l.getCondition(), false)) {
+                if (condition_test(driver, context, l.getWhen(), false)) {
                     //执行第一个满足条件
                     node_run(driver, context, l.getNextNode(), depth);
                     return true; //结束

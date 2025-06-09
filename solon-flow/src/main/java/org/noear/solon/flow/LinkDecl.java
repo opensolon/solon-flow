@@ -30,7 +30,7 @@ public class LinkDecl {
     protected final String nextId;
     protected String title;
     protected Map<String, Object> meta;
-    protected String condition;
+    protected String when;
     /**
      * 优先级（越大越高）
      */
@@ -72,11 +72,21 @@ public class LinkDecl {
     }
 
     /**
-     * 配置条件
+     * 配置分支流出条件
      */
-    public LinkDecl condition(String condition) {
-        this.condition = condition;
+    public LinkDecl when(String condition) {
+        this.when = condition;
         return this;
+    }
+
+    /**
+     * 配置分支流出条件
+     *
+     * @deprecated 3.3 {@link #when(String)}
+     */
+    @Deprecated
+    public LinkDecl condition(String condition) {
+        return when(condition);
     }
 
     /**
@@ -98,8 +108,8 @@ public class LinkDecl {
             buf.append(", title='").append(title).append('\'');
         }
 
-        if (Utils.isNotEmpty(condition)) {
-            buf.append(", condition='").append(condition).append('\'');
+        if (Utils.isNotEmpty(when)) {
+            buf.append(", when='").append(when).append('\'');
         }
 
         if (Utils.isNotEmpty(meta)) {

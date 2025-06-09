@@ -38,7 +38,7 @@ public interface FlowDriver {
     /**
      * 处理条件检测
      */
-    boolean handleTest(FlowContext context, Condition condition) throws Throwable;
+    boolean handleCondition(FlowContext context, Condition condition) throws Throwable;
 
     /**
      * 处理执行任务

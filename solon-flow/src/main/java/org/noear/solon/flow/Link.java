@@ -31,7 +31,7 @@ public class Link implements Comparable<Link> {
     private final LinkDecl decl;
 
     private Node prevNode, nextNode;
-    private Condition condition;
+    private Condition when;
 
     public Link(Chain chain, String prevId, LinkDecl decl) {
         this.chain = chain;
@@ -75,14 +75,24 @@ public class Link implements Comparable<Link> {
     }
 
     /**
-     * 条件
+     * 分支流出条件
      */
-    public Condition getCondition() {
-        if (condition == null) {
-            condition = new Condition(chain, decl.condition);
+    public Condition getWhen() {
+        if (when == null) {
+            when = new Condition(chain, decl.when);
         }
 
-        return condition;
+        return when;
+    }
+
+    /**
+     * 分支流出条件
+     *
+     * @deprecated 3.3 {@link #getWhen()}
+     */
+    @Deprecated
+    public Condition getCondition() {
+        return getWhen();
     }
 
     /**
@@ -149,8 +159,8 @@ public class Link implements Comparable<Link> {
             buf.append(", meta=").append(decl.meta);
         }
 
-        if (Utils.isNotEmpty(decl.condition)) {
-            buf.append(", condition=").append(decl.condition);
+        if (Utils.isNotEmpty(decl.when)) {
+            buf.append(", when=").append(decl.when);
         }
 
         buf.append("}");
