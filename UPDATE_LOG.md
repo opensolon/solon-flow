@@ -1,7 +1,8 @@
 
 ### 3.3.3
 
-* 优化 solon-flow when 属性全面替代 condition 属性
+* 添加 solon-flow LinkDecl:when 方法用于替代 :condition（后者标为弃用）
+* 调整 solon-flow FlowDriver:handleTest 更名为 handleCondition
 
 ### 3.3.2
 
