@@ -1,0 +1,100 @@
+id: chain_ocu280ikb
+layout:
+  - id: node_9o60e94jah
+    type: activity
+    title: 企业内部数据
+    link:
+      - nextId: node_q3ckud12a
+        id: edge_xplrpq2aoi
+        title: 同步与转换
+  - id: node_q3ckud12a
+    type: activity
+    title: infinity数据库
+    link:
+      - nextId: node_jwqd16npks
+        id: edge_ufhca9d2rs
+      - nextId: node_og47oihg8k
+        id: edge_6bcmbvdgr
+      - nextId: node_hyuonxowpc
+        id: edge_pclhlqdtif
+  - id: node_jwqd16npks
+    type: activity
+    title: 向量数据库建模
+    link:
+      - nextId: node_jriytyw9sk
+        id: edge_8tzc2r42sf
+  - id: node_og47oihg8k
+    type: activity
+    title: 搜索引擎
+    link:
+      - nextId: node_kekyzl6dzm
+        id: edge_xlvtkztryh
+  - id: node_hyuonxowpc
+    type: activity
+    title: 结构化数据查询
+    link:
+      - nextId: node_3azziw8y49
+        id: edge_34e1tvvzv
+  - id: node_jriytyw9sk
+    type: activity
+    title: 标量字段生成
+    link:
+      - nextId: node_tj4td1f4tt
+        id: edge_cit2s3hmh5
+  - id: node_tj4td1f4tt
+    type: activity
+    title: ETL流程
+    link:
+      - nextId: node_hqfnl9o4k
+        id: edge_ylx1nn1au8
+  - id: node_hqfnl9o4k
+    type: activity
+    title: 维护性与数据一致性
+    link:
+      - nextId: node_k3sehpb9vi
+        id: edge_a55p2jdkcr
+  - id: node_kekyzl6dzm
+    type: activity
+    title: 多表联合查询
+    link:
+      - nextId: node_4hrifzp4yh
+        id: edge_710yfh0ws
+  - id: node_4hrifzp4yh
+    type: activity
+    title: 复杂查询需求
+    link:
+      - nextId: node_41hgqrw7h
+        id: edge_ww64hgcsra
+  - id: node_3azziw8y49
+    type: activity
+    title: 全文搜索
+    link:
+      - nextId: node_4hrifzp4yh
+        id: edge_l67x7frr09
+  - id: node_41hgqrw7h
+    type: activity
+    title: 即时响应与高并发处理
+    link:
+      - nextId: node_smsx6cd6or
+        id: edge_c64e4nmznk
+  - id: node_smsx6cd6or
+    type: activity
+    title: Infinity数据库
+    link:
+      - nextId: node_unvfcesj9
+        id: edge_y89ny2dybk
+  - id: node_unvfcesj9
+    type: activity
+    title: 融合排序
+    link:
+      - nextId: node_k3sehpb9vi
+        id: edge_msxer7zwy
+  - id: node_ro2e4g6xfw
+    type: start
+    title: 开始
+    link:
+      - nextId: node_9o60e94jah
+        id: edge_f3oeuwx1j
+  - id: node_k3sehpb9vi
+    type: end
+    title: 结束

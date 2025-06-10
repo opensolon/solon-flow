@@ -1,0 +1,327 @@
+{
+  "id": "chain_ocu280ikb",
+  "layout": [
+    {
+      "id": "node_9o60e94jah",
+      "type": "activity",
+      "title": "企业内部数据",
+      "task": "",
+      "when": "",
+      "meta": {},
+      "v_x": -230,
+      "v_y": -200,
+      "link": [
+        {
+          "v_source": "node_9o60e94jah",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_q3ckud12a",
+          "v_targetPort": "port_t1",
+          "nextId": "node_q3ckud12a",
+          "id": "edge_xplrpq2aoi",
+          "title": "同步与转换"
+        }
+      ]
+    },
+    {
+      "id": "node_q3ckud12a",
+      "type": "activity",
+      "title": "infinity数据库",
+      "task": "",
+      "when": "",
+      "meta": {},
+      "v_x": -230,
+      "v_y": -80,
+      "link": [
+        {
+          "v_source": "node_q3ckud12a",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_jwqd16npks",
+          "v_targetPort": "port_t1",
+          "nextId": "node_jwqd16npks",
+          "id": "edge_ufhca9d2rs"
+        },
+        {
+          "v_source": "node_q3ckud12a",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_og47oihg8k",
+          "v_targetPort": "port_t1",
+          "nextId": "node_og47oihg8k",
+          "id": "edge_6bcmbvdgr"
+        },
+        {
+          "v_source": "node_q3ckud12a",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_hyuonxowpc",
+          "v_targetPort": "port_t1",
+          "nextId": "node_hyuonxowpc",
+          "id": "edge_pclhlqdtif"
+        }
+      ]
+    },
+    {
+      "id": "node_jwqd16npks",
+      "type": "activity",
+      "title": "向量数据库建模",
+      "task": "",
+      "when": "",
+      "meta": {},
+      "v_x": -440,
+      "v_y": 50,
+      "link": [
+        {
+          "v_source": "node_jwqd16npks",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_jriytyw9sk",
+          "v_targetPort": "port_t1",
+          "nextId": "node_jriytyw9sk",
+          "id": "edge_8tzc2r42sf"
+        }
+      ]
+    },
+    {
+      "id": "node_og47oihg8k",
+      "type": "activity",
+      "title": "搜索引擎",
+      "task": "",
+      "when": "",
+      "meta": {},
+      "v_x": -230,
+      "v_y": 50,
+      "link": [
+        {
+          "v_source": "node_og47oihg8k",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_kekyzl6dzm",
+          "v_targetPort": "port_t1",
+          "nextId": "node_kekyzl6dzm",
+          "id": "edge_xlvtkztryh"
+        }
+      ]
+    },
+    {
+      "id": "node_hyuonxowpc",
+      "type": "activity",
+      "title": "结构化数据查询",
+      "task": "",
+      "when": "",
+      "meta": {},
+      "v_x": -22,
+      "v_y": 50,
+      "link": [
+        {
+          "v_source": "node_hyuonxowpc",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_3azziw8y49",
+          "v_targetPort": "port_t1",
+          "nextId": "node_3azziw8y49",
+          "id": "edge_34e1tvvzv"
+        }
+      ]
+    },
+    {
+      "id": "node_jriytyw9sk",
+      "type": "activity",
+      "title": "标量字段生成",
+      "task": "",
+      "when": "",
+      "meta": {},
+      "v_x": -440,
+      "v_y": 145,
+      "link": [
+        {
+          "v_source": "node_jriytyw9sk",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_tj4td1f4tt",
+          "v_targetPort": "port_t1",
+          "nextId": "node_tj4td1f4tt",
+          "id": "edge_cit2s3hmh5"
+        }
+      ]
+    },
+    {
+      "id": "node_tj4td1f4tt",
+      "type": "activity",
+      "title": "ETL流程",
+      "task": "",
+      "when": "",
+      "meta": {},
+      "v_x": -440,
+      "v_y": 246,
+      "link": [
+        {
+          "v_source": "node_tj4td1f4tt",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_hqfnl9o4k",
+          "v_targetPort": "port_t1",
+          "nextId": "node_hqfnl9o4k",
+          "id": "edge_ylx1nn1au8"
+        }
+      ]
+    },
+    {
+      "id": "node_hqfnl9o4k",
+      "type": "activity",
+      "title": "维护性与数据一致性",
+      "task": "",
+      "when": "",
+      "meta": {},
+      "v_x": -440,
+      "v_y": 350,
+      "link": [
+        {
+          "v_source": "node_hqfnl9o4k",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_k3sehpb9vi",
+          "v_targetPort": "port_t1",
+          "nextId": "node_k3sehpb9vi",
+          "id": "edge_a55p2jdkcr"
+        }
+      ]
+    },
+    {
+      "id": "node_kekyzl6dzm",
+      "type": "activity",
+      "title": "多表联合查询",
+      "task": "",
+      "when": "",
+      "meta": {},
+      "v_x": -230,
+      "v_y": 145,
+      "link": [
+        {
+          "v_source": "node_kekyzl6dzm",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_4hrifzp4yh",
+          "v_targetPort": "port_t1",
+          "nextId": "node_4hrifzp4yh",
+          "id": "edge_710yfh0ws"
+        }
+      ]
+    },
+    {
+      "id": "node_4hrifzp4yh",
+      "type": "activity",
+      "title": "复杂查询需求",
+      "task": "",
+      "when": "",
+      "meta": {},
+      "v_x": -135,
+      "v_y": 246,
+      "link": [
+        {
+          "v_source": "node_4hrifzp4yh",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_41hgqrw7h",
+          "v_targetPort": "port_t1",
+          "nextId": "node_41hgqrw7h",
+          "id": "edge_ww64hgcsra"
+        }
+      ]
+    },
+    {
+      "id": "node_3azziw8y49",
+      "type": "activity",
+      "title": "全文搜索",
+      "task": "",
+      "when": "",
+      "meta": {},
+      "v_x": -22,
+      "v_y": 145,
+      "link": [
+        {
+          "v_source": "node_3azziw8y49",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_4hrifzp4yh",
+          "v_targetPort": "port_t1",
+          "nextId": "node_4hrifzp4yh",
+          "id": "edge_l67x7frr09"
+        }
+      ]
+    },
+    {
+      "id": "node_41hgqrw7h",
+      "type": "activity",
+      "title": "即时响应与高并发处理",
+      "task": "",
+      "when": "",
+      "meta": {},
+      "v_x": -135,
+      "v_y": 350,
+      "link": [
+        {
+          "v_source": "node_41hgqrw7h",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_smsx6cd6or",
+          "v_targetPort": "port_t1",
+          "nextId": "node_smsx6cd6or",
+          "id": "edge_c64e4nmznk"
+        }
+      ]
+    },
+    {
+      "id": "node_smsx6cd6or",
+      "type": "activity",
+      "title": "Infinity数据库",
+      "task": "",
+      "when": "",
+      "meta": {},
+      "v_x": -135,
+      "v_y": 450,
+      "link": [
+        {
+          "v_source": "node_smsx6cd6or",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_unvfcesj9",
+          "v_targetPort": "port_t1",
+          "nextId": "node_unvfcesj9",
+          "id": "edge_y89ny2dybk"
+        }
+      ]
+    },
+    {
+      "id": "node_unvfcesj9",
+      "type": "activity",
+      "title": "融合排序",
+      "task": "",
+      "when": "",
+      "meta": {},
+      "v_x": -135,
+      "v_y": 546,
+      "link": [
+        {
+          "v_source": "node_unvfcesj9",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_k3sehpb9vi",
+          "v_targetPort": "port_t1",
+          "nextId": "node_k3sehpb9vi",
+          "id": "edge_msxer7zwy"
+        }
+      ]
+    },
+    {
+      "id": "node_k3sehpb9vi",
+      "type": "end",
+      "title": "结束",
+      "v_x": -295,
+      "v_y": 680,
+      "link": []
+    },
+    {
+      "id": "node_ro2e4g6xfw",
+      "type": "start",
+      "title": "开始",
+      "v_x": -230,
+      "v_y": -300,
+      "link": [
+        {
+          "v_source": "node_ro2e4g6xfw",
+          "v_sourcePort": "port_b1",
+          "v_target": "node_9o60e94jah",
+          "v_targetPort": "port_t1",
+          "nextId": "node_9o60e94jah",
+          "id": "edge_f3oeuwx1j"
+        }
+      ]
+    }
+  ]
+}
