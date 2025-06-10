@@ -1,0 +1,48 @@
+id: chain_eu5bxs57r6
+layout:
+  - id: node_jb256egoe
+    type: start
+    title: 开始
+    link:
+      - nextId: node_14gyosejng
+        id: edge_7wr7ar15rj
+        title: 下单
+      - nextId: node_8cazxsu9qk
+        id: edge_uof07j0rgw
+      - nextId: node_l4xcb93r8i
+        id: edge_7g7vu8rsy
+        title: 申请退款
+  - id: node_14gyosejng
+    title: 初始化
+    link:
+      - nextId: node_itq7s2ibmf
+        id: edge_5bpfrz7og
+  - id: node_8cazxsu9qk
+    title: 订单锁定
+    link:
+      - nextId: node_a8uhxlj19
+        id: edge_raok5cp4ix
+  - id: node_l4xcb93r8i
+    title: 订单支付
+    link:
+      - nextId: node_p22q1j37lv
+        id: edge_5wf1kexp3a
+  - id: node_itq7s2ibmf
+    title: 订单锁定
+    link:
+      - nextId: node_nh17udyqr
+        id: edge_0dp8ijcg7q
+  - id: node_a8uhxlj19
+    title: 订单支付
+    link:
+      - nextId: node_nh17udyqr
+        id: edge_catjdqx3gd
+  - id: node_p22q1j37lv
+    title: 退款申明
+    link:
+      - nextId: node_nh17udyqr
+        id: edge_mm1xefxacj
+  - id: node_nh17udyqr
+    type: end
+    title: 结束
+    link: []
