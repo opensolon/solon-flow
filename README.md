@@ -4,7 +4,7 @@
 Solon-Flow
 </h1>
 <p align="center">
-	<strong>Java Flow 通用流编排应用开发框架（支持已知流编排的各种场景）</strong>
+	<strong>Java Flow 通用流程编排应用开发框架（支持已知流程编排的各种场景）</strong>
     <br/>
     <strong>【基于 Solon 应用开发框架构建】</strong>
 </p>
@@ -51,9 +51,9 @@ Solon-Flow
 
 ## 简介
 
-面向全场景的 Java Flow （流编排）应用开发框架。是 Solon 项目的一部分。也可嵌入到 SpringBoot2、jFinal、Vert.x 等框架中使用。
+面向全场景的 Java Flow （流程编排）应用开发框架。是 Solon 项目的一部分。也可嵌入到 SpringBoot2、jFinal、Vert.x 等框架中使用。
 
-支持已知流编排的各种场景:
+支持已知流程编排的各种场景:
 
 * 可用于计算（或任务）的编排场景
 * 可用于业务规则和决策处理型的编排场景
