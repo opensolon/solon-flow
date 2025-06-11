@@ -76,7 +76,7 @@ Solon-Flow
 ## 六大特性展示
 
 
-### 1、使用 yaml 格式
+### 1、支持 yaml 和 json 编排格式
 
 配置简洁，关系清晰。内容多了后会像 docker-compose。
 
