@@ -301,6 +301,14 @@ function initGraph() {
         }
     })
 
+    graph.on('cell:dblclick', ({ cell }) => {
+      if (cell.isEdge()) {
+        currentEditEdge = cell
+        closeAllFormDialog()
+        edgeFormDialogRef.value.show(graph, currentEditEdge)
+      }
+    })
+
     graph.on('node:toDel', (node) => {
         graph.removeNode(node)
     })

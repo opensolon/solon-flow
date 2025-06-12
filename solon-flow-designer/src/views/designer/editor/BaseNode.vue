@@ -1,5 +1,5 @@
 <template>
-    <div class="node" >
+    <div class="node" @dblclick="editNode">
         <div class="node-icon" :style="{'background-color':nodeInfo.color}">
             <font-awesome-icon :icon="nodeInfo.icon" />
         </div>
