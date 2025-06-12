@@ -9,9 +9,6 @@
                 <div class="wf-node-tool wf-node-tool-deleteNode" @click="deleteNode">
                     <font-awesome-icon icon="fa-solid fa-xmark" />
                 </div>
-                <div class="wf-node-tool wf-node-tool-editNode" @click="editNode">
-                    <font-awesome-icon icon="fa-solid fa-pen" />
-                </div>
             </a-space>
         </div>
     </div>
