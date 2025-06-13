@@ -4,7 +4,7 @@
 Solon-Flow
 </h1>
 <p align="center">
-	<strong>Java Flow 通用流程编排应用开发框架（支持已知流程编排的各种场景）</strong>
+	<strong>Java 通用流程编排框架（采用 yaml 和 json 编排格式）</strong>
     <br/>
     <strong>【基于 Solon 应用开发框架构建】</strong>
 </p>
@@ -51,7 +51,7 @@ Solon-Flow
 
 ## 简介
 
-面向全场景的 Java Flow （流程编排）应用开发框架。是 Solon 项目的一部分。也可嵌入到 SpringBoot2、jFinal、Vert.x 等框架中使用。
+面向全场景的 Java 流程编排框架。是 Solon 项目的一部分。也可嵌入到 SpringBoot2、jFinal、Vert.x 等框架中使用。
 
 支持已知流程编排的各种场景:
 
@@ -76,9 +76,9 @@ Solon-Flow
 ## 六大特性展示
 
 
-### 1、支持 yaml 和 json 编排格式
+### 1、采用 yaml 和 json 编排格式
 
-配置简洁，关系清晰。内容多了后会像 docker-compose。
+配置简洁，关系清晰。内容多了后有点像 docker-compose。
 
 ```yaml
 # c1.yml
@@ -139,26 +139,6 @@ public class MetaProcessCom implements TaskComponent {
 }
 ```
 
-也可通过驱动定制方式，实现抄送效果（显得重一些）
-
-```java
-public class OaFlowDriver extends SimpleFlowDriver {
-    @Override
-    public void handleTask(FlowContext context, Task task) throws Throwable {
-        if (Utils.isEmpty(task.getDescription())) {
-           String cc = task.getNode().getMeta("cc");
-           if(Utils.isNotEmpty(cc)){
-               //发送邮件
-           }
-        } else {
-            super.handleTask(context, task);
-        }
-    }
-}
-
-//FlowEngine flowEngine = FlowEngine.newInstance();
-//flowEngine.register(new OaFlowDriver()); //替换掉默认驱动
-```
 
 ### 4、事件广播与回调支持
 
@@ -185,7 +165,7 @@ layout:
 * 可用于办公审批型（有状态、可中断，人员参与）的编排场景
 * 可用于长时间流程（结合自动前进，等待介入）的编排场景
 
-自身也相当于一个低代码的运行引擎（单个 yml 文件，也可满足所有的执行需求）。
+自身也相当于一个低代码的运行引擎（单个 yml 或 json 文件，即可满足所有的执行需求）。
 
 
 ### 6、驱动定制（是像 JDBC 有 MySql, PostgreSQL，还可能有 Elasticsearch）
@@ -197,7 +177,7 @@ StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.
                 .stateRepository(new InMemoryStateRepository())
                 .build());
                 
-var context = new StatefulFlowContext("i1").put("actor", "陈鑫");
+var context = new FlowContext("i1").put("actor", "陈鑫");
 
 //获取上下文用户的活动节点
 var statefulNode = flowEngine.getActivityNode("f1", context);
