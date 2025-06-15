@@ -60,6 +60,8 @@ const toExport = (type) => {
   const data = flowCanvasRef.value.getData();
   const nodeLinkMap = {}; // 用于存储节点和边的关联关系
   const nodes = [];
+  let nodeEnd = null;
+
   data.graphData.cells.forEach(cell => {
     if(cell.shape == 'flow-edge'){
       const edgeData = cell.data || {}
@@ -76,23 +78,57 @@ const toExport = (type) => {
       }
       nodeLinkMap[cell.source.cell] = nodeLinkMap[cell.source.cell] || []; // 初始化节点的边数组
       nodeLinkMap[cell.source.cell].push(edge); // 将边添加到节点的边数组中
-    }else{
+    }else {
       const nodeData = cell.data || {};
-      nodes.push({
-        id:cell.id,
-        type:nodeData.type,
-        title:nodeData.title,
-        task:nodeData.task,
-        when:nodeData.when,
-        meta:nodeData.meta,
+      const node = {
+        id: cell.id,
+        type: nodeData.type,
+        title: nodeData.title,
         v_x: cell.position.x, // 节点的 x 坐标
         v_y: cell.position.y, // 节点的 y 坐标
-      })
+      };
+
+      //简化导入（空内容可不出）
+      if (nodeData.task) {
+        node.task = nodeData.task;
+      }
+
+      if (nodeData.when) {
+        node.when = nodeData.when;
+      }
+
+      if (nodeData.meta && Object.keys(nodeData.meta).length > 0) {
+        node.meta = nodeData.meta;
+      }
+
+      //排序（确保 start 在最前）
+      if (node.type == 'start') {
+        nodes.unshift(node); //插到前面
+      } else if (node.type == 'end') {
+        nodeEnd = node;
+      } else {
+        nodes.push(node);
+      }
     }
   })
 
+  //排序（确保 end 在最后）
+  if(nodeEnd) {
+    nodes.push(nodeEnd);
+  }
+
   nodes.forEach(node => {
-    node.link = nodeLinkMap[node.id] || []; // 将边数组添加到节点对象中
+    let link = nodeLinkMap[node.id];
+    if(link) {
+      //简化输出
+      if (link instanceof Array) {
+        if (link.length > 0) {
+          node.link = link; // 将边数组添加到节点对象中
+        }
+      } else {
+        node.link = link; // 将边数组添加到节点对象中
+      }
+    }
   });
 
   const chainData = data.chain; // 构建最终的 JSON 数据
@@ -144,7 +180,25 @@ function handleImport() {
       isAutoLayout = true;
     }
 
+    //排序（确保 start 在最前）
+    const nodes = [];
+    let nodeEnd = null;
     data.layout.forEach(node => {
+      if (node.type == 'start') {
+        nodes.unshift(node); //插到前面
+      } else if (node.type == 'end') {
+        nodeEnd = node;
+      } else {
+        nodes.push(node);
+      }
+    });
+
+    //排序（确保 end 在最后）
+    if(nodeEnd) {
+      nodes.push(nodeEnd);
+    }
+
+    nodes.forEach(node => {
       node.type = node.type || 'activity'
       node.id = node.id || 'node_'+utils.uuid2()
       const nodeData = {
