@@ -3,17 +3,21 @@ package demo.flow.stateful;
 import org.noear.solon.flow.Chain;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.NodeDecl;
-import org.noear.solon.flow.NodeType;
 import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.flow.stateful.StatefulFlowEngine;
 import org.noear.solon.flow.stateful.StatefulNode;
+import org.noear.solon.flow.stateful.controller.ActorStateController;
 import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
+import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 
 /**
  * @author noear 2025/3/28 created
  */
 public class OaActionDemo {
-    StatefulFlowEngine flowEngine = StatefulFlowEngine.newInstance(StatefulSimpleFlowDriver.builder().build());
+    StatefulFlowEngine flowEngine = StatefulFlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
+            .stateController(new ActorStateController())
+            .stateRepository(new InMemoryStateRepository())
+            .build());
 
     String instanceId = "guid1";
     String chainId = "f1";
@@ -52,7 +56,7 @@ public class OaActionDemo {
             flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
 
             //到目标节点了
-            if(statefulNode.getNode().getId().equals(nodeId)) {
+            if (statefulNode.getNode().getId().equals(nodeId)) {
                 break;
             }
         }
@@ -146,12 +150,12 @@ public class OaActionDemo {
 
     //加签
     public void case11() throws Exception {
-        String gatewayId= "g1";
+        String gatewayId = "g1";
         Chain chain = Chain.parseByText(flowEngine.getChain(chainId).toJson()); //复制
         //添加节点
-        chain.addNode(new NodeDecl("a3", NodeType.ACTIVITY).linkAdd("b2"));
+        chain.addNode(NodeDecl.activityOf("a3").linkAdd("b2"));
         //替代旧的网关（加上 a3 节点）
-        chain.addNode(new NodeDecl(gatewayId, NodeType.PARALLEL).linkAdd("a1").linkAdd("a2").linkAdd("a3"));
+        chain.addNode(NodeDecl.parallelOf(gatewayId).linkAdd("a1").linkAdd("a2").linkAdd("a3"));
 
         //把新的链配置，做为实例对应的流配置
     }
