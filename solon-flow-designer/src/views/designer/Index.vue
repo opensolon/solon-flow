@@ -167,7 +167,9 @@ function handleImport() {
   flowCanvasRef.value.clear(false); // 清空画布容器中的内容
   flowCanvasRef.value.setChain(data); // 
   // 组织数据，将solon-flow格式转换为antv-x6格式
-  if(data.layout){
+
+  let layoutNodes = data.layout || data.nodes; //早期有配置是 nodes
+  if(layoutNodes){
     const graphData = {
       cells: [], // 存储节点和边的数组
     };
@@ -176,14 +178,14 @@ function handleImport() {
 
     let temp_x = 10;
     let temp_y = 10;
-    if(typeof data.layout[0].v_x =='undefined' || typeof  data.layout[0].v_y=='undefined' || data.layout[0].v_x==null || data.layout[0].v_y==null){
+    if(typeof layoutNodes[0].v_x =='undefined' || typeof  layoutNodes[0].v_y=='undefined' || layoutNodes[0].v_x==null || layoutNodes[0].v_y==null){
       isAutoLayout = true;
     }
 
     //排序（确保 start 在最前）
     const nodes = [];
     let nodeEnd = null;
-    data.layout.forEach(node => {
+    layoutNodes.forEach(node => {
       if (node.type == 'start') {
         nodes.unshift(node); //插到前面
       } else if (node.type == 'end') {
