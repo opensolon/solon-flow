@@ -1,0 +1,353 @@
+id: chain_uin93onc6a
+layout:
+  - id: node_jv3mlpklr7
+    type: start
+    title: 开始
+    v_x: -220
+    v_y: -180
+    link:
+      - v_source: node_jv3mlpklr7
+        v_sourcePort: port_b1
+        v_target: node_gafawjnscd
+        v_targetPort: port_t1
+        nextId: node_gafawjnscd
+        id: edge_a5aayssq0k
+  - id: node_gafawjnscd
+    title: 判断所属部门
+    v_x: -220
+    v_y: -80
+    link:
+      - v_source: node_gafawjnscd
+        v_sourcePort: port_b1
+        v_target: node_xii9vk366
+        v_targetPort: port_t1
+        nextId: node_xii9vk366
+        id: edge_wk2rw4xki
+        title: 西安分公司
+      - v_source: node_gafawjnscd
+        v_sourcePort: port_l1
+        v_target: node_wc3rqnwu3q
+        v_targetPort: port_t1
+        nextId: node_wc3rqnwu3q
+        id: edge_3fugo5l4hn
+        title: 事业二部&三部
+      - v_source: node_gafawjnscd
+        v_sourcePort: port_r1
+        v_target: node_i58vufmyx
+        v_targetPort: port_t1
+        nextId: node_i58vufmyx
+        id: edge_vrzz855sx4
+        title: 重庆分公司
+  - id: node_i58vufmyx
+    title: 判断中心
+    v_x: 1010
+    v_y: 50
+    link:
+      - v_source: node_i58vufmyx
+        v_sourcePort: port_l1
+        v_target: node_cjrmfdlmf
+        v_targetPort: port_t1
+        nextId: node_cjrmfdlmf
+        id: edge_mqww4ys47d
+        title: 管理支撑
+      - v_source: node_i58vufmyx
+        v_sourcePort: port_b1
+        v_target: node_a8j5tglzv
+        v_targetPort: port_t1
+        nextId: node_a8j5tglzv
+        id: edge_4gnc404bok
+        title: 招聘中心
+      - v_source: node_i58vufmyx
+        v_sourcePort: port_r1
+        v_target: node_zpbgq0dig3
+        v_targetPort: port_t1
+        nextId: node_zpbgq0dig3
+        id: edge_qutiosjp1e
+        title: 研发中心
+      - v_source: node_i58vufmyx
+        v_sourcePort: port_b1
+        v_target: node_x8lr89uis6
+        v_targetPort: port_t1
+        nextId: node_x8lr89uis6
+        id: edge_2c4htihbvd
+        title: 商务中心
+  - id: node_xii9vk366
+    title: 判断岗位
+    v_x: -220
+    v_y: 50
+    link:
+      - v_source: node_xii9vk366
+        v_sourcePort: port_l1
+        v_target: node_019st68k1l
+        v_targetPort: port_t1
+        nextId: node_019st68k1l
+        id: edge_3slyfclnim
+        title: 技术岗
+      - v_source: node_xii9vk366
+        v_sourcePort: port_r1
+        v_target: node_m5d7dldtvj
+        v_targetPort: port_t1
+        nextId: node_m5d7dldtvj
+        id: edge_wcg6tupq6j
+        title: 管理岗
+  - id: node_wc3rqnwu3q
+    title: 判断岗位
+    v_x: -848
+    v_y: 50
+    link:
+      - v_source: node_wc3rqnwu3q
+        v_sourcePort: port_l1
+        v_target: node_59dm5p5zt
+        v_targetPort: port_t1
+        nextId: node_59dm5p5zt
+        id: edge_y0kbq09itv
+        title: 技术岗
+      - v_source: node_wc3rqnwu3q
+        v_sourcePort: port_r1
+        v_target: node_oukjv47lzf
+        v_targetPort: port_t1
+        nextId: node_oukjv47lzf
+        id: edge_okq4hcpksb
+        title: 管理岗
+  - id: node_59dm5p5zt
+    title: 客户经理：审批
+    v_x: -1008
+    v_y: 150
+    link:
+      - v_source: node_59dm5p5zt
+        v_sourcePort: port_b1
+        v_target: node_9d3354ws6e
+        v_targetPort: port_t1
+        nextId: node_9d3354ws6e
+        id: edge_famypd2iv
+  - id: node_oukjv47lzf
+    title: 判断角色
+    v_x: -680
+    v_y: 150
+    link:
+      - v_source: node_oukjv47lzf
+        v_sourcePort: port_r1
+        v_target: node_njujc5uco
+        v_targetPort: port_r1
+        nextId: node_njujc5uco
+        id: edge_yjqus0ndef
+        title: 部门经理
+      - v_source: node_oukjv47lzf
+        v_sourcePort: port_b1
+        v_target: node_6wnhon7fm
+        v_targetPort: port_t1
+        nextId: node_6wnhon7fm
+        id: edge_05w23hfh7d
+      - v_source: node_oukjv47lzf
+        v_sourcePort: port_l1
+        v_target: node_n9ylysoysq
+        v_targetPort: port_l1
+        nextId: node_n9ylysoysq
+        id: edge_nd1uhukfjr
+        title: 副总经理
+  - id: node_9d3354ws6e
+    title: 部门经理：审批
+    v_x: -1008
+    v_y: 251
+    link:
+      - v_source: node_9d3354ws6e
+        v_sourcePort: port_b1
+        v_target: node_e56v7564js
+        v_targetPort: port_t1
+        nextId: node_e56v7564js
+        id: edge_eur0npwop
+  - id: node_njujc5uco
+    title: 副总经理：审批
+    v_x: -680
+    v_y: 390
+    link:
+      - v_source: node_njujc5uco
+        v_sourcePort: port_b1
+        v_target: node_n9ylysoysq
+        v_targetPort: port_t1
+        nextId: node_n9ylysoysq
+        id: edge_dp3hvd84f
+  - id: node_6wnhon7fm
+    title: 部门经理：审批
+    v_x: -680
+    v_y: 270
+    link:
+      - v_source: node_6wnhon7fm
+        v_sourcePort: port_b1
+        v_target: node_njujc5uco
+        v_targetPort: port_t1
+        nextId: node_njujc5uco
+        id: edge_20pk7vvb7x
+  - id: node_n9ylysoysq
+    title: 总经理：审批
+    v_x: -680
+    v_y: 503
+    link:
+      - v_source: node_n9ylysoysq
+        v_sourcePort: port_b1
+        v_target: node_hjni8g5kc
+        v_targetPort: port_l1
+        nextId: node_hjni8g5kc
+        id: edge_6n3tmo50y
+  - id: node_e56v7564js
+    title: 副总经理：审批
+    v_x: -1008
+    v_y: 350
+    link:
+      - v_source: node_e56v7564js
+        v_sourcePort: port_b1
+        v_target: node_47wxx78ky
+        v_targetPort: port_t1
+        nextId: node_47wxx78ky
+        id: edge_e3kg8pntho
+  - id: node_47wxx78ky
+    title: 人力主管-技术岗
+    v_x: -1008
+    v_y: 453
+    link:
+      - v_source: node_47wxx78ky
+        v_sourcePort: port_b1
+        v_target: node_hjni8g5kc
+        v_targetPort: port_l1
+        nextId: node_hjni8g5kc
+        id: edge_ozupxoeopz
+  - id: node_019st68k1l
+    title: 客户经理：审批
+    v_x: -390
+    v_y: 150
+    link:
+      - v_source: node_019st68k1l
+        v_sourcePort: port_b1
+        v_target: node_x3ekj9yd3g
+        v_targetPort: port_t1
+        nextId: node_x3ekj9yd3g
+        id: edge_rvszj11az
+  - id: node_x3ekj9yd3g
+    title: 西安分副总经理：审批
+    v_x: -390
+    v_y: 270
+    link:
+      - v_source: node_x3ekj9yd3g
+        v_sourcePort: port_b1
+        v_target: node_09x11flxes
+        v_targetPort: port_t1
+        nextId: node_09x11flxes
+        id: edge_mgpjot5lle
+  - id: node_m5d7dldtvj
+    title: 判断角色
+    v_x: -60
+    v_y: 150
+    link:
+      - v_source: node_m5d7dldtvj
+        v_sourcePort: port_r1
+        v_target: node_vldxcmman
+        v_targetPort: port_r1
+        nextId: node_vldxcmman
+        id: edge_t991vtleg
+        title: 西安分副总经理
+      - v_source: node_m5d7dldtvj
+        v_sourcePort: port_l1
+        v_target: node_wdr9fwsw6g
+        v_targetPort: port_l1
+        nextId: node_wdr9fwsw6g
+        id: edge_rkh0vn0s82
+        title: 西安分总经理
+      - v_source: node_m5d7dldtvj
+        v_sourcePort: port_b1
+        v_target: node_cgqxtdq9cq
+        v_targetPort: port_t1
+        nextId: node_cgqxtdq9cq
+        id: edge_qc1jt2r26y
+  - id: node_09x11flxes
+    title: 西安分总经理：审批
+    v_x: -390
+    v_y: 390
+    link:
+      - v_source: node_09x11flxes
+        v_sourcePort: port_b1
+        v_target: node_hjni8g5kc
+        v_targetPort: port_t1
+        nextId: node_hjni8g5kc
+        id: edge_xji2tnyik
+  - id: node_cgqxtdq9cq
+    title: 西安分副总经理：审批
+    v_x: -60
+    v_y: 270
+    link:
+      - v_source: node_cgqxtdq9cq
+        v_sourcePort: port_b1
+        v_target: node_vldxcmman
+        v_targetPort: port_t1
+        nextId: node_vldxcmman
+        id: edge_gjrxh93fdk
+  - id: node_vldxcmman
+    title: 西安分总经理：审批
+    v_x: -60
+    v_y: 390
+    link:
+      - v_source: node_vldxcmman
+        v_sourcePort: port_b1
+        v_target: node_wdr9fwsw6g
+        v_targetPort: port_t1
+        nextId: node_wdr9fwsw6g
+        id: edge_8ohrpdj2l
+  - id: node_wdr9fwsw6g
+    title: 总经理：审批
+    v_x: -60
+    v_y: 503
+    link:
+      - v_source: node_wdr9fwsw6g
+        v_sourcePort: port_b1
+        v_target: node_hjni8g5kc
+        v_targetPort: port_t1
+        nextId: node_hjni8g5kc
+        id: edge_ze3jcmgouc
+  - id: node_cjrmfdlmf
+    title: 判断角色
+    v_x: 620
+    v_y: 170
+    link:
+      - v_source: node_cjrmfdlmf
+        v_sourcePort: port_b1
+        v_target: node_hjni8g5kc
+        v_targetPort: port_r1
+        nextId: node_hjni8g5kc
+        id: edge_8gwf2b3rge
+  - id: node_a8j5tglzv
+    title: 判断角色
+    v_x: 810
+    v_y: 170
+    link:
+      - v_source: node_a8j5tglzv
+        v_sourcePort: port_b1
+        v_target: node_hjni8g5kc
+        v_targetPort: port_r1
+        nextId: node_hjni8g5kc
+        id: edge_afhzj86u6
+  - id: node_x8lr89uis6
+    title: 判断角色
+    v_x: 1194
+    v_y: 170
+    link:
+      - v_source: node_x8lr89uis6
+        v_sourcePort: port_b1
+        v_target: node_hjni8g5kc
+        v_targetPort: port_r1
+        nextId: node_hjni8g5kc
+        id: edge_1axtootj6g
+  - id: node_zpbgq0dig3
+    title: 判断角色
+    v_x: 1404
+    v_y: 170
+    link:
+      - v_source: node_zpbgq0dig3
+        v_sourcePort: port_b1
+        v_target: node_hjni8g5kc
+        v_targetPort: port_r1
+        nextId: node_hjni8g5kc
+        id: edge_2ri9kainzj
+  - id: node_hjni8g5kc
+    type: end
+    title: 结束
+    v_x: -220
+    v_y: 760
