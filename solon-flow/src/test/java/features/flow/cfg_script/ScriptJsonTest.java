@@ -6,6 +6,8 @@ import org.noear.solon.flow.Chain;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 
+import java.util.concurrent.Executors;
+
 /**
  * 手动配装风格
  *
@@ -111,12 +113,22 @@ public class ScriptJsonTest {
     }
 
     @Test
-    public void case8_parallel() throws Throwable {
+    public void case8() throws Throwable {
         Chain chain = Chain.parseByUri("classpath:flow/script_case8.chain.yml");
 
         FlowContext context = new FlowContext();
         context.result = 1;
         flowEngine.eval(chain, context);
         assert context.result.equals(3);
+    }
+
+    @Test
+    public void case9_parallel() throws Throwable {
+        Chain chain = Chain.parseByUri("classpath:flow/script_case9.chain.yml");
+
+        FlowContext context = new FlowContext();
+        context.executor(Executors.newFixedThreadPool(2));
+
+        flowEngine.eval(chain, context);
     }
 }

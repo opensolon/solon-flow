@@ -2,6 +2,7 @@
 ### 3.3.3
 
 * 添加 solon-flow LinkDecl:when 方法用于替代 :condition（后者标为弃用）
+* 添加 solon-flow parallel 网关多线程并行支持（通过 context.executor 决定）
 * 调整 solon-flow FlowDriver:handleTest 更名为 handleCondition （跟 handleTask 容易混）
 
 ### 3.3.2

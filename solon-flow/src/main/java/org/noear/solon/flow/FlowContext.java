@@ -24,6 +24,7 @@ import org.noear.solon.lang.Preview;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 
 /**
@@ -45,6 +46,8 @@ public class FlowContext {
     private transient boolean interrupted = false;
     //控制流程停止（可选）
     private transient boolean stopped = false;
+    //异步执行器
+    private transient Executor executor;
 
     //当前流程引擎
     protected transient FlowEngine engine;
@@ -106,6 +109,23 @@ public class FlowContext {
      */
     public FlowEngine engine() {
         return engine;
+    }
+
+    /**
+     * 异步执行器
+     */
+    @Preview("3.3")
+    public Executor executor() {
+        return executor;
+    }
+
+    /**
+     * 配置异步执行器
+     */
+    @Preview("3.3")
+    public FlowContext executor(Executor executor) {
+        this.executor = executor;
+        return this;
     }
 
 

@@ -23,7 +23,11 @@ import org.noear.solon.flow.intercept.ChainInterceptor;
 import org.noear.solon.flow.intercept.ChainInvocation;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * 流引擎实现
@@ -360,8 +364,42 @@ public class FlowEngineDefault implements FlowEngine {
         context.counter().set(node.getChain(), node.getId(), 0);
 
         //::流出
-        for (Node n : node.getNextNodes()) {
-            node_run(driver, context, n, depth);
+        if (context.executor() == null) {
+            //单线程
+            for (Node n : node.getNextNodes()) {
+                node_run(driver, context, n, depth);
+            }
+        } else {
+            //多线程
+            CountDownLatch cdl = new CountDownLatch(node.getNextNodes().size());
+            AtomicReference<Throwable> errorRef = new AtomicReference<>();
+            for (Node n : node.getNextNodes()) {
+                context.executor().execute(() -> {
+                    try {
+                        node_run(driver, context, n, depth);
+                    } catch (Throwable ex) {
+                        errorRef.set(ex);
+                    } finally {
+                        cdl.countDown();
+                    }
+                });
+            }
+
+            //等待
+            try {
+                cdl.await();
+            } catch (InterruptedException ignore) {
+                //
+            }
+
+            //异常处理
+            if (errorRef.get() != null) {
+                if (errorRef.get() instanceof FlowException) {
+                    throw (FlowException) errorRef.get();
+                } else {
+                    throw new FlowException(errorRef.get());
+                }
+            }
         }
 
         return true;
