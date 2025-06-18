@@ -376,6 +376,10 @@ public class FlowEngineDefault implements FlowEngine {
             for (Node n : node.getNextNodes()) {
                 context.executor().execute(() -> {
                     try {
+                        if(errorRef.get() != null) {
+                            return;
+                        }
+
                         node_run(driver, context, n, depth);
                     } catch (Throwable ex) {
                         errorRef.set(ex);
