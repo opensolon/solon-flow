@@ -2,7 +2,7 @@
 ### 3.3.3
 
 * 添加 solon-flow LinkDecl:when 方法用于替代 :condition（后者标为弃用）
-* 调整 solon-flow FlowDriver:handleTest 更名为 handleCondition
+* 调整 solon-flow FlowDriver:handleTest 更名为 handleCondition （跟 handleTask 容易混）
 
 ### 3.3.2
 
