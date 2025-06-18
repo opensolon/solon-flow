@@ -9,6 +9,23 @@ import org.noear.solon.flow.FlowEngine;
  * @author noear 2025/6/18 created
  */
 public class HelloTest {
+    @Test
+    public void parse1() {
+        //预热
+        for (int i = 0; i < 10; i++) {
+            Chain.parseByText(case1_yml);
+        }
+
+        //测试
+        int count = 10_000; //flow(on macbook): 1.4s 跑完
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < count; i++) {
+            Chain.parseByText(case1_yml);
+        }
+        long time1 = System.currentTimeMillis() - start;
+        System.out.println("parse1:" + time1);
+    }
+
     //没有 io
     @Test
     public void case1() {
