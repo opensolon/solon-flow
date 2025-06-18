@@ -1,0 +1,18 @@
+
+id: "case1"
+layout:
+  - type: exclusive
+    link:
+      - when: a > b
+        nextId: sum
+      - nextId: sub
+  - id: sum
+    title: "加法"
+    task: "context.result = a + b;"
+    link: end
+  - id: sub
+    title: "减法"
+    task: "context.result = a - b;"
+    link: end
+  - id: end
+    type: end
