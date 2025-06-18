@@ -5,6 +5,8 @@ import org.noear.solon.flow.Chain;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * @author noear 2025/6/18 created
  */
@@ -26,27 +28,31 @@ public class HelloTest {
         System.out.println("parse1:" + time1);
     }
 
+    private FlowContext case1_getContext() {
+        FlowContext context = new FlowContext();
+        context.put("a", 3);
+        context.put("b", 4);
+
+        return context;
+    }
+
     //没有 io
     @Test
     public void case1() {
         FlowEngine flowEngine = FlowEngine.newInstance();
         flowEngine.load(Chain.parseByText(case1_yml));
 
-        FlowContext context = new FlowContext();
-        context.put("a", 3);
-        context.put("b", 4);
-
         //预热
         for (int i = 0; i < 10; i++) {
-            flowEngine.eval("case1", context);
+            flowEngine.eval("case1", case1_getContext());
             case1_java(3, 4);
         }
 
         //测试
-        int count = 1_000_000; //flow(on macbook): 0.9s 跑完
+        int count = 1_000_000; //flow(on macbook): 1s 跑完
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
-            flowEngine.eval("case1", context);
+            flowEngine.eval("case1", case1_getContext());
         }
         long time_flow = System.currentTimeMillis() - start;
 
@@ -75,11 +81,9 @@ public class HelloTest {
         FlowEngine flowEngine = FlowEngine.newInstance();
         flowEngine.load(Chain.parseByText(case2_yml));
 
-        FlowContext context = new FlowContext();
-
         //预热
         for (int i = 0; i < 10; i++) {
-            flowEngine.eval("case2", context);
+            flowEngine.eval("case2");
             case2_java();
         }
 
@@ -87,7 +91,7 @@ public class HelloTest {
         int count = 100_000; //flow: 0.5s 跑完
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
-            flowEngine.eval("case2", context);
+            flowEngine.eval("case2");
         }
         long time_flow = System.currentTimeMillis() - start;
 

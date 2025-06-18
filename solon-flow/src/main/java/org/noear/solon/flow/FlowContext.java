@@ -38,14 +38,14 @@ public class FlowContext {
     //存放数据模型
     private transient final Map<String, Object> model = new ConcurrentHashMap<>();
     //存放执行结果（可选）
-    public transient Object result;
+    public transient volatile Object result;
 
     //控制过程计数
     private transient final Counter counter = new Counter();
     //控制分支阻断（可选）
-    private transient boolean interrupted = false;
+    private transient volatile boolean interrupted = false;
     //控制流程停止（可选）
-    private transient boolean stopped = false;
+    private transient volatile boolean stopped = false;
     //异步执行器
     private transient Executor executor;
 
