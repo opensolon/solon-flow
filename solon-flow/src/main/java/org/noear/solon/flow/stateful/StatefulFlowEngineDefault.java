@@ -195,8 +195,8 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
             driver.getStateRepository().putState(context, activity, newState);
         }
 
-        //发送提交变更事件
-        driver.getStateRepository().onPostState(context, activity, newState);
+        //发送提交操作事件
+        driver.getStateRepository().onPostOperation(context, activity, operation);
 
         //如果是完成或跳过，则向前流动
         if (operation == StateOperation.FORWARD) {
