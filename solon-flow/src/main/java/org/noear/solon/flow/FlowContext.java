@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 /**
@@ -47,7 +48,7 @@ public class FlowContext {
     //控制流程停止（可选）
     private transient volatile boolean stopped = false;
     //异步执行器
-    private transient Executor executor;
+    private transient ExecutorService executor;
 
     //当前流程引擎
     protected transient FlowEngine engine;
@@ -115,7 +116,7 @@ public class FlowContext {
      * 异步执行器
      */
     @Preview("3.3")
-    public Executor executor() {
+    public ExecutorService executor() {
         return executor;
     }
 
@@ -123,7 +124,7 @@ public class FlowContext {
      * 配置异步执行器
      */
     @Preview("3.3")
-    public FlowContext executor(Executor executor) {
+    public FlowContext executor(ExecutorService executor) {
         this.executor = executor;
         return this;
     }
