@@ -23,7 +23,6 @@ public class RedisStateRepositoryEx extends RedisStateRepository {
     /**
      * 提交活动状态时
      */
-    @Override
     public void onPostOperation(FlowContext context, Node node, StateOperation operation) {
         String instanceId = context.getInstanceId();
         String chainId = node.getChain().getId();

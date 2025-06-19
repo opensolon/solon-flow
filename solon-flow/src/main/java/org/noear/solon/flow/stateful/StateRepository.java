@@ -46,11 +46,4 @@ public interface StateRepository {
      * 清空
      */
     void clearState(FlowContext context);
-
-    /**
-     * 提交操作时
-     */
-    default void onPostOperation(FlowContext context, Node node, StateOperation operation) {
-
-    }
 }
