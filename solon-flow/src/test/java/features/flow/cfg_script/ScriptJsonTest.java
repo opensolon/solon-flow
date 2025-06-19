@@ -123,7 +123,7 @@ public class ScriptJsonTest {
     }
 
     @Test
-    public void case9_parallel() throws Throwable {
+    public void case9_parallel_async() throws Throwable {
         Chain chain = Chain.parseByUri("classpath:flow/script_case9.chain.yml");
 
         FlowContext context = new FlowContext();
