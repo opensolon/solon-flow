@@ -35,6 +35,6 @@ public class DemoController {
         FlowContext context = new FlowContext(instanceId);
         context.put("actor", ctx.param("actor"));
 
-        flowEngine.postActivityState(context, chainId, nodeId, StateOperation.codeOf(operation));
+        flowEngine.postOperation(context, chainId, nodeId, StateOperation.codeOf(operation));
     }
 }

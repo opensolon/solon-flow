@@ -90,7 +90,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
                     stateRepository.putState(context, task.getNode(), StateType.COMPLETED);
 
                     //发送提交变更事件
-                    stateRepository.onPostActivityState(context, task.getNode(), StateType.COMPLETED);
+                    stateRepository.onPostState(context, task.getNode(), StateType.COMPLETED);
 
                     //确保任务只被执行一次
                     postHandleTask(context, task);

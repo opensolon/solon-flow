@@ -65,7 +65,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
+        flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getContext("陈鑫");
@@ -86,7 +86,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
+        flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getContext("陈鑫");
@@ -106,7 +106,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
+        flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getContext("吕方");
@@ -118,7 +118,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
+        flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getContext("吕方");
@@ -147,8 +147,8 @@ public class OaStatefulFlowRedisTest {
 //        assert StateType.UNKNOWN == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
 //
 //        /// ////////////////
-//        //提交状态
-//        flowEngine.postActivityState(context, statefulNode.getNode(), ActionType.FORWARD);
+//        //提交操作
+//        flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 //
 //        context = new FlowContext("i1").put("actor", "陈鑫");
 //        statefulNode = flowEngine.getActivityNode(chainId, context);

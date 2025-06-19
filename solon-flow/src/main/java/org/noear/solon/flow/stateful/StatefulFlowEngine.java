@@ -53,11 +53,6 @@ public interface StatefulFlowEngine extends FlowEngine {
      */
     StatefulFlowDriver getDriver();
 
-    /**
-     * 清空状态
-     */
-    void clearState(FlowContext context);
-
     /// ////////////////////////////////
 
     /**
@@ -79,6 +74,30 @@ public interface StatefulFlowEngine extends FlowEngine {
      * 单步后退
      */
     StatefulNode stepBack(Chain chain, FlowContext context);
+
+
+    /// ////////////////////////////////
+
+    /**
+     * 提交操作（如果当前节点为等待介入）
+     */
+    boolean postOperationIfWaiting(FlowContext context, String chainId, String activityNodeId, StateOperation operation);
+
+    /**
+     * 提交操作（如果当前节点为等待介入）
+     */
+    boolean postOperationIfWaiting(FlowContext context, Node activity, StateOperation operation);
+
+    /**
+     * 提交操作
+     */
+    void postOperation(FlowContext context, String chainId, String activityNodeId, StateOperation operation);
+
+    /**
+     * 提交操作
+     */
+    void postOperation(FlowContext context, Node activity, StateOperation operation);
+
 
     /// ////////////////////////////////
 
@@ -113,22 +132,7 @@ public interface StatefulFlowEngine extends FlowEngine {
     /// ////////////////////////////////
 
     /**
-     * 提交活动状态（如果当前节点为等待介入）
+     * 清空状态
      */
-    boolean postActivityStateIfWaiting(FlowContext context, String chainId, String activityNodeId, StateOperation operation);
-
-    /**
-     * 提交活动状态（如果当前节点为等待介入）
-     */
-    boolean postActivityStateIfWaiting(FlowContext context, Node activity, StateOperation operation);
-
-    /**
-     * 提交活动状态
-     */
-    void postActivityState(FlowContext context, String chainId, String activityNodeId, StateOperation operation);
-
-    /**
-     * 提交活动状态
-     */
-    void postActivityState(FlowContext context, Node activity, StateOperation operation);
+    void clearState(FlowContext context);
 }

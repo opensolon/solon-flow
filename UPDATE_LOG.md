@@ -1,4 +1,11 @@
 
+### 3.3.4
+
+* 调整 solon-flow stateful 相关概念（提交活动状态，改为提交操作）
+* 调整 solon-flow StateType 拆分为：StateType 和 StateOperation
+* 调整 solon-flow StatefulFlowEngine:postActivityState 更名为 postOperation
+* 调整 solon-flow StatefulFlowEngine:postActivityStateIfWaiting 更名为 postOperationIfWaiting
+
 ### 3.3.3
 
 * 优化 solon-flow FlowContext 变量的线程可见

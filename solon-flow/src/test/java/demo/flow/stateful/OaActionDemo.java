@@ -31,7 +31,7 @@ public class OaActionDemo {
         //展示界面，操作。然后：
 
         context.put("op", "审批");//作为状态的一部分
-        flowEngine.postActivityState(context, node.getNode(), StateOperation.FORWARD);
+        flowEngine.postOperation(context, node.getNode(), StateOperation.FORWARD);
     }
 
     //回退
@@ -41,7 +41,7 @@ public class OaActionDemo {
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         context.put("op", "回退");//作为状态的一部分
-        flowEngine.postActivityState(context, node.getNode(), StateOperation.BACK);
+        flowEngine.postOperation(context, node.getNode(), StateOperation.BACK);
     }
 
     //任意跳转（通过）
@@ -53,7 +53,7 @@ public class OaActionDemo {
         while (true) {
             StatefulNode statefulNode = flowEngine.getActivityNode(chainId, context);
             context.put("op", "任意转跳");//作为状态的一部分
-            flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
+            flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
             //到目标节点了
             if (statefulNode.getNode().getId().equals(nodeId)) {
@@ -71,7 +71,7 @@ public class OaActionDemo {
         while (true) {
             StatefulNode statefulNode = flowEngine.getActivityNode(chainId, context);
             context.put("op", "任意转跳");//作为状态的一部分
-            flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.BACK);
+            flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.BACK);
 
             //到目标节点了
             if (statefulNode.getNode().getId().equals(nodeId)) {
@@ -88,7 +88,7 @@ public class OaActionDemo {
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         context.put("op", "委派");//作为状态的一部分
-        flowEngine.postActivityState(context, node.getNode(), StateOperation.FORWARD);
+        flowEngine.postOperation(context, node.getNode(), StateOperation.FORWARD);
     }
 
     //转办（与委派技术实现差不多）
@@ -99,7 +99,7 @@ public class OaActionDemo {
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         context.put("op", "转办");//作为状态的一部分
-        flowEngine.postActivityState(context, node.getNode(), StateOperation.FORWARD);
+        flowEngine.postOperation(context, node.getNode(), StateOperation.FORWARD);
     }
 
     //催办
@@ -118,7 +118,7 @@ public class OaActionDemo {
 
         //回退到顶（给发起人）；相当于重新开始走流程
         context.put("op", "取回");//作为状态的一部分
-        flowEngine.postActivityState(context, node.getNode(), StateOperation.RESTART);
+        flowEngine.postOperation(context, node.getNode(), StateOperation.RESTART);
     }
 
     //撤销（和回退没啥区别）
@@ -127,7 +127,7 @@ public class OaActionDemo {
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         context.put("op", "撤销");//作为状态的一部分
-        flowEngine.postActivityState(context, node.getNode(), StateOperation.BACK);
+        flowEngine.postOperation(context, node.getNode(), StateOperation.BACK);
     }
 
     //中止
@@ -136,7 +136,7 @@ public class OaActionDemo {
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
         context.put("op", "中止");//作为状态的一部分
-        flowEngine.postActivityState(context, node.getNode(), StateOperation.TERMINATED);
+        flowEngine.postOperation(context, node.getNode(), StateOperation.TERMINATED);
     }
 
     //抄送
@@ -144,7 +144,7 @@ public class OaActionDemo {
         FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postActivityState(context, node.getNode(), StateOperation.FORWARD);
+        flowEngine.postOperation(context, node.getNode(), StateOperation.FORWARD);
         //提交后，会自动触发任务（如果有抄送配置，自动执行）
     }
 
@@ -166,7 +166,7 @@ public class OaActionDemo {
         FlowContext context = new FlowContext(instanceId);
         StatefulNode node = flowEngine.getActivityNode(chainId, context);
 
-        flowEngine.postActivityState(context, node.getNode(), StateOperation.FORWARD);
+        flowEngine.postOperation(context, node.getNode(), StateOperation.FORWARD);
     }
 
     //会签
@@ -186,6 +186,6 @@ public class OaActionDemo {
 
     //暂存
     public void case17() throws Exception {
-        //不提交节点状态即可
+        //不提交操作即可
     }
 }

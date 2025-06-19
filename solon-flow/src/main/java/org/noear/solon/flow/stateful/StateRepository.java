@@ -48,9 +48,9 @@ public interface StateRepository {
     void clearState(FlowContext context);
 
     /**
-     * 活动状态提交时（有些状态不需要推入）
+     * 提交状态时（有些状态不需要推入）
      */
-    default void onPostActivityState(FlowContext context, Node node, StateType state) {
+    default void onPostState(FlowContext context, Node node, StateType state) {
 
     }
 }

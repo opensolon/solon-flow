@@ -185,8 +185,8 @@ var statefulNode = flowEngine.getActivityNode("f1", context);
 assert "step2".equals(statefulNode.getNode().getId());
 assert StateType.UNKNOWN == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
 
-//提交活动状态
-flowEngine.postActivityState(context, "f1", statefulNode.getNode().getId(), StateType.COMPLETED);
+//提交操作
+flowEngine.postOperation(context, "f1", statefulNode.getNode().getId(), StateOperation.FORWARD);
 ```
 
 流程配置样例：
