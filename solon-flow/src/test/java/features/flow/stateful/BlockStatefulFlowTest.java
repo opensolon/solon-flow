@@ -36,7 +36,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活。。。。
 
         //（干完后）提交节点状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
+        flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
 
         //获取节点
         context = new FlowContext(instanceId1);
@@ -46,7 +46,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活。。。。
 
         //（干完后）提交节点状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
+        flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         //获取节点
@@ -57,7 +57,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活。。。。
 
         //（干完后）提交节点状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
+        flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         //获取节点
@@ -68,7 +68,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活
 
         //提交节点状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
+        flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         ///  （换一个实例）
@@ -77,13 +77,13 @@ public class BlockStatefulFlowTest {
         statefulNode = flowEngine.getActivityNode(chainId, context);
         assertNode(statefulNode, "step1");
 
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
+        flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
 
         context = new FlowContext(instanceId2);
         statefulNode = flowEngine.getActivityNode(chainId, context);
         assertNode(statefulNode, "step2");
 
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
+        flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = new FlowContext(instanceId2);

@@ -6,7 +6,7 @@ import org.noear.solon.annotation.Mapping;
 import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.ModelAndView;
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.stateful.StateType;
+import org.noear.solon.flow.stateful.StateOperation;
 import org.noear.solon.flow.stateful.StatefulFlowEngineDefault;
 import org.noear.solon.flow.stateful.StatefulNode;
 
@@ -31,10 +31,10 @@ public class DemoController {
 
     //操作提交
     @Mapping("post")
-    public void postFlow(Context ctx, String instanceId, String chainId, String nodeId, int state) throws Throwable {
+    public void postFlow(Context ctx, String instanceId, String chainId, String nodeId, int operation) throws Throwable {
         FlowContext context = new FlowContext(instanceId);
         context.put("actor", ctx.param("actor"));
 
-        flowEngine.postActivityState(context, chainId, nodeId, StateType.codeOf(state));
+        flowEngine.postActivityState(context, chainId, nodeId, StateOperation.codeOf(operation));
     }
 }

@@ -65,7 +65,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
+        flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getContext("陈鑫");
@@ -86,7 +86,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
+        flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getContext("陈鑫");
@@ -106,7 +106,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
+        flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getContext("吕方");
@@ -118,7 +118,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
+        flowEngine.postActivityState(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getContext("吕方");
@@ -148,7 +148,7 @@ public class OaStatefulFlowRedisTest {
 //
 //        /// ////////////////
 //        //提交状态
-//        flowEngine.postActivityState(context, statefulNode.getNode(), StateType.COMPLETED);
+//        flowEngine.postActivityState(context, statefulNode.getNode(), ActionType.FORWARD);
 //
 //        context = new FlowContext("i1").put("actor", "陈鑫");
 //        statefulNode = flowEngine.getActivityNode(chainId, context);

@@ -16,32 +16,37 @@
 package org.noear.solon.flow.stateful;
 
 /**
- * 状态类型
+ * 状态操作
  *
  * @author noear
- * @since 3.1
+ * @since 3.3
  */
-public enum StateType {
+public enum StateOperation {
     /**
      * 未知
      */
     UNKNOWN(0),
     /**
-     * 等待
+     * 后退（撤回）
      */
-    WAITING(1001),
+    BACK(1001), //=>state: WAITING
     /**
-     * 完成（通过）
+     * 前进（通过）
      */
-    COMPLETED(1002),
+    FORWARD(1002), //=>state: COMPLETED
     /**
      * 终止（否决）
      */
-    TERMINATED(1003);
+    TERMINATED(1003), //=>state: TERMINATED
+    /**
+     * 重新开始
+     */
+    RESTART(1004), //=>state: UNKNOWN
+    ;
 
     private final int code;
 
-    StateType(int code) {
+    StateOperation(int code) {
         this.code = code;
     }
 
@@ -52,14 +57,16 @@ public enum StateType {
     /**
      * 根据代码构建
      */
-    public static StateType codeOf(int code) {
+    public static StateOperation codeOf(int code) {
         switch (code) {
             case 1001:
-                return WAITING;
+                return BACK;
             case 1002:
-                return COMPLETED;
+                return FORWARD;
             case 1003:
                 return TERMINATED;
+            case 1004:
+                return RESTART;
             default:
                 return UNKNOWN;
         }

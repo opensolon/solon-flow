@@ -115,20 +115,20 @@ public interface StatefulFlowEngine extends FlowEngine {
     /**
      * 提交活动状态（如果当前节点为等待介入）
      */
-    boolean postActivityStateIfWaiting(FlowContext context, String chainId, String activityNodeId, StateType state);
+    boolean postActivityStateIfWaiting(FlowContext context, String chainId, String activityNodeId, StateOperation operation);
 
     /**
      * 提交活动状态（如果当前节点为等待介入）
      */
-    boolean postActivityStateIfWaiting(FlowContext context, Node activity, StateType state);
+    boolean postActivityStateIfWaiting(FlowContext context, Node activity, StateOperation operation);
 
     /**
      * 提交活动状态
      */
-    void postActivityState(FlowContext context, String chainId, String activityNodeId, StateType state);
+    void postActivityState(FlowContext context, String chainId, String activityNodeId, StateOperation operation);
 
     /**
      * 提交活动状态
      */
-    void postActivityState(FlowContext context, Node activity, StateType state);
+    void postActivityState(FlowContext context, Node activity, StateOperation operation);
 }
