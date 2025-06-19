@@ -364,7 +364,7 @@ public class FlowEngineDefault implements FlowEngine {
         context.counter().set(node.getChain(), node.getId(), 0);
 
         //::流出
-        if (context.executor() == null) {
+        if (context.executor() == null || node.getNextNodes().size() < 2) { //没有2个，也没必要用线程池
             //单线程
             for (Node n : node.getNextNodes()) {
                 node_run(driver, context, n, depth);
@@ -376,7 +376,7 @@ public class FlowEngineDefault implements FlowEngine {
             for (Node n : node.getNextNodes()) {
                 context.executor().execute(() -> {
                     try {
-                        if(errorRef.get() != null) {
+                        if (errorRef.get() != null) {
                             return;
                         }
 
