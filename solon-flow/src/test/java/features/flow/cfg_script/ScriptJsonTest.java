@@ -127,7 +127,7 @@ public class ScriptJsonTest {
         Chain chain = Chain.parseByUri("classpath:flow/script_case9.chain.yml");
 
         FlowContext context = new FlowContext();
-        context.executor(Executors.newFixedThreadPool(2));
+        context.executor(Executors.newFixedThreadPool(4));
 
         flowEngine.eval(chain, context);
     }
