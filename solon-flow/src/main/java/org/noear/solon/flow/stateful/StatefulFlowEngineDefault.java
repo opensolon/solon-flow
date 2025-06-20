@@ -197,7 +197,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
                 driver.getStateRepository().putState(context, activity, newState);
 
                 //重新查找下一个可执行节点（可能为自动前进）
-                StatefulNode nextNode = getActivity(activity.getChain(), context);
+                StatefulNode nextNode = getActivity(activity.getChain(), new FlowContext().putAll(context.model()));
                 if (nextNode != null) {
                     if (driver.getStateController().isAutoForward(context, nextNode.getNode())) {
                         //如果要自动前进
