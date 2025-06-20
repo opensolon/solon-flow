@@ -7,6 +7,8 @@
 * 调整 solon-flow StatefulFlowEngine:postActivityStateIfWaiting 更名为 postOperationIfWaiting
 
 
+方法名称调整：
+
 | 旧方法                          | 新方法                      |   |
 |------------------------------|--------------------------|---|
 | `getActivityNodes`           | `getActivitys`           |   |
@@ -14,6 +16,18 @@
 |                              |                          |   |
 | `postActivityStateIfWaiting` | `postOperationIfWaiting` |   |
 | `postActivityState`          | `postOperation`          |   |
+
+状态类型拆解后的对应关系（之前状态与操作混一起，不合理）
+
+| StateType(旧)         | StateType(新)          | StateOperation(新)     |
+|----------------------|-----------------------|--------------------|
+| `UNKNOWN(0)`         | `UNKNOWN(0)`          | `UNKNOWN(0)`       |
+| `WAITING(1001)`      | `WAITING(1001)`       | `BACK(1001)`       |
+| `COMPLETED(1002)`    | `COMPLETED(1002)`     | `FORWARD(1002)`    |
+| `TERMINATED(1003)`   | `TERMINATED(1003)`    | `TERMINATED(1003)` |
+| `RETURNED(1004)`     |                       | `BACK(1001)`       |
+| `RESTART(1005)`      |                       | `RESTART(1004)`    |
+
 
 
 

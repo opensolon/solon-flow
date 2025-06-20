@@ -35,7 +35,7 @@ public enum StateOperation {
      */
     FORWARD(1002), //=>state: COMPLETED
     /**
-     * 终止（否决）
+     * 终止（取消）
      */
     TERMINATED(1003), //=>state: TERMINATED
     /**

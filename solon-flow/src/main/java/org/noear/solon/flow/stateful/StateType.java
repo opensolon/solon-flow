@@ -35,7 +35,7 @@ public enum StateType {
      */
     COMPLETED(1002),
     /**
-     * 终止（否决）
+     * 终止（取消）
      */
     TERMINATED(1003);
 
