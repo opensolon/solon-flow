@@ -177,7 +177,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * 提交操作
      */
     protected void postOperationDo(FlowContext context, Node activity, StateOperation operation) {
-        if(operation ==  StateOperation.UNKNOWN) {
+        if (operation == StateOperation.UNKNOWN) {
             throw new IllegalArgumentException("StateOperation is UNKNOWN");
         }
 
@@ -190,26 +190,26 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
         } else if (operation == StateOperation.RESTART) {
             //撤回全部（重新开始）
             driver.getStateRepository().clearState(context);
-        } else {
-            //其它（等待或通过或拒绝）
-            driver.getStateRepository().putState(context, activity, newState);
-        }
-
-        //如果是完成或跳过，则向前流动
-        if (operation == StateOperation.FORWARD) {
+        } else if (operation == StateOperation.FORWARD) {
+            //如果是完成或跳过，则向前流动
             try {
                 driver.postHandleTask(context, activity.getTask());
+                driver.getStateRepository().putState(context, activity, newState);
 
-                Node nextNode = activity.getNextNode();
+                //重新查找下一个可执行节点（可能为自动前进）
+                StatefulNode nextNode = getActivity(activity.getChain(), context);
                 if (nextNode != null) {
-                    if (driver.getStateController().isAutoForward(context, nextNode)) {
+                    if (driver.getStateController().isAutoForward(context, nextNode.getNode())) {
                         //如果要自动前进
-                        eval(nextNode, context);
+                        eval(nextNode.getNode(), context);
                     }
                 }
             } catch (Throwable e) {
                 throw new FlowException("Task handle failed: " + activity.getChain().getId() + " / " + activity.getId(), e);
             }
+        } else {
+            //其它（等待或通过或拒绝）
+            driver.getStateRepository().putState(context, activity, newState);
         }
     }
 
