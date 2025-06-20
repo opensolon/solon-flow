@@ -30,7 +30,7 @@ public class BlockStatefulFlowTest {
 
         //获取节点
         context = new FlowContext(instanceId1);
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         assertNode(statefulNode, "step1");
 
         //根据节点干活。。。。
@@ -40,7 +40,7 @@ public class BlockStatefulFlowTest {
 
         //获取节点
         context = new FlowContext(instanceId1);
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         assertNode(statefulNode, "step2");
 
         //根据节点干活。。。。
@@ -51,7 +51,7 @@ public class BlockStatefulFlowTest {
 
         //获取节点
         context = new FlowContext(instanceId1);
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         assertNode(statefulNode, "step3");
 
         //根据节点干活。。。。
@@ -62,7 +62,7 @@ public class BlockStatefulFlowTest {
 
         //获取节点
         context = new FlowContext(instanceId1);
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         assertNode(statefulNode, "step4_1");
 
         //根据节点干活
@@ -74,20 +74,20 @@ public class BlockStatefulFlowTest {
         ///  （换一个实例）
 
         context = new FlowContext(instanceId2);
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         assertNode(statefulNode, "step1");
 
         flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
         context = new FlowContext(instanceId2);
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         assertNode(statefulNode, "step2");
 
         flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = new FlowContext(instanceId2);
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         assertNode(statefulNode, "step3");
 
 
@@ -95,7 +95,7 @@ public class BlockStatefulFlowTest {
 
         //获取节点
         context = new FlowContext(instanceId1);
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         assertNode(statefulNode, "step4_2");
     }
 
@@ -122,7 +122,7 @@ public class BlockStatefulFlowTest {
         assert "step3".equals(statefulNode.getNode().getId());
 
         //此时，已经是：step4_1 = WAITING
-        statefulNode = flowEngine.getActivityNode(chainId, new FlowContext(instanceId1));
+        statefulNode = flowEngine.getActivity(chainId, new FlowContext(instanceId1));
         assert "step4_1".equals(statefulNode.getNode().getId());
         assert StateType.WAITING == statefulNode.getState();
 

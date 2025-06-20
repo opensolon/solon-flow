@@ -76,7 +76,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      */
     @Override
     public StatefulNode stepForward(Chain chain, FlowContext context) {
-        StatefulNode statefulNode = getActivityNode(chain, context);
+        StatefulNode statefulNode = getActivity(chain, context);
 
         if (statefulNode != null) {
             postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
@@ -100,12 +100,12 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
     @Override
     public StatefulNode stepBack(Chain chain, FlowContext context) {
         context.backup();
-        StatefulNode statefulNode = getActivityNode(chain, context);
+        StatefulNode statefulNode = getActivity(chain, context);
 
         if (statefulNode != null) {
             postOperation(context, statefulNode.getNode(), StateOperation.BACK);
             context.recovery();
-            statefulNode = getActivityNode(chain, context);
+            statefulNode = getActivity(chain, context);
         }
 
         return statefulNode;
@@ -131,7 +131,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
     public boolean postOperationIfWaiting(FlowContext context, Node activity, StateOperation operation) {
         context.backup();
 
-        StatefulNode statefulNode = getActivityNode(activity.getChain(), context);
+        StatefulNode statefulNode = getActivity(activity.getChain(), context);
         if (statefulNode == null) {
             return false;
         }
@@ -221,8 +221,8 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * @param context 流上下文（不需要有参与者配置）
      */
     @Override
-    public Collection<StatefulNode> getActivityNodes(String chainId, FlowContext context) {
-        return getActivityNodes(getChain(chainId), context);
+    public Collection<StatefulNode> getActivitys(String chainId, FlowContext context) {
+        return getActivitys(getChain(chainId), context);
     }
 
     /**
@@ -231,7 +231,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * @param context 流上下文（不需要有参与者配置）
      */
     @Override
-    public Collection<StatefulNode> getActivityNodes(Chain chain, FlowContext context) {
+    public Collection<StatefulNode> getActivitys(Chain chain, FlowContext context) {
         context.put(StatefulNode.KEY_ACTIVITY_LIST_GET, true);
 
         eval(chain, context);
@@ -250,8 +250,8 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * @param context 流上下文（要有参与者配置）
      */
     @Override
-    public StatefulNode getActivityNode(String chainId, FlowContext context) {
-        return getActivityNode(getChain(chainId), context);
+    public StatefulNode getActivity(String chainId, FlowContext context) {
+        return getActivity(getChain(chainId), context);
     }
 
     /**
@@ -260,7 +260,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * @param context 流上下文（要有参与者配置）
      */
     @Override
-    public StatefulNode getActivityNode(Chain chain, FlowContext context) {
+    public StatefulNode getActivity(Chain chain, FlowContext context) {
         eval(chain, context);
         return context.get(StatefulNode.KEY_ACTIVITY_NODE);
     }

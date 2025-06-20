@@ -102,32 +102,32 @@ public interface StatefulFlowEngine extends FlowEngine {
     /// ////////////////////////////////
 
     /**
-     * 获取多个活动节点
+     * 获取多个活动
      *
      * @param context 流上下文（不需要有人员配置）
      */
-    Collection<StatefulNode> getActivityNodes(String chainId, FlowContext context);
+    Collection<StatefulNode> getActivitys(String chainId, FlowContext context);
 
     /**
-     * 获取多个活动节点
+     * 获取多个活动
      *
      * @param context 流上下文（不需要有人员配置）
      */
-    Collection<StatefulNode> getActivityNodes(Chain chain, FlowContext context);
+    Collection<StatefulNode> getActivitys(Chain chain, FlowContext context);
 
     /**
-     * 获取当前活动节点
+     * 获取当前活动
      *
      * @param context 流上下文（要有人员配置）
      */
-    StatefulNode getActivityNode(String chainId, FlowContext context);
+    StatefulNode getActivity(String chainId, FlowContext context);
 
     /**
-     * 获取当前活动节点
+     * 获取当前活动
      *
      * @param context 流上下文（要有人员配置）
      */
-    StatefulNode getActivityNode(Chain chain, FlowContext context);
+    StatefulNode getActivity(Chain chain, FlowContext context);
 
     /// ////////////////////////////////
 

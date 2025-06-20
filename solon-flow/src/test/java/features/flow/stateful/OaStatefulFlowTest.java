@@ -51,7 +51,7 @@ public class OaStatefulFlowTest {
 
 
         context = getContext("刘涛");
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step1".equals(statefulNode.getNode().getId());
@@ -64,7 +64,7 @@ public class OaStatefulFlowTest {
 
 
         context = getContext("陈鑫");
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -72,7 +72,7 @@ public class OaStatefulFlowTest {
 
         //二次测试
         context = getContext("陈鑫");
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -85,18 +85,18 @@ public class OaStatefulFlowTest {
 
 
         context = getContext(null);
-        Collection<StatefulNode> nodes = flowEngine.getActivityNodes(chainId, context);
+        Collection<StatefulNode> nodes = flowEngine.getActivitys(chainId, context);
         assert nodes.size() == 2;
         assert 0 == nodes.stream().filter(n -> n.getState() == StateType.WAITING).count();
 
         context = getContext("陈宇");
-        nodes = flowEngine.getActivityNodes(chainId, context);
+        nodes = flowEngine.getActivitys(chainId, context);
         assert nodes.size() == 2;
         assert 1 == nodes.stream().filter(n -> n.getState() == StateType.WAITING).count();
 
 
         context = getContext("陈鑫");
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4");
@@ -104,7 +104,7 @@ public class OaStatefulFlowTest {
 
 
         context = getContext("陈宇");
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_1");
@@ -116,7 +116,7 @@ public class OaStatefulFlowTest {
 
 
         context = getContext("吕方");
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_2");
@@ -128,7 +128,7 @@ public class OaStatefulFlowTest {
 
 
         context = getContext("吕方");
-        statefulNode = flowEngine.getActivityNode(chainId, context);
+        statefulNode = flowEngine.getActivity(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode == null;
 
