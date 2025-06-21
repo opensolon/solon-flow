@@ -37,13 +37,13 @@ public enum NodeType {
     ACTIVITY(11),
 
     /**
-     * 包容网关（多选）
-     */
-    INCLUSIVE(21),
-    /**
      * 排他网关（单选）
      */
-    EXCLUSIVE(22),
+    EXCLUSIVE(21),
+    /**
+     * 包容网关（多选）
+     */
+    INCLUSIVE(22),
     /**
      * 并行网关（全选）
      */
