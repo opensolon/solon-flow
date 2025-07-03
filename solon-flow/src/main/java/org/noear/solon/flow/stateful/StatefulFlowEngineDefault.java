@@ -205,6 +205,8 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
 
                         if (statefulNextNode != null) {
                             nextNode = statefulNextNode.getNode();
+                        } else {
+                            nextNode = null;
                         }
                     }
 
