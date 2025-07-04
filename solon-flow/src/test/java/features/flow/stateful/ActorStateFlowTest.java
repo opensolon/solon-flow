@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.*;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
@@ -21,7 +22,7 @@ public class ActorStateFlowTest {
 
     @Test
     public void case1() {
-        StatefulFlowEngine flowEngine = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
+        FlowEngine flowEngine = FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
                 .stateController(new ActorStateController("role"))
                 .stateRepository(new InMemoryStateRepository() {
                     @Override
@@ -35,6 +36,9 @@ public class ActorStateFlowTest {
 
         flowEngine.load("classpath:flow/stateful/*.yml");
 
+        StatefulService statefulService = flowEngine.getStatefulService();
+
+
         /// ////////////
 
         FlowContext context;
@@ -42,29 +46,29 @@ public class ActorStateFlowTest {
 
 
         context = getFlowContext("employee");
-        statefulNode = flowEngine.getTask(chainId, context);
+        statefulNode = statefulService.getTask(chainId, context);
         Assertions.assertEquals("n0", statefulNode.getNode().getId());
         Assertions.assertEquals(StateType.WAITING, statefulNode.getState());
-        flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getFlowContext("tl");
-        statefulNode = flowEngine.getTask(chainId, context);
+        statefulNode = statefulService.getTask(chainId, context);
         Assertions.assertEquals("n1", statefulNode.getNode().getId());
         Assertions.assertEquals(StateType.WAITING, statefulNode.getState());
-        flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getFlowContext("dm");
-        Collection<StatefulTask> statefulNodes = flowEngine.getTasks(chainId, context);
+        Collection<StatefulTask> statefulNodes = statefulService.getTasks(chainId, context);
         for (StatefulTask auditNode : statefulNodes) {
             context = getFlowContext("dm");
             context.put("amount", amount);
-            flowEngine.postOperation(context, auditNode.getNode(), StateOperation.FORWARD);
+            statefulService.postOperation(context, auditNode.getNode(), StateOperation.FORWARD);
         }
 
         context = getFlowContext("oa");
-        statefulNode = flowEngine.getTask(chainId, context);
+        statefulNode = statefulService.getTask(chainId, context);
         Assertions.assertNull(statefulNode, "必须为End节点");
 
     }
@@ -73,7 +77,7 @@ public class ActorStateFlowTest {
         return new FlowContext(instanceId).put("role", role).put("amount", amount);
     }
 
-    private Collection<StatefulTask> getEmailNode(StatefulFlowEngine flowEngine) {
+    private Collection<StatefulTask> getEmailNode(StatefulService flowEngine) {
         FlowContext flowContext = getFlowContext("oa");
         return flowEngine.getTasks(chainId, flowContext);
     }

@@ -2,10 +2,11 @@ package features.flow.stateful;
 
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.container.MapContainer;
-import org.noear.solon.flow.stateful.StatefulFlowEngine;
-import org.noear.solon.flow.stateful.StatefulFlowEngineDefault;
+import org.noear.solon.flow.stateful.StatefulService;
+import org.noear.solon.flow.stateful.StatefulServiceDefault;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
 import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
@@ -24,11 +25,11 @@ public class AiBlockFlowTest2 {
     final String chainId = "sf1";
     final String instanceId = "i2";
 
-    private StatefulFlowEngine buildFlowDriver() {
+    private StatefulService buildFlowDriver() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
-        StatefulFlowEngine fe = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
+        FlowEngine fe = FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
                 .stateController(new ActorStateController(){
                     @Override
                     public boolean isAutoForward(FlowContext context, Node node) {
@@ -44,25 +45,25 @@ public class AiBlockFlowTest2 {
 
         fe.load("classpath:flow/*.yml");
 
-        return fe;
+        return fe.getStatefulService();
     }
 
     @Test
     public void case1() throws Throwable {
         //初始化引擎
-        StatefulFlowEngine flowEngine = buildFlowDriver();
+        StatefulService statefulService = buildFlowDriver();
 
         FlowContext context;
         StatefulTask statefulNode;
 
         context = new FlowContext(instanceId);
-        statefulNode = flowEngine.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step1".equals(statefulNode.getNode().getId());
 
         context = new FlowContext(instanceId);
-        statefulNode = flowEngine.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -70,7 +71,7 @@ public class AiBlockFlowTest2 {
         /// ////////////////
 
         context = new FlowContext(instanceId);
-        statefulNode = flowEngine.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step4_2".equals(statefulNode.getNode().getId());
@@ -79,7 +80,7 @@ public class AiBlockFlowTest2 {
         /// ////////////////
 
         context = new FlowContext(instanceId);
-        statefulNode = flowEngine.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step4_1".equals(statefulNode.getNode().getId());
@@ -88,7 +89,7 @@ public class AiBlockFlowTest2 {
         /// ////////////////
 
         context = new FlowContext(instanceId);
-        statefulNode = flowEngine.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode == null; //抄送节点
     }

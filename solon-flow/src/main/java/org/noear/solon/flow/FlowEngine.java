@@ -17,6 +17,7 @@ package org.noear.solon.flow;
 
 import org.noear.solon.core.util.ResourceUtil;
 import org.noear.solon.flow.intercept.ChainInterceptor;
+import org.noear.solon.flow.stateful.StatefulService;
 import org.noear.solon.lang.Preview;
 
 import java.util.Collection;
@@ -52,6 +53,11 @@ public interface FlowEngine {
      * 获取驱动
      */
     <T extends FlowDriver> T getDriver(Chain chain, Class<T> driverClass);
+
+    /**
+     * 获取状态服务
+     */
+    StatefulService getStatefulService();
 
     /**
      * 添加拦截器

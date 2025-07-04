@@ -19,7 +19,6 @@ import org.noear.solon.flow.Chain;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Node;
-import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
 import org.noear.solon.lang.Preview;
 
 import java.util.Collection;
@@ -28,25 +27,14 @@ import java.util.Collection;
  * 有状态的流引擎
  *
  * @author noear
- * @since 3.1
+ * @since 3.4
  */
-@Preview("3.1")
-public interface StatefulFlowEngine extends FlowEngine {
+@Preview("3.4")
+public interface StatefulService {
     /**
-     * 构建实例
+     * 当前流程引擎
      */
-    static StatefulFlowEngine newInstance(StatefulSimpleFlowDriver driver) {
-        return new StatefulFlowEngineDefault(driver);
-    }
-
-    /**
-     * 构建实例
-     */
-    static StatefulFlowEngine newInstance() {
-        return newInstance(StatefulSimpleFlowDriver.builder().build());
-    }
-
-    /// ////////////////////////////////
+    FlowEngine engine();
 
     /**
      * 单步前进

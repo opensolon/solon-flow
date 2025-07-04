@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.Chain;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.stateful.StatefulFlowEngine;
+import org.noear.solon.flow.stateful.StatefulService;
 import org.noear.solon.test.SolonTest;
 
 /**
@@ -51,7 +51,7 @@ public class RuleTest {
 
     @Test
     public void case4() throws Throwable {
-        FlowEngine flowEngine = StatefulFlowEngine.newInstance();//支持无状态
+        FlowEngine flowEngine = FlowEngine.newInstance();//支持无状态
         flowEngine.load(Chain.parseByUri("classpath:flow/rule/bookDiscount.chain.yml"));
 
         BookOrder bookOrder = new BookOrder();

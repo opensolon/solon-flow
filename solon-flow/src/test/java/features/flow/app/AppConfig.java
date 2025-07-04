@@ -3,7 +3,7 @@ package features.flow.app;
 import org.noear.solon.annotation.Bean;
 import org.noear.solon.annotation.Configuration;
 import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.stateful.StatefulFlowEngine;
+import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
 
 /**
  * @author noear 2025/4/7 created
@@ -13,6 +13,6 @@ public class AppConfig {
     @Bean
     public FlowEngine flowEngine() {
         //可以替换掉默认的引擎
-        return StatefulFlowEngine.newInstance();
+        return FlowEngine.newInstance(StatefulSimpleFlowDriver.builder().build());
     }
 }

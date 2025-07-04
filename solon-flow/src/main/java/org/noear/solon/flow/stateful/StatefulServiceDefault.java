@@ -29,21 +29,27 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 3.1
  */
 @Preview("3.1")
-public class StatefulFlowEngineDefault extends FlowEngineDefault implements FlowEngine, StatefulFlowEngine {
-    private ReentrantLock LOCKER = new ReentrantLock();
+public class StatefulServiceDefault implements StatefulService {
+    private final FlowEngine flowEngine;
+    private final ReentrantLock LOCKER = new ReentrantLock();
 
-    public StatefulFlowEngineDefault(StatefulFlowDriver driver) {
-        super(driver);
+    public StatefulServiceDefault(FlowEngine flowEngine) {
+        this.flowEngine = flowEngine;
     }
 
     /// //////////////
+
+    @Override
+    public FlowEngine engine() {
+        return flowEngine;
+    }
 
     /**
      * 单步前进
      */
     @Override
     public StatefulTask stepForward(String chainId, FlowContext context) {
-        return stepForward(getChain(chainId), context);
+        return stepForward(flowEngine.getChain(chainId), context);
     }
 
     /**
@@ -66,7 +72,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      */
     @Override
     public StatefulTask stepBack(String chainId, FlowContext context) {
-        return stepBack(getChain(chainId), context);
+        return stepBack(flowEngine.getChain(chainId), context);
     }
 
     /**
@@ -94,7 +100,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      */
     @Override
     public boolean postOperationIfWaiting(FlowContext context, String chainId, String nodeId, StateOperation operation) {
-        Node node = getChain(chainId).getNode(nodeId);
+        Node node = flowEngine.getChain(chainId).getNode(nodeId);
         return postOperationIfWaiting(context, node, operation);
     }
 
@@ -129,7 +135,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      */
     @Override
     public void postOperation(FlowContext context, String chainId, String nodeId, StateOperation operation) {
-        Node node = getChain(chainId).getNode(nodeId);
+        Node node = flowEngine.getChain(chainId).getNode(nodeId);
         postOperation(context, node, operation);
     }
 
@@ -156,7 +162,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
         }
 
         StateType newState = StateType.codeOf(operation.getCode());
-        StatefulFlowDriver driver = getDriver(node.getChain(), StatefulFlowDriver.class);
+        StatefulFlowDriver driver = flowEngine.getDriver(node.getChain(), StatefulFlowDriver.class);
 
         //更新状态
         if (operation == StateOperation.BACK) {
@@ -188,7 +194,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
                     if (nextNode != null) {
                         if (driver.getStateController().isAutoForward(context, nextNode)) {
                             //如果要自动前进
-                            eval(nextNode, context);
+                            flowEngine.eval(nextNode, context);
                         }
                     }
                 }
@@ -210,7 +216,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      */
     @Override
     public Collection<StatefulTask> getTasks(String chainId, FlowContext context) {
-        return getTasks(getChain(chainId), context);
+        return getTasks(flowEngine.getChain(chainId), context);
     }
 
     /**
@@ -222,7 +228,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
     public Collection<StatefulTask> getTasks(Chain chain, FlowContext context) {
         context.put(StatefulTask.KEY_ACTIVITY_LIST_GET, true);
 
-        eval(chain, context);
+        flowEngine.eval(chain, context);
         Collection<StatefulTask> tmp = context.get(StatefulTask.KEY_ACTIVITY_LIST);
 
         if (tmp == null) {
@@ -239,7 +245,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      */
     @Override
     public StatefulTask getTask(String chainId, FlowContext context) {
-        return getTask(getChain(chainId), context);
+        return getTask(flowEngine.getChain(chainId), context);
     }
 
     /**
@@ -249,19 +255,19 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      */
     @Override
     public StatefulTask getTask(Chain chain, FlowContext context) {
-        eval(chain, context);
+        flowEngine.eval(chain, context);
         return context.get(StatefulTask.KEY_ACTIVITY_NODE);
     }
 
     @Override
     public void clearState(String chainId, FlowContext context) {
-        this.clearState(getChain(chainId), context);
+        this.clearState(flowEngine.getChain(chainId), context);
     }
 
 
     @Override
     public void clearState(Chain chain, FlowContext context) {
-        StatefulFlowDriver driver = getDriver(chain, StatefulFlowDriver.class);
+        StatefulFlowDriver driver = flowEngine.getDriver(chain, StatefulFlowDriver.class);
         driver.getStateRepository().clearState(context);
     }
 

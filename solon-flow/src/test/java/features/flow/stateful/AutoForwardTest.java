@@ -2,8 +2,8 @@ package features.flow.stateful;
 
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
-import org.noear.solon.flow.stateful.StatefulFlowEngine;
-import org.noear.solon.flow.stateful.StatefulFlowEngineDefault;
+import org.noear.solon.flow.stateful.StatefulService;
+import org.noear.solon.flow.stateful.StatefulServiceDefault;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
 import org.noear.solon.flow.stateful.controller.BlockStateController;
@@ -17,7 +17,7 @@ public class AutoForwardTest {
 
     @Test
     public void case11() throws Exception {
-        StatefulFlowEngine flowEngine = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
+        StatefulService statefulService = FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
                 .stateController(new BlockStateController() {
                     @Override
                     public boolean isAutoForward(FlowContext context, Node node) {
@@ -27,19 +27,19 @@ public class AutoForwardTest {
                     }
                 }) // 换了一个
                 .stateRepository(new InMemoryStateRepository())
-                .build());
+                .build()).getStatefulService();
 
         Chain chain = buildChain();
 
         String chainId = "Test"+new Date().getTime();
         FlowContext context = new FlowContext(chainId);
         context.put("all_auto", true);
-        StatefulTask statefulNode = flowEngine.stepForward(chain, context);
+        StatefulTask statefulNode = statefulService.stepForward(chain, context);
         assert statefulNode==null;
 
         context = new FlowContext(chainId);
         context.put("all_auto", true);
-        statefulNode = flowEngine.stepForward(chain, context);
+        statefulNode = statefulService.stepForward(chain, context);
         assert statefulNode==null;
     }
 

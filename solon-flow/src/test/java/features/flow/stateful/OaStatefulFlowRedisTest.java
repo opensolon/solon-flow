@@ -5,6 +5,7 @@ import org.noear.redisx.RedisClient;
 import org.noear.solon.Solon;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.*;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
@@ -25,7 +26,7 @@ public class OaStatefulFlowRedisTest {
     final String instanceId = Utils.uuid();
 
 
-    private StatefulFlowEngine buildFlowDriver() {
+    private StatefulService buildStatefulService() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
@@ -36,7 +37,7 @@ public class OaStatefulFlowRedisTest {
             throw new IllegalStateException("Redis client configuration not found!");
         }
 
-        StatefulFlowEngineDefault fe = new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
+        FlowEngine fe = FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
                 .stateController(new ActorStateController())
                 .stateRepository(new RedisStateRepository(redisClient))
                 .container(container)
@@ -45,19 +46,19 @@ public class OaStatefulFlowRedisTest {
 
         fe.load("classpath:flow/*.yml");
 
-        return fe;
+        return fe.getStatefulService();
     }
 
     @Test
     public void case1() throws Throwable {
         //初始化引擎
-        StatefulFlowEngine flowEngine = buildFlowDriver();
+        StatefulService statefulService = buildStatefulService();
 
         FlowContext context;
         StatefulTask statefulNode;
 
         context = getContext("刘涛");
-        statefulNode = flowEngine.getTask(chainId, context);
+        statefulNode = statefulService.getTask(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step1".equals(statefulNode.getNode().getId());
@@ -65,11 +66,11 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getContext("陈鑫");
-        statefulNode = flowEngine.getTask(chainId, context);
+        statefulNode = statefulService.getTask(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -77,7 +78,7 @@ public class OaStatefulFlowRedisTest {
 
         //二次测试
         context = getContext("陈鑫");
-        statefulNode = flowEngine.getTask(chainId, context);
+        statefulNode = statefulService.getTask(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -86,11 +87,11 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getContext("陈鑫");
-        statefulNode = flowEngine.getTask(chainId, context);
+        statefulNode = statefulService.getTask(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4");
@@ -98,7 +99,7 @@ public class OaStatefulFlowRedisTest {
 
 
         context = getContext("陈宇");
-        statefulNode = flowEngine.getTask(chainId, context);
+        statefulNode = statefulService.getTask(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_1");
@@ -106,11 +107,11 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getContext("吕方");
-        statefulNode = flowEngine.getTask(chainId, context);
+        statefulNode = statefulService.getTask(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_2");
@@ -118,15 +119,15 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getContext("吕方");
-        statefulNode = flowEngine.getTask(chainId, context);
+        statefulNode = statefulService.getTask(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode == null; //抄送节点
 
-        flowEngine.clearState(chainId, context);
+        statefulService.clearState(chainId, context);
     }
 
     private FlowContext getContext(String actor) throws Throwable {

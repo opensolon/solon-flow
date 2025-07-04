@@ -2,7 +2,8 @@ package demo.flow.stateful;
 
 import org.noear.solon.annotation.Bean;
 import org.noear.solon.annotation.Configuration;
-import org.noear.solon.flow.stateful.StatefulFlowEngineDefault;
+import org.noear.solon.flow.FlowEngine;
+import org.noear.solon.flow.stateful.StatefulService;
 import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
@@ -13,11 +14,16 @@ import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 @Configuration
 public class DemoConfig {
     @Bean
-    public StatefulFlowEngineDefault flowEngine() {
+    public FlowEngine flowEngine() {
         //初始化引擎
-        return new StatefulFlowEngineDefault(StatefulSimpleFlowDriver.builder()
+        return FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
                 .stateController(new ActorStateController())
                 .stateRepository(new InMemoryStateRepository())
                 .build());
+    }
+
+    @Bean
+    public StatefulService statefulService(FlowEngine flowEngine) {
+        return flowEngine.getStatefulService();
     }
 }
