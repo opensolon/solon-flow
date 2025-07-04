@@ -5,6 +5,7 @@
 * 调整 solon-flow StateType 拆分为：StateType 和 StateOperation
 * 调整 solon-flow StatefulFlowEngine:postActivityState 更名为 postOperation
 * 调整 solon-flow StatefulFlowEngine:postActivityStateIfWaiting 更名为 postOperationIfWaiting
+* 调整 solon-flow StatefulFlowEngine 更名为 FlowStatefulService（确保引擎的单一性）
 
 
 方法名称调整：
