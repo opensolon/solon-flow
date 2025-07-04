@@ -39,11 +39,15 @@ public class FlowEngineDefault implements FlowEngine {
     protected final List<RankEntity<ChainInterceptor>> interceptorList = new ArrayList<>();
 
     public FlowEngineDefault() {
-        this(new SimpleFlowDriver());
+        this(null);
     }
 
     public FlowEngineDefault(FlowDriver driver) {
         //默认驱动器
+        if (driver == null) {
+            driver = new SimpleFlowDriver();
+        }
+
         driverMap.put("", driver);
     }
 

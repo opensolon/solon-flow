@@ -30,35 +30,10 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @Preview("3.1")
 public class StatefulFlowEngineDefault extends FlowEngineDefault implements FlowEngine, StatefulFlowEngine {
-    private StatefulFlowDriver driver;
     private ReentrantLock LOCKER = new ReentrantLock();
 
     public StatefulFlowEngineDefault(StatefulFlowDriver driver) {
-        super();
-        this.driver = driver;
-        register(driver);
-    }
-
-    /**
-     * 获取驱动器
-     */
-    @Override
-    public StatefulFlowDriver getDriver() {
-        return driver;
-    }
-
-    @Override
-    public void register(String name, FlowDriver driver) {
-        if ("".equals(name)) {
-            //如果是默认的
-            if (driver instanceof StatefulFlowDriver) {
-                this.driver = (StatefulFlowDriver) driver;
-            } else {
-                throw new IllegalArgumentException("Default driver must be a StatefulFlowDriver");
-            }
-        }
-
-        super.register(name, driver);
+        super(driver);
     }
 
     /// //////////////
@@ -181,11 +156,12 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
         }
 
         StateType newState = StateType.codeOf(operation.getCode());
+        StatefulFlowDriver driver = getDriver(node.getChain(), StatefulFlowDriver.class);
 
         //更新状态
         if (operation == StateOperation.BACK) {
             //撤回之前的节点
-            backHandle(node, context);
+            backHandle(driver, node, context);
         } else if (operation == StateOperation.RESTART) {
             //撤回全部（重新开始）
             driver.getStateRepository().clearState(context);
@@ -277,12 +253,20 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
         return context.get(StatefulTask.KEY_ACTIVITY_NODE);
     }
 
-    /// ////////////////////////////////
+    @Override
+    public void clearState(String chainId, FlowContext context) {
+        this.clearState(getChain(chainId), context);
+    }
+
 
     @Override
-    public void clearState(FlowContext context) {
+    public void clearState(Chain chain, FlowContext context) {
+        StatefulFlowDriver driver = getDriver(chain, StatefulFlowDriver.class);
         driver.getStateRepository().clearState(context);
     }
+
+    /// ////////////////////////////////
+
 
     /**
      * 后退处理
@@ -290,7 +274,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * @param node    流程节点
      * @param context 流上下文
      */
-    protected void backHandle(Node node, FlowContext context) {
+    protected void backHandle(StatefulFlowDriver driver, Node node, FlowContext context) {
         //撤回之前的节点
         for (Node n1 : node.getPrevNodes()) {
             //移除状态（要求重来）
@@ -304,7 +288,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
                     }
                 }
                 //再到前一级
-                backHandle(n1, context);
+                backHandle(driver, n1, context);
             }
         }
     }

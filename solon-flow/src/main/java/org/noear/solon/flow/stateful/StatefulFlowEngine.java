@@ -49,13 +49,6 @@ public interface StatefulFlowEngine extends FlowEngine {
     /// ////////////////////////////////
 
     /**
-     * 获取驱动器
-     */
-    StatefulFlowDriver getDriver();
-
-    /// ////////////////////////////////
-
-    /**
      * 单步前进
      */
     StatefulTask stepForward(String chainId, FlowContext context);
@@ -134,5 +127,10 @@ public interface StatefulFlowEngine extends FlowEngine {
     /**
      * 清空状态
      */
-    void clearState(FlowContext context);
+    void clearState(String chainId, FlowContext context);
+
+    /**
+     * 清空状态
+     */
+    void clearState(Chain chain, FlowContext context);
 }
