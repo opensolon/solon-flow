@@ -175,7 +175,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
     /**
      * 提交操作
      */
-    protected void postOperationDo(FlowContext context, Node activity, StateOperation operation) {
+    protected void postOperationDo(FlowContext context, Node node, StateOperation operation) {
         if (operation == StateOperation.UNKNOWN) {
             throw new IllegalArgumentException("StateOperation is UNKNOWN");
         }
@@ -185,22 +185,22 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
         //更新状态
         if (operation == StateOperation.BACK) {
             //撤回之前的节点
-            backHandle(activity, context);
+            backHandle(node, context);
         } else if (operation == StateOperation.RESTART) {
             //撤回全部（重新开始）
             driver.getStateRepository().clearState(context);
         } else if (operation == StateOperation.FORWARD) {
             //如果是完成或跳过，则向前流动
             try {
-                driver.postHandleTask(context, activity.getTask());
-                driver.getStateRepository().putState(context, activity, newState);
+                driver.postHandleTask(context, node.getTask());
+                driver.getStateRepository().putState(context, node, newState);
 
                 //重新查找下一个可执行节点（可能为自动前进）
-                Node nextNode = activity.getNextNode();
+                Node nextNode = node.getNextNode();
                 if (nextNode != null) {
                     if (nextNode.getType() == NodeType.INCLUSIVE || nextNode.getType() == NodeType.PARALLEL) {
                         //如果是流入网关，要通过引擎计算获取下个活动节点
-                        StatefulTask statefulNextNode = getTask(activity.getChain(), new FlowContext().putAll(context.model()));
+                        StatefulTask statefulNextNode = getTask(node.getChain(), new FlowContext().putAll(context.model()));
 
                         if (statefulNextNode != null) {
                             nextNode = statefulNextNode.getNode();
@@ -217,11 +217,11 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
                     }
                 }
             } catch (Throwable e) {
-                throw new FlowException("Task handle failed: " + activity.getChain().getId() + " / " + activity.getId(), e);
+                throw new FlowException("Task handle failed: " + node.getChain().getId() + " / " + node.getId(), e);
             }
         } else {
             //其它（等待或通过或拒绝）
-            driver.getStateRepository().putState(context, activity, newState);
+            driver.getStateRepository().putState(context, node, newState);
         }
     }
 
