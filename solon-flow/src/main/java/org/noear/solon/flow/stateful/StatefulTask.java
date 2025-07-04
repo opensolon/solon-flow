@@ -18,7 +18,7 @@ package org.noear.solon.flow.stateful;
 import org.noear.solon.flow.Node;
 
 /**
- * 有状态的节点
+ * 有状态的任务
  *
  * @author noear
  * @since 3.1

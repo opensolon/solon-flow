@@ -24,7 +24,7 @@ import org.noear.solon.lang.Preview;
 import java.util.Collection;
 
 /**
- * 有状态的流引擎
+ * 有状态的服务
  *
  * @author noear
  * @since 3.4
@@ -60,12 +60,12 @@ public interface StatefulService {
     /// ////////////////////////////////
 
     /**
-     * 提交操作（如果当前节点为等待介入）
+     * 提交操作（如果当前任务为等待介入）
      */
     boolean postOperationIfWaiting(FlowContext context, String chainId, String nodeId, StateOperation operation);
 
     /**
-     * 提交操作（如果当前节点为等待介入）
+     * 提交操作（如果当前任务为等待介入）
      */
     boolean postOperationIfWaiting(FlowContext context, Node node, StateOperation operation);
 
@@ -83,28 +83,28 @@ public interface StatefulService {
     /// ////////////////////////////////
 
     /**
-     * 获取多个活动
+     * 获取多个任务
      *
      * @param context 流上下文（不需要有人员配置）
      */
     Collection<StatefulTask> getTasks(String chainId, FlowContext context);
 
     /**
-     * 获取多个活动
+     * 获取多个任务
      *
      * @param context 流上下文（不需要有人员配置）
      */
     Collection<StatefulTask> getTasks(Chain chain, FlowContext context);
 
     /**
-     * 获取当前活动
+     * 获取当前任务
      *
      * @param context 流上下文（要有人员配置）
      */
     StatefulTask getTask(String chainId, FlowContext context);
 
     /**
-     * 获取当前活动
+     * 获取当前任务
      *
      * @param context 流上下文（要有人员配置）
      */

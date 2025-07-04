@@ -3,7 +3,6 @@ package features.flow.stateful;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
 import org.noear.solon.flow.stateful.StatefulService;
-import org.noear.solon.flow.stateful.StatefulServiceDefault;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
 import org.noear.solon.flow.stateful.controller.BlockStateController;
@@ -27,7 +26,7 @@ public class AutoForwardTest {
                     }
                 }) // 换了一个
                 .stateRepository(new InMemoryStateRepository())
-                .build()).getStatefulService();
+                .build()).stateful();
 
         Chain chain = buildChain();
 

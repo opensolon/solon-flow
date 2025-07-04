@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 有状态的流引擎默认实现
+ * 有状态的服务默认实现
  *
  * @author noear
  * @since 3.1

@@ -55,9 +55,9 @@ public interface FlowEngine {
     <T extends FlowDriver> T getDriver(Chain chain, Class<T> driverClass);
 
     /**
-     * 获取状态服务
+     * 有状态的服务
      */
-    StatefulService getStatefulService();
+    StatefulService stateful();
 
     /**
      * 添加拦截器

@@ -79,7 +79,7 @@ public class FlowEngineDefault implements FlowEngine {
     private StatefulService statefulService;
 
     @Override
-    public StatefulService getStatefulService() {
+    public StatefulService stateful() {
         if (statefulService == null) {
             statefulService = new StatefulServiceDefault(this);
         }

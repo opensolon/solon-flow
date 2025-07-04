@@ -39,7 +39,7 @@ public class OaStatefulFlowTest {
 
         fe.load("classpath:flow/*.yml");
 
-        return fe.getStatefulService();
+        return fe.stateful();
     }
 
     @Test

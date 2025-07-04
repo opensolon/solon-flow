@@ -36,7 +36,7 @@ public class ActorStateFlowTest {
 
         flowEngine.load("classpath:flow/stateful/*.yml");
 
-        StatefulService statefulService = flowEngine.getStatefulService();
+        StatefulService statefulService = flowEngine.stateful();
 
 
         /// ////////////
