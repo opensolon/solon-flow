@@ -54,10 +54,10 @@ public class OaStatefulFlowRedisTest {
         StatefulFlowEngine flowEngine = buildFlowDriver();
 
         FlowContext context;
-        StatefulNode statefulNode;
+        StatefulTask statefulNode;
 
         context = getContext("刘涛");
-        statefulNode = flowEngine.getActivity(chainId, context);
+        statefulNode = flowEngine.getTask(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step1".equals(statefulNode.getNode().getId());
@@ -69,7 +69,7 @@ public class OaStatefulFlowRedisTest {
 
 
         context = getContext("陈鑫");
-        statefulNode = flowEngine.getActivity(chainId, context);
+        statefulNode = flowEngine.getTask(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -77,7 +77,7 @@ public class OaStatefulFlowRedisTest {
 
         //二次测试
         context = getContext("陈鑫");
-        statefulNode = flowEngine.getActivity(chainId, context);
+        statefulNode = flowEngine.getTask(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -90,7 +90,7 @@ public class OaStatefulFlowRedisTest {
 
 
         context = getContext("陈鑫");
-        statefulNode = flowEngine.getActivity(chainId, context);
+        statefulNode = flowEngine.getTask(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4");
@@ -98,7 +98,7 @@ public class OaStatefulFlowRedisTest {
 
 
         context = getContext("陈宇");
-        statefulNode = flowEngine.getActivity(chainId, context);
+        statefulNode = flowEngine.getTask(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_1");
@@ -110,7 +110,7 @@ public class OaStatefulFlowRedisTest {
 
 
         context = getContext("吕方");
-        statefulNode = flowEngine.getActivity(chainId, context);
+        statefulNode = flowEngine.getTask(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_2");
@@ -122,7 +122,7 @@ public class OaStatefulFlowRedisTest {
 
 
         context = getContext("吕方");
-        statefulNode = flowEngine.getActivity(chainId, context);
+        statefulNode = flowEngine.getTask(chainId, context);
         log.warn("{}", statefulNode);
         assert statefulNode == null; //抄送节点
 

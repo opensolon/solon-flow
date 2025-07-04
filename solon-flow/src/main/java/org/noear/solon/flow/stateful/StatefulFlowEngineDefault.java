@@ -67,7 +67,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * 单步前进
      */
     @Override
-    public StatefulNode stepForward(String chainId, FlowContext context) {
+    public StatefulTask stepForward(String chainId, FlowContext context) {
         return stepForward(getChain(chainId), context);
     }
 
@@ -75,22 +75,22 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * 单步前进
      */
     @Override
-    public StatefulNode stepForward(Chain chain, FlowContext context) {
-        StatefulNode statefulNode = getActivity(chain, context);
+    public StatefulTask stepForward(Chain chain, FlowContext context) {
+        StatefulTask statefulTask = getTask(chain, context);
 
-        if (statefulNode != null) {
-            postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
-            statefulNode = new StatefulNode(statefulNode.getNode(), StateType.COMPLETED);
+        if (statefulTask != null) {
+            postOperation(context, statefulTask.getNode(), StateOperation.FORWARD);
+            statefulTask = new StatefulTask(statefulTask.getNode(), StateType.COMPLETED);
         }
 
-        return statefulNode;
+        return statefulTask;
     }
 
     /**
      * 单步后退
      */
     @Override
-    public StatefulNode stepBack(String chainId, FlowContext context) {
+    public StatefulTask stepBack(String chainId, FlowContext context) {
         return stepBack(getChain(chainId), context);
     }
 
@@ -98,19 +98,18 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * 单步后退
      */
     @Override
-    public StatefulNode stepBack(Chain chain, FlowContext context) {
+    public StatefulTask stepBack(Chain chain, FlowContext context) {
         context.backup();
-        StatefulNode statefulNode = getActivity(chain, context);
+        StatefulTask statefulTask = getTask(chain, context);
 
-        if (statefulNode != null) {
-            postOperation(context, statefulNode.getNode(), StateOperation.BACK);
+        if (statefulTask != null) {
+            postOperation(context, statefulTask.getNode(), StateOperation.BACK);
             context.recovery();
-            statefulNode = getActivity(chain, context);
+            statefulTask = getTask(chain, context);
         }
 
-        return statefulNode;
+        return statefulTask;
     }
-
 
 
     /// ////////////////////////
@@ -119,8 +118,8 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * 提交操作（如果当前节点为等待介入）
      */
     @Override
-    public boolean postOperationIfWaiting(FlowContext context, String chainId, String activityNodeId, StateOperation operation) {
-        Node node = getChain(chainId).getNode(activityNodeId);
+    public boolean postOperationIfWaiting(FlowContext context, String chainId, String nodeId, StateOperation operation) {
+        Node node = getChain(chainId).getNode(nodeId);
         return postOperationIfWaiting(context, node, operation);
     }
 
@@ -128,24 +127,24 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * 提交操作（如果当前节点为等待介入）
      */
     @Override
-    public boolean postOperationIfWaiting(FlowContext context, Node activity, StateOperation operation) {
+    public boolean postOperationIfWaiting(FlowContext context, Node node, StateOperation operation) {
         context.backup();
 
-        StatefulNode statefulNode = getActivity(activity.getChain(), context);
-        if (statefulNode == null) {
+        StatefulTask statefulTask = getTask(node.getChain(), context);
+        if (statefulTask == null) {
             return false;
         }
 
-        if (statefulNode.getState() != StateType.WAITING) {
+        if (statefulTask.getState() != StateType.WAITING) {
             return false;
         }
 
-        if (statefulNode.getNode().getId().equals(activity.getId()) == false) {
+        if (statefulTask.getNode().getId().equals(node.getId()) == false) {
             return false;
         }
 
         context.recovery();
-        postOperation(context, statefulNode.getNode(), operation);
+        postOperation(context, statefulTask.getNode(), operation);
 
         return true;
     }
@@ -154,8 +153,8 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * 提交操作
      */
     @Override
-    public void postOperation(FlowContext context, String chainId, String activityNodeId, StateOperation operation) {
-        Node node = getChain(chainId).getNode(activityNodeId);
+    public void postOperation(FlowContext context, String chainId, String nodeId, StateOperation operation) {
+        Node node = getChain(chainId).getNode(nodeId);
         postOperation(context, node, operation);
     }
 
@@ -163,11 +162,11 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * 提交操作
      */
     @Override
-    public void postOperation(FlowContext context, Node activity, StateOperation operation) {
+    public void postOperation(FlowContext context, Node node, StateOperation operation) {
         LOCKER.lock();
 
         try {
-            postOperationDo(context, activity, operation);
+            postOperationDo(context, node, operation);
         } finally {
             LOCKER.unlock();
         }
@@ -201,7 +200,7 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
                 if (nextNode != null) {
                     if (nextNode.getType() == NodeType.INCLUSIVE || nextNode.getType() == NodeType.PARALLEL) {
                         //如果是流入网关，要通过引擎计算获取下个活动节点
-                        StatefulNode statefulNextNode = getActivity(activity.getChain(), new FlowContext().putAll(context.model()));
+                        StatefulTask statefulNextNode = getTask(activity.getChain(), new FlowContext().putAll(context.model()));
 
                         if (statefulNextNode != null) {
                             nextNode = statefulNextNode.getNode();
@@ -234,8 +233,8 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * @param context 流上下文（不需要有参与者配置）
      */
     @Override
-    public Collection<StatefulNode> getActivitys(String chainId, FlowContext context) {
-        return getActivitys(getChain(chainId), context);
+    public Collection<StatefulTask> getTasks(String chainId, FlowContext context) {
+        return getTasks(getChain(chainId), context);
     }
 
     /**
@@ -244,11 +243,11 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * @param context 流上下文（不需要有参与者配置）
      */
     @Override
-    public Collection<StatefulNode> getActivitys(Chain chain, FlowContext context) {
-        context.put(StatefulNode.KEY_ACTIVITY_LIST_GET, true);
+    public Collection<StatefulTask> getTasks(Chain chain, FlowContext context) {
+        context.put(StatefulTask.KEY_ACTIVITY_LIST_GET, true);
 
         eval(chain, context);
-        Collection<StatefulNode> tmp = context.get(StatefulNode.KEY_ACTIVITY_LIST);
+        Collection<StatefulTask> tmp = context.get(StatefulTask.KEY_ACTIVITY_LIST);
 
         if (tmp == null) {
             return Collections.emptyList();
@@ -263,8 +262,8 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * @param context 流上下文（要有参与者配置）
      */
     @Override
-    public StatefulNode getActivity(String chainId, FlowContext context) {
-        return getActivity(getChain(chainId), context);
+    public StatefulTask getTask(String chainId, FlowContext context) {
+        return getTask(getChain(chainId), context);
     }
 
     /**
@@ -273,9 +272,9 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
      * @param context 流上下文（要有参与者配置）
      */
     @Override
-    public StatefulNode getActivity(Chain chain, FlowContext context) {
+    public StatefulTask getTask(Chain chain, FlowContext context) {
         eval(chain, context);
-        return context.get(StatefulNode.KEY_ACTIVITY_NODE);
+        return context.get(StatefulTask.KEY_ACTIVITY_NODE);
     }
 
     /// ////////////////////////////////
@@ -288,12 +287,12 @@ public class StatefulFlowEngineDefault extends FlowEngineDefault implements Flow
     /**
      * 后退处理
      *
-     * @param activity 活动节点
-     * @param context  流上下文
+     * @param node    流程节点
+     * @param context 流上下文
      */
-    protected void backHandle(Node activity, FlowContext context) {
+    protected void backHandle(Node node, FlowContext context) {
         //撤回之前的节点
-        for (Node n1 : activity.getPrevNodes()) {
+        for (Node n1 : node.getPrevNodes()) {
             //移除状态（要求重来）
             if (n1.getType() == NodeType.ACTIVITY) {
                 driver.getStateRepository().removeState(context, n1);

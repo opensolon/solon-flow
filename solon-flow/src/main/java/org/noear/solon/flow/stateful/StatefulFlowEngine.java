@@ -58,22 +58,22 @@ public interface StatefulFlowEngine extends FlowEngine {
     /**
      * 单步前进
      */
-    StatefulNode stepForward(String chainId, FlowContext context);
+    StatefulTask stepForward(String chainId, FlowContext context);
 
     /**
      * 单步前进
      */
-    StatefulNode stepForward(Chain chain, FlowContext context);
+    StatefulTask stepForward(Chain chain, FlowContext context);
 
     /**
      * 单步后退
      */
-    StatefulNode stepBack(String chainId, FlowContext context);
+    StatefulTask stepBack(String chainId, FlowContext context);
 
     /**
      * 单步后退
      */
-    StatefulNode stepBack(Chain chain, FlowContext context);
+    StatefulTask stepBack(Chain chain, FlowContext context);
 
 
     /// ////////////////////////////////
@@ -81,22 +81,22 @@ public interface StatefulFlowEngine extends FlowEngine {
     /**
      * 提交操作（如果当前节点为等待介入）
      */
-    boolean postOperationIfWaiting(FlowContext context, String chainId, String activityNodeId, StateOperation operation);
+    boolean postOperationIfWaiting(FlowContext context, String chainId, String nodeId, StateOperation operation);
 
     /**
      * 提交操作（如果当前节点为等待介入）
      */
-    boolean postOperationIfWaiting(FlowContext context, Node activity, StateOperation operation);
+    boolean postOperationIfWaiting(FlowContext context, Node node, StateOperation operation);
 
     /**
      * 提交操作
      */
-    void postOperation(FlowContext context, String chainId, String activityNodeId, StateOperation operation);
+    void postOperation(FlowContext context, String chainId, String nodeId, StateOperation operation);
 
     /**
      * 提交操作
      */
-    void postOperation(FlowContext context, Node activity, StateOperation operation);
+    void postOperation(FlowContext context, Node node, StateOperation operation);
 
 
     /// ////////////////////////////////
@@ -106,28 +106,28 @@ public interface StatefulFlowEngine extends FlowEngine {
      *
      * @param context 流上下文（不需要有人员配置）
      */
-    Collection<StatefulNode> getActivitys(String chainId, FlowContext context);
+    Collection<StatefulTask> getTasks(String chainId, FlowContext context);
 
     /**
      * 获取多个活动
      *
      * @param context 流上下文（不需要有人员配置）
      */
-    Collection<StatefulNode> getActivitys(Chain chain, FlowContext context);
+    Collection<StatefulTask> getTasks(Chain chain, FlowContext context);
 
     /**
      * 获取当前活动
      *
      * @param context 流上下文（要有人员配置）
      */
-    StatefulNode getActivity(String chainId, FlowContext context);
+    StatefulTask getTask(String chainId, FlowContext context);
 
     /**
      * 获取当前活动
      *
      * @param context 流上下文（要有人员配置）
      */
-    StatefulNode getActivity(Chain chain, FlowContext context);
+    StatefulTask getTask(Chain chain, FlowContext context);
 
     /// ////////////////////////////////
 

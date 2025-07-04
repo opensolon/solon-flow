@@ -23,7 +23,7 @@ import org.noear.solon.flow.Node;
  * @author noear
  * @since 3.1
  */
-public class StatefulNode {
+public class StatefulTask {
     public static final String KEY_ACTIVITY_NODE = "ACTIVITY_NODE";
     public static final String KEY_ACTIVITY_LIST = "ACTIVITY_LIST";
     public static final String KEY_ACTIVITY_LIST_GET = "ACTIVITY_LIST_GET";
@@ -31,7 +31,7 @@ public class StatefulNode {
     private final Node node;
     private final StateType state;
 
-    public StatefulNode(Node node, StateType state) {
+    public StatefulTask(Node node, StateType state) {
         this.node = node;
         this.state = state;
     }

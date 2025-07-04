@@ -38,33 +38,33 @@ public class ActorStateFlowTest {
         /// ////////////
 
         FlowContext context;
-        StatefulNode statefulNode;
+        StatefulTask statefulNode;
 
 
         context = getFlowContext("employee");
-        statefulNode = flowEngine.getActivity(chainId, context);
+        statefulNode = flowEngine.getTask(chainId, context);
         Assertions.assertEquals("n0", statefulNode.getNode().getId());
         Assertions.assertEquals(StateType.WAITING, statefulNode.getState());
         flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getFlowContext("tl");
-        statefulNode = flowEngine.getActivity(chainId, context);
+        statefulNode = flowEngine.getTask(chainId, context);
         Assertions.assertEquals("n1", statefulNode.getNode().getId());
         Assertions.assertEquals(StateType.WAITING, statefulNode.getState());
         flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 
 
         context = getFlowContext("dm");
-        Collection<StatefulNode> statefulNodes = flowEngine.getActivitys(chainId, context);
-        for (StatefulNode auditNode : statefulNodes) {
+        Collection<StatefulTask> statefulNodes = flowEngine.getTasks(chainId, context);
+        for (StatefulTask auditNode : statefulNodes) {
             context = getFlowContext("dm");
             context.put("amount", amount);
             flowEngine.postOperation(context, auditNode.getNode(), StateOperation.FORWARD);
         }
 
         context = getFlowContext("oa");
-        statefulNode = flowEngine.getActivity(chainId, context);
+        statefulNode = flowEngine.getTask(chainId, context);
         Assertions.assertNull(statefulNode, "必须为End节点");
 
     }
@@ -73,8 +73,8 @@ public class ActorStateFlowTest {
         return new FlowContext(instanceId).put("role", role).put("amount", amount);
     }
 
-    private Collection<StatefulNode> getEmailNode(StatefulFlowEngine flowEngine) {
+    private Collection<StatefulTask> getEmailNode(StatefulFlowEngine flowEngine) {
         FlowContext flowContext = getFlowContext("oa");
-        return flowEngine.getActivitys(chainId, flowContext);
+        return flowEngine.getTasks(chainId, flowContext);
     }
 }

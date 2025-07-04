@@ -98,15 +98,15 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
             } else {
                 //控制前进
                 StateType state = getStateRepository().getState(context, task.getNode());
-                List<StatefulNode> nodeList = context.computeIfAbsent(StatefulNode.KEY_ACTIVITY_LIST, k -> new ArrayList<>());
-                boolean nodeListGet = context.getOrDefault(StatefulNode.KEY_ACTIVITY_LIST_GET, false);
+                List<StatefulTask> nodeList = context.computeIfAbsent(StatefulTask.KEY_ACTIVITY_LIST, k -> new ArrayList<>());
+                boolean nodeListGet = context.getOrDefault(StatefulTask.KEY_ACTIVITY_LIST_GET, false);
 
                 if (state == StateType.UNKNOWN || state == StateType.WAITING) {
                     //检查是否为当前用户的任务
                     if (stateController.isOperatable(context, task.getNode())) {
                         //记录当前流程节点（用于展示）
-                        StatefulNode statefulNode = new StatefulNode(task.getNode(), StateType.WAITING);
-                        context.put(StatefulNode.KEY_ACTIVITY_NODE, statefulNode);
+                        StatefulTask statefulNode = new StatefulTask(task.getNode(), StateType.WAITING);
+                        context.put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
                         nodeList.add(statefulNode);
 
                         if (nodeListGet) {
@@ -116,16 +116,16 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
                         }
                     } else {
                         //阻断当前分支（等待别的用户办理）
-                        StatefulNode statefulNode = new StatefulNode(task.getNode(), StateType.UNKNOWN);
-                        context.put(StatefulNode.KEY_ACTIVITY_NODE, statefulNode);
+                        StatefulTask statefulNode = new StatefulTask(task.getNode(), StateType.UNKNOWN);
+                        context.put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
                         nodeList.add(statefulNode);
 
                         context.interrupt();
                     }
                 } else if (state == StateType.TERMINATED) {
                     //终止
-                    StatefulNode statefulNode = new StatefulNode(task.getNode(), StateType.TERMINATED);
-                    context.put(StatefulNode.KEY_ACTIVITY_NODE, statefulNode);
+                    StatefulTask statefulNode = new StatefulTask(task.getNode(), StateType.TERMINATED);
+                    context.put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
                     nodeList.add(statefulNode);
 
                     if (nodeListGet) {

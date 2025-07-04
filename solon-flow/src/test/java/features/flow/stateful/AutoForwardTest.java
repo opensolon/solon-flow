@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
 import org.noear.solon.flow.stateful.StatefulFlowEngine;
 import org.noear.solon.flow.stateful.StatefulFlowEngineDefault;
-import org.noear.solon.flow.stateful.StatefulNode;
+import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
 import org.noear.solon.flow.stateful.controller.BlockStateController;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
@@ -34,7 +34,7 @@ public class AutoForwardTest {
         String chainId = "Test"+new Date().getTime();
         FlowContext context = new FlowContext(chainId);
         context.put("all_auto", true);
-        StatefulNode statefulNode = flowEngine.stepForward(chain, context);
+        StatefulTask statefulNode = flowEngine.stepForward(chain, context);
         assert statefulNode==null;
 
         context = new FlowContext(chainId);

@@ -6,7 +6,7 @@ import org.noear.solon.flow.Node;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.StatefulFlowEngine;
 import org.noear.solon.flow.stateful.StatefulFlowEngineDefault;
-import org.noear.solon.flow.stateful.StatefulNode;
+import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
 import org.noear.solon.flow.stateful.controller.BlockStateController;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
@@ -51,7 +51,7 @@ public class AiBlockFlowTest {
         StatefulFlowEngine flowEngine = buildFlowDriver();
 
         FlowContext context;
-        StatefulNode statefulNode;
+        StatefulTask statefulNode;
 
         context = new FlowContext(instanceId);
         statefulNode = flowEngine.stepForward(chainId, context);
