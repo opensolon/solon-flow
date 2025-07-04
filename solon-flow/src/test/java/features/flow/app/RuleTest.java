@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.Chain;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.stateful.StatefulService;
 import org.noear.solon.test.SolonTest;
 
 /**

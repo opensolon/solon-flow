@@ -26,7 +26,7 @@ public class OaStatefulFlowTest {
     final String instanceId = Utils.uuid();
 
 
-    private StatefulService buildStatefulService() {
+    private FlowStatefulService buildStatefulService() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
@@ -39,13 +39,13 @@ public class OaStatefulFlowTest {
 
         fe.load("classpath:flow/*.yml");
 
-        return fe.stateful();
+        return fe.getStatefulService();
     }
 
     @Test
     public void case1() throws Throwable {
         //初始化引擎
-        StatefulService statefulService = buildStatefulService();
+        FlowStatefulService statefulService = buildStatefulService();
 
         FlowContext context;
         StatefulTask statefulNode;

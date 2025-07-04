@@ -2,7 +2,7 @@ package features.flow.stateful;
 
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
-import org.noear.solon.flow.stateful.StatefulService;
+import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
 import org.noear.solon.flow.stateful.controller.BlockStateController;
@@ -16,7 +16,7 @@ public class AutoForwardTest {
 
     @Test
     public void case11() throws Exception {
-        StatefulService statefulService = FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
+        FlowStatefulService statefulService = FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
                 .stateController(new BlockStateController() {
                     @Override
                     public boolean isAutoForward(FlowContext context, Node node) {
@@ -26,7 +26,7 @@ public class AutoForwardTest {
                     }
                 }) // 换了一个
                 .stateRepository(new InMemoryStateRepository())
-                .build()).stateful();
+                .build()).getStatefulService();
 
         Chain chain = buildChain();
 

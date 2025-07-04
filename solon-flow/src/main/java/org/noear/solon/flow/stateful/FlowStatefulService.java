@@ -30,7 +30,7 @@ import java.util.Collection;
  * @since 3.4
  */
 @Preview("3.4")
-public interface StatefulService {
+public interface FlowStatefulService {
     /**
      * 当前流程引擎
      */

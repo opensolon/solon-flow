@@ -36,7 +36,7 @@ public class ActorStateFlowTest {
 
         flowEngine.load("classpath:flow/stateful/*.yml");
 
-        StatefulService statefulService = flowEngine.stateful();
+        FlowStatefulService statefulService = flowEngine.getStatefulService();
 
 
         /// ////////////
@@ -77,7 +77,7 @@ public class ActorStateFlowTest {
         return new FlowContext(instanceId).put("role", role).put("amount", amount);
     }
 
-    private Collection<StatefulTask> getEmailNode(StatefulService flowEngine) {
+    private Collection<StatefulTask> getEmailNode(FlowStatefulService flowEngine) {
         FlowContext flowContext = getFlowContext("oa");
         return flowEngine.getTasks(chainId, flowContext);
     }

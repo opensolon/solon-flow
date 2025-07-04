@@ -17,7 +17,7 @@ package org.noear.solon.flow;
 
 import org.noear.solon.core.util.ResourceUtil;
 import org.noear.solon.flow.intercept.ChainInterceptor;
-import org.noear.solon.flow.stateful.StatefulService;
+import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.lang.Preview;
 
 import java.util.Collection;
@@ -57,7 +57,7 @@ public interface FlowEngine {
     /**
      * 有状态的服务
      */
-    StatefulService stateful();
+    FlowStatefulService getStatefulService();
 
     /**
      * 添加拦截器

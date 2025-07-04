@@ -21,8 +21,8 @@ import org.noear.solon.core.util.RankEntity;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.intercept.ChainInterceptor;
 import org.noear.solon.flow.intercept.ChainInvocation;
-import org.noear.solon.flow.stateful.StatefulService;
-import org.noear.solon.flow.stateful.StatefulServiceDefault;
+import org.noear.solon.flow.stateful.FlowStatefulService;
+import org.noear.solon.flow.stateful.FlowStatefulServiceDefault;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -76,12 +76,12 @@ public class FlowEngineDefault implements FlowEngine {
         }
     }
 
-    private StatefulService statefulService;
+    private FlowStatefulService statefulService;
 
     @Override
-    public StatefulService stateful() {
+    public FlowStatefulService getStatefulService() {
         if (statefulService == null) {
-            statefulService = new StatefulServiceDefault(this);
+            statefulService = new FlowStatefulServiceDefault(this);
         }
 
         return statefulService;

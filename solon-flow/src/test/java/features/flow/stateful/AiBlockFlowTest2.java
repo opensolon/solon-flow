@@ -5,7 +5,7 @@ import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.container.MapContainer;
-import org.noear.solon.flow.stateful.StatefulService;
+import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
 import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
@@ -24,7 +24,7 @@ public class AiBlockFlowTest2 {
     final String chainId = "sf1";
     final String instanceId = "i2";
 
-    private StatefulService buildFlowDriver() {
+    private FlowStatefulService buildFlowDriver() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
@@ -44,13 +44,13 @@ public class AiBlockFlowTest2 {
 
         fe.load("classpath:flow/*.yml");
 
-        return fe.stateful();
+        return fe.getStatefulService();
     }
 
     @Test
     public void case1() throws Throwable {
         //初始化引擎
-        StatefulService statefulService = buildFlowDriver();
+        FlowStatefulService statefulService = buildFlowDriver();
 
         FlowContext context;
         StatefulTask statefulNode;

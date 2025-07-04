@@ -23,7 +23,7 @@ public class BlockStatefulFlowTest {
 
         flowEngine.load("classpath:flow/*.yml");
 
-        StatefulService statefulService = flowEngine.stateful();
+        FlowStatefulService statefulService = flowEngine.getStatefulService();
 
         FlowContext context;
         StatefulTask statefulNode;
@@ -111,7 +111,7 @@ public class BlockStatefulFlowTest {
 
         flowEngine.load("classpath:flow/*.yml");
 
-        StatefulService statefulService = flowEngine.stateful();
+        FlowStatefulService statefulService = flowEngine.getStatefulService();
 
         StatefulTask statefulNode;
         String instanceId1 = "i3";

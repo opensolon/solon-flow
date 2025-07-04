@@ -29,11 +29,11 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 3.1
  */
 @Preview("3.1")
-public class StatefulServiceDefault implements StatefulService {
+public class FlowStatefulServiceDefault implements FlowStatefulService {
     private final FlowEngine flowEngine;
     private final ReentrantLock LOCKER = new ReentrantLock();
 
-    public StatefulServiceDefault(FlowEngine flowEngine) {
+    public FlowStatefulServiceDefault(FlowEngine flowEngine) {
         this.flowEngine = flowEngine;
     }
 
