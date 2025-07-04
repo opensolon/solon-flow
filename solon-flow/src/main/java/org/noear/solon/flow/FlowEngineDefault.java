@@ -23,11 +23,9 @@ import org.noear.solon.flow.intercept.ChainInterceptor;
 import org.noear.solon.flow.intercept.ChainInvocation;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 /**
  * 流引擎实现
@@ -41,8 +39,12 @@ public class FlowEngineDefault implements FlowEngine {
     protected final List<RankEntity<ChainInterceptor>> interceptorList = new ArrayList<>();
 
     public FlowEngineDefault() {
+        this(new SimpleFlowDriver());
+    }
+
+    public FlowEngineDefault(FlowDriver driver) {
         //默认驱动器
-        driverMap.put("", new SimpleFlowDriver());
+        driverMap.put("", driver);
     }
 
     @Override
@@ -56,6 +58,16 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
         return driver;
+    }
+
+    @Override
+    public <T extends FlowDriver> T getDriver(Chain chain, Class<T> driverClass) {
+        FlowDriver driver = getDriver(chain);
+        if (driverClass.isInstance(driver)) {
+            return (T) driver;
+        } else {
+            throw new IllegalArgumentException("No " + driverClass.getSimpleName() + " found for: '" + chain.getDriver() + "'");
+        }
     }
 
     @Override

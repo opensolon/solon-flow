@@ -37,9 +37,21 @@ public interface FlowEngine {
     }
 
     /**
+     * 新实例
+     */
+    static FlowEngine newInstance(FlowDriver driver) {
+        return new FlowEngineDefault(driver);
+    }
+
+    /**
      * 获取驱动
      */
     FlowDriver getDriver(Chain chain);
+
+    /**
+     * 获取驱动
+     */
+    <T extends FlowDriver> T getDriver(Chain chain, Class<T> driverClass);
 
     /**
      * 添加拦截器
