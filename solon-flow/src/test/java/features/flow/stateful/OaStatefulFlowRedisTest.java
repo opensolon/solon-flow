@@ -66,7 +66,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
 
         context = getContext("陈鑫");
@@ -87,7 +87,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
 
         context = getContext("陈鑫");
@@ -107,7 +107,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
 
         context = getContext("吕方");
@@ -119,7 +119,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
 
         context = getContext("吕方");

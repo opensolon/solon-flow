@@ -61,7 +61,7 @@ public class OaStatefulFlowTest {
         /// ////////////////
         //提交状态
         context.put("oaState", 2); //用于扩展状态记录
-        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
 
         context = getContext("陈鑫");
@@ -82,7 +82,7 @@ public class OaStatefulFlowTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
 
         context = getContext(null);
@@ -113,7 +113,7 @@ public class OaStatefulFlowTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
 
         context = getContext("吕方");
@@ -125,7 +125,7 @@ public class OaStatefulFlowTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
 
         context = getContext("吕方");

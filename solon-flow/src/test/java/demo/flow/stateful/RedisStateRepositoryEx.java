@@ -3,7 +3,7 @@ package demo.flow.stateful;
 import org.noear.redisx.RedisClient;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
-import org.noear.solon.flow.stateful.StateOperation;
+import org.noear.solon.flow.stateful.Operation;
 import org.noear.solon.flow.stateful.repository.RedisStateRepository;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class RedisStateRepositoryEx extends RedisStateRepository {
     /**
      * 提交活动状态时
      */
-    public void onPostOperation(FlowContext context, Node node, StateOperation operation) {
+    public void onPostOperation(FlowContext context, Node node, Operation operation) {
         String instanceId = context.getInstanceId();
         String chainId = node.getChain().getId();
         String activityNodeId = node.getId();

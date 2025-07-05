@@ -21,7 +21,7 @@ package org.noear.solon.flow.stateful;
  * @author noear
  * @since 3.3
  */
-public enum StateOperation {
+public enum Operation {
     /**
      * 未知
      */
@@ -46,7 +46,7 @@ public enum StateOperation {
 
     private final int code;
 
-    StateOperation(int code) {
+    Operation(int code) {
         this.code = code;
     }
 
@@ -57,7 +57,7 @@ public enum StateOperation {
     /**
      * 根据代码构建
      */
-    public static StateOperation codeOf(int code) {
+    public static Operation codeOf(int code) {
         switch (code) {
             case 1001:
                 return BACK;

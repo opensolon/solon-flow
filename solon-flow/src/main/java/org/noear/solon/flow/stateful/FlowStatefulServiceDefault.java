@@ -26,9 +26,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * 有状态的服务默认实现
  *
  * @author noear
- * @since 3.1
+ * @since 3.4
  */
-@Preview("3.1")
+@Preview("3.4")
 public class FlowStatefulServiceDefault implements FlowStatefulService {
     private final FlowEngine flowEngine;
     private final ReentrantLock LOCKER = new ReentrantLock();
@@ -60,7 +60,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         StatefulTask statefulTask = getTask(chain, context);
 
         if (statefulTask != null) {
-            postOperation(context, statefulTask.getNode(), StateOperation.FORWARD);
+            postOperation(context, statefulTask.getNode(), Operation.FORWARD);
             statefulTask = new StatefulTask(statefulTask.getNode(), StateType.COMPLETED);
         }
 
@@ -84,7 +84,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         StatefulTask statefulTask = getTask(chain, context);
 
         if (statefulTask != null) {
-            postOperation(context, statefulTask.getNode(), StateOperation.BACK);
+            postOperation(context, statefulTask.getNode(), Operation.BACK);
             context.recovery();
             statefulTask = getTask(chain, context);
         }
@@ -99,7 +99,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * 提交操作（如果当前节点为等待介入）
      */
     @Override
-    public boolean postOperationIfWaiting(FlowContext context, String chainId, String nodeId, StateOperation operation) {
+    public boolean postOperationIfWaiting(FlowContext context, String chainId, String nodeId, Operation operation) {
         Node node = flowEngine.getChain(chainId).getNode(nodeId);
         return postOperationIfWaiting(context, node, operation);
     }
@@ -108,7 +108,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * 提交操作（如果当前节点为等待介入）
      */
     @Override
-    public boolean postOperationIfWaiting(FlowContext context, Node node, StateOperation operation) {
+    public boolean postOperationIfWaiting(FlowContext context, Node node, Operation operation) {
         context.backup();
 
         StatefulTask statefulTask = getTask(node.getChain(), context);
@@ -134,7 +134,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * 提交操作
      */
     @Override
-    public void postOperation(FlowContext context, String chainId, String nodeId, StateOperation operation) {
+    public void postOperation(FlowContext context, String chainId, String nodeId, Operation operation) {
         Node node = flowEngine.getChain(chainId).getNode(nodeId);
         postOperation(context, node, operation);
     }
@@ -143,7 +143,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * 提交操作
      */
     @Override
-    public void postOperation(FlowContext context, Node node, StateOperation operation) {
+    public void postOperation(FlowContext context, Node node, Operation operation) {
         LOCKER.lock();
 
         try {
@@ -156,8 +156,8 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
     /**
      * 提交操作
      */
-    protected void postOperationDo(FlowContext context, Node node, StateOperation operation) {
-        if (operation == StateOperation.UNKNOWN) {
+    protected void postOperationDo(FlowContext context, Node node, Operation operation) {
+        if (operation == Operation.UNKNOWN) {
             throw new IllegalArgumentException("StateOperation is UNKNOWN");
         }
 
@@ -165,13 +165,13 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         StatefulFlowDriver driver = flowEngine.getDriver(node.getChain(), StatefulFlowDriver.class);
 
         //更新状态
-        if (operation == StateOperation.BACK) {
+        if (operation == Operation.BACK) {
             //撤回之前的节点
             backHandle(driver, node, context);
-        } else if (operation == StateOperation.RESTART) {
+        } else if (operation == Operation.RESTART) {
             //撤回全部（重新开始）
             driver.getStateRepository().clearState(context);
-        } else if (operation == StateOperation.FORWARD) {
+        } else if (operation == Operation.FORWARD) {
             //如果是完成或跳过，则向前流动
             try {
                 driver.postHandleTask(context, node.getTask());

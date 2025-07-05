@@ -39,7 +39,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活。。。。
 
         //（干完后）提交操作
-        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
         //获取节点
         context = new FlowContext(instanceId1);
@@ -49,7 +49,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活。。。。
 
         //（干完后）提交操作
-        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
 
         //获取节点
@@ -60,7 +60,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活。。。。
 
         //（干完后）提交操作
-        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
 
         //获取节点
@@ -71,7 +71,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活
 
         //提交操作
-        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
 
         ///  （换一个实例）
@@ -80,13 +80,13 @@ public class BlockStatefulFlowTest {
         statefulNode = statefulService.getTask(chainId, context);
         assertNode(statefulNode, "step1");
 
-        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
         context = new FlowContext(instanceId2);
         statefulNode = statefulService.getTask(chainId, context);
         assertNode(statefulNode, "step2");
 
-        statefulService.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
+        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
 
         context = new FlowContext(instanceId2);
