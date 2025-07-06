@@ -67,7 +67,7 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     @Override
-    public <T extends FlowDriver> T getDriver(Chain chain, Class<T> driverClass) {
+    public <T extends FlowDriver> T getDriverAs(Chain chain, Class<T> driverClass) {
         FlowDriver driver = getDriver(chain);
         if (driverClass.isInstance(driver)) {
             return (T) driver;

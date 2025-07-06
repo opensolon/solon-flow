@@ -162,7 +162,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         }
 
         StateType newState = StateType.codeOf(operation.getCode());
-        StatefulFlowDriver driver = flowEngine.getDriver(node.getChain(), StatefulFlowDriver.class);
+        StatefulFlowDriver driver = flowEngine.getDriverAs(node.getChain(), StatefulFlowDriver.class);
 
         //更新状态
         if (operation == Operation.BACK) {
@@ -267,7 +267,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
 
     @Override
     public void clearState(Chain chain, FlowContext context) {
-        StatefulFlowDriver driver = flowEngine.getDriver(chain, StatefulFlowDriver.class);
+        StatefulFlowDriver driver = flowEngine.getDriverAs(chain, StatefulFlowDriver.class);
         driver.getStateRepository().clearState(context);
     }
 

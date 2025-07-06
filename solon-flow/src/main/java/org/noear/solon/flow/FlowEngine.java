@@ -52,7 +52,7 @@ public interface FlowEngine {
     /**
      * 获取驱动
      */
-    <T extends FlowDriver> T getDriver(Chain chain, Class<T> driverClass);
+    <T extends FlowDriver> T getDriverAs(Chain chain, Class<T> driverClass);
 
     /**
      * 有状态的服务
