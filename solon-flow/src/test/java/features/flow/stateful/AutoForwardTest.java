@@ -26,7 +26,7 @@ public class AutoForwardTest {
                     }
                 }) // 换了一个
                 .stateRepository(new InMemoryStateRepository())
-                .build()).getStatefulService();
+                .build()).statefulService();
 
         Chain chain = buildChain();
 

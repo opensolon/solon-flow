@@ -20,7 +20,7 @@ public class OaActionDemo {
             .stateRepository(new InMemoryStateRepository())
             .build());
 
-    FlowStatefulService statefulService = flowEngine.getStatefulService();
+    FlowStatefulService statefulService = flowEngine.statefulService();
 
     String instanceId = "guid1";
     String chainId = "f1";

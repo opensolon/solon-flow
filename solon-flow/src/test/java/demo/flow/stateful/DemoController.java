@@ -25,7 +25,7 @@ public class DemoController {
         context.put("actor", ctx.param("actor"));
 
         //获取展示节点及装态
-        StatefulTask task = flowEngine.getStatefulService().getTask(chainId, context);// if null: 界面显示只读; no null: 界面显示操作：同意，拒绝，撤回到上一节点，撤回到起始节点（给发起人）
+        StatefulTask task = flowEngine.statefulService().getTask(chainId, context);// if null: 界面显示只读; no null: 界面显示操作：同意，拒绝，撤回到上一节点，撤回到起始节点（给发起人）
         return null;
     }
 
@@ -35,6 +35,6 @@ public class DemoController {
         FlowContext context = new FlowContext(instanceId);
         context.put("actor", ctx.param("actor"));
 
-        flowEngine.getStatefulService().postOperation(context, chainId, nodeId, Operation.codeOf(operation));
+        flowEngine.statefulService().postOperation(context, chainId, nodeId, Operation.codeOf(operation));
     }
 }

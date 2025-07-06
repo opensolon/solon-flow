@@ -57,7 +57,7 @@ public interface FlowEngine {
     /**
      * 有状态的服务
      */
-    FlowStatefulService getStatefulService();
+    FlowStatefulService statefulService();
 
     /**
      * 添加拦截器
