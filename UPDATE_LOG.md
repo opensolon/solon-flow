@@ -9,6 +9,7 @@
 * 调整 solon-flow StatefulFlowEngine:getActivitys 更名为 getTasks
 * 调整 solon-flow StatefulFlowEngine 更名为 FlowStatefulService（确保引擎的单一性）
 * 添加 solon-flow FlowStatefulService 接口，替换 StatefulFlowEngine（确保引擎的单一性）
+* 添加 solon-flow `FlowEngine:statefulService()` 方法
 
 
 方法名称调整：
