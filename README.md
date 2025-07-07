@@ -68,9 +68,9 @@ Solon-Flow
 
 嵌入第三方框架的示例：
 
-* https://gitee.com/opensolon/solon-flow-embedded-examples
-* https://gitcode.com/opensolon/solon-flow-embedded-examples
-* https://github.com/opensolon/solon-flow-embedded-examples
+* https://gitee.com/solonlab/solon-flow-embedded-examples
+* https://gitcode.com/solonlab/solon-flow-embedded-examples
+* https://github.com/solonlab/solon-flow-embedded-examples
 
 
 ## 六大特性展示
