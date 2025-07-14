@@ -24,8 +24,8 @@ import org.noear.solon.lang.Preview;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 /**
@@ -293,6 +293,22 @@ public class FlowContext {
      */
     public <T> T getOrDefault(String key, T def) {
         return (T) model.getOrDefault(key, def);
+    }
+
+    /**
+     * 自增
+     */
+    public int addInt(String key, int delta) {
+        AtomicInteger tmp = (AtomicInteger) model.computeIfAbsent(key, k -> new AtomicInteger(0));
+        return tmp.addAndGet(delta);
+    }
+
+    /**
+     * 自增
+     */
+    public int getInt(String key) {
+        AtomicInteger tmp = (AtomicInteger) model.computeIfAbsent(key, k -> new AtomicInteger(0));
+        return tmp.get();
     }
 
     /**
