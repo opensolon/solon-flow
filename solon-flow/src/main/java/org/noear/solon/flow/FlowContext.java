@@ -19,6 +19,7 @@ import org.noear.dami.Dami;
 import org.noear.dami.bus.DamiBus;
 import org.noear.liquor.eval.Scripts;
 import org.noear.solon.core.util.Assert;
+import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
 import java.lang.reflect.InvocationTargetException;
@@ -116,7 +117,7 @@ public class FlowContext {
      * 异步执行器
      */
     @Preview("3.3")
-    public ExecutorService executor() {
+    public @Nullable ExecutorService executor() {
         return executor;
     }
 
