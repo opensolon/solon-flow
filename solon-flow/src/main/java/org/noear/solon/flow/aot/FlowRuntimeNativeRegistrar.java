@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.integration;
+package org.noear.solon.flow.aot;
 
+import org.noear.solon.aot.RuntimeNativeMetadata;
 import org.noear.solon.aot.RuntimeNativeRegistrar;
 import org.noear.solon.core.AppContext;
-import org.noear.solon.core.Plugin;
-import org.noear.solon.core.runtime.NativeDetector;
-import org.noear.solon.core.util.ClassUtil;
-import org.noear.solon.flow.aot.FlowRuntimeNativeRegistrar;
 
 /**
  * @author noear
- * @since 3.0
+ * @since 3.4
  */
-public class FlowPlugin implements Plugin {
+public class FlowRuntimeNativeRegistrar implements RuntimeNativeRegistrar {
     @Override
-    public void start(AppContext context) throws Throwable {
-        context.beanMake(FlowConfigurate.class);
-
-        // aot
-        if (NativeDetector.isAotRuntime() && ClassUtil.hasClass(() -> RuntimeNativeRegistrar.class)) {
-            context.wrapAndPut(FlowRuntimeNativeRegistrar.class);
-        }
+    public void register(AppContext context, RuntimeNativeMetadata metadata) {
+        metadata.registerResourceInclude("flow/.*");
     }
 }
