@@ -296,17 +296,17 @@ public class FlowContext {
     }
 
     /**
-     * 自增
+     * 增量添加
      */
-    public int addInt(String key, int delta) {
+    public int incrAdd(String key, int delta) {
         AtomicInteger tmp = (AtomicInteger) model.computeIfAbsent(key, k -> new AtomicInteger(0));
         return tmp.addAndGet(delta);
     }
 
     /**
-     * 自增
+     * 增量获取
      */
-    public int getInt(String key) {
+    public int incrGet(String key) {
         AtomicInteger tmp = (AtomicInteger) model.computeIfAbsent(key, k -> new AtomicInteger(0));
         return tmp.get();
     }

@@ -1,4 +1,9 @@
 
+### 3.4.1
+
+* 添加 solon-flow FlowContext:incrGet, incrAdd
+* 添加 solon-flow aot 配置
+
 ### 3.4.0
 
 * 调整 solon-flow stateful 相关概念（提交活动状态，改为提交操作）

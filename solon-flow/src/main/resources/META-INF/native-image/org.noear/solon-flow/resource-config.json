@@ -3,6 +3,9 @@
     "includes": [
       {
         "pattern": "flow/.*.yml"
+      },
+      {
+        "pattern": "flow/.*.json"
       }
     ]
   }
