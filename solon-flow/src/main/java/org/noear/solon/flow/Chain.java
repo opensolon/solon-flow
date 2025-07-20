@@ -225,6 +225,7 @@ public class Chain {
             layoutTmp = dom.get("nodes").ary();
         }
 
+        List<NodeDecl> nodeDeclList = new ArrayList<>();
         NodeDecl nodesLat = null;
         for (int i = layoutTmp.size(); i > 0; i--) {
             ONode n1 = layoutTmp.get(i - 1);
@@ -272,7 +273,12 @@ public class Chain {
             }
 
             nodesLat = nodeDecl;
-            chain.addNode(nodeDecl);
+            nodeDeclList.add(nodeDecl);
+        }
+
+        //倒排加入链
+        for (int i = nodeDeclList.size(); i > 0; i--) {
+            chain.addNode(nodeDeclList.get(i - 1));
         }
 
         //校验结构
