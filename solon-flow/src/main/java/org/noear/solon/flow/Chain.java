@@ -295,69 +295,87 @@ public class Chain {
     }
 
     /**
+     * 转为 yaml
+     */
+    public String toYaml() {
+        return new Yaml().dump(buildDom());
+    }
+
+    /**
      * 转为 json
      */
     public String toJson() {
-        ONode oNode = new ONode();
-        oNode.set("id", id);
+        return ONode.stringify(buildDom());
+    }
+
+    protected Map<String, Object> buildDom() {
+        Map<String, Object> domRoot = new LinkedHashMap<>();
+        domRoot.put("id", id);
 
         if (Utils.isNotEmpty(title)) {
-            oNode.set("title", title);
+            domRoot.put("title", title);
         }
 
         if (Utils.isNotEmpty(driver)) {
-            oNode.set("driver", driver);
+            domRoot.put("driver", driver);
         }
 
         if (Utils.isNotEmpty(meta)) {
-            oNode.getOrNew("meta").fill(meta);
+            domRoot.put("meta", meta);
         }
 
-        oNode.getOrNew("layout").asArray().build(n1 -> {
-            for (Map.Entry<String, Node> kv : nodes.entrySet()) {
-                ONode n2 = n1.addNew();
-                n2.set("id", kv.getKey());
-                n2.set("type", kv.getValue().getType().toString().toLowerCase());
+        List<Map<String, Object>> domNodes = new ArrayList<>();
+        domRoot.put("layout", domNodes);
 
-                if (Utils.isNotEmpty(kv.getValue().getTitle())) {
-                    n2.set("title", kv.getValue().getTitle());
-                }
+        for (Map.Entry<String, Node> kv : nodes.entrySet()) {
+            Map<String, Object> domNode = new LinkedHashMap<>();
+            domNodes.add(domNode);
 
-                if (Utils.isNotEmpty(kv.getValue().getMetas())) {
-                    n2.getOrNew("meta").fill(kv.getValue().getMetas());
-                }
+            domNode.put("id", kv.getKey());
+            domNode.put("type", kv.getValue().getType().toString().toLowerCase());
 
-                if (Condition.isNotEmpty(kv.getValue().getWhen())) {
-                    n2.set("when", kv.getValue().getWhen().getDescription());
-                }
-
-                if (Task.isNotEmpty(kv.getValue().getTask())) {
-                    n2.set("task", kv.getValue().getTask().getDescription());
-                }
-
-                if (Utils.isNotEmpty(kv.getValue().getNextLinks())) {
-                    n2.getOrNew("link").asArray().build(n3 -> {
-                        for (Link link : kv.getValue().getNextLinks()) {
-                            ONode n4 = n3.addNew();
-                            n4.set("nextId", link.getNextId());
-
-                            if (Utils.isNotEmpty(link.getTitle())) {
-                                n4.set("title", link.getTitle());
-                            }
-
-                            if (Utils.isNotEmpty(link.getMetas())) {
-                                n4.getOrNew("meta").fill(link.getMetas());
-                            }
-
-                            if (Condition.isNotEmpty(link.getWhen())) {
-                                n4.set("when", link.getWhen().getDescription());
-                            }
-                        }
-                    });
-                }
+            if (Utils.isNotEmpty(kv.getValue().getTitle())) {
+                domNode.put("title", kv.getValue().getTitle());
             }
-        });
 
-        return oNode.toJson();
+            if (Utils.isNotEmpty(kv.getValue().getMetas())) {
+                domNode.put("meta", kv.getValue().getMetas());
+            }
+
+            if (Condition.isNotEmpty(kv.getValue().getWhen())) {
+                domNode.put("when", kv.getValue().getWhen().getDescription());
+            }
+
+            if (Task.isNotEmpty(kv.getValue().getTask())) {
+                domNode.put("task", kv.getValue().getTask().getDescription());
+            }
+
+            if (Utils.isNotEmpty(kv.getValue().getNextLinks())) {
+                List<Map<String, Object>> domLinks = new ArrayList<>();
+                domNode.put("link", domLinks);
+
+                for (Link link : kv.getValue().getNextLinks()) {
+                    Map<String, Object> domLink = new LinkedHashMap<>();
+                    domLinks.add(domLink);
+
+                    domLink.put("nextId", link.getNextId());
+
+                    if (Utils.isNotEmpty(link.getTitle())) {
+                        domLink.put("title", link.getTitle());
+                    }
+
+                    if (Utils.isNotEmpty(link.getMetas())) {
+                        domLink.put("meta", link.getMetas());
+                    }
+
+                    if (Condition.isNotEmpty(link.getWhen())) {
+                        domLink.put("when", link.getWhen().getDescription());
+                    }
+                }
+
+            }
+        }
+
+        return domRoot;
     }
 }
