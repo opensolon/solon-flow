@@ -176,23 +176,12 @@ public class Chain {
             throw new IllegalArgumentException("Can't find resource: " + uri);
         }
 
-        if (uri.endsWith(".json")) {
+        if (uri.endsWith(".json") || uri.endsWith(".yml") || uri.endsWith(".yaml")) {
             try {
-                return parseByDom(ONode.load(ResourceUtil.getResourceAsString(url)));
+                return parseByText(ResourceUtil.getResourceAsString(url));
             } catch (Throwable ex) {
                 throw new IllegalArgumentException("Failed to load resource: " + url, ex);
             }
-        } else if (uri.endsWith(".yml") || uri.endsWith(".yaml")) {
-            try {
-                Yaml yaml = new Yaml();
-                Object dom = yaml.load(ResourceUtil.getResourceAsString(url));
-
-                return parseByDom(ONode.load(dom));
-            } catch (Throwable ex) {
-                throw new IllegalArgumentException("Failed to load resource: " + url, ex);
-            }
-        } else if (uri.endsWith(".properties")) {
-            return parseByProperties(Utils.loadProperties(url));
         } else {
             throw new IllegalArgumentException("File format is not supported: " + uri);
         }
@@ -201,19 +190,11 @@ public class Chain {
     /**
      * 解析配置文本
      *
-     * @param text 配置文本（支持 yml, properties, json 格式）
+     * @param text 配置文本（支持 yml, json 格式）
      */
     public static Chain parseByText(String text) {
-        return parseByProperties(Utils.buildProperties(text));
-    }
-
-    /**
-     * 解析配置属性
-     *
-     * @param properties 配置属性
-     */
-    public static Chain parseByProperties(Properties properties) {
-        return parseByDom(ONode.load(properties));
+        Object dom = new Yaml().load(text);
+        return parseByDom(ONode.load(dom));
     }
 
     /**
