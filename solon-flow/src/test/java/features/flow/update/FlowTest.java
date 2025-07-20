@@ -23,6 +23,8 @@ public class FlowTest {
         String oldJson = chain.toJson();
         System.out.println(oldJson);
 
+        assert oldJson.equals("{\"id\":\"c1\",\"title\":\"c1\",\"layout\":[{\"id\":\"s1\",\"type\":\"start\"},{\"id\":\"p1\",\"type\":\"parallel\",\"link\":[{\"nextId\":\"n1\"},{\"nextId\":\"n2\"}]},{\"id\":\"n1\",\"type\":\"activity\",\"link\":[{\"nextId\":\"e1\"}]},{\"id\":\"n2\",\"type\":\"activity\",\"link\":[{\"nextId\":\"e1\"}]},{\"id\":\"e1\",\"type\":\"end\"}]}");
+
         System.out.println("---------------------");
 
         //------------------
@@ -33,6 +35,8 @@ public class FlowTest {
 
         String newJson = chain2.toJson();
         System.out.println(newJson);
+
+        assert newJson.equals("{\"id\":\"c1\",\"title\":\"c1\",\"layout\":[{\"id\":\"s1\",\"type\":\"start\",\"link\":[{\"nextId\":\"p1\"}]},{\"id\":\"p1\",\"type\":\"parallel\",\"link\":[{\"nextId\":\"n1\"},{\"nextId\":\"n2\"},{\"nextId\":\"n3\"}]},{\"id\":\"n1\",\"type\":\"activity\",\"link\":[{\"nextId\":\"e1\"}]},{\"id\":\"n2\",\"type\":\"activity\",\"link\":[{\"nextId\":\"e1\"}]},{\"id\":\"e1\",\"type\":\"end\"},{\"id\":\"n3\",\"type\":\"activity\",\"link\":[{\"nextId\":\"e1\"}]}]}");
     }
 
     @Test
