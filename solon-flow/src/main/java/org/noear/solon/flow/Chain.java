@@ -19,6 +19,7 @@ import org.noear.snack.ONode;
 import org.noear.solon.Utils;
 import org.noear.solon.core.util.ResourceUtil;
 import org.noear.solon.lang.Preview;
+import org.yaml.snakeyaml.Yaml;
 
 import java.net.URL;
 import java.util.*;
@@ -34,8 +35,8 @@ public class Chain {
     private final String id;
     private final String title;
     private final String driver;
-    private final Map<String, Object> meta = new HashMap<>(); //元数据
-    private final Map<String, Node> nodes = new HashMap<>();
+    private final Map<String, Object> meta = new LinkedHashMap<>(); //元数据
+    private final Map<String, Node> nodes = new LinkedHashMap<>();
 
     private final List<Link> links = new ArrayList<>();
     private Node start;
@@ -181,7 +182,16 @@ public class Chain {
             } catch (Throwable ex) {
                 throw new IllegalArgumentException("Failed to load resource: " + url, ex);
             }
-        } else if (uri.endsWith(".yml") || uri.endsWith(".yaml") || uri.endsWith(".properties")) {
+        } else if (uri.endsWith(".yml") || uri.endsWith(".yaml")) {
+            try {
+                Yaml yaml = new Yaml();
+                Object dom = yaml.load(ResourceUtil.getResourceAsString(url));
+
+                return parseByDom(ONode.load(dom));
+            } catch (Throwable ex) {
+                throw new IllegalArgumentException("Failed to load resource: " + url, ex);
+            }
+        } else if (uri.endsWith(".properties")) {
             return parseByProperties(Utils.loadProperties(url));
         } else {
             throw new IllegalArgumentException("File format is not supported: " + uri);
@@ -309,23 +319,38 @@ public class Chain {
     public String toJson() {
         ONode oNode = new ONode();
         oNode.set("id", id);
-        oNode.set("title", title);
-        oNode.set("driver", driver);
 
-        oNode.getOrNew("meta").fill(meta);
+        if (Utils.isNotEmpty(title)) {
+            oNode.set("title", title);
+        }
+
+        if (Utils.isNotEmpty(driver)) {
+            oNode.set("driver", driver);
+        }
+
+        if (Utils.isNotEmpty(meta)) {
+            oNode.getOrNew("meta").fill(meta);
+        }
+
         oNode.getOrNew("layout").asArray().build(n1 -> {
             for (Map.Entry<String, Node> kv : nodes.entrySet()) {
                 ONode n2 = n1.addNew();
                 n2.set("id", kv.getKey());
-                n2.set("title", kv.getValue().getTitle());
                 n2.set("type", kv.getValue().getType().toString().toLowerCase());
-                n2.getOrNew("meta").fill(kv.getValue().getMetas());
 
-                if (kv.getValue().getWhen() != null) {
+                if (Utils.isNotEmpty(kv.getValue().getTitle())) {
+                    n2.set("title", kv.getValue().getTitle());
+                }
+
+                if (Utils.isNotEmpty(kv.getValue().getMetas())) {
+                    n2.getOrNew("meta").fill(kv.getValue().getMetas());
+                }
+
+                if (Condition.isNotEmpty(kv.getValue().getWhen())) {
                     n2.set("when", kv.getValue().getWhen().getDescription());
                 }
 
-                if (kv.getValue().getTask() != null) {
+                if (Task.isNotEmpty(kv.getValue().getTask())) {
                     n2.set("task", kv.getValue().getTask().getDescription());
                 }
 
@@ -334,9 +359,16 @@ public class Chain {
                         for (Link link : kv.getValue().getNextLinks()) {
                             ONode n4 = n3.addNew();
                             n4.set("nextId", link.getNextId());
-                            n4.set("title", link.getTitle());
-                            n4.getOrNew("meta").fill(link.getMetas());
-                            if (link.getWhen() != null) {
+
+                            if (Utils.isNotEmpty(link.getTitle())) {
+                                n4.set("title", link.getTitle());
+                            }
+
+                            if (Utils.isNotEmpty(link.getMetas())) {
+                                n4.getOrNew("meta").fill(link.getMetas());
+                            }
+
+                            if (Condition.isNotEmpty(link.getWhen())) {
                                 n4.set("when", link.getWhen().getDescription());
                             }
                         }

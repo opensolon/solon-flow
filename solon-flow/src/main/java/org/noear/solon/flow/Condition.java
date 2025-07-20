@@ -25,6 +25,13 @@ import org.noear.solon.Utils;
  * @since 3.0
  * */
 public class Condition {
+    /**
+     * 是否为非空
+     */
+    public static boolean isNotEmpty(Condition c) {
+        return c != null && c.isEmpty() == false;
+    }
+
     private final String description;
     private final Chain chain;
 

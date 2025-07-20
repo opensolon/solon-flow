@@ -24,6 +24,13 @@ import org.noear.solon.Utils;
  * @since 3.0
  * */
 public class Task {
+    /**
+     * 是否为非空
+     */
+    public static boolean isNotEmpty(Task t) {
+        return t != null && t.isEmpty() == false;
+    }
+
     private final Node node;
     private final String description;
 
