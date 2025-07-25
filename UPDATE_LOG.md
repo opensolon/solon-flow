@@ -3,6 +3,9 @@
 
 * 添加 solon-flow FlowContext:incrGet, incrAdd
 * 添加 solon-flow aot 配置
+* 优化 solon-flow Chain:parseByDom 节点解析后的添加顺序
+* 优化 solon-flow Chain 解析统改为 Yaml 处理，并添加 toYaml 方法
+* 优化 solon-flow Chain:toJson 输出（压缩大小，去掉空输出）
 
 ### 3.4.0
 
