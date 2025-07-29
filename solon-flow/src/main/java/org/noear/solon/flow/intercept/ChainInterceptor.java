@@ -37,6 +37,8 @@ public interface ChainInterceptor {
 
     /**
      * 节点运行开始时
+     *
+     * @since 3.4
      */
     default void onNodeStart(FlowContext context, Node node) {
 
@@ -44,6 +46,8 @@ public interface ChainInterceptor {
 
     /**
      * 节点运行结束时
+     *
+     * @since 3.4
      */
     default void onNodeEnd(FlowContext context, Node node) {
 
