@@ -188,6 +188,28 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     /**
+     * 节点运行开始时
+     */
+    protected void onNodeStart(FlowDriver driver, FlowContext context, Node node){
+        for (RankEntity<ChainInterceptor> interceptor : interceptorList) {
+            interceptor.target.onNodeStart(context, node);
+        }
+
+        driver.onNodeStart(context, node);
+    }
+
+    /**
+     * 节点运行结束时
+     */
+    protected void onNodeEnd(FlowDriver driver, FlowContext context, Node node) {
+        for (RankEntity<ChainInterceptor> interceptor : interceptorList) {
+            interceptor.target.onNodeEnd(context, node);
+        }
+
+        driver.onNodeEnd(context, node);
+    }
+
+    /**
      * 条件检测
      */
     protected boolean condition_test(FlowDriver driver, FlowContext context, Condition condition, boolean def) throws FlowException {
@@ -249,7 +271,7 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
         //节点运行之前事件
-        driver.onNodeStart(context, node);
+        onNodeStart(driver, context, node);
 
         //如果停止
         if (context.isStopped()) {
@@ -294,7 +316,7 @@ public class FlowEngineDefault implements FlowEngine {
 
         //节点运行之后事件
         if (node_end) {
-            driver.onNodeEnd(context, node);
+            onNodeEnd(driver, context, node);
         }
 
 

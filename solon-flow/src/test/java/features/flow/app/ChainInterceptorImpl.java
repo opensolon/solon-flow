@@ -1,6 +1,8 @@
 package features.flow.app;
 
 import org.noear.solon.annotation.Component;
+import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.Node;
 import org.noear.solon.flow.intercept.ChainInterceptor;
 import org.noear.solon.flow.intercept.ChainInvocation;
 
@@ -13,5 +15,15 @@ public class ChainInterceptorImpl implements ChainInterceptor {
     public void doIntercept(ChainInvocation invocation)  {
         System.out.println("doIntercept---------------");
         invocation.invoke();
+    }
+
+    @Override
+    public void onNodeStart(FlowContext context, Node node) {
+
+    }
+
+    @Override
+    public void onNodeEnd(FlowContext context, Node node) {
+
     }
 }

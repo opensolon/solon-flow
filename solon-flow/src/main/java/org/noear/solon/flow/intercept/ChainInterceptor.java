@@ -15,7 +15,9 @@
  */
 package org.noear.solon.flow.intercept;
 
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowException;
+import org.noear.solon.flow.Node;
 import org.noear.solon.lang.Preview;
 
 /**
@@ -27,9 +29,23 @@ import org.noear.solon.lang.Preview;
 @Preview("3.1")
 public interface ChainInterceptor {
     /**
-     * 拦截
+     * 拦截链执行
      *
-     * @param invocation 调用者
+     * @param invocation 链调用者
      */
     void doIntercept(ChainInvocation invocation) throws FlowException;
+
+    /**
+     * 节点运行开始时
+     */
+    default void onNodeStart(FlowContext context, Node node) {
+
+    }
+
+    /**
+     * 节点运行结束时
+     */
+    default void onNodeEnd(FlowContext context, Node node) {
+
+    }
 }
