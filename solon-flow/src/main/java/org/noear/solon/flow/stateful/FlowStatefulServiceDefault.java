@@ -161,45 +161,40 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
             throw new IllegalArgumentException("StateOperation is UNKNOWN");
         }
 
-        StateType newState = StateType.codeOf(operation.getCode());
+        StateType newState = StateType.byOperation(operation);
         StatefulFlowDriver driver = flowEngine.getDriverAs(node.getChain(), StatefulFlowDriver.class);
 
         //更新状态
         if (operation == Operation.BACK) {
-            //撤回之前的节点
+            //后退
             backHandle(driver, node, context);
+        } else if (operation == Operation.BACK_JUMP) {
+            //跳转后退
+            while (true) {
+                StatefulTask statefulNode = getTask(node.getChain(), context);
+                backHandle(driver, statefulNode.getNode(), context);
+
+                //到目标节点了
+                if (statefulNode.getNode().getId().equals(node.getId())) {
+                    break;
+                }
+            }
         } else if (operation == Operation.RESTART) {
             //撤回全部（重新开始）
             driver.getStateRepository().clearState(context);
         } else if (operation == Operation.FORWARD) {
-            //如果是完成或跳过，则向前流动
-            try {
-                driver.postHandleTask(context, node.getTask());
-                driver.getStateRepository().putState(context, node, newState);
+            //前进
+            forwardHandle(driver, node, context, newState);
+        } else if (operation == Operation.FORWARD_JUMP) {
+            //跳转前进
+            while (true) {
+                StatefulTask task = getTask(node.getChain(), context);
+                forwardHandle(driver, task.getNode(), context, newState);
 
-                //重新查找下一个可执行节点（可能为自动前进）
-                Node nextNode = node.getNextNode();
-                if (nextNode != null) {
-                    if (nextNode.getType() == NodeType.INCLUSIVE || nextNode.getType() == NodeType.PARALLEL) {
-                        //如果是流入网关，要通过引擎计算获取下个活动节点
-                        StatefulTask statefulNextNode = getTask(node.getChain(), new FlowContext().putAll(context.model()));
-
-                        if (statefulNextNode != null) {
-                            nextNode = statefulNextNode.getNode();
-                        } else {
-                            nextNode = null;
-                        }
-                    }
-
-                    if (nextNode != null) {
-                        if (driver.getStateController().isAutoForward(context, nextNode)) {
-                            //如果要自动前进
-                            flowEngine.eval(nextNode, context);
-                        }
-                    }
+                //到目标节点了
+                if (task.getNode().getId().equals(node.getId())) {
+                    break;
                 }
-            } catch (Throwable e) {
-                throw new FlowException("Task handle failed: " + node.getChain().getId() + " / " + node.getId(), e);
             }
         } else {
             //其它（等待或通过或拒绝）
@@ -273,6 +268,41 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
 
     /// ////////////////////////////////
 
+
+    /**
+     * 前进处理
+     * */
+    protected void forwardHandle(StatefulFlowDriver driver, Node node, FlowContext context, StateType newState) {
+        //如果是完成或跳过，则向前流动
+        try {
+            driver.postHandleTask(context, node.getTask());
+            driver.getStateRepository().putState(context, node, newState);
+
+            //重新查找下一个可执行节点（可能为自动前进）
+            Node nextNode = node.getNextNode();
+            if (nextNode != null) {
+                if (nextNode.getType() == NodeType.INCLUSIVE || nextNode.getType() == NodeType.PARALLEL) {
+                    //如果是流入网关，要通过引擎计算获取下个活动节点
+                    StatefulTask statefulNextNode = getTask(node.getChain(), new FlowContext().putAll(context.model()));
+
+                    if (statefulNextNode != null) {
+                        nextNode = statefulNextNode.getNode();
+                    } else {
+                        nextNode = null;
+                    }
+                }
+
+                if (nextNode != null) {
+                    if (driver.getStateController().isAutoForward(context, nextNode)) {
+                        //如果要自动前进
+                        flowEngine.eval(nextNode, context);
+                    }
+                }
+            }
+        } catch (Throwable e) {
+            throw new FlowException("Task handle failed: " + node.getChain().getId() + " / " + node.getId(), e);
+        }
+    }
 
     /**
      * 后退处理

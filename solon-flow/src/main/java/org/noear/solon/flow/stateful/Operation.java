@@ -29,19 +29,27 @@ public enum Operation {
     /**
      * 后退（撤回）
      */
-    BACK(1001), //=>state: WAITING
+    BACK(1010), //=>state: WAITING
+    /**
+     * 跳转后退
+     */
+    BACK_JUMP(1011), //=>state: WAITING
     /**
      * 前进（通过）
      */
-    FORWARD(1002), //=>state: COMPLETED
+    FORWARD(1020), //=>state: COMPLETED
+    /**
+     * 跳转前进
+     */
+    FORWARD_JUMP(1021), //=>state: COMPLETED
     /**
      * 终止（取消）
      */
-    TERMINATED(1003), //=>state: TERMINATED
+    TERMINATED(1030), //=>state: TERMINATED
     /**
      * 重新开始
      */
-    RESTART(1004), //=>state: UNKNOWN
+    RESTART(1040), //=>state: UNKNOWN
     ;
 
     private final int code;
@@ -59,13 +67,17 @@ public enum Operation {
      */
     public static Operation codeOf(int code) {
         switch (code) {
-            case 1001:
+            case 1010:
                 return BACK;
-            case 1002:
+            case 1011:
+                return BACK_JUMP;
+            case 1020:
                 return FORWARD;
-            case 1003:
+            case 1021:
+                return FORWARD_JUMP;
+            case 1030:
                 return TERMINATED;
-            case 1004:
+            case 1040:
                 return RESTART;
             default:
                 return UNKNOWN;

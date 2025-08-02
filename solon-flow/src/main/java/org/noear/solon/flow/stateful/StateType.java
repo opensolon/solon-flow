@@ -64,4 +64,22 @@ public enum StateType {
                 return UNKNOWN;
         }
     }
+
+    /**
+     * 根据代码构建
+     */
+    public static StateType byOperation(Operation op) {
+        switch (op) {
+            case BACK:
+            case BACK_JUMP:
+                return WAITING;
+            case FORWARD:
+            case FORWARD_JUMP:
+                return COMPLETED;
+            case TERMINATED:
+                return TERMINATED;
+            default:
+                return UNKNOWN;
+        }
+    }
 }
