@@ -2,6 +2,7 @@
 ### 3.4.3
 
 * 添加 solon-flow ChainInterceptor:onNodeStart, onNodeEnd 方法（扩展拦截的能力）
+* 添加 solon-flow 操作：Operation.BACK_JUMP, FORWARD_JUMP
 
 ### 3.4.1
 
