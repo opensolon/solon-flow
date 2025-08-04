@@ -61,7 +61,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
 
         if (statefulTask != null) {
             postOperation(context, statefulTask.getNode(), Operation.FORWARD);
-            statefulTask = new StatefulTask(statefulTask.getNode(), StateType.COMPLETED);
+            statefulTask = new StatefulTask(engine(), statefulTask.getNode(), StateType.COMPLETED);
         }
 
         return statefulTask;
@@ -171,7 +171,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         } else if (operation == Operation.BACK_JUMP) {
             //跳转后退
             while (true) {
-                FlowContext contextNew = new FlowContext().putAll(context.model());
+                FlowContext contextNew = FlowContext.from(context);
                 StatefulTask statefulNode = getTask(node.getChain(), contextNew);
                 backHandle(driver, statefulNode.getNode(), contextNew);
 
@@ -189,7 +189,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         } else if (operation == Operation.FORWARD_JUMP) {
             //跳转前进
             while (true) {
-                FlowContext contextNew = new FlowContext().putAll(context.model());
+                FlowContext contextNew = FlowContext.from(context);
                 StatefulTask task = getTask(node.getChain(), contextNew);
                 forwardHandle(driver, task.getNode(), contextNew, newState);
 
@@ -285,7 +285,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
             if (nextNode != null) {
                 if (nextNode.getType() == NodeType.INCLUSIVE || nextNode.getType() == NodeType.PARALLEL) {
                     //如果是流入网关，要通过引擎计算获取下个活动节点
-                    StatefulTask statefulNextNode = getTask(node.getChain(), new FlowContext().putAll(context.model()));
+                    StatefulTask statefulNextNode = getTask(node.getChain(), FlowContext.from(context));
 
                     if (statefulNextNode != null) {
                         nextNode = statefulNextNode.getNode();

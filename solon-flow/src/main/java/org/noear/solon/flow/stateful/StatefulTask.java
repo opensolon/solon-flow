@@ -15,7 +15,12 @@
  */
 package org.noear.solon.flow.stateful;
 
+import org.noear.solon.core.util.Assert;
+import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowEngine;
+import org.noear.solon.flow.FlowException;
 import org.noear.solon.flow.Node;
+import org.noear.solon.lang.Preview;
 
 /**
  * 有状态的任务
@@ -28,12 +33,32 @@ public class StatefulTask {
     public static final String KEY_ACTIVITY_LIST = "ACTIVITY_LIST";
     public static final String KEY_ACTIVITY_LIST_GET = "ACTIVITY_LIST_GET";
 
+    private final FlowEngine flowEngine;
     private final Node node;
     private final StateType state;
 
-    public StatefulTask(Node node, StateType state) {
+    public StatefulTask(FlowEngine flowEngine, Node node, StateType state) {
+        this.flowEngine = flowEngine;
         this.node = node;
         this.state = state;
+    }
+
+    /**
+     * 运行任务
+     *
+     * @param context 上下文
+     */
+    @Preview("3.4")
+    public void runTask(FlowContext context) throws FlowException {
+        Assert.notNull(node, "node is null");
+
+        try {
+            flowEngine.getDriver(node.getChain()).handleTask(context, node.getTask());
+        } catch (FlowException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new FlowException("The task handle failed: " + node.getChain().getId() + " / " + node.getId(), e);
+        }
     }
 
     /**

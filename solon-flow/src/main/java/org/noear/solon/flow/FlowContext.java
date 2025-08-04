@@ -54,6 +54,19 @@ public class FlowContext {
     //当前流程引擎
     protected transient FlowEngine engine;
 
+    /**
+     * 数据复制
+     */
+    public static FlowContext from(FlowContext old) {
+        FlowContext context = new FlowContext();
+        context.model.putAll(old.model);
+        context.result = old.result;
+        context.executor = old.executor;
+        context.engine = old.engine;
+
+        return context;
+    }
+
     public FlowContext() {
         this(null);
     }

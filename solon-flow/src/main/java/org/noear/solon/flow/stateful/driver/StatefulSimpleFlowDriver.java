@@ -105,7 +105,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
                     //检查是否为当前用户的任务
                     if (stateController.isOperatable(context, task.getNode())) {
                         //记录当前流程节点（用于展示）
-                        StatefulTask statefulNode = new StatefulTask(task.getNode(), StateType.WAITING);
+                        StatefulTask statefulNode = new StatefulTask(context.engine(), task.getNode(), StateType.WAITING);
                         context.put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
                         nodeList.add(statefulNode);
 
@@ -116,7 +116,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
                         }
                     } else {
                         //阻断当前分支（等待别的用户办理）
-                        StatefulTask statefulNode = new StatefulTask(task.getNode(), StateType.UNKNOWN);
+                        StatefulTask statefulNode = new StatefulTask(context.engine(), task.getNode(), StateType.UNKNOWN);
                         context.put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
                         nodeList.add(statefulNode);
 
@@ -124,7 +124,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
                     }
                 } else if (state == StateType.TERMINATED) {
                     //终止
-                    StatefulTask statefulNode = new StatefulTask(task.getNode(), StateType.TERMINATED);
+                    StatefulTask statefulNode = new StatefulTask(context.engine(), task.getNode(), StateType.TERMINATED);
                     context.put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
                     nodeList.add(statefulNode);
 
