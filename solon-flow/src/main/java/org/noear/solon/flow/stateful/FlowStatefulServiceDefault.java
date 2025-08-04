@@ -171,8 +171,9 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         } else if (operation == Operation.BACK_JUMP) {
             //跳转后退
             while (true) {
-                StatefulTask statefulNode = getTask(node.getChain(), context);
-                backHandle(driver, statefulNode.getNode(), context);
+                FlowContext contextNew = new FlowContext().putAll(context.model());
+                StatefulTask statefulNode = getTask(node.getChain(), contextNew);
+                backHandle(driver, statefulNode.getNode(), contextNew);
 
                 //到目标节点了
                 if (statefulNode.getNode().getId().equals(node.getId())) {
@@ -188,8 +189,9 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         } else if (operation == Operation.FORWARD_JUMP) {
             //跳转前进
             while (true) {
-                StatefulTask task = getTask(node.getChain(), context);
-                forwardHandle(driver, task.getNode(), context, newState);
+                FlowContext contextNew = new FlowContext().putAll(context.model());
+                StatefulTask task = getTask(node.getChain(), contextNew);
+                forwardHandle(driver, task.getNode(), contextNew, newState);
 
                 //到目标节点了
                 if (task.getNode().getId().equals(node.getId())) {
