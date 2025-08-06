@@ -336,10 +336,8 @@ public class FlowEngineDefault implements FlowEngine {
         //尝试执行任务（可能为空）
         task_exec(driver, context, node);
 
-
         //流出
         String o_mode = node.getMeta("$omode");
-
         if (o_mode != null) {
             if ("parallel".equals(o_mode)) {
                 //并行网关模式
