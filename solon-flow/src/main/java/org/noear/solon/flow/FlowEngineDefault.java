@@ -190,7 +190,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 节点运行开始时
      */
-    protected void onNodeStart(FlowDriver driver, FlowContext context, Node node){
+    protected void onNodeStart(FlowDriver driver, FlowContext context, Node node) {
         for (RankEntity<ChainInterceptor> interceptor : interceptorList) {
             interceptor.target.onNodeStart(context, node);
         }
@@ -296,12 +296,7 @@ public class FlowEngineDefault implements FlowEngine {
             case END:
                 break;
             case ACTIVITY:
-                //尝试执行任务（可能为空）
-                task_exec(driver, context, node);
-                //转到下个节点
-                //node_run(driver, context, node.getNextNode(), depth);
-                //采用排它网关的逻辑
-                exclusive_run(driver, context, node, depth);
+                node_end = activity_run(driver, context, node, depth);
                 break;
             case INCLUSIVE: //包容网关（多选）
                 node_end = inclusive_run(driver, context, node, depth);
@@ -323,10 +318,53 @@ public class FlowEngineDefault implements FlowEngine {
         return node_end;
     }
 
+    protected boolean activity_run(FlowDriver driver, FlowContext context, Node node, int depth) {
+        //流入
+        String i_mode = node.getMeta("$imode");
+        if (i_mode != null) {
+            if ("parallel".equals(i_mode)) {
+                if (parallel_run_in(driver, context, node, depth) == false) {
+                    return false;
+                }
+            } else if ("inclusive".equals(i_mode)) {
+                if (inclusive_run_in(driver, context, node, depth) == false) {
+                    return false;
+                }
+            }
+        }
+
+        //尝试执行任务（可能为空）
+        task_exec(driver, context, node);
+
+
+        //流出
+        String o_mode = node.getMeta("$omode");
+
+        if (o_mode != null) {
+            if ("parallel".equals(o_mode)) {
+                //并行网关模式
+                return parallel_run_out(driver, context, node, depth);
+            } else if ("inclusive".equals(o_mode)) {
+                //包容网关模式
+                return inclusive_run_out(driver, context, node, depth);
+            }
+        }
+        //默认：排它网关模式
+        return exclusive_run(driver, context, node, depth);
+    }
+
     /**
      * 运行包容网关
      */
     protected boolean inclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
+        if (inclusive_run_in(driver, context, node, depth)) {
+            return inclusive_run_out(driver, context, node, depth);
+        } else {
+            return false;
+        }
+    }
+
+    protected boolean inclusive_run_in(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
         Stack<Integer> inclusive_stack = context.counter().stack(node.getChain(), "inclusive_run");
 
         //::流入
@@ -343,6 +381,12 @@ public class FlowEngineDefault implements FlowEngine {
             }
             //如果没有 gt 0，说明之前还没有流出的
         }
+
+        return true;
+    }
+
+    protected boolean inclusive_run_out(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
+        Stack<Integer> inclusive_stack = context.counter().stack(node.getChain(), "inclusive_run");
 
         //::流出
         Link def_line = null;
@@ -405,12 +449,24 @@ public class FlowEngineDefault implements FlowEngine {
      * 运行并行网关
      */
     protected boolean parallel_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
+        if (parallel_run_in(driver, context, node, depth)) {
+            return parallel_run_out(driver, context, node, depth);
+        } else {
+            return false;
+        }
+    }
+
+    protected boolean parallel_run_in(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
         //::流入
         int count = context.counter().incr(node.getChain(), node.getId());//运行次数累计
         if (node.getPrevLinks().size() > count) { //等待所有支线计数完成
             return false;
         }
 
+        return true;
+    }
+
+    protected boolean parallel_run_out(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
         //恢复计数
         context.counter().set(node.getChain(), node.getId(), 0);
 
