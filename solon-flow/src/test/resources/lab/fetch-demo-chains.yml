@@ -1,0 +1,35 @@
+chains:
+  fetch-community:
+    title: "采集社区"
+    layout:
+      - task: "@fetchBanduCommunity"
+      - task: |
+          while(communityIds.hasNext()) {
+              context.put("communityId", communityIds.next());
+              context.runTask("#fetch-album");
+          }
+  fetch-album:
+    title: "采集集合"
+    layout:
+      - task: "@fetchBanduAlbum"
+      - task: |
+          while(albumIds.hasNext()) {
+            context.put("albumId", albumIds.next());
+            context.runTask("#fetch-course");
+          }
+  fetch-course:
+    title: "采集课程"
+    layout:
+      - task: "@fetchBanduCourse"
+      - task: |
+          while(courseIds.hasNext()) {
+            context.put("courseId", courseIds.next());
+            context.runTask("#fetch-content");
+          }
+  fetch-content:
+    title: "采集课程内容"
+    layout:
+      - task: "@fetchBanduContent"
+      - task: "@downloadBanduAttachment"
+      - task: "@convertBanduAttachment"
+      - task: "@markdownBanduAttachment"
