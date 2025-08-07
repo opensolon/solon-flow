@@ -1,0 +1,24 @@
+id: "fetch"
+title: "数据采集"
+layout:
+  - task: |
+      context.runTask("@fetchBanduCommunity"); //采集社区
+      while(communityIds.hasNext()) {
+          context.put("communityId", communityIds.next());
+      
+          context.runTask("@fetchBanduAlbum"); //采集集合
+          while(albumIds.hasNext()) {
+              context.put("albumId", albumIds.next());
+        
+              context.runTask("@fetchBanduCourse"); //"采集课程"
+              while(courseIds.hasNext()) {
+                  context.put("courseId", courseIds.next());
+          
+                  //"采集课程内容"
+                  context.runTask("@fetchBanduContent"); 
+                  context.runTask("@downloadBanduAttachment"); 
+                  context.runTask("@convertBanduAttachment"); 
+                  context.runTask("@markdownBanduAttachment"); 
+              }
+          }
+      }
