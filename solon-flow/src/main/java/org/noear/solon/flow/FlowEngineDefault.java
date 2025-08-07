@@ -333,6 +333,18 @@ public class FlowEngineDefault implements FlowEngine {
         //尝试执行任务（可能为空）
         task_exec(driver, context, node);
 
+        //如果停止
+        if (context.isStopped()) {
+            return false;
+        }
+
+        //如果阻断，就不再执行了（onNodeBefore 可能会触发中断）
+        if (context.isInterrupted()) {
+            //重置阻断（不影响别的分支）
+            context.interrupt(false);
+            return false;
+        }
+
         //流出模式
         if (node.getOmode() == NodeType.PARALLEL) {
             //并行网关模式
