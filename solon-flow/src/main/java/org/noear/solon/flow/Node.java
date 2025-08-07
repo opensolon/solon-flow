@@ -35,6 +35,8 @@ public class Node {
     private List<Link> prevLinks;
     private Condition when;
     private Task task;
+    private NodeType imode = NodeType.UNKNOWN;
+    private NodeType omode = NodeType.UNKNOWN;
 
     /**
      * 附件（按需定制使用）
@@ -50,8 +52,35 @@ public class Node {
             //按优先级排序
             Collections.sort(nextLinks);
         }
+
+        ioModeInit();
     }
 
+    private void ioModeInit() {
+        //流入
+        String i_mode = getMeta("$imode");
+        this.imode = NodeType.nameOf(i_mode, NodeType.UNKNOWN);
+
+        //流出
+        String o_mode = getMeta("$omode");
+        this.omode = NodeType.nameOf(o_mode, NodeType.UNKNOWN);
+    }
+
+    /**
+     * 流入模式
+     *
+     */
+    protected NodeType getImode() {
+        return imode;
+    }
+
+    /**
+     * 流出模式
+     *
+     */
+    protected NodeType getOmode() {
+        return omode;
+    }
 
     /**
      * 获取所属链

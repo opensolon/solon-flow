@@ -319,36 +319,31 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     protected boolean activity_run(FlowDriver driver, FlowContext context, Node node, int depth) {
-        //流入
-        String i_mode = node.getMeta("$imode");
-        if (i_mode != null) {
-            if ("parallel".equals(i_mode)) {
-                if (parallel_run_in(driver, context, node, depth) == false) {
-                    return false;
-                }
-            } else if ("inclusive".equals(i_mode)) {
-                if (inclusive_run_in(driver, context, node, depth) == false) {
-                    return false;
-                }
+        //流入模式
+        if (node.getImode() == NodeType.PARALLEL) {
+            if (parallel_run_in(driver, context, node, depth) == false) {
+                return false;
+            }
+        } else if (node.getImode() == NodeType.INCLUSIVE) {
+            if (inclusive_run_in(driver, context, node, depth) == false) {
+                return false;
             }
         }
 
         //尝试执行任务（可能为空）
         task_exec(driver, context, node);
 
-        //流出
-        String o_mode = node.getMeta("$omode");
-        if (o_mode != null) {
-            if ("parallel".equals(o_mode)) {
-                //并行网关模式
-                return parallel_run_out(driver, context, node, depth);
-            } else if ("inclusive".equals(o_mode)) {
-                //包容网关模式
-                return inclusive_run_out(driver, context, node, depth);
-            }
+        //流出模式
+        if (node.getOmode() == NodeType.PARALLEL) {
+            //并行网关模式
+            return parallel_run_out(driver, context, node, depth);
+        } else if (node.getOmode() == NodeType.EXCLUSIVE) {
+            //包容网关模式
+            return inclusive_run_out(driver, context, node, depth);
+        } else {
+            //默认：排它网关模式
+            return exclusive_run(driver, context, node, depth);
         }
-        //默认：排它网关模式
-        return exclusive_run(driver, context, node, depth);
     }
 
     /**

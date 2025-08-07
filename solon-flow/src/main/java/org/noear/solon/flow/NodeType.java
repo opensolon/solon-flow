@@ -23,13 +23,20 @@ package org.noear.solon.flow;
  * */
 public enum NodeType {
     /**
+     * 未知
+     *
+     * @serial 3.4
+     */
+    UNKNOWN(0),
+
+    /**
      * 开始
      */
-    START(0),
+    START(1),
     /**
      * 结束
      */
-    END(1),
+    END(2),
 
     /**
      * 活动节点
@@ -59,26 +66,21 @@ public enum NodeType {
         this.code = code;
     }
 
-    public static NodeType codeOf(int code) {
-        NodeType[] values = NodeType.values();
-        for (NodeType v : values) {
-            if (v.code == code) {
-                return v;
-            }
-        }
-
-        return ACTIVITY;
+    public static NodeType nameOf(String name) {
+        return nameOf(name, ACTIVITY);
     }
 
-    public static NodeType nameOf(String name) {
-        NodeType[] values = NodeType.values();
-        for (NodeType v : values) {
-            if (v.name().equalsIgnoreCase(name)) {
-                return v;
+    public static NodeType nameOf(String name, NodeType defaultValue) {
+        if (name != null) {
+            NodeType[] values = NodeType.values();
+            for (NodeType v : values) {
+                if (v.name().equalsIgnoreCase(name)) {
+                    return v;
+                }
             }
         }
 
-        return ACTIVITY;
+        return defaultValue;
     }
 
     /**
