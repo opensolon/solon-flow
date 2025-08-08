@@ -20,7 +20,10 @@ public class IteratorTest {
         FlowContext context = new FlowContext();
         flowEngine.eval("fetch", context);
 
+        context.remove("context");
         log.warn(new TreeMap<>(context.model()).toString());
+
+        assert  115 == context.model().size();
     }
 
     @Test
@@ -28,6 +31,9 @@ public class IteratorTest {
         FlowContext context = new FlowContext();
         flowEngine.eval("fetch2", context);
 
+        context.remove("context");
         log.warn(new TreeMap<>(context.model()).toString());
+
+        assert  115 == context.model().size();
     }
 }
