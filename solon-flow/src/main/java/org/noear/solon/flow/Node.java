@@ -16,6 +16,7 @@
 package org.noear.solon.flow;
 
 import org.noear.solon.Utils;
+import org.noear.solon.lang.Preview;
 
 import java.util.*;
 
@@ -69,7 +70,9 @@ public class Node {
     /**
      * 流入模式
      *
+     * @since 3.4
      */
+    @Preview("3.4")
     protected NodeType getImode() {
         return imode;
     }
@@ -77,7 +80,9 @@ public class Node {
     /**
      * 流出模式
      *
+     * @since 3.4
      */
+    @Preview("3.4")
     protected NodeType getOmode() {
         return omode;
     }
