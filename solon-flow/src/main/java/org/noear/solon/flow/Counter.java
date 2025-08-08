@@ -16,6 +16,7 @@
 package org.noear.solon.flow;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,7 +31,7 @@ public class Counter {
     static final String ROOT = "_ROOT";
 
     private final Map<String, AtomicInteger> counts = new ConcurrentHashMap<>();
-    private final Map<String, Stack<Integer>> stacks = new ConcurrentHashMap<>();
+    private final Map<String, Stack> stacks = new ConcurrentHashMap<>();
 
     /**
      * 清空
@@ -46,7 +47,7 @@ public class Counter {
     /**
      * 记录栈
      */
-    public Stack<Integer> stack(Chain chain, String key) {
+    public <T> Stack<T> stack(Chain chain, String key) {
         return stacks.computeIfAbsent(chain.getId() + "/" + key, k -> new Stack<>());
     }
 

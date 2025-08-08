@@ -1,6 +1,7 @@
 
 ### 3.4.3
 
+* 新增 solon-flow iterator 循环网关
 * 添加 solon-flow ChainInterceptor:onNodeStart, onNodeEnd 方法（扩展拦截的能力）
 * 添加 solon-flow 操作：Operation.BACK_JUMP, FORWARD_JUMP
 

@@ -307,6 +307,9 @@ public class FlowEngineDefault implements FlowEngine {
             case PARALLEL: //并行网关（全选）
                 node_end = parallel_run(driver, context, node, depth);
                 break;
+            case ITERATOR:
+                node_end = iterator_run(driver, context, node, depth);
+                break;
         }
 
         //节点运行之后事件
@@ -516,6 +519,66 @@ public class FlowEngineDefault implements FlowEngine {
                     throw new FlowException(errorRef.get());
                 }
             }
+        }
+
+        return true;
+    }
+
+    protected boolean iterator_run(FlowDriver driver, FlowContext context, Node node, int depth) {
+        if (node.getMeta("$for") == null) {
+            //结束
+            if (iterator_run_in(driver, context, node, depth)) {
+                return node_run(driver, context, node.getNextNode(), depth);
+            } else {
+                return false;
+            }
+        } else {
+            //开始
+            return iterator_run_out(driver, context, node, depth);
+        }
+    }
+
+    protected boolean iterator_run_in(FlowDriver driver, FlowContext context, Node node, int depth) {
+        Stack<Iterator> iterator_stack = context.counter().stack(node.getChain(), "iterator_run");
+
+        //::流入
+        if (iterator_stack.size() > 0) {
+            Iterator inIterator = iterator_stack.peek();
+            if (inIterator.hasNext()) { //等待遍历完成
+                return false;
+            }
+
+            //聚合结束，取消这个栈节点
+            iterator_stack.pop();
+        }
+        //如果没有 gt 0，说明之前还没有流出的
+
+        return true;
+    }
+
+    protected boolean iterator_run_out(FlowDriver driver, FlowContext context, Node node, int depth) {
+        String forKey = node.getMeta("$for");
+        String inKey = node.getMeta("$in");
+        Object inObj = context.get(inKey);
+
+        Iterator inIterator = null;
+        if (inObj instanceof Iterator) {
+            inIterator = (Iterator) inObj;
+        } else if (inObj instanceof Iterable) {
+            inIterator = ((Iterable) inObj).iterator();
+        } else {
+            throw new FlowException(inKey + " is not a Iterable");
+        }
+
+
+        Stack<Iterator> iterator_stack = context.counter().stack(node.getChain(), "iterator_run");
+        iterator_stack.push(inIterator);
+
+        //::流出
+        while (inIterator.hasNext()) {
+            Object item = inIterator.next();
+            context.put(forKey, item);
+            node_run(driver, context, node.getNextNode(), depth);
         }
 
         return true;

@@ -54,7 +54,11 @@ public enum NodeType {
     /**
      * 并行网关（全选）
      */
-    PARALLEL(23);
+    PARALLEL(23),
+    /**
+     * 遍历网关（循环）
+     */
+    ITERATOR(24);
 
     private int code;
 
