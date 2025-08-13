@@ -1,13 +1,13 @@
 id: fetch
 title: "采集"
 layout:
-  - task: "@fetchBanduCommunity"
+  - task: "@fetchCommunity"
   - { type: iterator, id: fetch-album, meta: { "$for": "communityId", "$in": "communityIds" } }
-  - task: "@fetchBanduAlbum"
+  - task: "@fetchAlbum"
   - { type: iterator, id: fetch-course,  meta: { "$for": "albumId", "$in": "albumIds" } }
-  - task: "@fetchBanduCourse"
+  - task: "@fetchCourse"
   - { type: iterator, id: fetch-content, meta: { "$for": "courseId", "$in": "courseIds" } }
-  - task: "@fetchBanduContent"
-  - task: "@downloadBanduAttachment"
-  - task: "@convertBanduAttachment"
-  - task: "@markdownBanduAttachment"
+  - task: "@fetchContent"
+  - task: "@downloadAttachment"
+  - task: "@convertAttachment"
+  - task: "@markdownAttachment"
