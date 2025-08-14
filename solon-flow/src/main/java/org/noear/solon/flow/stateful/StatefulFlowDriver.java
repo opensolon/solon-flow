@@ -61,10 +61,10 @@ public class StatefulFlowDriver extends AbstractFlowDriver implements FlowDriver
             //有关态的
             if (exchanger.context().stateController().isAutoForward(exchanger.context(), task.getNode())) {
                 //自动前进
-                StateType state = exchanger.context().stateRepository().getState(exchanger.context(), task.getNode());
+                StateType state = exchanger.context().stateRepository().stateGet(exchanger.context(), task.getNode());
                 if (state == StateType.UNKNOWN || state == StateType.WAITING) {
                     //添加状态
-                    exchanger.context().stateRepository().putState(exchanger.context(), task.getNode(), StateType.COMPLETED);
+                    exchanger.context().stateRepository().statePut(exchanger.context(), task.getNode(), StateType.COMPLETED);
 
                     //确保任务只被执行一次
                     postHandleTask(exchanger, task);
@@ -74,7 +74,7 @@ public class StatefulFlowDriver extends AbstractFlowDriver implements FlowDriver
                 }
             } else {
                 //控制前进
-                StateType state = exchanger.context().stateRepository().getState(exchanger.context(), task.getNode());
+                StateType state = exchanger.context().stateRepository().stateGet(exchanger.context(), task.getNode());
                 List<StatefulTask> nodeList = (List<StatefulTask>) exchanger.temporary().vars().computeIfAbsent(StatefulTask.KEY_ACTIVITY_LIST, k -> new ArrayList<>());
                 boolean nodeListGet = (boolean) exchanger.temporary().vars().getOrDefault(StatefulTask.KEY_ACTIVITY_LIST_GET, false);
 

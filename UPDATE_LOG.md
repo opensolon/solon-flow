@@ -9,6 +9,7 @@
 * 调整 solon-flow StatefulSimpleFlowDriver 更名为 StatefulFlowDriver
 * 调整 solon-flow Evaluation 更名为 Actuator（脚本执行器）
 * 调整 solon-flow FlowStatefulService 接口，每个方法的 context 参数移到最后位（保持统一性）
+* 调整 solon-flow StateRepository 接口的方法命名，方便 FlowContext 定制时同时实现 StateController, StateRepository 接口
 
 ### 3.4.3
 

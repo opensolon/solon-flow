@@ -16,7 +16,6 @@
 package org.noear.solon.flow.stateful;
 
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.Node;
 import org.noear.solon.lang.Preview;
 
@@ -29,22 +28,22 @@ import org.noear.solon.lang.Preview;
 @Preview("3.1")
 public interface StateRepository {
     /**
-     * 获取状态
+     * 状态获取
      */
-    StateType getState(FlowContext context, Node node);
+    StateType stateGet(FlowContext context, Node node);
 
     /**
-     * 推入状态
+     * 状态推入
      */
-    void putState(FlowContext context, Node node, StateType state);
+    void statePut(FlowContext context, Node node, StateType state);
 
     /**
-     * 移除状态
+     * 状态移除
      */
-    void removeState(FlowContext context, Node node);
+    void stateRemove(FlowContext context, Node node);
 
     /**
-     * 清空
+     * 状态清空
      */
-    void clearState(FlowContext context);
+    void stateClear(FlowContext context);
 }

@@ -177,7 +177,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
             }
         } else if (operation == Operation.RESTART) {
             //撤回全部（重新开始）
-            exchanger.context().stateRepository().clearState(exchanger.context());
+            exchanger.context().stateRepository().stateClear(exchanger.context());
         } else if (operation == Operation.FORWARD) {
             //前进
             forwardHandle(driver, node, exchanger, newState);
@@ -194,7 +194,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
             }
         } else {
             //其它（等待或通过或拒绝）
-            exchanger.context().stateRepository().putState(exchanger.context(), node, newState);
+            exchanger.context().stateRepository().statePut(exchanger.context(), node, newState);
         }
     }
 
@@ -262,7 +262,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
 
     @Override
     public void clearState(Chain chain, FlowContext context) {
-        context.stateRepository().clearState(context);
+        context.stateRepository().stateClear(context);
     }
 
     /// ////////////////////////////////
@@ -275,7 +275,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         //如果是完成或跳过，则向前流动
         try {
             driver.postHandleTask(exchanger, node.getTask());
-            exchanger.context().stateRepository().putState(exchanger.context(), node, newState);
+            exchanger.context().stateRepository().statePut(exchanger.context(), node, newState);
 
             //重新查找下一个可执行节点（可能为自动前进）
             Node nextNode = node.getNextNode();
@@ -314,12 +314,12 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         for (Node n1 : node.getPrevNodes()) {
             //移除状态（要求重来）
             if (n1.getType() == NodeType.ACTIVITY) {
-                exchanger.context().stateRepository().removeState(exchanger.context(), n1);
+                exchanger.context().stateRepository().stateRemove(exchanger.context(), n1);
             } else if (NodeType.isGateway(n1.getType())) {
                 //回退所有子节点
                 for (Node n2 : n1.getNextNodes()) {
                     if (n2.getType() == NodeType.ACTIVITY) {
-                        exchanger.context().stateRepository().removeState(exchanger.context(), n2);
+                        exchanger.context().stateRepository().stateRemove(exchanger.context(), n2);
                     }
                 }
                 //再到前一级

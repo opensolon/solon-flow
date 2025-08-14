@@ -22,8 +22,8 @@ public class ActorStateFlowTest {
     ActorStateController stateController = new ActorStateController("role");
     InMemoryStateRepository stateRepository = new InMemoryStateRepository() {
         @Override
-        public void putState(FlowContext context, Node node, StateType state) {
-            super.putState(context, node, state);
+        public void statePut(FlowContext context, Node node, StateType state) {
+            super.statePut(context, node, state);
             //todo: 打印放这儿，顺序更真实
             log.info("{} {} 完成", node.getId(), node.getTitle());
         }

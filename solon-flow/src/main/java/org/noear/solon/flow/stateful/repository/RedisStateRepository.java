@@ -42,7 +42,7 @@ public class RedisStateRepository implements StateRepository {
     }
 
     @Override
-    public StateType getState(FlowContext context, Node node) {
+    public StateType stateGet(FlowContext context, Node node) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
 
         Integer code = client.getHash(statePrefix + context.getInstanceId()).getAsInt(stateKey);
@@ -54,19 +54,19 @@ public class RedisStateRepository implements StateRepository {
     }
 
     @Override
-    public void putState(FlowContext context, Node node, StateType state) {
+    public void statePut(FlowContext context, Node node, StateType state) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
         client.getHash(statePrefix + context.getInstanceId()).put(stateKey, state.getCode());
     }
 
     @Override
-    public void removeState(FlowContext context, Node node) {
+    public void stateRemove(FlowContext context, Node node) {
         String stateKey = node.getChain().getId() + ":" + node.getId();
         client.getHash(statePrefix + context.getInstanceId()).remove(stateKey);
     }
 
     @Override
-    public void clearState(FlowContext context) {
+    public void stateClear(FlowContext context) {
         client.getHash(statePrefix + context.getInstanceId()).clear();
     }
 }
