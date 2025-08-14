@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 /**
- * 流上下文（不支持序列化）
+ * 流上下文（对外，不支持序列化）
  *
  * @author noear
  * @since 3.0
@@ -39,10 +39,12 @@ import java.util.function.Function;
 @Preview("3.0")
 public interface FlowContext {
     static FlowContext of() {
+        //无状态
         return new StatelessFlowContext();
     }
 
     static FlowContext of(String instanceId, StateController stateController, StateRepository stateRepository) {
+        //有状态
         return new StatefulFlowContext(instanceId, stateController, stateRepository);
     }
 

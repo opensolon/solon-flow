@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 /**
- * 流交换器（不支持序列化）
+ * 流执行交换器（对内，不支持序列化）
  *
  * @author noear
  * @since 3.0
