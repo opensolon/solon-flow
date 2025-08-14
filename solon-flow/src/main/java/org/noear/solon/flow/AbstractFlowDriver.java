@@ -112,7 +112,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
      * 尝试作为脚本条件运行
      */
     protected boolean tryAsScriptCondition(FlowExchanger exchanger, Condition condition, String description) throws Throwable {
-        return getEvaluation().runTest(exchanger, description);
+        return getEvaluation().runTest(exchanger.context(), description);
     }
 
     /// //////////////
@@ -190,11 +190,12 @@ public abstract class AbstractFlowDriver implements FlowDriver {
 
 
         try {
-            exchanger.put("node", task.getNode());
+            //给脚本用
+            exchanger.context().put("node", task.getNode());
 
-            getEvaluation().runTask(exchanger, description);
+            getEvaluation().runTask(exchanger.context(), description);
         } finally {
-            exchanger.remove("node");
+            exchanger.context().remove("node");
         }
     }
 

@@ -21,6 +21,7 @@ import org.beetl.core.io.EmptyWriter;
 import org.beetl.core.resource.ClasspathResourceLoader;
 import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.noear.solon.flow.Actuator;
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowExchanger;
 
 import java.io.Closeable;
@@ -53,14 +54,14 @@ public class BeetlActuator implements Actuator, Closeable {
     }
 
     @Override
-    public boolean runTest(FlowExchanger context, String code) {
+    public boolean runTest(FlowContext context, String code) {
         Writer writer = new EmptyWriter();
         Map values = engine.runScript("return " + code + ";", context.model(), writer, templateLoader);
         return (Boolean) values.get("return");
     }
 
     @Override
-    public void runTask(FlowExchanger context, String code) {
+    public void runTask(FlowContext context, String code) {
         Writer writer = new EmptyWriter();
         engine.runScript(code, context.model(), writer, templateLoader);
     }

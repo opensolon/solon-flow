@@ -18,7 +18,7 @@ package org.noear.solon.flow.script;
 import org.noear.liquor.eval.Exprs;
 import org.noear.liquor.eval.Scripts;
 import org.noear.solon.flow.Actuator;
-import org.noear.solon.flow.FlowExchanger;
+import org.noear.solon.flow.FlowContext;
 
 /**
  * Liquor 脚本评估器
@@ -28,12 +28,12 @@ import org.noear.solon.flow.FlowExchanger;
  */
 public class LiquorActuator implements Actuator {
     @Override
-    public boolean runTest(FlowExchanger context, String code) {
+    public boolean runTest(FlowContext context, String code) {
         return (boolean) Exprs.eval(code, context.model());
     }
 
     @Override
-    public void runTask(FlowExchanger context, String code) {
+    public void runTask(FlowContext context, String code) {
         Scripts.eval(code, context.model());
     }
 }

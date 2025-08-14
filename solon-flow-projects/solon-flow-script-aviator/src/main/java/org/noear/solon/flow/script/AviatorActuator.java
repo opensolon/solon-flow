@@ -17,6 +17,7 @@ package org.noear.solon.flow.script;
 
 import com.googlecode.aviator.AviatorEvaluator;
 import org.noear.solon.flow.Actuator;
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowExchanger;
 
 /**
@@ -27,12 +28,12 @@ import org.noear.solon.flow.FlowExchanger;
  */
 public class AviatorActuator implements Actuator {
     @Override
-    public boolean runTest(FlowExchanger context, String code) {
+    public boolean runTest(FlowContext context, String code) {
         return (Boolean) AviatorEvaluator.execute(code, context.model());
     }
 
     @Override
-    public void runTask(FlowExchanger context, String code) {
+    public void runTask(FlowContext context, String code) {
         AviatorEvaluator.execute(code, context.model());
     }
 }

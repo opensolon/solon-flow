@@ -16,6 +16,7 @@
 package org.noear.solon.flow.script;
 
 import org.noear.solon.flow.Actuator;
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowExchanger;
 import org.ssssssss.script.MagicScript;
 import org.ssssssss.script.MagicScriptContext;
@@ -30,7 +31,7 @@ import java.util.Map;
  */
 public class MagicActuator implements Actuator {
     @Override
-    public boolean runTest(FlowExchanger context, String code) {
+    public boolean runTest(FlowContext context, String code) {
         MagicScriptContext scriptContext = new MagicScriptContext();
         for (Map.Entry<String, Object> entry : context.model().entrySet()) {
             scriptContext.set(entry.getKey(), entry.getValue());
@@ -42,7 +43,7 @@ public class MagicActuator implements Actuator {
     }
 
     @Override
-    public void runTask(FlowExchanger context, String code) {
+    public void runTask(FlowContext context, String code) {
         MagicScriptContext scriptContext = new MagicScriptContext();
         for (Map.Entry<String, Object> entry : context.model().entrySet()) {
             scriptContext.set(entry.getKey(), entry.getValue());

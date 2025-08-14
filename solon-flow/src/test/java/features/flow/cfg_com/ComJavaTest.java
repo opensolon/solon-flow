@@ -23,13 +23,13 @@ public class ComJavaTest {
 
         StatelessFlowDriver driver = new StatelessFlowDriver() {
             @Override
-            public void handleTask(FlowExchanger context, Task task) throws Throwable {
-                context.put("result", task.getNode().getId());
+            public void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
+                exchanger.context().put("result", task.getNode().getId());
                 if (task.getNode().getId().equals("n3")) {
-                    context.interrupt();
+                    exchanger.interrupt();
                 }
 
-                super.handleTask(context, task);
+                super.handleTask(exchanger, task);
             }
         };
 

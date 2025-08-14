@@ -32,7 +32,7 @@ public interface Actuator {
      * @param context 流上下文
      * @param code    条件代码
      */
-    boolean runTest(FlowExchanger context, String code) throws Throwable;
+    boolean runTest(FlowContext context, String code) throws Throwable;
 
     /**
      * 运行任务
@@ -40,5 +40,5 @@ public interface Actuator {
      * @param context 流上下文
      * @param code    任务代码
      */
-    void runTask(FlowExchanger context, String code) throws Throwable;
+    void runTask(FlowContext context, String code) throws Throwable;
 }

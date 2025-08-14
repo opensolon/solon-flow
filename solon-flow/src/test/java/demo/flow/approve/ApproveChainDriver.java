@@ -9,22 +9,22 @@ import org.noear.solon.flow.stateless.StatelessFlowDriver;
  */
 public class ApproveChainDriver extends StatelessFlowDriver {
     @Override
-    public void handleTask(FlowExchanger context, Task task) throws Throwable {
+    public void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
         if (isChain(task.getDescription())) {
             //如果跨链调用
-            tryAsChainTask(context, task, task.getDescription());
+            tryAsChainTask(exchanger, task, task.getDescription());
             return;
         }
 
         if (isComponent(task.getDescription())) {
             //如果用组件运行
-            tryAsComponentTask(context, task, task.getDescription());
+            tryAsComponentTask(exchanger, task, task.getDescription());
             return;
         }
 
-        String instance_id = context.get("instance_id");
-        String user_id = context.get("user_id");
-        String role_id = context.get("role_id");
+        String instance_id = exchanger.context().get("instance_id");
+        String user_id = exchanger.context().get("user_id");
+        String role_id = exchanger.context().get("role_id");
 
 
         String chain_id = task.getNode().getChain().getId();
@@ -35,7 +35,7 @@ public class ApproveChainDriver extends StatelessFlowDriver {
 
         if (taskState == null) {
             //中断（流，不会再往下驱动），等用户操作出状态
-            context.interrupt();
+            exchanger.interrupt();
 
             //查询数据库，是否有提醒记录。如果没有，发布通知
             //...
@@ -43,7 +43,7 @@ public class ApproveChainDriver extends StatelessFlowDriver {
             //如果当前用户匹配这个节点任务
             if(role_id.equals(task.getNode().getMeta("role_id"))){
                 //则把这个节点，作为结果（用于展示界面）
-                context.put("result", task.getNode());
+                exchanger.context().put("result", task.getNode());
             }
         }
     }

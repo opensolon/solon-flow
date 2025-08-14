@@ -15,17 +15,11 @@
  */
 package org.noear.solon.flow;
 
-import org.noear.dami.bus.DamiBus;
 import org.noear.liquor.eval.Scripts;
 import org.noear.solon.core.util.Assert;
-import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
 /**
  * 流执行交换器（对内，不支持序列化）
@@ -68,15 +62,6 @@ public class FlowExchanger {
     }
 
     /**
-     * 异步执行器
-     */
-    @Preview("3.3")
-    @Nullable
-    public ExecutorService executor() {
-        return flowContext.executor();
-    }
-
-    /**
      * 临时存放器
      */
     public Temporary temporary() {
@@ -109,19 +94,7 @@ public class FlowExchanger {
      */
     public Object runScript(String script) throws InvocationTargetException {
         //按脚本运行
-        return Scripts.eval(script, this.model());
-    }
-
-    /**
-     * 运行脚本
-     *
-     * @param script 脚本
-     * @deprecated 3.3 {@link #runScript(String)}
-     */
-    @Deprecated
-    public Object run(String script) throws InvocationTargetException {
-        //按脚本运行
-        return Scripts.eval(script, this.model());
+        return Scripts.eval(script, context().model());
     }
 
     /**
@@ -157,113 +130,5 @@ public class FlowExchanger {
      */
     public void interrupt(boolean interrupted) {
         this.interrupted = interrupted;
-    }
-
-    /// //////////////////////////////////////////////////
-
-    /**
-     * 数据模型
-     */
-    public Map<String, Object> model() {
-        return flowContext.model();
-    }
-
-    /**
-     * 推入
-     */
-    public <Slf extends FlowExchanger> Slf put(String key, Object value) {
-        flowContext.put(key, value);
-        return (Slf) this;
-    }
-
-    /**
-     * 推入
-     */
-    public <Slf extends FlowExchanger> Slf putIfAbsent(String key, Object value) {
-        flowContext.putIfAbsent(key, value);
-        return (Slf) this;
-    }
-
-    /**
-     * 推入全部
-     */
-    public <Slf extends FlowExchanger> Slf putAll(Map<String, Object> model) {
-        flowContext.putAll(model);
-        return (Slf) this;
-    }
-
-    /**
-     * 尝试完成
-     */
-    public <T> T computeIfAbsent(String key, Function<String, T> mappingFunction) {
-        return flowContext.computeIfAbsent(key, mappingFunction);
-    }
-
-    /**
-     * 获取
-     */
-    public <T> T get(String key) {
-        return (T) flowContext.get(key);
-    }
-
-    public Object getAsObject(String key) {
-        return get(key);
-    }
-
-    public String getAsString(String key) {
-        return get(key);
-    }
-
-    public Number getAsNumber(String key) {
-        return get(key);
-    }
-
-    public Boolean getAsBoolean(String key) {
-        return get(key);
-    }
-
-    /**
-     * 获取或默认
-     */
-    public <T> T getOrDefault(String key, T def) {
-        return (T) flowContext.getOrDefault(key, def);
-    }
-
-    /**
-     * 增量添加
-     */
-    public int incrAdd(String key, int delta) {
-        AtomicInteger tmp = flowContext.computeIfAbsent(key, k -> new AtomicInteger(0));
-        return tmp.addAndGet(delta);
-    }
-
-    /**
-     * 增量获取
-     */
-    public int incrGet(String key) {
-        AtomicInteger tmp = flowContext.computeIfAbsent(key, k -> new AtomicInteger(0));
-        return tmp.get();
-    }
-
-    /**
-     * 移除
-     */
-    public void remove(String key) {
-        flowContext.remove(key);
-    }
-
-    /**
-     * 获取流实例id
-     */
-    public String getInstanceId() {
-        return get("instanceId");
-    }
-
-    /**
-     * 获取事件总线（based damibus）
-     */
-    public <C extends Object, R extends Object> DamiBus<C, R> eventBus() {
-        //通过模型，可以被转移或替代
-        return flowContext.eventBus();
     }
 }

@@ -9,13 +9,13 @@ import org.noear.solon.flow.stateless.StatelessFlowDriver;
  */
 public class Case2FlowDriver extends StatelessFlowDriver {
     @Override
-    public void handleTask(FlowExchanger context, Task task) throws Throwable {
-        context.put("result", task.getNode().getId());
+    public void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
+        exchanger.context().put("result", task.getNode().getId());
         if(task.getNode().getId().equals("n-3")) {
-            context.interrupt();
+            exchanger.interrupt();
             return;
         }
 
-        super.handleTask(context, task);
+        super.handleTask(exchanger, task);
     }
 }

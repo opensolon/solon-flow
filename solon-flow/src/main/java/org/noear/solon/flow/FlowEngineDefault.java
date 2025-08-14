@@ -479,7 +479,7 @@ public class FlowEngineDefault implements FlowEngine {
         exchanger.temporary().countSet(node.getChain(), node.getId(), 0);
 
         //::流出
-        if (exchanger.executor() == null || node.getNextNodes().size() < 2) { //没有2个，也没必要用线程池
+        if (exchanger.context().executor() == null || node.getNextNodes().size() < 2) { //没有2个，也没必要用线程池
             //单线程
             for (Node n : node.getNextNodes()) {
                 node_run(driver, exchanger, n, depth);
@@ -489,7 +489,7 @@ public class FlowEngineDefault implements FlowEngine {
             CountDownLatch cdl = new CountDownLatch(node.getNextNodes().size());
             AtomicReference<Throwable> errorRef = new AtomicReference<>();
             for (Node n : node.getNextNodes()) {
-                exchanger.executor().execute(() -> {
+                exchanger.context().executor().execute(() -> {
                     try {
                         if (errorRef.get() != null) {
                             return;
@@ -559,7 +559,7 @@ public class FlowEngineDefault implements FlowEngine {
     protected boolean iterator_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
         String forKey = node.getMeta("$for");
         String inKey = node.getMeta("$in");
-        Object inObj = exchanger.get(inKey);
+        Object inObj = exchanger.context().get(inKey);
 
         Iterator inIterator = null;
         if (inObj instanceof Iterator) {
@@ -577,7 +577,7 @@ public class FlowEngineDefault implements FlowEngine {
         //::流出
         while (inIterator.hasNext()) {
             Object item = inIterator.next();
-            exchanger.put(forKey, item);
+            exchanger.context().put(forKey, item);
             node_run(driver, exchanger, node.getNextNode(), depth);
         }
 
