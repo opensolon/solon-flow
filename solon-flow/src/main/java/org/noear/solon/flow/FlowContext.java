@@ -17,6 +17,7 @@ package org.noear.solon.flow;
 
 import org.noear.dami.Dami;
 import org.noear.dami.bus.DamiBus;
+import org.noear.solon.flow.stateful.StatefulSupporter;
 import org.noear.solon.flow.stateless.StatelessFlowContext;
 import org.noear.solon.flow.stateful.StateController;
 import org.noear.solon.flow.stateful.StateRepository;
@@ -76,16 +77,11 @@ public interface FlowContext {
     boolean isStateful();
 
     /**
-     * 获取状态控制器
+     * 获取有状态的支持者
      */
     @Preview("3.5")
-    StateController stateController();
+    StatefulSupporter statefulSupporter();
 
-    /**
-     * 获取状态仓库
-     */
-    @Preview("3.5")
-    StateRepository stateRepository();
 
     /// /////////////////////////////////////
 

@@ -16,6 +16,7 @@
 package org.noear.solon.flow.stateful;
 
 import org.noear.solon.flow.AbstractFlowContext;
+import org.noear.solon.flow.Node;
 
 /**
  * 有状态的流上下文（兼容无状态）
@@ -23,7 +24,7 @@ import org.noear.solon.flow.AbstractFlowContext;
  * @author noear
  * @since 3.5
  */
-public class StatefulFlowContext extends AbstractFlowContext {
+public class StatefulFlowContext extends AbstractFlowContext  implements StatefulSupporter {
     private transient final StateController stateController;
     private transient final StateRepository stateRepository;
 
@@ -39,12 +40,39 @@ public class StatefulFlowContext extends AbstractFlowContext {
     }
 
     @Override
-    public final StateController stateController() {
-        return stateController;
+    public StatefulSupporter statefulSupporter() {
+        return this;
+    }
+
+    /// //////////
+
+    @Override
+    public boolean isOperatable(Node node) {
+        return stateController.isOperatable(this, node);
     }
 
     @Override
-    public final StateRepository stateRepository() {
-        return stateRepository;
+    public boolean isAutoForward(Node node) {
+        return stateController.isAutoForward(this, node);
+    }
+
+    @Override
+    public StateType stateGet(Node node) {
+        return stateRepository.stateGet(this, node);
+    }
+
+    @Override
+    public void statePut(Node node, StateType state) {
+        stateRepository.statePut(this, node, state);
+    }
+
+    @Override
+    public void stateRemove(Node node) {
+        stateRepository.stateRemove(this, node);
+    }
+
+    @Override
+    public void stateClear() {
+        stateRepository.stateClear(this);
     }
 }

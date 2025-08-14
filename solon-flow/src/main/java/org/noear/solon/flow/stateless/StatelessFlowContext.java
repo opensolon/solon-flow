@@ -18,6 +18,7 @@ package org.noear.solon.flow.stateless;
 import org.noear.solon.flow.AbstractFlowContext;
 import org.noear.solon.flow.stateful.StateController;
 import org.noear.solon.flow.stateful.StateRepository;
+import org.noear.solon.flow.stateful.StatefulSupporter;
 import org.noear.solon.lang.Preview;
 
 /**
@@ -36,12 +37,7 @@ public class StatelessFlowContext extends AbstractFlowContext {
     }
 
     @Override
-    public final StateController stateController() {
-        return null;
-    }
-
-    @Override
-    public final StateRepository stateRepository() {
+    public StatefulSupporter statefulSupporter() {
         return null;
     }
 }
