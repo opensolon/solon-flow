@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 临时的
+ * 临时的（内部使用）
  *
  * @author noear
  * @since 3.0
@@ -31,14 +31,14 @@ public class Temporary {
 
     //记数器
     private final Map<String, AtomicInteger> counts = new ConcurrentHashMap<>();
-    //记录栈
+    //栈
     private final Map<String, Stack> stacks = new ConcurrentHashMap<>();
     //变量
     private final Map<String, Object> vars = new ConcurrentHashMap<>();
 
 
     /**
-     * 记录栈
+     * 栈获取
      */
     public <T> Stack<T> stack(Chain chain, String key) {
         return stacks.computeIfAbsent(chain.getId() + "/" + key, k -> new Stack<>());
