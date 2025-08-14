@@ -71,21 +71,21 @@ public interface FlowContext {
 
     /**
      * 是否为有状态的
-     *
      */
+    @Preview("3.5")
     boolean isStateful();
 
     /**
      * 获取状态控制器
-     *
      */
-    StateController getStateController();
+    @Preview("3.5")
+    StateController stateController();
 
     /**
      * 获取状态仓库
-     *
      */
-    StateRepository getStateRepository();
+    @Preview("3.5")
+    StateRepository stateRepository();
 
     /// /////////////////////////////////////
 

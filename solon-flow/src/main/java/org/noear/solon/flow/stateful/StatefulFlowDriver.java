@@ -60,12 +60,12 @@ public class StatefulFlowDriver extends AbstractFlowDriver implements FlowDriver
         if (exchanger.context().isStateful()) {
 
             //有实例id，作有状态处理
-            if (exchanger.context().getStateController().isAutoForward(exchanger.context(), task.getNode())) {
+            if (exchanger.context().stateController().isAutoForward(exchanger.context(), task.getNode())) {
                 //自动前进
-                StateType state = exchanger.context().getStateRepository().getState(exchanger.context(), task.getNode());
+                StateType state = exchanger.context().stateRepository().getState(exchanger.context(), task.getNode());
                 if (state == StateType.UNKNOWN || state == StateType.WAITING) {
                     //添加状态
-                    exchanger.context().getStateRepository().putState(exchanger.context(), task.getNode(), StateType.COMPLETED);
+                    exchanger.context().stateRepository().putState(exchanger.context(), task.getNode(), StateType.COMPLETED);
 
                     //确保任务只被执行一次
                     postHandleTask(exchanger, task);
@@ -75,13 +75,13 @@ public class StatefulFlowDriver extends AbstractFlowDriver implements FlowDriver
                 }
             } else {
                 //控制前进
-                StateType state = exchanger.context().getStateRepository().getState(exchanger.context(), task.getNode());
+                StateType state = exchanger.context().stateRepository().getState(exchanger.context(), task.getNode());
                 List<StatefulTask> nodeList = (List<StatefulTask>) exchanger.temporary().vars().computeIfAbsent(StatefulTask.KEY_ACTIVITY_LIST, k -> new ArrayList<>());
                 boolean nodeListGet = (boolean) exchanger.temporary().vars().getOrDefault(StatefulTask.KEY_ACTIVITY_LIST_GET, false);
 
                 if (state == StateType.UNKNOWN || state == StateType.WAITING) {
                     //检查是否为当前用户的任务
-                    if (exchanger.context().getStateController().isOperatable(exchanger.context(), task.getNode())) {
+                    if (exchanger.context().stateController().isOperatable(exchanger.context(), task.getNode())) {
                         //记录当前流程节点（用于展示）
                         StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.WAITING);
                         exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);

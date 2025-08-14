@@ -39,12 +39,12 @@ public class StatefulFlowContext extends AbstractFlowContext {
     }
 
     @Override
-    public StateController getStateController() {
+    public StateController stateController() {
         return stateController;
     }
 
     @Override
-    public StateRepository getStateRepository() {
+    public StateRepository stateRepository() {
         return stateRepository;
     }
 }
