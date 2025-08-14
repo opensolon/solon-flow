@@ -15,7 +15,7 @@ layout:
 ```java
 public void demo() throws Throwable {
     FlowEngine engine = FlowEngine.newInstance();
-    engine.register(new SimpleFlowDriver(new MagicEvaluation()));
+    engine.register(new SimpleFlowDriver(new MagicActuator()));
 
     engine.load("classpath:flow/*");
 

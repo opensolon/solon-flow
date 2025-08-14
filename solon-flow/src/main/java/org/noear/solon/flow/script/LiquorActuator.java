@@ -21,7 +21,7 @@ import org.noear.solon.flow.Actuator;
 import org.noear.solon.flow.FlowContext;
 
 /**
- * Liquor 脚本评估器
+ * Liquor 脚本执行器
  *
  * @author noear
  * @since 3.1

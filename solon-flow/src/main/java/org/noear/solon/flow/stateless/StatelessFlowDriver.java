@@ -39,8 +39,8 @@ public class StatelessFlowDriver extends AbstractFlowDriver {
         super(null, container);
     }
 
-    public StatelessFlowDriver(Actuator evaluation, Container container) {
-        super(evaluation, container);
+    public StatelessFlowDriver(Actuator actuator, Container container) {
+        super(actuator, container);
     }
 
     public static StatefulFlowDriver.Builder builder() {
@@ -48,14 +48,14 @@ public class StatelessFlowDriver extends AbstractFlowDriver {
     }
 
     public static class Builder {
-        private Actuator evaluation;
+        private Actuator actuator;
         private Container container;
 
         /**
          * 设置评估器
          */
-        public Builder evaluation(Actuator evaluation) {
-            this.evaluation = evaluation;
+        public Builder actuator(Actuator actuator) {
+            this.actuator = actuator;
             return this;
         }
 
@@ -72,7 +72,7 @@ public class StatelessFlowDriver extends AbstractFlowDriver {
          */
         public StatelessFlowDriver build() {
             return new StatelessFlowDriver(
-                    evaluation,
+                    actuator,
                     container);
         }
     }

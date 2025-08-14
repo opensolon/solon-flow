@@ -43,8 +43,8 @@ public class StatefulFlowDriver extends AbstractFlowDriver implements FlowDriver
         super(null, container);
     }
 
-    public StatefulFlowDriver(Actuator evaluation, Container container) {
-        super(evaluation, container);
+    public StatefulFlowDriver(Actuator actuator, Container container) {
+        super(actuator, container);
     }
 
     /// ////////////////////////////
@@ -125,14 +125,14 @@ public class StatefulFlowDriver extends AbstractFlowDriver implements FlowDriver
     }
 
     public static class Builder {
-        private Actuator evaluation;
+        private Actuator actuator;
         private Container container;
 
         /**
          * 设置评估器
          */
-        public Builder evaluation(Actuator evaluation) {
-            this.evaluation = evaluation;
+        public Builder actuator(Actuator actuator) {
+            this.actuator = actuator;
             return this;
         }
 
@@ -149,7 +149,7 @@ public class StatefulFlowDriver extends AbstractFlowDriver implements FlowDriver
          */
         public StatefulFlowDriver build() {
             return new StatefulFlowDriver(
-                    evaluation,
+                    actuator,
                     container);
         }
     }

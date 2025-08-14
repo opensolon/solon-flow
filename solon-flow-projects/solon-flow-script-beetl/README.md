@@ -15,7 +15,7 @@ layout:
 ```java
 public void demo() throws Throwable {
     FlowEngine engine = FlowEngine.newInstance();
-    engine.register(new SimpleFlowDriver(new BeetlEvaluation()));
+    engine.register(new SimpleFlowDriver(new BeetlActuator()));
 
     engine.load("classpath:flow/*");
 

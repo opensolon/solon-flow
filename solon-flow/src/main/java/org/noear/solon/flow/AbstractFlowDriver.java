@@ -32,23 +32,23 @@ import java.util.Map;
 public abstract class AbstractFlowDriver implements FlowDriver {
     static final Logger log = LoggerFactory.getLogger(AbstractFlowDriver.class);
 
-    private final Actuator evaluation;
+    private final Actuator actuator;
     private final Container container;
 
     /**
-     * @param evaluation 脚本评估器
+     * @param actuator 脚本执行器
      * @param container  组件容器
      */
-    public AbstractFlowDriver(Actuator evaluation, Container container) {
-        this.evaluation = (evaluation == null ? new LiquorActuator() : evaluation);
+    public AbstractFlowDriver(Actuator actuator, Container container) {
+        this.actuator = (actuator == null ? new LiquorActuator() : actuator);
         this.container = (container == null ? new SolonContainer() : container);
     }
 
     /**
-     * 获取脚本评估器
+     * 获取脚本执行器
      */
-    protected Actuator getEvaluation() {
-        return evaluation;
+    protected Actuator getActuator() {
+        return actuator;
     }
 
     /**
@@ -112,7 +112,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
      * 尝试作为脚本条件运行
      */
     protected boolean tryAsScriptCondition(FlowExchanger exchanger, Condition condition, String description) throws Throwable {
-        return getEvaluation().runTest(exchanger.context(), description);
+        return getActuator().runTest(exchanger.context(), description);
     }
 
     /// //////////////
@@ -193,7 +193,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
             //给脚本用
             exchanger.context().put("node", task.getNode());
 
-            getEvaluation().runTask(exchanger.context(), description);
+            getActuator().runTask(exchanger.context(), description);
         } finally {
             exchanger.context().remove("node");
         }
