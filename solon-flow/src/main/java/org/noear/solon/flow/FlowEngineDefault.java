@@ -172,7 +172,7 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     /**
-     * 初始化上下文
+     * 初始化交换器
      */
     protected void initContextDo(FlowExchanger exchanger) {
         if (exchanger.engine == null) {

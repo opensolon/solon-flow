@@ -20,7 +20,7 @@ import org.noear.solon.core.util.Assert;
 import org.noear.solon.lang.Preview;
 
 /**
- * 流执行交换器（对内，不支持序列化）
+ * 流交换器，表示一个流在一次运行时的可交换数据和状态（对内，不支持序列化）
  *
  * @author noear
  * @since 3.0

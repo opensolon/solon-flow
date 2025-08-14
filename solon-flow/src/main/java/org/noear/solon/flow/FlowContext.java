@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 /**
- * 流上下文（对外，不支持序列化）
+ * 流上下文，表示一个流实例的上下文数据（对外，不支持序列化）
  *
  * @author noear
  * @since 3.0

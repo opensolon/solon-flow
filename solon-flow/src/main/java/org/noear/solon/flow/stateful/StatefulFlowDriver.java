@@ -52,7 +52,7 @@ public class StatefulFlowDriver extends AbstractFlowDriver implements FlowDriver
     /**
      * 处理任务
      *
-     * @param exchanger 流上下文
+     * @param exchanger 流交换器
      * @param task      任务
      */
     @Override

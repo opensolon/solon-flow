@@ -31,17 +31,17 @@ import org.noear.solon.lang.Preview;
 public class StatelessFlowContext extends AbstractFlowContext {
 
     @Override
-    public boolean isStateful() {
+    public final boolean isStateful() {
         return false;
     }
 
     @Override
-    public StateController stateController() {
+    public final StateController stateController() {
         return null;
     }
 
     @Override
-    public StateRepository stateRepository() {
+    public final StateRepository stateRepository() {
         return null;
     }
 }

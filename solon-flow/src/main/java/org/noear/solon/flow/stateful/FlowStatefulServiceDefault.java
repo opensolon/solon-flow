@@ -270,7 +270,6 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
 
     /**
      * 前进处理
-     *
      */
     protected void forwardHandle(FlowDriver driver, Node node, FlowExchanger exchanger, StateType newState) {
         //如果是完成或跳过，则向前流动

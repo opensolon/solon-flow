@@ -24,8 +24,8 @@ import org.noear.solon.flow.AbstractFlowContext;
  * @since 3.5
  */
 public class StatefulFlowContext extends AbstractFlowContext {
-    private StateController stateController;
-    private StateRepository stateRepository;
+    private transient final StateController stateController;
+    private transient final StateRepository stateRepository;
 
     public StatefulFlowContext(String instanceId, StateController stateController, StateRepository stateRepository) {
         super(instanceId);
@@ -34,17 +34,17 @@ public class StatefulFlowContext extends AbstractFlowContext {
     }
 
     @Override
-    public boolean isStateful() {
+    public final boolean isStateful() {
         return true;
     }
 
     @Override
-    public StateController stateController() {
+    public final StateController stateController() {
         return stateController;
     }
 
     @Override
-    public StateRepository stateRepository() {
+    public final StateRepository stateRepository() {
         return stateRepository;
     }
 }

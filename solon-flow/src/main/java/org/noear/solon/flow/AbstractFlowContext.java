@@ -45,7 +45,7 @@ public abstract class AbstractFlowContext implements FlowContext {
 
     public AbstractFlowContext(String instanceId) {
         put("instanceId", (instanceId == null ? "" : instanceId));
-        put("context", this);
+        put("context", this); //放这里不需要不断的推入移出，性能更好（序列化是要移除）
     }
 
 
