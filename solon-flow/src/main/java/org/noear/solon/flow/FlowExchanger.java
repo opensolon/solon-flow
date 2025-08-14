@@ -50,7 +50,6 @@ public class FlowExchanger {
 
     public FlowExchanger(FlowContext flowContext) {
         this.flowContext = flowContext;
-        this.flowContext.put("context", this);
     }
 
     /**

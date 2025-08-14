@@ -2,6 +2,7 @@ package features.flow.stateful;
 
 import org.noear.solon.Utils;
 import org.noear.solon.annotation.Component;
+import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.TaskComponent;
@@ -14,7 +15,7 @@ import java.util.Date;
 @Component("oaMetaProcessCom")
 public class OaMetaProcessCom implements TaskComponent {
     @Override
-    public void run(FlowExchanger context, Node node) throws Throwable {
+    public void run(FlowContext context, Node node) throws Throwable {
         System.out.println("----------执行OaMetaProcessCom: " + new Date().getTime());
         String cc = node.getMeta("cc");
         if (Utils.isNotEmpty(cc)) {

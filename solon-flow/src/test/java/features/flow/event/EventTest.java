@@ -39,7 +39,7 @@ public class EventTest {
     public static class DemoCom implements TaskComponent {
 
         @Override
-        public void run(FlowExchanger context, Node node) throws Throwable {
+        public void run(FlowContext context, Node node) throws Throwable {
             //通用类型模式
             context.eventBus().send("demo.topic", "hello-com");
 

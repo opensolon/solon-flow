@@ -28,5 +28,5 @@ public interface TaskComponent {
     /**
      * 运行
      */
-    void run(FlowExchanger context, Node node) throws Throwable;
+    void run(FlowContext context, Node node) throws Throwable;
 }

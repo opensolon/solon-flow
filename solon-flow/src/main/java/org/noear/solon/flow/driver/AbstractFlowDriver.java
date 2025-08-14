@@ -154,7 +154,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
         } else if (component instanceof TaskComponent == false) {
             throw new IllegalStateException("The component '" + beanName + "' is not TaskComponent");
         } else {
-            ((TaskComponent) component).run(exchanger, task.getNode());
+            ((TaskComponent) component).run(exchanger.context(), task.getNode());
         }
     }
 

@@ -46,6 +46,7 @@ public class FlowContextDefault implements FlowContext {
 
     public FlowContextDefault(String instanceId) {
         put("instanceId", (instanceId == null ? "" : instanceId));
+        put("context", this);
     }
 
     /**
