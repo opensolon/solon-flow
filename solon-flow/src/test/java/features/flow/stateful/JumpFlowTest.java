@@ -28,21 +28,21 @@ public class JumpFlowTest {
     final String instanceId = Utils.uuid();
     final String actor = "role";
 
+    ActorStateController stateController = new ActorStateController(actor) {
+        @Override
+        public boolean isOperatable(FlowContext context, Node node) {
+            if ("admin".equals(context.get(actor))) {
+                return true;
+            }
+
+            return super.isOperatable(context, node);
+        }
+    };
+    InMemoryStateRepository stateRepository = new InMemoryStateRepository();
+
     private FlowStatefulService buildStatefulService() {
         MapContainer container = new MapContainer();
-
         FlowEngine fe = FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
-                .stateController(new ActorStateController(actor) {
-                    @Override
-                    public boolean isOperatable(FlowContext context, Node node) {
-                        if ("admin".equals(context.get(actor))) {
-                            return true;
-                        }
-
-                        return super.isOperatable(context, node);
-                    }
-                })
-                .stateRepository(new InMemoryStateRepository())
                 .container(container)
                 .build());
 
@@ -55,19 +55,20 @@ public class JumpFlowTest {
     @Test
     public void case1() {
         FlowStatefulService statefulService = buildStatefulService();
+        FlowContext context = FlowContext.of(instanceId, stateController, stateRepository).put(actor, "admin");
 
-        statefulService.postOperation(FlowContext.of(instanceId).put(actor, "admin"), chainId, "n3", Operation.FORWARD_JUMP);
+        statefulService.postOperation(context, chainId, "n3", Operation.FORWARD_JUMP);
 
-        StatefulTask task = statefulService.getTask(chainId, FlowContext.of(instanceId).put(actor, "admin"));
+        StatefulTask task = statefulService.getTask(chainId, context);
 
         log.debug(task.toString());
         assert task.getState() == StateType.WAITING;
         assert task.getNode().getId().equals("n4");
 
 
-        statefulService.postOperation(FlowContext.of(instanceId).put(actor, "admin"), chainId, "n1", Operation.BACK_JUMP);
+        statefulService.postOperation(context, chainId, "n1", Operation.BACK_JUMP);
 
-        task = statefulService.getTask(chainId, FlowContext.of(instanceId).put(actor, "admin"));
+        task = statefulService.getTask(chainId, context);
 
         log.debug(task.toString());
         assert task.getState() == StateType.WAITING;

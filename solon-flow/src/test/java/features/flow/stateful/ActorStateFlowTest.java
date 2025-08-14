@@ -20,19 +20,19 @@ public class ActorStateFlowTest {
     final int amount = 900000;
     final String chainId = "test1";
 
+    ActorStateController stateController = new ActorStateController("role");
+    InMemoryStateRepository stateRepository = new InMemoryStateRepository() {
+        @Override
+        public void putState(FlowContext context, Node node, StateType state) {
+            super.putState(context, node, state);
+            //todo: 打印放这儿，顺序更真实
+            log.info("{} {} 完成", node.getId(), node.getTitle());
+        }
+    };
+
     @Test
     public void case1() {
-        FlowEngine flowEngine = FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
-                .stateController(new ActorStateController("role"))
-                .stateRepository(new InMemoryStateRepository() {
-                    @Override
-                    public void putState(FlowContext context, Node node, StateType state) {
-                        super.putState(context, node, state);
-                        //todo: 打印放这儿，顺序更真实
-                        log.info("{} {} 完成", node.getId(), node.getTitle());
-                    }
-                })
-                .build());
+        FlowEngine flowEngine = FlowEngine.newInstance();
 
         flowEngine.load("classpath:flow/stateful/*.yml");
 
@@ -74,7 +74,7 @@ public class ActorStateFlowTest {
     }
 
     private FlowContext getFlowContext(String role) {
-        return FlowContext.of(instanceId).put("role", role).put("amount", amount);
+        return FlowContext.of(instanceId, stateController, stateRepository).put("role", role).put("amount", amount);
     }
 
     private Collection<StatefulTask> getEmailNode(FlowStatefulService flowEngine) {

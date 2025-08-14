@@ -14,29 +14,29 @@ import java.util.Date;
 @SolonTest
 public class AutoForwardTest {
 
+    BlockStateController stateController = new BlockStateController() {
+        @Override
+        public boolean isAutoForward(FlowContext context, Node node) {
+            return super.isAutoForward(context, node)
+                    || node.getMetaOrDefault("auto", false)
+                    || context.getOrDefault("all_auto", false);
+        }
+    };
+    InMemoryStateRepository stateRepository = new InMemoryStateRepository();
+
     @Test
     public void case11() throws Exception {
-        FlowStatefulService statefulService = FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
-                .stateController(new BlockStateController() {
-                    @Override
-                    public boolean isAutoForward(FlowContext context, Node node) {
-                        return super.isAutoForward(context, node)
-                                || node.getMetaOrDefault("auto", false)
-                                || context.getOrDefault("all_auto", false);
-                    }
-                }) // 换了一个
-                .stateRepository(new InMemoryStateRepository())
-                .build()).statefulService();
+        FlowStatefulService statefulService = FlowEngine.newInstance().statefulService();
 
         Chain chain = buildChain();
 
         String chainId = "Test"+new Date().getTime();
-        FlowContext context = FlowContext.of(chainId);
+        FlowContext context = FlowContext.of(chainId, stateController, stateRepository);
         context.put("all_auto", true);
         StatefulTask statefulNode = statefulService.stepForward(chain, context);
         assert statefulNode==null;
 
-        context = FlowContext.of(chainId);
+        context = FlowContext.of(chainId, stateController, stateRepository);
         context.put("all_auto", true);
         statefulNode = statefulService.stepForward(chain, context);
         assert statefulNode==null;

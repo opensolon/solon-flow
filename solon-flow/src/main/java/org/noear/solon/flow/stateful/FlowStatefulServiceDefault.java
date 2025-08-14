@@ -177,7 +177,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
             }
         } else if (operation == Operation.RESTART) {
             //撤回全部（重新开始）
-            driver.getStateRepository().clearState(exchanger.context());
+            exchanger.context().getStateRepository().clearState(exchanger.context());
         } else if (operation == Operation.FORWARD) {
             //前进
             forwardHandle(driver, node, exchanger, newState);
@@ -194,7 +194,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
             }
         } else {
             //其它（等待或通过或拒绝）
-            driver.getStateRepository().putState(exchanger.context(), node, newState);
+            exchanger.context().getStateRepository().putState(exchanger.context(), node, newState);
         }
     }
 
@@ -262,8 +262,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
 
     @Override
     public void clearState(Chain chain, FlowContext context) {
-        StatefulFlowDriver driver = flowEngine.getDriverAs(chain, StatefulFlowDriver.class);
-        driver.getStateRepository().clearState(context);
+        context.getStateRepository().clearState(context);
     }
 
     /// ////////////////////////////////
@@ -277,7 +276,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         //如果是完成或跳过，则向前流动
         try {
             driver.postHandleTask(exchanger, node.getTask());
-            driver.getStateRepository().putState(exchanger.context(), node, newState);
+            exchanger.context().getStateRepository().putState(exchanger.context(), node, newState);
 
             //重新查找下一个可执行节点（可能为自动前进）
             Node nextNode = node.getNextNode();
@@ -294,7 +293,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
                 }
 
                 if (nextNode != null) {
-                    if (driver.getStateController().isAutoForward(exchanger.context(), nextNode)) {
+                    if (exchanger.context().getStateController().isAutoForward(exchanger.context(), nextNode)) {
                         //如果要自动前进
                         flowEngine.eval(nextNode, exchanger.context());
                     }
@@ -316,12 +315,12 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         for (Node n1 : node.getPrevNodes()) {
             //移除状态（要求重来）
             if (n1.getType() == NodeType.ACTIVITY) {
-                driver.getStateRepository().removeState(exchanger.context(), n1);
+                exchanger.context().getStateRepository().removeState(exchanger.context(), n1);
             } else if (NodeType.isGateway(n1.getType())) {
                 //回退所有子节点
                 for (Node n2 : n1.getNextNodes()) {
                     if (n2.getType() == NodeType.ACTIVITY) {
-                        driver.getStateRepository().removeState(exchanger.context(), n2);
+                        exchanger.context().getStateRepository().removeState(exchanger.context(), n2);
                     }
                 }
                 //再到前一级

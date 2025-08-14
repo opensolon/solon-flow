@@ -17,6 +17,8 @@ package org.noear.solon.flow;
 
 import org.noear.dami.Dami;
 import org.noear.dami.bus.DamiBus;
+import org.noear.solon.flow.stateful.StateController;
+import org.noear.solon.flow.stateful.StateRepository;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
@@ -47,6 +49,21 @@ public class FlowContextDefault implements FlowContext {
     public FlowContextDefault(String instanceId) {
         put("instanceId", (instanceId == null ? "" : instanceId));
         put("context", this);
+    }
+
+    @Override
+    public boolean isStateful() {
+        return false;
+    }
+
+    @Override
+    public StateController getStateController() {
+        return null;
+    }
+
+    @Override
+    public StateRepository getStateRepository() {
+        return null;
     }
 
     /**

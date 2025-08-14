@@ -22,20 +22,22 @@ public class AiBlockFlowTest {
     final String chainId = "sf1";
     final String instanceId = "i2";
 
+    BlockStateController stateController = new BlockStateController(){
+        @Override
+        public boolean isAutoForward(FlowContext context, Node node) {
+            return super.isAutoForward(context, node)
+                    || node.getMetaOrDefault("auto",false)
+                    || context.getOrDefault("all_auto",false);
+        }
+    };
+
+    InMemoryStateRepository stateRepository = new InMemoryStateRepository();
+
     private FlowStatefulService buildStatefulService() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
         FlowEngine fe = FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
-                .stateController(new BlockStateController(){
-                    @Override
-                    public boolean isAutoForward(FlowContext context, Node node) {
-                        return super.isAutoForward(context, node)
-                                || node.getMetaOrDefault("auto",false)
-                                || context.getOrDefault("all_auto",false);
-                    }
-                }) //换了一个
-                .stateRepository(new InMemoryStateRepository())
                 .container(container)
                 .build());
 
@@ -50,7 +52,7 @@ public class AiBlockFlowTest {
         //初始化引擎
         FlowStatefulService statefulService = buildStatefulService();
 
-        FlowContext context = FlowContext.of(instanceId);
+        FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         StatefulTask statefulNode;
 
 

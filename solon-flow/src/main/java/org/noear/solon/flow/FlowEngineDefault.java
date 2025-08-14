@@ -23,6 +23,7 @@ import org.noear.solon.flow.intercept.ChainInterceptor;
 import org.noear.solon.flow.intercept.ChainInvocation;
 import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.flow.stateful.FlowStatefulServiceDefault;
+import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,7 +48,7 @@ public class FlowEngineDefault implements FlowEngine {
     public FlowEngineDefault(FlowDriver driver) {
         //默认驱动器
         if (driver == null) {
-            driver = new SimpleFlowDriver();
+            driver = new StatefulSimpleFlowDriver();
         }
 
         driverMap.put("", driver);

@@ -15,7 +15,6 @@
  */
 package org.noear.solon.flow.stateful;
 
-import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowDriver;
 import org.noear.solon.flow.Task;
@@ -29,16 +28,6 @@ import org.noear.solon.lang.Preview;
  */
 @Preview("3.1")
 public interface StatefulFlowDriver extends FlowDriver {
-    /**
-     * 获取状态仓库
-     */
-    StateRepository getStateRepository();
-
-    /**
-     * 获取状态控制器
-     */
-    StateController getStateController();
-
     /**
      * 提交处理任务
      *

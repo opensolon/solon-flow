@@ -8,6 +8,8 @@ import org.noear.solon.core.handle.ModelAndView;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.stateful.Operation;
+import org.noear.solon.flow.stateful.StateController;
+import org.noear.solon.flow.stateful.StateRepository;
 import org.noear.solon.flow.stateful.StatefulTask;
 
 /**
@@ -17,11 +19,15 @@ import org.noear.solon.flow.stateful.StatefulTask;
 public class DemoController {
     @Inject
     FlowEngine flowEngine;
+    @Inject
+    StateRepository  stateRepository;
+    @Inject
+    StateController stateController;
 
     //操作展示
     @Mapping("display")
     public ModelAndView displayFlow(Context ctx, String instanceId, String chainId) throws Throwable {
-        FlowContext context = FlowContext.of(instanceId);
+        FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", ctx.param("actor"));
 
         //获取展示节点及装态
@@ -32,7 +38,7 @@ public class DemoController {
     //操作提交
     @Mapping("post")
     public void postFlow(Context ctx, String instanceId, String chainId, String nodeId, int operation) throws Throwable {
-        FlowContext context = FlowContext.of(instanceId);
+        FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", ctx.param("actor"));
 
         flowEngine.statefulService().postOperation(context, chainId, nodeId, Operation.codeOf(operation));

@@ -17,6 +17,9 @@ package org.noear.solon.flow;
 
 import org.noear.dami.Dami;
 import org.noear.dami.bus.DamiBus;
+import org.noear.solon.flow.stateful.StateController;
+import org.noear.solon.flow.stateful.StateRepository;
+import org.noear.solon.flow.stateful.StatefulFlowContext;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
@@ -38,8 +41,8 @@ public interface FlowContext {
         return new FlowContextDefault();
     }
 
-    static FlowContext of(String instanceId) {
-        return new FlowContextDefault(instanceId);
+    static FlowContext of(String instanceId, StateController stateController, StateRepository stateRepository) {
+        return new StatefulFlowContext(instanceId, stateController, stateRepository);
     }
 
     /**
@@ -60,6 +63,26 @@ public interface FlowContext {
      */
     Map<String, Object> model();
 
+    /// /////////////////////////////////////
+
+
+    /**
+     * 是否为有状态的
+     *
+     */
+    boolean isStateful();
+
+    /**
+     * 获取状态控制器
+     *
+     */
+    StateController getStateController();
+
+    /**
+     * 获取状态仓库
+     *
+     */
+    StateRepository getStateRepository();
 
     /// /////////////////////////////////////
 

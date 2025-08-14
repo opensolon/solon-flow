@@ -25,14 +25,14 @@ public class OaStatefulFlowTest {
     final String chainId = "sf1";
     final String instanceId = Utils.uuid();
 
+    ActorStateController stateController =  new ActorStateController();
+    InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
     private FlowStatefulService buildStatefulService() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
         FlowEngine fe = FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
-                .stateController(new ActorStateController())
-                .stateRepository(new InMemoryStateRepository())
                 .container(container)
                 .build());
 
@@ -137,7 +137,7 @@ public class OaStatefulFlowTest {
     }
 
     private FlowContext getContext(String actor) throws Throwable {
-        FlowContext context = FlowContext.of(instanceId);
+        FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", actor);
         return context;
     }

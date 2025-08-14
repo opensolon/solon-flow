@@ -25,6 +25,9 @@ public class OaStatefulFlowRedisTest {
     final String chainId = "sf1";
     final String instanceId = Utils.uuid();
 
+    ActorStateController stateController;
+    RedisStateRepository stateRepository;
+
 
     private FlowStatefulService buildStatefulService() {
         MapContainer container = new MapContainer();
@@ -37,9 +40,12 @@ public class OaStatefulFlowRedisTest {
             throw new IllegalStateException("Redis client configuration not found!");
         }
 
+        if(stateController == null) {
+            stateController = new ActorStateController();
+            stateRepository = new RedisStateRepository(redisClient);
+        }
+
         FlowEngine fe = FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
-                .stateController(new ActorStateController())
-                .stateRepository(new RedisStateRepository(redisClient))
                 .container(container)
                 .build());
 
@@ -131,7 +137,7 @@ public class OaStatefulFlowRedisTest {
     }
 
     private FlowContext getContext(String actor) throws Throwable {
-        FlowContext context = FlowContext.of(instanceId);
+        FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", actor);
         return context;
     }

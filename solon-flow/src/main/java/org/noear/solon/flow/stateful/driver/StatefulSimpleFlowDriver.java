@@ -15,13 +15,10 @@
  */
 package org.noear.solon.flow.stateful.driver;
 
-import org.noear.solon.Utils;
 import org.noear.solon.flow.*;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.Actuator;
 import org.noear.solon.flow.stateful.*;
-import org.noear.solon.flow.stateful.controller.BlockStateController;
-import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.lang.Preview;
 
 import java.util.ArrayList;
@@ -36,29 +33,12 @@ import java.util.List;
  */
 @Preview("3.1")
 public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDriver, StatefulFlowDriver {
-    private final StateRepository stateRepository;
-    private final StateController stateController;
+    public StatefulSimpleFlowDriver() {
+        super();
+    }
 
-    public StatefulSimpleFlowDriver(StateRepository stateRepository, StateController stateController, Actuator evaluation, Container container) {
+    public StatefulSimpleFlowDriver(Actuator evaluation, Container container) {
         super(evaluation, container);
-        this.stateRepository = (stateRepository == null ? new InMemoryStateRepository() : stateRepository);
-        this.stateController = (stateController == null ? new BlockStateController() : stateController);
-    }
-
-    /**
-     * 获取状态仓库
-     */
-    @Override
-    public StateRepository getStateRepository() {
-        return stateRepository;
-    }
-
-    /**
-     * 获取状态控制器
-     */
-    @Override
-    public StateController getStateController() {
-        return stateController;
     }
 
     /**
@@ -80,16 +60,15 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
      */
     @Override
     public void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
-        String instanceId = exchanger.getInstanceId();
+        if (exchanger.context().isStateful()) {
 
-        if (Utils.isNotEmpty(instanceId)) {
             //有实例id，作有状态处理
-            if (stateController.isAutoForward(exchanger.context(), task.getNode())) {
+            if (exchanger.context().getStateController().isAutoForward(exchanger.context(), task.getNode())) {
                 //自动前进
-                StateType state = getStateRepository().getState(exchanger.context(), task.getNode());
+                StateType state = exchanger.context().getStateRepository().getState(exchanger.context(), task.getNode());
                 if (state == StateType.UNKNOWN || state == StateType.WAITING) {
                     //添加状态
-                    stateRepository.putState(exchanger.context(), task.getNode(), StateType.COMPLETED);
+                    exchanger.context().getStateRepository().putState(exchanger.context(), task.getNode(), StateType.COMPLETED);
 
                     //确保任务只被执行一次
                     postHandleTask(exchanger, task);
@@ -99,13 +78,13 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
                 }
             } else {
                 //控制前进
-                StateType state = getStateRepository().getState(exchanger.context(), task.getNode());
+                StateType state = exchanger.context().getStateRepository().getState(exchanger.context(), task.getNode());
                 List<StatefulTask> nodeList = (List<StatefulTask>) exchanger.temporary().vars().computeIfAbsent(StatefulTask.KEY_ACTIVITY_LIST, k -> new ArrayList<>());
                 boolean nodeListGet = (boolean) exchanger.temporary().vars().getOrDefault(StatefulTask.KEY_ACTIVITY_LIST_GET, false);
 
                 if (state == StateType.UNKNOWN || state == StateType.WAITING) {
                     //检查是否为当前用户的任务
-                    if (stateController.isOperatable(exchanger.context(), task.getNode())) {
+                    if (exchanger.context().getStateController().isOperatable(exchanger.context(), task.getNode())) {
                         //记录当前流程节点（用于展示）
                         StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.WAITING);
                         exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
@@ -149,26 +128,8 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
     }
 
     public static class Builder {
-        private StateRepository stateRepository;
-        private StateController stateController;
         private Actuator evaluation;
         private Container container;
-
-        /**
-         * 设置状态仓库
-         */
-        public Builder stateRepository(StateRepository stateRepository) {
-            this.stateRepository = stateRepository;
-            return this;
-        }
-
-        /**
-         * 设置状态控制器
-         */
-        public Builder stateController(StateController stateController) {
-            this.stateController = stateController;
-            return this;
-        }
 
         /**
          * 设置评估器
@@ -191,8 +152,6 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
          */
         public StatefulSimpleFlowDriver build() {
             return new StatefulSimpleFlowDriver(
-                    stateRepository,
-                    stateController,
                     evaluation,
                     container);
         }
