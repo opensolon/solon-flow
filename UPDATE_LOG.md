@@ -3,7 +3,7 @@
 
 * 调整 solon-flow FlowContext 拆分为：FlowContext 和 FlowExchanger
 * 调整 solon-flow FlowContext 移除 result 字段（所有数据基于 model 交换）
-* 调整 solon-flow FlowExchanger:counter 更名为 temporary（并添加 vars）
+* 调整 solon-flow 原 FlowContext:counter 由 FlowExchanger:temporary 替代（并添加 vars），侧重引擎内部使用
 
 
 ### 3.4.3
