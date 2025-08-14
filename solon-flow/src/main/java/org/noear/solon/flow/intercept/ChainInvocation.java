@@ -16,10 +16,7 @@
 package org.noear.solon.flow.intercept;
 
 import org.noear.solon.core.util.RankEntity;
-import org.noear.solon.flow.FlowExchanger;
-import org.noear.solon.flow.FlowDriver;
-import org.noear.solon.flow.FlowException;
-import org.noear.solon.flow.Node;
+import org.noear.solon.flow.*;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -64,6 +61,14 @@ public class ChainInvocation {
      */
     public FlowExchanger getExchanger() {
         return exchanger;
+    }
+
+    /**
+     * 上下文
+     *
+     */
+    public FlowContext getContext() {
+        return exchanger.context();
     }
 
     /**

@@ -192,7 +192,7 @@ public class FlowEngineDefault implements FlowEngine {
      */
     protected void onNodeStart(FlowDriver driver, FlowExchanger exchanger, Node node) {
         for (RankEntity<ChainInterceptor> interceptor : interceptorList) {
-            interceptor.target.onNodeStart(exchanger, node);
+            interceptor.target.onNodeStart(exchanger.context(), node);
         }
 
         driver.onNodeStart(exchanger, node);
@@ -203,7 +203,7 @@ public class FlowEngineDefault implements FlowEngine {
      */
     protected void onNodeEnd(FlowDriver driver, FlowExchanger exchanger, Node node) {
         for (RankEntity<ChainInterceptor> interceptor : interceptorList) {
-            interceptor.target.onNodeEnd(exchanger, node);
+            interceptor.target.onNodeEnd(exchanger.context(), node);
         }
 
         driver.onNodeEnd(exchanger, node);
