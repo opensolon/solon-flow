@@ -1,4 +1,10 @@
 
+### 3.5.0
+
+* 调整 solon-flow FlowContext 拆分为：FlowContext 和 FlowExchanger
+* 调整 solon-flow FlowContext 移除 result 字段（所有数据基于 model 交换）
+
+
 ### 3.4.3
 
 * 新增 solon-flow iterator 循环网关（`$for`,`$in`）
