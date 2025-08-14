@@ -48,14 +48,14 @@ public class ActorStateFlowTest {
         statefulNode = statefulService.getTask(chainId, context);
         Assertions.assertEquals("n0", statefulNode.getNode().getId());
         Assertions.assertEquals(StateType.WAITING, statefulNode.getState());
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
 
         context = getFlowContext("tl");
         statefulNode = statefulService.getTask(chainId, context);
         Assertions.assertEquals("n1", statefulNode.getNode().getId());
         Assertions.assertEquals(StateType.WAITING, statefulNode.getState());
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
 
         context = getFlowContext("dm");
@@ -63,7 +63,7 @@ public class ActorStateFlowTest {
         for (StatefulTask auditNode : statefulNodes) {
             context = getFlowContext("dm");
             context.put("amount", amount);
-            statefulService.postOperation(context, auditNode.getNode(), Operation.FORWARD);
+            statefulService.postOperation(auditNode.getNode(), Operation.FORWARD, context);
         }
 
         context = getFlowContext("oa");

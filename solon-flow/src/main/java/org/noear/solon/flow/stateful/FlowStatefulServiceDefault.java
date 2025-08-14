@@ -61,7 +61,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         StatefulTask statefulTask = getTask(chain, context);
 
         if (statefulTask != null) {
-            postOperation(context, statefulTask.getNode(), Operation.FORWARD);
+            postOperation(statefulTask.getNode(), Operation.FORWARD, context);
             statefulTask = new StatefulTask(engine(), statefulTask.getNode(), StateType.COMPLETED);
         }
 
@@ -84,7 +84,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         StatefulTask statefulTask = getTask(chain, context);
 
         if (statefulTask != null) {
-            postOperation(context, statefulTask.getNode(), Operation.BACK);
+            postOperation(statefulTask.getNode(), Operation.BACK, context);
             statefulTask = getTask(chain, context);
         }
 
@@ -98,16 +98,16 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * 提交操作（如果当前节点为等待介入）
      */
     @Override
-    public boolean postOperationIfWaiting(FlowContext context, String chainId, String nodeId, Operation operation) {
+    public boolean postOperationIfWaiting(String chainId, String nodeId, Operation operation, FlowContext context) {
         Node node = flowEngine.getChain(chainId).getNode(nodeId);
-        return postOperationIfWaiting(context, node, operation);
+        return postOperationIfWaiting(node, operation, context);
     }
 
     /**
      * 提交操作（如果当前节点为等待介入）
      */
     @Override
-    public boolean postOperationIfWaiting(FlowContext context, Node node, Operation operation) {
+    public boolean postOperationIfWaiting(Node node, Operation operation, FlowContext context) {
         StatefulTask statefulTask = getTask(node.getChain(), context);
         if (statefulTask == null) {
             return false;
@@ -121,7 +121,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
             return false;
         }
 
-        postOperation(context, statefulTask.getNode(), operation);
+        postOperation(statefulTask.getNode(), operation, context);
 
         return true;
     }
@@ -130,16 +130,16 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * 提交操作
      */
     @Override
-    public void postOperation(FlowContext context, String chainId, String nodeId, Operation operation) {
+    public void postOperation(String chainId, String nodeId, Operation operation, FlowContext context) {
         Node node = flowEngine.getChain(chainId).getNode(nodeId);
-        postOperation(context, node, operation);
+        postOperation(node, operation, context);
     }
 
     /**
      * 提交操作
      */
     @Override
-    public void postOperation(FlowContext context, Node node, Operation operation) {
+    public void postOperation(Node node, Operation operation, FlowContext context) {
         LOCKER.lock();
 
         try {

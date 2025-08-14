@@ -22,12 +22,12 @@ public class AiBlockFlowTest {
     final String chainId = "sf1";
     final String instanceId = "i2";
 
-    BlockStateController stateController = new BlockStateController(){
+    BlockStateController stateController = new BlockStateController() {
         @Override
         public boolean isAutoForward(FlowContext context, Node node) {
             return super.isAutoForward(context, node)
-                    || node.getMetaOrDefault("auto",false)
-                    || context.getOrDefault("all_auto",false);
+                    || node.getMetaOrDefault("auto", false)
+                    || context.getOrDefault("all_auto", false);
         }
     };
 

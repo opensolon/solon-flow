@@ -20,7 +20,7 @@ public class DemoController {
     @Inject
     FlowEngine flowEngine;
     @Inject
-    StateRepository  stateRepository;
+    StateRepository stateRepository;
     @Inject
     StateController stateController;
 
@@ -41,6 +41,6 @@ public class DemoController {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", ctx.param("actor"));
 
-        flowEngine.statefulService().postOperation(context, chainId, nodeId, Operation.codeOf(operation));
+        flowEngine.statefulService().postOperation(chainId, nodeId, Operation.codeOf(operation), context);
     }
 }

@@ -29,33 +29,33 @@ public class AutoForwardTest {
 
         Chain chain = buildChain();
 
-        String chainId = "Test"+new Date().getTime();
+        String chainId = "Test" + new Date().getTime();
         FlowContext context = FlowContext.of(chainId, stateController, stateRepository);
         context.put("all_auto", true);
         StatefulTask statefulNode = statefulService.stepForward(chain, context);
-        assert statefulNode==null;
+        assert statefulNode == null;
 
         context = FlowContext.of(chainId, stateController, stateRepository);
         context.put("all_auto", true);
         statefulNode = statefulService.stepForward(chain, context);
-        assert statefulNode==null;
+        assert statefulNode == null;
     }
 
     private Chain buildChain() {
-        Chain chain = new Chain("test_case11","test_case11");
+        Chain chain = new Chain("test_case11", "test_case11");
         NodeDecl nodeDecl = null;
 
-        nodeDecl = new NodeDecl("start",NodeType.START).title("开始").linkAdd("01");
+        nodeDecl = new NodeDecl("start", NodeType.START).title("开始").linkAdd("01");
         chain.addNode(nodeDecl);
 
-        
-        nodeDecl = new NodeDecl("01",NodeType.ACTIVITY).title("01").linkAdd("end")
+
+        nodeDecl = new NodeDecl("01", NodeType.ACTIVITY).title("01").linkAdd("end")
         //.metaPut("auto", true)
         ;
         nodeDecl.task("@oaMetaProcessCom");
         chain.addNode(nodeDecl);
 
-        nodeDecl = new NodeDecl("end",NodeType.END).title("结束");
+        nodeDecl = new NodeDecl("end", NodeType.END).title("结束");
         chain.addNode(nodeDecl);
 
         return chain;

@@ -16,10 +16,7 @@
 package org.noear.solon.flow.stateful;
 
 import org.noear.solon.core.util.Assert;
-import org.noear.solon.flow.FlowExchanger;
-import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.FlowException;
-import org.noear.solon.flow.Node;
+import org.noear.solon.flow.*;
 import org.noear.solon.lang.Preview;
 
 /**
@@ -49,11 +46,11 @@ public class StatefulTask {
      * @param context 上下文
      */
     @Preview("3.4")
-    public void runTask(FlowExchanger context) throws FlowException {
+    public void runTask(FlowContext context) throws FlowException {
         Assert.notNull(node, "node is null");
 
         try {
-            flowEngine.getDriver(node.getChain()).handleTask(context, node.getTask());
+            flowEngine.getDriver(node.getChain()).handleTask(new FlowExchanger(context), node.getTask());
         } catch (FlowException e) {
             throw e;
         } catch (Throwable e) {

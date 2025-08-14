@@ -40,7 +40,7 @@ public class OaStatefulFlowRedisTest {
             throw new IllegalStateException("Redis client configuration not found!");
         }
 
-        if(stateController == null) {
+        if (stateController == null) {
             stateController = new ActorStateController();
             stateRepository = new RedisStateRepository(redisClient);
         }
@@ -72,7 +72,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
 
         context = getContext("陈鑫");
@@ -93,7 +93,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
 
         context = getContext("陈鑫");
@@ -113,7 +113,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
 
         context = getContext("吕方");
@@ -125,7 +125,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
 
         context = getContext("吕方");
@@ -142,25 +142,27 @@ public class OaStatefulFlowRedisTest {
         return context;
     }
 
-//    //@Test //只看看
-//    public void case2() throws Throwable {
-//        FlowContext context;
-//        StatefulNode statefulNode;
-//
-//        context = FlowContext.of("i1").put("actor", "陈鑫");
-//        statefulNode = flowEngine.getActivityNode(chainId, context);
-//
-//        assert "step2".equals(statefulNode.getNode().getId());
-//        assert StateType.UNKNOWN == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
-//
-//        /// ////////////////
-//        //提交操作
-//        flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
-//
-//        context = FlowContext.of("i1").put("actor", "陈鑫");
-//        statefulNode = flowEngine.getActivityNode(chainId, context);
-//
-//        assert "step3".equals(statefulNode.getNode().getId());
-//        assert StateType.WAITING == statefulNode.getState(); //等待当前用户处理（有权限操作）
-//    }
+    //@Test //只看看
+    public void case2() throws Throwable {
+        FlowContext context = FlowContext.of("i1", stateController, stateRepository).put("actor", "陈鑫");
+        StatefulTask statefulTask;
+
+        //初始化引擎
+        FlowStatefulService statefulService = buildStatefulService();
+
+
+        statefulTask = statefulService.getTask(chainId, context);
+
+        assert "step2".equals(statefulTask.getNode().getId());
+        assert StateType.UNKNOWN == statefulTask.getState(); //没有权限启动任务（因为没有配置操作员）
+
+        /// ////////////////
+        //提交操作
+        statefulService.postOperation(statefulTask.getNode(), Operation.FORWARD, context);
+
+        statefulTask = statefulService.getTask(chainId, context);
+
+        assert "step3".equals(statefulTask.getNode().getId());
+        assert StateType.WAITING == statefulTask.getState(); //等待当前用户处理（有权限操作）
+    }
 }

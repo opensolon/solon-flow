@@ -58,8 +58,7 @@ public class StatefulFlowDriver extends AbstractFlowDriver implements FlowDriver
     @Override
     public void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
         if (exchanger.context().isStateful()) {
-
-            //有实例id，作有状态处理
+            //有关态的
             if (exchanger.context().stateController().isAutoForward(exchanger.context(), task.getNode())) {
                 //自动前进
                 StateType state = exchanger.context().stateRepository().getState(exchanger.context(), task.getNode());
@@ -114,7 +113,7 @@ public class StatefulFlowDriver extends AbstractFlowDriver implements FlowDriver
                 }
             }
         } else {
-            //没有实例id，作无状态处理 //直接提交处理任务
+            //无状态的
             postHandleTask(exchanger, task);
         }
     }

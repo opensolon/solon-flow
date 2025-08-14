@@ -41,6 +41,8 @@ public class FlowExchanger {
     private transient volatile boolean stopped = false;
 
     public FlowExchanger(FlowContext context) {
+        Assert.notNull(context, "The context is null");
+
         this.context = context;
     }
 

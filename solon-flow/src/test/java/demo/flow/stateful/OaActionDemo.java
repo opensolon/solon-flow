@@ -11,11 +11,11 @@ import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
  * @author noear 2025/3/28 created
  */
 public class OaActionDemo {
-    FlowEngine flowEngine =  FlowEngine.newInstance();
+    FlowEngine flowEngine = FlowEngine.newInstance();
 
     FlowStatefulService statefulService = flowEngine.statefulService();
     ActorStateController stateController = new ActorStateController();
-    InMemoryStateRepository  stateRepository = new InMemoryStateRepository();
+    InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
     String instanceId = "guid1";
     String chainId = "f1";
@@ -29,7 +29,7 @@ public class OaActionDemo {
         //展示界面，操作。然后：
 
         context.put("op", "审批");//作为状态的一部分
-        statefulService.postOperation(context, task.getNode(), Operation.FORWARD);
+        statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
     }
 
     //回退
@@ -39,7 +39,7 @@ public class OaActionDemo {
         StatefulTask task = statefulService.getTask(chainId, context);
 
         context.put("op", "回退");//作为状态的一部分
-        statefulService.postOperation(context, task.getNode(), Operation.BACK);
+        statefulService.postOperation(task.getNode(), Operation.BACK, context);
     }
 
     //任意跳转（通过）
@@ -51,7 +51,7 @@ public class OaActionDemo {
         while (true) {
             StatefulTask task = statefulService.getTask(chainId, context);
             context.put("op", "任意转跳");//作为状态的一部分
-            statefulService.postOperation(context, task.getNode(), Operation.FORWARD);
+            statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
 
             //到目标节点了
             if (task.getNode().getId().equals(nodeId)) {
@@ -69,7 +69,7 @@ public class OaActionDemo {
         while (true) {
             StatefulTask statefulNode = statefulService.getTask(chainId, context);
             context.put("op", "任意转跳");//作为状态的一部分
-            statefulService.postOperation(context, statefulNode.getNode(), Operation.BACK);
+            statefulService.postOperation(statefulNode.getNode(), Operation.BACK, context);
 
             //到目标节点了
             if (statefulNode.getNode().getId().equals(nodeId)) {
@@ -86,7 +86,7 @@ public class OaActionDemo {
         StatefulTask task = statefulService.getTask(chainId, context);
 
         context.put("op", "委派");//作为状态的一部分
-        statefulService.postOperation(context, task.getNode(), Operation.FORWARD);
+        statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
     }
 
     //转办（与委派技术实现差不多）
@@ -97,7 +97,7 @@ public class OaActionDemo {
         StatefulTask task = statefulService.getTask(chainId, context);
 
         context.put("op", "转办");//作为状态的一部分
-        statefulService.postOperation(context, task.getNode(), Operation.FORWARD);
+        statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
     }
 
     //催办
@@ -116,7 +116,7 @@ public class OaActionDemo {
 
         //回退到顶（给发起人）；相当于重新开始走流程
         context.put("op", "取回");//作为状态的一部分
-        statefulService.postOperation(context, task.getNode(), Operation.RESTART);
+        statefulService.postOperation(task.getNode(), Operation.RESTART, context);
     }
 
     //撤销（和回退没啥区别）
@@ -125,7 +125,7 @@ public class OaActionDemo {
         StatefulTask task = statefulService.getTask(chainId, context);
 
         context.put("op", "撤销");//作为状态的一部分
-        statefulService.postOperation(context, task.getNode(), Operation.BACK);
+        statefulService.postOperation(task.getNode(), Operation.BACK, context);
     }
 
     //中止
@@ -134,7 +134,7 @@ public class OaActionDemo {
         StatefulTask task = statefulService.getTask(chainId, context);
 
         context.put("op", "中止");//作为状态的一部分
-        statefulService.postOperation(context, task.getNode(), Operation.TERMINATED);
+        statefulService.postOperation(task.getNode(), Operation.TERMINATED, context);
     }
 
     //抄送
@@ -142,7 +142,7 @@ public class OaActionDemo {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         StatefulTask node = statefulService.getTask(chainId, context);
 
-        statefulService.postOperation(context, node.getNode(), Operation.FORWARD);
+        statefulService.postOperation(node.getNode(), Operation.FORWARD, context);
         //提交后，会自动触发任务（如果有抄送配置，自动执行）
     }
 
@@ -164,7 +164,7 @@ public class OaActionDemo {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         StatefulTask node = statefulService.getTask(chainId, context);
 
-        statefulService.postOperation(context, node.getNode(), Operation.FORWARD);
+        statefulService.postOperation(node.getNode(), Operation.FORWARD, context);
     }
 
     //会签

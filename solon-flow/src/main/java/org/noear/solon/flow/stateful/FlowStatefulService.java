@@ -59,22 +59,22 @@ public interface FlowStatefulService {
     /**
      * 提交操作（如果当前任务为等待介入）
      */
-    boolean postOperationIfWaiting(FlowContext context, String chainId, String nodeId, Operation operation);
+    boolean postOperationIfWaiting(String chainId, String nodeId, Operation operation, FlowContext context);
 
     /**
      * 提交操作（如果当前任务为等待介入）
      */
-    boolean postOperationIfWaiting(FlowContext context, Node node, Operation operation);
+    boolean postOperationIfWaiting(Node node, Operation operation, FlowContext context);
 
     /**
      * 提交操作
      */
-    void postOperation(FlowContext context, String chainId, String nodeId, Operation operation);
+    void postOperation(String chainId, String nodeId, Operation operation, FlowContext context);
 
     /**
      * 提交操作
      */
-    void postOperation(FlowContext context, Node node, Operation operation);
+    void postOperation(Node node, Operation operation, FlowContext context);
 
 
     /// ////////////////////////////////

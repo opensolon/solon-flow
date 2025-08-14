@@ -59,7 +59,7 @@ public class JumpFlowTest2 {
         FlowStatefulService statefulService = buildStatefulService();
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository).put(actor, "admin");
 
-        statefulService.postOperation(context, chainId, "n3", Operation.FORWARD_JUMP);
+        statefulService.postOperation(chainId, "n3", Operation.FORWARD_JUMP, context);
 
         StatefulTask task = statefulService.getTask(chainId, context);
 
@@ -68,7 +68,7 @@ public class JumpFlowTest2 {
         assert task.getNode().getId().equals("n4");
 
 
-        statefulService.postOperation(context, chainId, "n1", Operation.BACK_JUMP);
+        statefulService.postOperation(chainId, "n1", Operation.BACK_JUMP, context);
 
         task = statefulService.getTask(chainId, context);
 
@@ -80,16 +80,17 @@ public class JumpFlowTest2 {
     @Test
     public void case2() {
         FlowStatefulService statefulService = buildStatefulService();
+        FlowContext context = FlowContext.of(instanceId, stateController, stateRepository).put(actor, "admin");
 
-        StatefulTask task = statefulService.getTask(chainId, newContext());
+        StatefulTask task = statefulService.getTask(chainId, context);
         log.debug(task.toString());
 
-        statefulService.postOperation(newContext(), task.getNode(), Operation.FORWARD);
-        StatefulTask task2 = statefulService.getTask(chainId, newContext());
+        statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
+        StatefulTask task2 = statefulService.getTask(chainId, context);
         log.debug(task2.toString());
 
-        statefulService.postOperation(newContext(), task.getNode(), Operation.FORWARD);
-        StatefulTask task3 = statefulService.getTask(chainId, newContext());
+        statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
+        StatefulTask task3 = statefulService.getTask(chainId, context);
         log.debug(task3.toString());
 
         //重复提交相同节点后，获取的任务仍是相同的（说明可以重复提交）
@@ -99,14 +100,11 @@ public class JumpFlowTest2 {
     @Test
     public void case3() throws Throwable {
         FlowStatefulService statefulService = buildStatefulService();
+        FlowContext context = FlowContext.of(instanceId, stateController, stateRepository).put(actor, "admin");
 
-        StatefulTask task = statefulService.getTask(chainId, newContext());
+        StatefulTask task = statefulService.getTask(chainId, context);
         log.debug(task.toString());
 
-        task.runTask(new FlowExchanger(newContext()));
-    }
-
-    private FlowContext newContext() {
-        return FlowContext.of(instanceId, stateController, stateRepository).put(actor, "admin");
+        task.runTask(context);
     }
 }

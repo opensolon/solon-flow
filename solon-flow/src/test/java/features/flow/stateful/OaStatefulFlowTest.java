@@ -25,7 +25,7 @@ public class OaStatefulFlowTest {
     final String chainId = "sf1";
     final String instanceId = Utils.uuid();
 
-    ActorStateController stateController =  new ActorStateController();
+    ActorStateController stateController = new ActorStateController();
     InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
     private FlowStatefulService buildStatefulService() {
@@ -61,7 +61,7 @@ public class OaStatefulFlowTest {
         /// ////////////////
         //提交状态
         context.put("oaState", 2); //用于扩展状态记录
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
 
         context = getContext("陈鑫");
@@ -82,7 +82,7 @@ public class OaStatefulFlowTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
 
         context = getContext(null);
@@ -113,7 +113,7 @@ public class OaStatefulFlowTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
 
         context = getContext("吕方");
@@ -125,7 +125,7 @@ public class OaStatefulFlowTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
 
         context = getContext("吕方");
@@ -142,25 +142,26 @@ public class OaStatefulFlowTest {
         return context;
     }
 
-//    //@Test //只看看
-//    public void case2() throws Throwable {
-//        FlowContext context;
-//        StatefulNode statefulNode;
-//
-//        context = FlowContext.of("i1").put("actor", "陈鑫");
-//        statefulNode = flowEngine.getActivityNode(chainId, context);
-//
-//        assert "step2".equals(statefulNode.getNode().getId());
-//        assert StateType.UNKNOWN == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
-//
-//        /// ////////////////
-//        //提交操作
-//        flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
-//
-//        context = FlowContext.of("i1").put("actor", "陈鑫");
-//        statefulNode = flowEngine.getActivityNode(chainId, context);
-//
-//        assert "step3".equals(statefulNode.getNode().getId());
-//        assert StateType.WAITING == statefulNode.getState(); //等待当前用户处理（有权限操作）
-//    }
+    //@Test //只看看
+    public void case2() throws Throwable {
+        FlowContext context = FlowContext.of("i1", stateController, stateRepository).put("actor", "陈鑫");
+        StatefulTask statefulNode;
+
+        //初始化引擎
+        FlowStatefulService statefulService = buildStatefulService();
+
+        statefulNode = statefulService.getTask(chainId, context);
+
+        assert "step2".equals(statefulNode.getNode().getId());
+        assert StateType.UNKNOWN == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
+
+        /// ////////////////
+        //提交操作
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
+
+        statefulNode = statefulService.getTask(chainId, context);
+
+        assert "step3".equals(statefulNode.getNode().getId());
+        assert StateType.WAITING == statefulNode.getState(); //等待当前用户处理（有权限操作）
+    }
 }

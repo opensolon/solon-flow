@@ -28,7 +28,7 @@ public class BlockStatefulFlowTest {
         String instanceId1 = "i1";
         String instanceId2 = "i2";
 
-        FlowContext context = FlowContext.of(instanceId1,  stateController, stateRepository);
+        FlowContext context = FlowContext.of(instanceId1, stateController, stateRepository);
 
         //获取节点
         statefulNode = statefulService.getTask(chainId, context);
@@ -37,7 +37,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活。。。。
 
         //（干完后）提交操作
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
         //获取节点
         statefulNode = statefulService.getTask(chainId, context);
@@ -46,7 +46,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活。。。。
 
         //（干完后）提交操作
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
 
         //获取节点
@@ -56,7 +56,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活。。。。
 
         //（干完后）提交操作
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
 
         //获取节点
@@ -66,7 +66,7 @@ public class BlockStatefulFlowTest {
         //根据节点干活
 
         //提交操作
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
 
         ///  （换一个实例）
@@ -75,12 +75,12 @@ public class BlockStatefulFlowTest {
         statefulNode = statefulService.getTask(chainId, context);
         assertNode(statefulNode, "step1");
 
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
         statefulNode = statefulService.getTask(chainId, context);
         assertNode(statefulNode, "step2");
 
-        statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
+        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
 
         statefulNode = statefulService.getTask(chainId, context);
@@ -90,7 +90,7 @@ public class BlockStatefulFlowTest {
         // （再换回实例）
 
         //获取节点
-        context = FlowContext.of(instanceId1,  stateController, stateRepository);
+        context = FlowContext.of(instanceId1, stateController, stateRepository);
         statefulNode = statefulService.getTask(chainId, context);
         assertNode(statefulNode, "step4_2");
     }
@@ -107,7 +107,7 @@ public class BlockStatefulFlowTest {
         StatefulTask statefulNode;
         String instanceId1 = "i3";
 
-        FlowContext context = FlowContext.of(instanceId1,  stateController, stateRepository);
+        FlowContext context = FlowContext.of(instanceId1, stateController, stateRepository);
 
         //单步前进（上下文需要配置，实例id）
         statefulNode = statefulService.stepForward(chainId, context); //使用实例id

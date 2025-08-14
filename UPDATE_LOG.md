@@ -8,6 +8,7 @@
 * 调整 solon-flow 新增 stateless包，明确有状态与无状态这两个概念（SimpleFlowDriver 更名为 StatelessFlowDriver）
 * 调整 solon-flow StatefulSimpleFlowDriver 更名为 StatefulFlowDriver
 * 调整 solon-flow Evaluation 更名为 Actuator（脚本执行器）
+* 调整 solon-flow FlowStatefulService 接口，每个方法的 context 参数移到最后位（保持统一性）
 
 ### 3.4.3
 
