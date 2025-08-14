@@ -19,8 +19,6 @@ import org.noear.liquor.eval.Scripts;
 import org.noear.solon.core.util.Assert;
 import org.noear.solon.lang.Preview;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * 流执行交换器（对内，不支持序列化）
  *
@@ -31,7 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 @Preview("3.5")
 public class FlowExchanger {
     //当前流程上下文
-    private transient final FlowContext flowContext;
+    private transient final FlowContext context;
     //当前流程引擎
     protected transient FlowEngine engine;
 
@@ -42,8 +40,8 @@ public class FlowExchanger {
     //执行时流程停止（可选）
     private transient volatile boolean stopped = false;
 
-    public FlowExchanger(FlowContext flowContext) {
-        this.flowContext = flowContext;
+    public FlowExchanger(FlowContext context) {
+        this.context = context;
     }
 
     /**
@@ -51,7 +49,7 @@ public class FlowExchanger {
      *
      */
     public FlowContext context() {
-        return flowContext;
+        return context;
     }
 
     /**
@@ -68,6 +66,7 @@ public class FlowExchanger {
         return temporary;
     }
 
+    /// ///////////////////////////
 
     /**
      * 运行任务
@@ -92,10 +91,13 @@ public class FlowExchanger {
      *
      * @param script 脚本
      */
-    public Object runScript(String script) throws InvocationTargetException {
+    public Object runScript(String script) throws FlowException {
         //按脚本运行
         return Scripts.eval(script, context().model());
     }
+
+
+    /// ///////////////////////////
 
     /**
      * 是否已停止

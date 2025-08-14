@@ -184,7 +184,7 @@ public class FlowEngineDefault implements FlowEngine {
      * 执行评估
      */
     protected void evalDo(ChainInvocation inv) throws FlowException {
-        node_run(inv.getDriver(), inv.getContext(), inv.getStartNode(), inv.getEvalDepth());
+        node_run(inv.getDriver(), inv.getExchanger(), inv.getStartNode(), inv.getEvalDepth());
     }
 
     /**

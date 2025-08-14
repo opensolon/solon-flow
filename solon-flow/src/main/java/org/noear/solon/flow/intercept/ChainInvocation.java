@@ -29,10 +29,11 @@ import java.util.function.Consumer;
  *
  * @author noear
  * @since 3.1
+ * @since 3.5
  */
 public class ChainInvocation {
     private final FlowDriver driver;
-    private final FlowExchanger context;
+    private final FlowExchanger exchanger;
     private final Node startNode;
     private final int evalDepth;
 
@@ -40,9 +41,9 @@ public class ChainInvocation {
     private final Consumer<ChainInvocation> lastHandler;
     private int index;
 
-    public ChainInvocation(FlowDriver driver, FlowExchanger context, Node startNode, int evalDepth, List<RankEntity<ChainInterceptor>> interceptorList, Consumer<ChainInvocation> lastHandler) {
+    public ChainInvocation(FlowDriver driver, FlowExchanger exchanger, Node startNode, int evalDepth, List<RankEntity<ChainInterceptor>> interceptorList, Consumer<ChainInvocation> lastHandler) {
         this.driver = driver;
-        this.context = context;
+        this.exchanger = exchanger;
         this.startNode = startNode;
         this.evalDepth = evalDepth;
 
@@ -59,10 +60,10 @@ public class ChainInvocation {
     }
 
     /**
-     * 上下文
+     * 交换器
      */
-    public FlowExchanger getContext() {
-        return context;
+    public FlowExchanger getExchanger() {
+        return exchanger;
     }
 
     /**

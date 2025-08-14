@@ -49,9 +49,6 @@ public interface FlowDriver {
 
     /**
      * 提交处理任务
-     *
-     * @param exchanger 流上下文
-     * @param task      任务
      */
     void postHandleTask(FlowExchanger exchanger, Task task) throws Throwable;
 }

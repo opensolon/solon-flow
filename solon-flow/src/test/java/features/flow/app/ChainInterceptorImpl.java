@@ -18,12 +18,12 @@ public class ChainInterceptorImpl implements ChainInterceptor {
     }
 
     @Override
-    public void onNodeStart(FlowExchanger context, Node node) {
+    public void onNodeStart(FlowExchanger exchanger, Node node) {
 
     }
 
     @Override
-    public void onNodeEnd(FlowExchanger context, Node node) {
+    public void onNodeEnd(FlowExchanger exchanger, Node node) {
 
     }
 }

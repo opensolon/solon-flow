@@ -25,6 +25,7 @@ import org.noear.solon.lang.Preview;
  *
  * @author noear
  * @since 3.1
+ * @since 3.5
  */
 @Preview("3.1")
 public interface ChainInterceptor {
@@ -40,7 +41,7 @@ public interface ChainInterceptor {
      *
      * @since 3.4
      */
-    default void onNodeStart(FlowExchanger context, Node node) {
+    default void onNodeStart(FlowExchanger exchanger, Node node) {
 
     }
 
@@ -49,7 +50,7 @@ public interface ChainInterceptor {
      *
      * @since 3.4
      */
-    default void onNodeEnd(FlowExchanger context, Node node) {
+    default void onNodeEnd(FlowExchanger exchanger, Node node) {
 
     }
 }
