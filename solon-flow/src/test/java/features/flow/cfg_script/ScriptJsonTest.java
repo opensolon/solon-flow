@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.Chain;
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 
 import java.util.concurrent.Executors;
@@ -40,7 +41,7 @@ public class ScriptJsonTest {
         //完整执行
 
         flowEngine.eval(chain, context);
-        assert "n-3".equals(context.result);
+        assert "n-3".equals(context.get("result"));
     }
 
     @Test
@@ -54,7 +55,7 @@ public class ScriptJsonTest {
 
         //执行一层
         flowEngine.eval(chain.getNode("n-2"), 1, context);
-        assert context.result.equals(123);
+        assert context.get("result").equals(123);
     }
 
     @Test
@@ -64,17 +65,17 @@ public class ScriptJsonTest {
         FlowContext context = new FlowContext();
         context.put("day", 1);
         flowEngine.eval(chain, context);
-        assert null == context.result;
+        assert null == context.get("result");
 
         context = new FlowContext();
         context.put("day", 3);
         flowEngine.eval(chain, context);
-        assert context.result.equals(3);
+        assert context.get("result").equals(3);
 
         context = new FlowContext();
         context.put("day", 7);
         flowEngine.eval(chain, context);
-        assert context.result.equals(7);
+        assert context.get("result").equals(7);
     }
 
     @Test
@@ -84,12 +85,12 @@ public class ScriptJsonTest {
         FlowContext context = new FlowContext();
         context.put("day", 1);
         flowEngine.eval(chain, context);
-        assert context.result.equals(0);
+        assert context.get("result").equals(0);
 
         context = new FlowContext();
         context.put("day", 3);
         flowEngine.eval(chain, context);
-        assert context.result.equals(3);
+        assert context.get("result").equals(3);
     }
 
     @Test
@@ -99,7 +100,7 @@ public class ScriptJsonTest {
         FlowContext context = new FlowContext();
         context.put("day", 7);
         flowEngine.eval(chain, context);
-        assert context.result.equals(10);
+        assert context.get("result").equals(10);
     }
 
     @Test
@@ -109,7 +110,7 @@ public class ScriptJsonTest {
         FlowContext context = new FlowContext();
         context.put("day", 7);
         flowEngine.eval(chain, context);
-        assert context.result.equals(10);
+        assert context.get("result").equals(10);
     }
 
     @Test
@@ -117,9 +118,9 @@ public class ScriptJsonTest {
         Chain chain = Chain.parseByUri("classpath:flow/script_case8.chain.yml");
 
         FlowContext context = new FlowContext();
-        context.result = 1;
+        context.put("result", 1);
         flowEngine.eval(chain, context);
-        assert context.result.equals(3);
+        assert context.get("result").equals(3);
     }
 
     @Test

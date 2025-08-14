@@ -3,9 +3,8 @@ package benchmark.flow;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.Chain;
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author noear 2025/6/18 created

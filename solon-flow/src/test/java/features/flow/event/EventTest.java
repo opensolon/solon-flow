@@ -1,10 +1,7 @@
 package features.flow.event;
 
 import org.junit.jupiter.api.Test;
-import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.Node;
-import org.noear.solon.flow.TaskComponent;
+import org.noear.solon.flow.*;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
 
@@ -42,7 +39,7 @@ public class EventTest {
     public static class DemoCom implements TaskComponent {
 
         @Override
-        public void run(FlowContext context, Node node) throws Throwable {
+        public void run(FlowExchanger context, Node node) throws Throwable {
             //通用类型模式
             context.eventBus().send("demo.topic", "hello-com");
 

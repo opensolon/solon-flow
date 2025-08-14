@@ -15,15 +15,13 @@
  */
 package org.noear.solon.flow.intercept;
 
-import org.noear.solon.core.util.ConsumerEx;
 import org.noear.solon.core.util.RankEntity;
-import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowDriver;
 import org.noear.solon.flow.FlowException;
 import org.noear.solon.flow.Node;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -34,7 +32,7 @@ import java.util.function.Consumer;
  */
 public class ChainInvocation {
     private final FlowDriver driver;
-    private final FlowContext context;
+    private final FlowExchanger context;
     private final Node startNode;
     private final int evalDepth;
 
@@ -42,7 +40,7 @@ public class ChainInvocation {
     private final Consumer<ChainInvocation> lastHandler;
     private int index;
 
-    public ChainInvocation(FlowDriver driver, FlowContext context, Node startNode, int evalDepth, List<RankEntity<ChainInterceptor>> interceptorList, Consumer<ChainInvocation> lastHandler) {
+    public ChainInvocation(FlowDriver driver, FlowExchanger context, Node startNode, int evalDepth, List<RankEntity<ChainInterceptor>> interceptorList, Consumer<ChainInvocation> lastHandler) {
         this.driver = driver;
         this.context = context;
         this.startNode = startNode;
@@ -63,7 +61,7 @@ public class ChainInvocation {
     /**
      * 上下文
      */
-    public FlowContext getContext() {
+    public FlowExchanger getContext() {
         return context;
     }
 

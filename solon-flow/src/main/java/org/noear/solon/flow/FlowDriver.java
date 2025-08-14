@@ -28,20 +28,20 @@ public interface FlowDriver {
     /**
      * 节点运行开始时
      */
-    void onNodeStart(FlowContext context, Node node);
+    void onNodeStart(FlowExchanger exchanger, Node node);
 
     /**
      * 节点运行结束时
      */
-    void onNodeEnd(FlowContext context, Node node);
+    void onNodeEnd(FlowExchanger exchanger, Node node);
 
     /**
      * 处理条件检测
      */
-    boolean handleCondition(FlowContext context, Condition condition) throws Throwable;
+    boolean handleCondition(FlowExchanger exchanger, Condition condition) throws Throwable;
 
     /**
      * 处理执行任务
      */
-    void handleTask(FlowContext context, Task task) throws Throwable;
+    void handleTask(FlowExchanger exchanger, Task task) throws Throwable;
 }

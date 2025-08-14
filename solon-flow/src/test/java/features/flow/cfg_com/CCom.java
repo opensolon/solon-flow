@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.noear.solon.annotation.Component;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.TaskComponent;
-import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowExchanger;
 
 /**
  * @author noear 2025/1/11 created
@@ -13,7 +13,7 @@ import org.noear.solon.flow.FlowContext;
 @Component("c")
 public class CCom implements TaskComponent {
     @Override
-    public void run(FlowContext context, Node node) {
+    public void run(FlowExchanger context, Node node) {
         log.info("CCom");
     }
 }

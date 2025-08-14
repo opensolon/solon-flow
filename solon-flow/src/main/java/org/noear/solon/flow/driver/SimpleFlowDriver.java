@@ -16,9 +16,9 @@
 package org.noear.solon.flow.driver;
 
 import org.noear.solon.flow.Container;
-import org.noear.solon.flow.Evaluation;
+import org.noear.solon.flow.Actuator;
 import org.noear.solon.flow.container.SolonContainer;
-import org.noear.solon.flow.evaluation.LiquorEvaluation;
+import org.noear.solon.flow.script.LiquorActuator;
 
 /**
  * 简单流驱动器
@@ -27,7 +27,7 @@ import org.noear.solon.flow.evaluation.LiquorEvaluation;
  * @since 3.1
  */
 public class SimpleFlowDriver extends AbstractFlowDriver {
-    private final Evaluation evaluation;
+    private final Actuator evaluation;
     private final Container container;
 
     public SimpleFlowDriver() {
@@ -37,7 +37,7 @@ public class SimpleFlowDriver extends AbstractFlowDriver {
     /**
      * @param evaluation 脚本评估器
      */
-    public SimpleFlowDriver(Evaluation evaluation) {
+    public SimpleFlowDriver(Actuator evaluation) {
         this(evaluation, null);
     }
 
@@ -52,8 +52,8 @@ public class SimpleFlowDriver extends AbstractFlowDriver {
      * @param evaluation 脚本评估器
      * @param container  组件容器
      */
-    public SimpleFlowDriver(Evaluation evaluation, Container container) {
-        this.evaluation = (evaluation == null ? new LiquorEvaluation() : evaluation);
+    public SimpleFlowDriver(Actuator evaluation, Container container) {
+        this.evaluation = (evaluation == null ? new LiquorActuator() : evaluation);
         this.container = (container == null ? new SolonContainer() : container);
     }
 
@@ -61,7 +61,7 @@ public class SimpleFlowDriver extends AbstractFlowDriver {
      * 获取脚本评估器
      */
     @Override
-    protected Evaluation getEvaluation() {
+    protected Actuator getEvaluation() {
         return evaluation;
     }
 

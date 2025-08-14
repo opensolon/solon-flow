@@ -3,6 +3,7 @@ package demo.flow.rule;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.test.SolonTest;
 

@@ -1,6 +1,6 @@
 package demo.flow.approve;
 
-import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.Task;
 import org.noear.solon.flow.driver.*;
 
@@ -9,7 +9,7 @@ import org.noear.solon.flow.driver.*;
  */
 public class ApproveChainDriver extends SimpleFlowDriver {
     @Override
-    public void handleTask(FlowContext context, Task task) throws Throwable {
+    public void handleTask(FlowExchanger context, Task task) throws Throwable {
         if (isChain(task.getDescription())) {
             //如果跨链调用
             tryAsChainTask(context, task, task.getDescription());
@@ -43,7 +43,7 @@ public class ApproveChainDriver extends SimpleFlowDriver {
             //如果当前用户匹配这个节点任务
             if(role_id.equals(task.getNode().getMeta("role_id"))){
                 //则把这个节点，作为结果（用于展示界面）
-                context.result = task.getNode();
+                context.put("result", task.getNode());
             }
         }
     }

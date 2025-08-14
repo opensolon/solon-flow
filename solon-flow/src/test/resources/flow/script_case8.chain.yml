@@ -8,6 +8,6 @@ layout:
 meta:
   script:
     script1: |
-      context.result=((int)context.result)+1;
+      context.put("result", result + 1);
   script2: |
-    context.result=((int)context.result)+1;
+    context.put("result", result + 1);

@@ -16,7 +16,7 @@ public class ScriptJavaTest {
         Chain chain = new Chain("c1");
 
         chain.addNode(NodeDecl.startOf("n1").linkAdd("n2"));
-        chain.addNode(NodeDecl.activityOf("n2").task("context.result=111 + a;").linkAdd("n3"));
+        chain.addNode(NodeDecl.activityOf("n2").task("context.put(\"result\", 111 + a);").linkAdd("n3"));
         chain.addNode(NodeDecl.endOf("n2"));
 
 

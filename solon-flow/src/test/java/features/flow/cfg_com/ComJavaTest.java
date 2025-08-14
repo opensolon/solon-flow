@@ -23,8 +23,8 @@ public class ComJavaTest {
 
         SimpleFlowDriver driver = new SimpleFlowDriver() {
             @Override
-            public void handleTask(FlowContext context, Task task) throws Throwable {
-                context.result = task.getNode().getId();
+            public void handleTask(FlowExchanger context, Task task) throws Throwable {
+                context.put("result", task.getNode().getId());
                 if (task.getNode().getId().equals("n3")) {
                     context.interrupt();
                 }
@@ -53,7 +53,7 @@ public class ComJavaTest {
 
         flowEngine.eval(chain, context);
 
-        assert "n3".equals(context.result);
+        assert "n3".equals(context.get("result"));
 
         System.out.println("------------");
 
@@ -66,6 +66,6 @@ public class ComJavaTest {
         flowEngine.eval(chain.getNode("n2"), 1, context);
 
 
-        assert "n2".equals(context.result);
+        assert "n2".equals(context.get("result"));
     }
 }

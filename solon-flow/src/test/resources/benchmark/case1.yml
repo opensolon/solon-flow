@@ -8,11 +8,11 @@ layout:
       - nextId: sub
   - id: sum
     title: "加法"
-    task: "context.result = a + b;"
+    task: 'context.put("result", a + b);'
     link: end
   - id: sub
     title: "减法"
-    task: "context.result = a - b;"
+    task: 'context.put("result", a - b);'
     link: end
   - id: end
     type: end

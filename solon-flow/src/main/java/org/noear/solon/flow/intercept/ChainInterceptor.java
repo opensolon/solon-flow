@@ -15,7 +15,7 @@
  */
 package org.noear.solon.flow.intercept;
 
-import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowException;
 import org.noear.solon.flow.Node;
 import org.noear.solon.lang.Preview;
@@ -40,7 +40,7 @@ public interface ChainInterceptor {
      *
      * @since 3.4
      */
-    default void onNodeStart(FlowContext context, Node node) {
+    default void onNodeStart(FlowExchanger context, Node node) {
 
     }
 
@@ -49,7 +49,7 @@ public interface ChainInterceptor {
      *
      * @since 3.4
      */
-    default void onNodeEnd(FlowContext context, Node node) {
+    default void onNodeEnd(FlowExchanger context, Node node) {
 
     }
 }

@@ -163,20 +163,22 @@ public class FlowEngineDefault implements FlowEngine {
             throw new IllegalArgumentException("The start node was not found.");
         }
 
-        initContextDo(context);
+        FlowExchanger exchanger = new FlowExchanger(context);
+
+        initContextDo(exchanger);
 
         FlowDriver driver = getDriver(startNode.getChain());
 
         //开始执行
-        new ChainInvocation(driver, context, startNode, depth, this.interceptorList, this::evalDo).invoke();
+        new ChainInvocation(driver, exchanger, startNode, depth, this.interceptorList, this::evalDo).invoke();
     }
 
     /**
      * 初始化上下文
      */
-    protected void initContextDo(FlowContext context) {
-        if (context.engine == null) {
-            context.engine = this;
+    protected void initContextDo(FlowExchanger exchanger) {
+        if (exchanger.engine == null) {
+            exchanger.engine = this;
         }
     }
 
@@ -190,32 +192,32 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 节点运行开始时
      */
-    protected void onNodeStart(FlowDriver driver, FlowContext context, Node node) {
+    protected void onNodeStart(FlowDriver driver, FlowExchanger exchanger, Node node) {
         for (RankEntity<ChainInterceptor> interceptor : interceptorList) {
-            interceptor.target.onNodeStart(context, node);
+            interceptor.target.onNodeStart(exchanger, node);
         }
 
-        driver.onNodeStart(context, node);
+        driver.onNodeStart(exchanger, node);
     }
 
     /**
      * 节点运行结束时
      */
-    protected void onNodeEnd(FlowDriver driver, FlowContext context, Node node) {
+    protected void onNodeEnd(FlowDriver driver, FlowExchanger exchanger, Node node) {
         for (RankEntity<ChainInterceptor> interceptor : interceptorList) {
-            interceptor.target.onNodeEnd(context, node);
+            interceptor.target.onNodeEnd(exchanger, node);
         }
 
-        driver.onNodeEnd(context, node);
+        driver.onNodeEnd(exchanger, node);
     }
 
     /**
      * 条件检测
      */
-    protected boolean condition_test(FlowDriver driver, FlowContext context, Condition condition, boolean def) throws FlowException {
+    protected boolean condition_test(FlowDriver driver, FlowExchanger exchanger, Condition condition, boolean def) throws FlowException {
         if (Utils.isNotEmpty(condition.getDescription())) {
             try {
-                return driver.handleCondition(context, condition);
+                return driver.handleCondition(exchanger, condition);
             } catch (FlowException e) {
                 throw e;
             } catch (Throwable e) {
@@ -229,12 +231,12 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 执行任务
      */
-    protected void task_exec(FlowDriver driver, FlowContext context, Node node) throws FlowException {
+    protected void task_exec(FlowDriver driver, FlowExchanger exchanger, Node node) throws FlowException {
         //尝试检测条件；缺省为 true
-        if (condition_test(driver, context, node.getWhen(), true)) {
+        if (condition_test(driver, exchanger, node.getWhen(), true)) {
             //起到触发事件的作用 //处理方会“过滤”空任务
             try {
-                driver.handleTask(context, node.getTask());
+                driver.handleTask(exchanger, node.getTask());
             } catch (FlowException e) {
                 throw e;
             } catch (Throwable e) {
@@ -246,20 +248,20 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 运行节点
      */
-    protected boolean node_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
+    protected boolean node_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
         if (node == null) {
             return false;
         }
 
         //如果停止
-        if (context.isStopped()) {
+        if (exchanger.isStopped()) {
             return false;
         }
 
         //如果阻断，当前分支不再后流
-        if (context.isInterrupted()) {
+        if (exchanger.isInterrupted()) {
             //重置阻断（不影响别的分支）
-            context.interrupt(false);
+            exchanger.interrupt(false);
             return false;
         }
 
@@ -271,17 +273,17 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
         //节点运行之前事件
-        onNodeStart(driver, context, node);
+        onNodeStart(driver, exchanger, node);
 
         //如果停止
-        if (context.isStopped()) {
+        if (exchanger.isStopped()) {
             return false;
         }
 
         //如果阻断，就不再执行了（onNodeBefore 可能会触发中断）
-        if (context.isInterrupted()) {
+        if (exchanger.isInterrupted()) {
             //重置阻断（不影响别的分支）
-            context.interrupt(false);
+            exchanger.interrupt(false);
             return false;
         }
 
@@ -291,95 +293,95 @@ public class FlowEngineDefault implements FlowEngine {
         switch (node.getType()) {
             case START:
                 //转到下个节点
-                node_run(driver, context, node.getNextNode(), depth);
+                node_run(driver, exchanger, node.getNextNode(), depth);
                 break;
             case END:
                 break;
             case ACTIVITY:
-                node_end = activity_run(driver, context, node, depth);
+                node_end = activity_run(driver, exchanger, node, depth);
                 break;
             case INCLUSIVE: //包容网关（多选）
-                node_end = inclusive_run(driver, context, node, depth);
+                node_end = inclusive_run(driver, exchanger, node, depth);
                 break;
             case EXCLUSIVE: //排他网关（单选）
-                exclusive_run(driver, context, node, depth);
+                exclusive_run(driver, exchanger, node, depth);
                 break;
             case PARALLEL: //并行网关（全选）
-                node_end = parallel_run(driver, context, node, depth);
+                node_end = parallel_run(driver, exchanger, node, depth);
                 break;
             case ITERATOR:
-                node_end = iterator_run(driver, context, node, depth);
+                node_end = iterator_run(driver, exchanger, node, depth);
                 break;
         }
 
         //节点运行之后事件
         if (node_end) {
-            onNodeEnd(driver, context, node);
+            onNodeEnd(driver, exchanger, node);
         }
 
 
         return node_end;
     }
 
-    protected boolean activity_run(FlowDriver driver, FlowContext context, Node node, int depth) {
+    protected boolean activity_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
         //流入模式
         if (node.getImode() == NodeType.PARALLEL) {
-            if (parallel_run_in(driver, context, node, depth) == false) {
+            if (parallel_run_in(driver, exchanger, node, depth) == false) {
                 return false;
             }
         } else if (node.getImode() == NodeType.INCLUSIVE) {
-            if (inclusive_run_in(driver, context, node, depth) == false) {
+            if (inclusive_run_in(driver, exchanger, node, depth) == false) {
                 return false;
             }
         }
 
         //尝试执行任务（可能为空）
-        task_exec(driver, context, node);
+        task_exec(driver, exchanger, node);
 
         //如果停止
-        if (context.isStopped()) {
+        if (exchanger.isStopped()) {
             return false;
         }
 
         //如果阻断，就不再执行了（onNodeBefore 可能会触发中断）
-        if (context.isInterrupted()) {
+        if (exchanger.isInterrupted()) {
             //重置阻断（不影响别的分支）
-            context.interrupt(false);
+            exchanger.interrupt(false);
             return false;
         }
 
         //流出模式
         if (node.getOmode() == NodeType.PARALLEL) {
             //并行网关模式
-            return parallel_run_out(driver, context, node, depth);
+            return parallel_run_out(driver, exchanger, node, depth);
         } else if (node.getOmode() == NodeType.EXCLUSIVE) {
             //包容网关模式
-            return inclusive_run_out(driver, context, node, depth);
+            return inclusive_run_out(driver, exchanger, node, depth);
         } else {
             //默认：排它网关模式
-            return exclusive_run(driver, context, node, depth);
+            return exclusive_run(driver, exchanger, node, depth);
         }
     }
 
     /**
      * 运行包容网关
      */
-    protected boolean inclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
-        if (inclusive_run_in(driver, context, node, depth)) {
-            return inclusive_run_out(driver, context, node, depth);
+    protected boolean inclusive_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
+        if (inclusive_run_in(driver, exchanger, node, depth)) {
+            return inclusive_run_out(driver, exchanger, node, depth);
         } else {
             return false;
         }
     }
 
-    protected boolean inclusive_run_in(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
-        Stack<Integer> inclusive_stack = context.counter().stack(node.getChain(), "inclusive_run");
+    protected boolean inclusive_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
+        Stack<Integer> inclusive_stack = exchanger.counter().stack(node.getChain(), "inclusive_run");
 
         //::流入
         if (node.getPrevLinks().size() > 1) { //如果是多个输入链接（尝试等待）
             if (inclusive_stack.size() > 0) {
                 int start_size = inclusive_stack.peek();
-                int in_size = context.counter().incr(node.getChain(), node.getId());//运行次数累计
+                int in_size = exchanger.counter().incr(node.getChain(), node.getId());//运行次数累计
                 if (start_size > in_size) { //等待所有支线流入完成
                     return false;
                 }
@@ -393,8 +395,8 @@ public class FlowEngineDefault implements FlowEngine {
         return true;
     }
 
-    protected boolean inclusive_run_out(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
-        Stack<Integer> inclusive_stack = context.counter().stack(node.getChain(), "inclusive_run");
+    protected boolean inclusive_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
+        Stack<Integer> inclusive_stack = exchanger.counter().stack(node.getChain(), "inclusive_run");
 
         //::流出
         Link def_line = null;
@@ -404,7 +406,7 @@ public class FlowEngineDefault implements FlowEngine {
             if (l.getWhen().isEmpty()) {
                 def_line = l;
             } else {
-                if (condition_test(driver, context, l.getWhen(), false)) {
+                if (condition_test(driver, exchanger, l.getWhen(), false)) {
                     matched_lines.add(l);
                 }
             }
@@ -416,12 +418,12 @@ public class FlowEngineDefault implements FlowEngine {
 
             //执行所有满足条件
             for (Link l : matched_lines) {
-                node_run(driver, context, l.getNextNode(), depth);
+                node_run(driver, exchanger, l.getNextNode(), depth);
             }
         } else if (def_line != null) {
             //不需要，记录流出数量
             //如果有默认
-            node_run(driver, context, def_line.getNextNode(), depth);
+            node_run(driver, exchanger, def_line.getNextNode(), depth);
         }
 
         return true;
@@ -430,16 +432,16 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 运行排他网关
      */
-    protected boolean exclusive_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
+    protected boolean exclusive_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
         //::流出
         Link def_line = null; //默认线
         for (Link l : node.getNextLinks()) {
             if (l.getWhen().isEmpty()) {
                 def_line = l;
             } else {
-                if (condition_test(driver, context, l.getWhen(), false)) {
+                if (condition_test(driver, exchanger, l.getWhen(), false)) {
                     //执行第一个满足条件
-                    node_run(driver, context, l.getNextNode(), depth);
+                    node_run(driver, exchanger, l.getNextNode(), depth);
                     return true; //结束
                 }
             }
@@ -447,7 +449,7 @@ public class FlowEngineDefault implements FlowEngine {
 
         if (def_line != null) {
             //如果有默认
-            node_run(driver, context, def_line.getNextNode(), depth);
+            node_run(driver, exchanger, def_line.getNextNode(), depth);
         }
 
         return true;
@@ -456,17 +458,17 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 运行并行网关
      */
-    protected boolean parallel_run(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
-        if (parallel_run_in(driver, context, node, depth)) {
-            return parallel_run_out(driver, context, node, depth);
+    protected boolean parallel_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
+        if (parallel_run_in(driver, exchanger, node, depth)) {
+            return parallel_run_out(driver, exchanger, node, depth);
         } else {
             return false;
         }
     }
 
-    protected boolean parallel_run_in(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
+    protected boolean parallel_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
         //::流入
-        int count = context.counter().incr(node.getChain(), node.getId());//运行次数累计
+        int count = exchanger.counter().incr(node.getChain(), node.getId());//运行次数累计
         if (node.getPrevLinks().size() > count) { //等待所有支线计数完成
             return false;
         }
@@ -474,28 +476,28 @@ public class FlowEngineDefault implements FlowEngine {
         return true;
     }
 
-    protected boolean parallel_run_out(FlowDriver driver, FlowContext context, Node node, int depth) throws FlowException {
+    protected boolean parallel_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
         //恢复计数
-        context.counter().set(node.getChain(), node.getId(), 0);
+        exchanger.counter().set(node.getChain(), node.getId(), 0);
 
         //::流出
-        if (context.executor() == null || node.getNextNodes().size() < 2) { //没有2个，也没必要用线程池
+        if (exchanger.executor() == null || node.getNextNodes().size() < 2) { //没有2个，也没必要用线程池
             //单线程
             for (Node n : node.getNextNodes()) {
-                node_run(driver, context, n, depth);
+                node_run(driver, exchanger, n, depth);
             }
         } else {
             //多线程
             CountDownLatch cdl = new CountDownLatch(node.getNextNodes().size());
             AtomicReference<Throwable> errorRef = new AtomicReference<>();
             for (Node n : node.getNextNodes()) {
-                context.executor().execute(() -> {
+                exchanger.executor().execute(() -> {
                     try {
                         if (errorRef.get() != null) {
                             return;
                         }
 
-                        node_run(driver, context, n, depth);
+                        node_run(driver, exchanger, n, depth);
                     } catch (Throwable ex) {
                         errorRef.set(ex);
                     } finally {
@@ -524,22 +526,22 @@ public class FlowEngineDefault implements FlowEngine {
         return true;
     }
 
-    protected boolean iterator_run(FlowDriver driver, FlowContext context, Node node, int depth) {
+    protected boolean iterator_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
         if (node.getMeta("$for") == null) {
             //结束
-            if (iterator_run_in(driver, context, node, depth)) {
-                return node_run(driver, context, node.getNextNode(), depth);
+            if (iterator_run_in(driver, exchanger, node, depth)) {
+                return node_run(driver, exchanger, node.getNextNode(), depth);
             } else {
                 return false;
             }
         } else {
             //开始
-            return iterator_run_out(driver, context, node, depth);
+            return iterator_run_out(driver, exchanger, node, depth);
         }
     }
 
-    protected boolean iterator_run_in(FlowDriver driver, FlowContext context, Node node, int depth) {
-        Stack<Iterator> iterator_stack = context.counter().stack(node.getChain(), "iterator_run");
+    protected boolean iterator_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
+        Stack<Iterator> iterator_stack = exchanger.counter().stack(node.getChain(), "iterator_run");
 
         //::流入
         if (iterator_stack.size() > 0) {
@@ -556,10 +558,10 @@ public class FlowEngineDefault implements FlowEngine {
         return true;
     }
 
-    protected boolean iterator_run_out(FlowDriver driver, FlowContext context, Node node, int depth) {
+    protected boolean iterator_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
         String forKey = node.getMeta("$for");
         String inKey = node.getMeta("$in");
-        Object inObj = context.get(inKey);
+        Object inObj = exchanger.get(inKey);
 
         Iterator inIterator = null;
         if (inObj instanceof Iterator) {
@@ -571,14 +573,14 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
 
-        Stack<Iterator> iterator_stack = context.counter().stack(node.getChain(), "iterator_run");
+        Stack<Iterator> iterator_stack = exchanger.counter().stack(node.getChain(), "iterator_run");
         iterator_stack.push(inIterator);
 
         //::流出
         while (inIterator.hasNext()) {
             Object item = inIterator.next();
-            context.put(forKey, item);
-            node_run(driver, context, node.getNextNode(), depth);
+            exchanger.put(forKey, item);
+            node_run(driver, exchanger, node.getNextNode(), depth);
         }
 
         return true;

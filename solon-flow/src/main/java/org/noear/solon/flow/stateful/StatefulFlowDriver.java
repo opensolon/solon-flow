@@ -16,6 +16,7 @@
 package org.noear.solon.flow.stateful;
 
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowDriver;
 import org.noear.solon.flow.Task;
 import org.noear.solon.lang.Preview;
@@ -41,8 +42,8 @@ public interface StatefulFlowDriver extends FlowDriver {
     /**
      * 提交处理任务
      *
-     * @param context 流上下文
-     * @param task    任务
+     * @param exchanger 流上下文
+     * @param task      任务
      */
-    void postHandleTask(FlowContext context, Task task) throws Throwable;
+    void postHandleTask(FlowExchanger exchanger, Task task) throws Throwable;
 }

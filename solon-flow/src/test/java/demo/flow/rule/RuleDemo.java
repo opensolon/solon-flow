@@ -2,6 +2,7 @@ package demo.flow.rule;
 
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 
 /**

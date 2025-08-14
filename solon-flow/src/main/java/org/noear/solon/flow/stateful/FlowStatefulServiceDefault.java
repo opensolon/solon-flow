@@ -80,12 +80,10 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public StatefulTask stepBack(Chain chain, FlowContext context) {
-        context.backup();
         StatefulTask statefulTask = getTask(chain, context);
 
         if (statefulTask != null) {
             postOperation(context, statefulTask.getNode(), Operation.BACK);
-            context.recovery();
             statefulTask = getTask(chain, context);
         }
 
@@ -109,8 +107,6 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public boolean postOperationIfWaiting(FlowContext context, Node node, Operation operation) {
-        context.backup();
-
         StatefulTask statefulTask = getTask(node.getChain(), context);
         if (statefulTask == null) {
             return false;
@@ -124,7 +120,6 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
             return false;
         }
 
-        context.recovery();
         postOperation(context, statefulTask.getNode(), operation);
 
         return true;
@@ -147,7 +142,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         LOCKER.lock();
 
         try {
-            postOperationDo(context, node, operation);
+            postOperationDo(new FlowExchanger(context), node, operation);
         } finally {
             LOCKER.unlock();
         }
@@ -156,7 +151,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
     /**
      * 提交操作
      */
-    protected void postOperationDo(FlowContext context, Node node, Operation operation) {
+    protected void postOperationDo(FlowExchanger exchanger, Node node, Operation operation) {
         if (operation == Operation.UNKNOWN) {
             throw new IllegalArgumentException("StateOperation is UNKNOWN");
         }
@@ -167,13 +162,12 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         //更新状态
         if (operation == Operation.BACK) {
             //后退
-            backHandle(driver, node, context);
+            backHandle(driver, node, exchanger);
         } else if (operation == Operation.BACK_JUMP) {
             //跳转后退
             while (true) {
-                FlowContext contextNew = FlowContext.from(context);
-                StatefulTask statefulNode = getTask(node.getChain(), contextNew);
-                backHandle(driver, statefulNode.getNode(), contextNew);
+                StatefulTask statefulNode = getTask(node.getChain(), exchanger.context());
+                backHandle(driver, statefulNode.getNode(), exchanger);
 
                 //到目标节点了
                 if (statefulNode.getNode().getId().equals(node.getId())) {
@@ -182,16 +176,15 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
             }
         } else if (operation == Operation.RESTART) {
             //撤回全部（重新开始）
-            driver.getStateRepository().clearState(context);
+            driver.getStateRepository().clearState(exchanger.context());
         } else if (operation == Operation.FORWARD) {
             //前进
-            forwardHandle(driver, node, context, newState);
+            forwardHandle(driver, node, exchanger, newState);
         } else if (operation == Operation.FORWARD_JUMP) {
             //跳转前进
             while (true) {
-                FlowContext contextNew = FlowContext.from(context);
-                StatefulTask task = getTask(node.getChain(), contextNew);
-                forwardHandle(driver, task.getNode(), contextNew, newState);
+                StatefulTask task = getTask(node.getChain(), exchanger.context());
+                forwardHandle(driver, task.getNode(), exchanger, newState);
 
                 //到目标节点了
                 if (task.getNode().getId().equals(node.getId())) {
@@ -200,7 +193,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
             }
         } else {
             //其它（等待或通过或拒绝）
-            driver.getStateRepository().putState(context, node, newState);
+            driver.getStateRepository().putState(exchanger.context(), node, newState);
         }
     }
 
@@ -273,19 +266,20 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
 
     /**
      * 前进处理
-     * */
-    protected void forwardHandle(StatefulFlowDriver driver, Node node, FlowContext context, StateType newState) {
+     *
+     */
+    protected void forwardHandle(StatefulFlowDriver driver, Node node, FlowExchanger exchanger, StateType newState) {
         //如果是完成或跳过，则向前流动
         try {
-            driver.postHandleTask(context, node.getTask());
-            driver.getStateRepository().putState(context, node, newState);
+            driver.postHandleTask(exchanger, node.getTask());
+            driver.getStateRepository().putState(exchanger.context(), node, newState);
 
             //重新查找下一个可执行节点（可能为自动前进）
             Node nextNode = node.getNextNode();
             if (nextNode != null) {
                 if (nextNode.getType() == NodeType.INCLUSIVE || nextNode.getType() == NodeType.PARALLEL) {
                     //如果是流入网关，要通过引擎计算获取下个活动节点
-                    StatefulTask statefulNextNode = getTask(node.getChain(), FlowContext.from(context));
+                    StatefulTask statefulNextNode = getTask(node.getChain(), exchanger.context());
 
                     if (statefulNextNode != null) {
                         nextNode = statefulNextNode.getNode();
@@ -295,9 +289,9 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
                 }
 
                 if (nextNode != null) {
-                    if (driver.getStateController().isAutoForward(context, nextNode)) {
+                    if (driver.getStateController().isAutoForward(exchanger.context(), nextNode)) {
                         //如果要自动前进
-                        flowEngine.eval(nextNode, context);
+                        flowEngine.eval(nextNode, exchanger.context());
                     }
                 }
             }
@@ -309,24 +303,24 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
     /**
      * 后退处理
      *
-     * @param node    流程节点
-     * @param context 流上下文
+     * @param node      流程节点
+     * @param exchanger 流交换器
      */
-    protected void backHandle(StatefulFlowDriver driver, Node node, FlowContext context) {
+    protected void backHandle(StatefulFlowDriver driver, Node node, FlowExchanger exchanger) {
         //撤回之前的节点
         for (Node n1 : node.getPrevNodes()) {
             //移除状态（要求重来）
             if (n1.getType() == NodeType.ACTIVITY) {
-                driver.getStateRepository().removeState(context, n1);
+                driver.getStateRepository().removeState(exchanger.context(), n1);
             } else if (NodeType.isGateway(n1.getType())) {
                 //回退所有子节点
                 for (Node n2 : n1.getNextNodes()) {
                     if (n2.getType() == NodeType.ACTIVITY) {
-                        driver.getStateRepository().removeState(context, n2);
+                        driver.getStateRepository().removeState(exchanger.context(), n2);
                     }
                 }
                 //再到前一级
-                backHandle(driver, n1, context);
+                backHandle(driver, n1, exchanger);
             }
         }
     }

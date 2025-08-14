@@ -16,6 +16,7 @@
 package org.noear.solon.flow.stateful.repository;
 
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.StateRepository;
 import org.noear.solon.flow.stateful.StateType;

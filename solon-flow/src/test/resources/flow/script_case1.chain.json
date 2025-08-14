@@ -1,6 +1,6 @@
 {
   "id": "c1",
   "layout": [
-    { "task": "context.result=111;"}
+    { "task": "context.put(\"result\", 111);"}
   ]
 }

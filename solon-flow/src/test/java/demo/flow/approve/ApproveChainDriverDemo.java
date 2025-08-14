@@ -2,6 +2,7 @@ package demo.flow.approve;
 
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Node;
 
@@ -24,7 +25,7 @@ public class ApproveChainDriverDemo {
         flowEngine.eval("c12", context);
 
         //运行后，获取当前展示的节点
-        Node node = (Node) context.result;
+        Node node =context.get("result");
 
         //根据转点，展示界面
     }

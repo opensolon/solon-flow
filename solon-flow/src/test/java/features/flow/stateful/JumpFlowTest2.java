@@ -3,9 +3,9 @@ package features.flow.stateful;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.FlowContext;
+import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Node;
-import org.noear.solon.flow.Task;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.flow.stateful.Operation;
@@ -101,7 +101,7 @@ public class JumpFlowTest2 {
         StatefulTask task = statefulService.getTask(chainId, newContext());
         log.debug(task.toString());
 
-        task.runTask(new FlowContext(instanceId).put(actor, "admin"));
+        task.runTask(new FlowExchanger(newContext()));
     }
 
     private FlowContext newContext() {

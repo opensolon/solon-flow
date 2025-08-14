@@ -17,6 +17,7 @@ package org.noear.solon.flow.driver;
 
 import org.noear.solon.Utils;
 import org.noear.solon.flow.*;
+import org.noear.solon.flow.Actuator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     /**
      * 获取脚本评估器
      */
-    protected abstract Evaluation getEvaluation();
+    protected abstract Actuator getEvaluation();
 
     /**
      * 获取组件容器
@@ -61,7 +62,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
      * 当节点开始（节点不是任务）
      */
     @Override
-    public void onNodeStart(FlowContext context, Node node) {
+    public void onNodeStart(FlowExchanger exchanger, Node node) {
 
     }
 
@@ -69,7 +70,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
      * 当节点结束
      */
     @Override
-    public void onNodeEnd(FlowContext context, Node node) {
+    public void onNodeEnd(FlowExchanger exchanger, Node node) {
 
     }
 
@@ -79,23 +80,23 @@ public abstract class AbstractFlowDriver implements FlowDriver {
      * 处理条件
      */
     @Override
-    public boolean handleCondition(FlowContext context, Condition condition) throws Throwable {
+    public boolean handleCondition(FlowExchanger exchanger, Condition condition) throws Throwable {
         //（不需要检测是否为空，引擎会把空条件作为默认，不会再传入）
 
         //如果 condition.description 有加密，可以转码后传入
-        return handleConditionDo(context, condition, condition.getDescription());
+        return handleConditionDo(exchanger, condition, condition.getDescription());
     }
 
-    protected boolean handleConditionDo(FlowContext context, Condition condition, String description) throws Throwable {
+    protected boolean handleConditionDo(FlowExchanger exchanger, Condition condition, String description) throws Throwable {
         //按脚本运行
-        return tryAsScriptCondition(context, condition, description);
+        return tryAsScriptCondition(exchanger, condition, description);
     }
 
     /**
      * 尝试作为脚本条件运行
      */
-    protected boolean tryAsScriptCondition(FlowContext context, Condition condition, String description) throws Throwable {
-        return getEvaluation().runTest(context, description);
+    protected boolean tryAsScriptCondition(FlowExchanger exchanger, Condition condition, String description) throws Throwable {
+        return getEvaluation().runTest(exchanger, description);
     }
 
     /// //////////////
@@ -104,46 +105,46 @@ public abstract class AbstractFlowDriver implements FlowDriver {
      * 处理任务
      */
     @Override
-    public void handleTask(FlowContext context, Task task) throws Throwable {
+    public void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
         //默认过滤空任务（活动节点可能没有配置任务）
         if (Utils.isEmpty(task.getDescription())) {
             return;
         }
 
         //如果 task.description 有加密，可以转码后传入
-        handleTaskDo(context, task, task.getDescription());
+        handleTaskDo(exchanger, task, task.getDescription());
     }
 
-    protected void handleTaskDo(FlowContext context, Task task, String description) throws Throwable {
+    protected void handleTaskDo(FlowExchanger exchanger, Task task, String description) throws Throwable {
         if (isChain(description)) {
             //如果跨链调用
-            tryAsChainTask(context, task, description);
+            tryAsChainTask(exchanger, task, description);
             return;
         }
 
         if (isComponent(description)) {
             //如果用组件运行
-            tryAsComponentTask(context, task, description);
+            tryAsComponentTask(exchanger, task, description);
             return;
         }
 
         //默认按脚本运行
-        tryAsScriptTask(context, task, description);
+        tryAsScriptTask(exchanger, task, description);
     }
 
     /**
      * 尝试作为子链任务运行
      */
-    protected void tryAsChainTask(FlowContext context, Task task, String description) throws Throwable {
+    protected void tryAsChainTask(FlowExchanger exchanger, Task task, String description) throws Throwable {
         //调用其它链
         String chainId = description.substring(1);
-        context.engine().eval(chainId, context);
+        exchanger.engine().eval(chainId, exchanger.context());
     }
 
     /**
      * 尝试作为组件任务运行
      */
-    protected void tryAsComponentTask(FlowContext context, Task task, String description) throws Throwable {
+    protected void tryAsComponentTask(FlowExchanger exchanger, Task task, String description) throws Throwable {
         //按组件运行
         String beanName = description.substring(1);
         Object component = getContainer().getComponent(beanName);
@@ -153,14 +154,14 @@ public abstract class AbstractFlowDriver implements FlowDriver {
         } else if (component instanceof TaskComponent == false) {
             throw new IllegalStateException("The component '" + beanName + "' is not TaskComponent");
         } else {
-            ((TaskComponent) component).run(context, task.getNode());
+            ((TaskComponent) component).run(exchanger, task.getNode());
         }
     }
 
     /**
      * 尝试作为脚本任务运行
      */
-    protected void tryAsScriptTask(FlowContext context, Task task, String description) throws Throwable {
+    protected void tryAsScriptTask(FlowExchanger exchanger, Task task, String description) throws Throwable {
         //按脚本运行
         if (description.startsWith("$")) {
             String metaName = description.substring(1);
@@ -173,11 +174,11 @@ public abstract class AbstractFlowDriver implements FlowDriver {
 
 
         try {
-            context.put("node", task.getNode());
+            exchanger.put("node", task.getNode());
 
-            getEvaluation().runTask(context, description);
+            getEvaluation().runTask(exchanger, description);
         } finally {
-            context.remove("node");
+            exchanger.remove("node");
         }
     }
 
