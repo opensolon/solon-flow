@@ -15,24 +15,142 @@
  */
 package org.noear.solon.flow.stateful;
 
-import org.noear.solon.flow.FlowExchanger;
-import org.noear.solon.flow.FlowDriver;
-import org.noear.solon.flow.Task;
+import org.noear.solon.flow.*;
+import org.noear.solon.flow.Actuator;
 import org.noear.solon.lang.Preview;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 有状态的流驱动器
+ * 有状态的简单流驱动器
  *
  * @author noear
  * @since 3.1
+ * @since 3.5
  */
 @Preview("3.1")
-public interface StatefulFlowDriver extends FlowDriver {
+public class StatefulFlowDriver extends AbstractFlowDriver implements FlowDriver {
+    public StatefulFlowDriver() {
+        this(null, null);
+    }
+
+    public StatefulFlowDriver(Actuator actuator) {
+        super(actuator, null);
+    }
+
+    public StatefulFlowDriver(Container container) {
+        super(null, container);
+    }
+
+    public StatefulFlowDriver(Actuator evaluation, Container container) {
+        super(evaluation, container);
+    }
+
+    /// ////////////////////////////
+
     /**
-     * 提交处理任务
+     * 处理任务
      *
      * @param exchanger 流上下文
      * @param task      任务
      */
-    void postHandleTask(FlowExchanger exchanger, Task task) throws Throwable;
+    @Override
+    public void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
+        if (exchanger.context().isStateful()) {
+
+            //有实例id，作有状态处理
+            if (exchanger.context().getStateController().isAutoForward(exchanger.context(), task.getNode())) {
+                //自动前进
+                StateType state = exchanger.context().getStateRepository().getState(exchanger.context(), task.getNode());
+                if (state == StateType.UNKNOWN || state == StateType.WAITING) {
+                    //添加状态
+                    exchanger.context().getStateRepository().putState(exchanger.context(), task.getNode(), StateType.COMPLETED);
+
+                    //确保任务只被执行一次
+                    postHandleTask(exchanger, task);
+                } else if (state == StateType.TERMINATED) {
+                    //终止
+                    exchanger.stop();
+                }
+            } else {
+                //控制前进
+                StateType state = exchanger.context().getStateRepository().getState(exchanger.context(), task.getNode());
+                List<StatefulTask> nodeList = (List<StatefulTask>) exchanger.temporary().vars().computeIfAbsent(StatefulTask.KEY_ACTIVITY_LIST, k -> new ArrayList<>());
+                boolean nodeListGet = (boolean) exchanger.temporary().vars().getOrDefault(StatefulTask.KEY_ACTIVITY_LIST_GET, false);
+
+                if (state == StateType.UNKNOWN || state == StateType.WAITING) {
+                    //检查是否为当前用户的任务
+                    if (exchanger.context().getStateController().isOperatable(exchanger.context(), task.getNode())) {
+                        //记录当前流程节点（用于展示）
+                        StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.WAITING);
+                        exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
+                        nodeList.add(statefulNode);
+
+                        if (nodeListGet) {
+                            exchanger.interrupt();
+                        } else {
+                            exchanger.stop();
+                        }
+                    } else {
+                        //阻断当前分支（等待别的用户办理）
+                        StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.UNKNOWN);
+                        exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
+                        nodeList.add(statefulNode);
+
+                        exchanger.interrupt();
+                    }
+                } else if (state == StateType.TERMINATED) {
+                    //终止
+                    StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.TERMINATED);
+                    exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
+                    nodeList.add(statefulNode);
+
+                    if (nodeListGet) {
+                        exchanger.interrupt();
+                    } else {
+                        exchanger.stop();
+                    }
+                }
+            }
+        } else {
+            //没有实例id，作无状态处理 //直接提交处理任务
+            postHandleTask(exchanger, task);
+        }
+    }
+
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private Actuator evaluation;
+        private Container container;
+
+        /**
+         * 设置评估器
+         */
+        public Builder evaluation(Actuator evaluation) {
+            this.evaluation = evaluation;
+            return this;
+        }
+
+        /**
+         * 设置容器
+         */
+        public Builder container(Container container) {
+            this.container = container;
+            return this;
+        }
+
+        /**
+         * 构建
+         */
+        public StatefulFlowDriver build() {
+            return new StatefulFlowDriver(
+                    evaluation,
+                    container);
+        }
+    }
 }

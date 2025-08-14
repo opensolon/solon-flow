@@ -16,6 +16,8 @@
 package org.noear.solon.flow;
 
 import org.noear.solon.Utils;
+import org.noear.solon.flow.container.SolonContainer;
+import org.noear.solon.flow.script.LiquorActuator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,15 +32,31 @@ import java.util.Map;
 public abstract class AbstractFlowDriver implements FlowDriver {
     static final Logger log = LoggerFactory.getLogger(AbstractFlowDriver.class);
 
+    private final Actuator evaluation;
+    private final Container container;
+
+    /**
+     * @param evaluation 脚本评估器
+     * @param container  组件容器
+     */
+    public AbstractFlowDriver(Actuator evaluation, Container container) {
+        this.evaluation = (evaluation == null ? new LiquorActuator() : evaluation);
+        this.container = (container == null ? new SolonContainer() : container);
+    }
+
     /**
      * 获取脚本评估器
      */
-    protected abstract Actuator getEvaluation();
+    protected Actuator getEvaluation() {
+        return evaluation;
+    }
 
     /**
      * 获取组件容器
      */
-    protected abstract Container getContainer();
+    protected Container getContainer() {
+        return container;
+    }
 
     /**
      * 是否为组件
@@ -100,10 +118,10 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     /// //////////////
 
     /**
-     * 处理任务
+     * 提交处理任务
      */
     @Override
-    public void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
+    public void postHandleTask(FlowExchanger exchanger, Task task) throws Throwable {
         //默认过滤空任务（活动节点可能没有配置任务）
         if (Utils.isEmpty(task.getDescription())) {
             return;

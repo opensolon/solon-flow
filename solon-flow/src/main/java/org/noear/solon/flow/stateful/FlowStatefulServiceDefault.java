@@ -158,7 +158,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         }
 
         StateType newState = StateType.byOperation(operation);
-        StatefulFlowDriver driver = flowEngine.getDriverAs(node.getChain(), StatefulFlowDriver.class);
+        FlowDriver driver = flowEngine.getDriverAs(node.getChain(), FlowDriver.class);
 
         //更新状态
         if (operation == Operation.BACK) {
@@ -272,7 +272,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * 前进处理
      *
      */
-    protected void forwardHandle(StatefulFlowDriver driver, Node node, FlowExchanger exchanger, StateType newState) {
+    protected void forwardHandle(FlowDriver driver, Node node, FlowExchanger exchanger, StateType newState) {
         //如果是完成或跳过，则向前流动
         try {
             driver.postHandleTask(exchanger, node.getTask());
@@ -310,7 +310,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * @param node      流程节点
      * @param exchanger 流交换器
      */
-    protected void backHandle(StatefulFlowDriver driver, Node node, FlowExchanger exchanger) {
+    protected void backHandle(FlowDriver driver, Node node, FlowExchanger exchanger) {
         //撤回之前的节点
         for (Node n1 : node.getPrevNodes()) {
             //移除状态（要求重来）

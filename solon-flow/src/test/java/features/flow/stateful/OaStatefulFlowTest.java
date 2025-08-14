@@ -7,7 +7,7 @@ import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.*;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
-import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
+import org.noear.solon.flow.stateful.StatefulFlowDriver;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.test.SolonTest;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public class OaStatefulFlowTest {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
-        FlowEngine fe = FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
+        FlowEngine fe = FlowEngine.newInstance(StatefulFlowDriver.builder()
                 .container(container)
                 .build());
 

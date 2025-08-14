@@ -6,6 +6,7 @@
 * 调整 solon-flow 原 FlowContext:counter 由 FlowExchanger:temporary 替代（并添加 vars），侧重引擎内部使用
 * 调整 solon-flow StatefulSimpleFlowDriver 将 stateRepository,stateController 转移到 StatefulFlowContext（新增的）
 * 调整 solon-flow 新增 stateless包，明确有状态与无状态这两个概念（SimpleFlowDriver 更名为 StatelessFlowDriver）
+* 调整 solon-flow StatefulSimpleFlowDriver 更名为 StatefulFlowDriver
 
 ### 3.4.3
 

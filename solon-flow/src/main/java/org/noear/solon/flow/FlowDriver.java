@@ -43,5 +43,15 @@ public interface FlowDriver {
     /**
      * 处理执行任务
      */
-    void handleTask(FlowExchanger exchanger, Task task) throws Throwable;
+    default void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
+        postHandleTask(exchanger, task);
+    }
+
+    /**
+     * 提交处理任务
+     *
+     * @param exchanger 流上下文
+     * @param task      任务
+     */
+    void postHandleTask(FlowExchanger exchanger, Task task) throws Throwable;
 }

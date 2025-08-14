@@ -8,7 +8,7 @@ import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
-import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
+import org.noear.solon.flow.stateful.StatefulFlowDriver;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +38,7 @@ public class AiBlockFlowTest2 {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
-        FlowEngine fe = FlowEngine.newInstance(StatefulSimpleFlowDriver.builder()
+        FlowEngine fe = FlowEngine.newInstance(StatefulFlowDriver.builder()
                 .container(container)
                 .build());
 

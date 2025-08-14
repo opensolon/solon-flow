@@ -18,9 +18,7 @@ package org.noear.solon.flow.stateless;
 import org.noear.solon.flow.AbstractFlowDriver;
 import org.noear.solon.flow.Container;
 import org.noear.solon.flow.Actuator;
-import org.noear.solon.flow.container.SolonContainer;
-import org.noear.solon.flow.script.LiquorActuator;
-import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
+import org.noear.solon.flow.stateful.StatefulFlowDriver;
 
 /**
  * 简单流驱动器
@@ -29,49 +27,24 @@ import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
  * @since 3.1
  */
 public class StatelessFlowDriver extends AbstractFlowDriver {
-    private final Actuator evaluation;
-    private final Container container;
-
     public StatelessFlowDriver() {
         this(null, null);
     }
 
     public StatelessFlowDriver(Actuator actuator) {
-        this(actuator, null);
+        super(actuator, null);
     }
 
     public StatelessFlowDriver(Container container) {
-        this(null, container);
+        super(null, container);
     }
 
-    /**
-     * @param evaluation 脚本评估器
-     * @param container  组件容器
-     */
     public StatelessFlowDriver(Actuator evaluation, Container container) {
-        this.evaluation = (evaluation == null ? new LiquorActuator() : evaluation);
-        this.container = (container == null ? new SolonContainer() : container);
+        super(evaluation, container);
     }
 
-    /**
-     * 获取脚本评估器
-     */
-    @Override
-    protected Actuator getEvaluation() {
-        return evaluation;
-    }
-
-    /**
-     * 获取组件容器
-     */
-    @Override
-    protected Container getContainer() {
-        return container;
-    }
-
-
-    public static StatefulSimpleFlowDriver.Builder builder() {
-        return new StatefulSimpleFlowDriver.Builder();
+    public static StatefulFlowDriver.Builder builder() {
+        return new StatefulFlowDriver.Builder();
     }
 
     public static class Builder {
