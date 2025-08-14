@@ -57,18 +57,18 @@ public class JumpFlowTest2 {
     public void case1() {
         FlowStatefulService statefulService = buildStatefulService();
 
-        statefulService.postOperation(new FlowContext(instanceId).put(actor, "admin"), chainId, "n3", Operation.FORWARD_JUMP);
+        statefulService.postOperation(FlowContext.of(instanceId).put(actor, "admin"), chainId, "n3", Operation.FORWARD_JUMP);
 
-        StatefulTask task = statefulService.getTask(chainId, new FlowContext(instanceId).put(actor, "admin"));
+        StatefulTask task = statefulService.getTask(chainId, FlowContext.of(instanceId).put(actor, "admin"));
 
         log.debug(task.toString());
         assert task.getState() == StateType.WAITING;
         assert task.getNode().getId().equals("n4");
 
 
-        statefulService.postOperation(new FlowContext(instanceId).put(actor, "admin"), chainId, "n1", Operation.BACK_JUMP);
+        statefulService.postOperation(FlowContext.of(instanceId).put(actor, "admin"), chainId, "n1", Operation.BACK_JUMP);
 
-        task = statefulService.getTask(chainId, new FlowContext(instanceId).put(actor, "admin"));
+        task = statefulService.getTask(chainId, FlowContext.of(instanceId).put(actor, "admin"));
 
         log.debug(task.toString());
         assert task.getState() == StateType.WAITING;
@@ -105,6 +105,6 @@ public class JumpFlowTest2 {
     }
 
     private FlowContext newContext() {
-        return new FlowContext(instanceId).put(actor, "admin");
+        return FlowContext.of(instanceId).put(actor, "admin");
     }
 }

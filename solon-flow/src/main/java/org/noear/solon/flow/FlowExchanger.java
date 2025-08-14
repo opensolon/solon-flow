@@ -36,19 +36,17 @@ import java.util.function.Function;
  */
 @Preview("3.5")
 public class FlowExchanger {
-    //存放数据模型
+    //当前流程上下文
     private transient final FlowContext flowContext;
-
-    //控制过程计数
-    private transient final Counter counter = new Counter();
-    //控制分支阻断（可选）
-    private transient volatile boolean interrupted = false;
-    //控制流程停止（可选）
-    private transient volatile boolean stopped = false;
-
     //当前流程引擎
     protected transient FlowEngine engine;
 
+    //执行时临时存放器
+    private transient final Temporary temporary = new Temporary();
+    //执行时分支阻断（可选）
+    private transient volatile boolean interrupted = false;
+    //执行时流程停止（可选）
+    private transient volatile boolean stopped = false;
 
     public FlowExchanger(FlowContext flowContext) {
         this.flowContext = flowContext;
@@ -57,7 +55,8 @@ public class FlowExchanger {
 
     /**
      * 当前上下文
-     * */
+     *
+     */
     public FlowContext context() {
         return flowContext;
     }
@@ -79,11 +78,12 @@ public class FlowExchanger {
     }
 
     /**
-     * 计数器
+     * 临时存放器
      */
-    public Counter counter() {
-        return counter;
+    public Temporary temporary() {
+        return temporary;
     }
+
 
     /**
      * 运行任务

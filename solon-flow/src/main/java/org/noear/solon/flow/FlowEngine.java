@@ -136,7 +136,7 @@ public interface FlowEngine {
      * @param chainId 链Id
      */
     default void eval(String chainId) throws FlowException {
-        eval(chainId, new FlowContext());
+        eval(chainId, FlowContext.of());
     }
 
     /**
@@ -176,7 +176,7 @@ public interface FlowEngine {
      * @param chain 链
      */
     default void eval(Chain chain) throws FlowException {
-        eval(chain, new FlowContext());
+        eval(chain, FlowContext.of());
     }
 
     /**
@@ -195,7 +195,7 @@ public interface FlowEngine {
      * @param startNode 开始节点
      */
     default void eval(Node startNode) throws FlowException {
-        eval(startNode, -1, new FlowContext());
+        eval(startNode, -1, FlowContext.of());
     }
 
     /**
@@ -215,5 +215,16 @@ public interface FlowEngine {
      * @param depth     执行深度
      * @param context   上下文
      */
-    void eval(Node startNode, int depth, FlowContext context) throws FlowException;
+    default void eval(Node startNode, int depth, FlowContext context) throws FlowException {
+        eval(startNode, depth, new FlowExchanger(context));
+    }
+
+    /**
+     * 评估
+     *
+     * @param startNode 开始节点
+     * @param depth     执行深度
+     * @param exchanger 交换器
+     */
+    void eval(Node startNode, int depth, FlowExchanger exchanger) throws FlowException;
 }

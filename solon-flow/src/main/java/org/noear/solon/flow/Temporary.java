@@ -16,33 +16,26 @@
 package org.noear.solon.flow;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 记数器
+ * 临时的
  *
  * @author noear
  * @since 3.0
  */
-public class Counter {
+public class Temporary {
     static final String ROOT = "_ROOT";
 
+    //记数器
     private final Map<String, AtomicInteger> counts = new ConcurrentHashMap<>();
+    //记录栈
     private final Map<String, Stack> stacks = new ConcurrentHashMap<>();
+    //变量
+    private final Map<String, Object> vars = new ConcurrentHashMap<>();
 
-    /**
-     * 清空
-     */
-    public void from(Counter counter) {
-        counts.clear();
-        stacks.clear();
-
-        counts.putAll(counter.counts);
-        stacks.putAll(counter.stacks);
-    }
 
     /**
      * 记录栈
@@ -53,61 +46,68 @@ public class Counter {
 
 
     /**
-     * 获取
+     * 计数获取
      */
-    public int get(Chain chain, String key) {
+    public int count(Chain chain, String key) {
         return counts.computeIfAbsent(chain.getId() + "/" + key, k -> new AtomicInteger(0))
                 .get();
     }
 
     /**
-     * 获取
+     * 计数获取
      */
-    public int get(String key) {
+    public int count(String key) {
         return counts.computeIfAbsent(ROOT + "/" + key, k -> new AtomicInteger(0))
                 .get();
     }
 
     /**
-     * 设置
+     * 计数设置
      */
-    public void set(Chain chain, String key, int value) {
+    public void countSet(Chain chain, String key, int value) {
         counts.computeIfAbsent(chain.getId() + "/" + key, k -> new AtomicInteger(0))
                 .set(value);
     }
 
     /**
-     * 设置
+     * 计数设置
      */
-    public void set(String key, int value) {
+    public void countSet(String key, int value) {
         counts.computeIfAbsent(ROOT + "/" + key, k -> new AtomicInteger(0))
                 .set(value);
     }
 
     /**
-     * 增量
+     * 计数增量
      */
-    public int incr(Chain chain, String key) {
+    public int countIncr(Chain chain, String key) {
         return counts.computeIfAbsent(chain.getId() + "/" + key, k -> new AtomicInteger(0))
                 .incrementAndGet();
     }
 
     /**
-     * 增量
+     * 计数增量
      */
-    public int incr(String key) {
+    public int countIncr(String key) {
         return counts.computeIfAbsent(ROOT + "/" + key, k -> new AtomicInteger(0))
                 .incrementAndGet();
     }
 
     /**
-     * 增量
+     * 计数增量
      *
      * @param delta 要添加的数值
      */
-    public int incr(String key, int delta) {
+    public int countIncr(String key, int delta) {
         return counts.computeIfAbsent(ROOT + "/" + key, k -> new AtomicInteger(0))
                 .addAndGet(delta);
+    }
+
+    /**
+     * 变量集
+     */
+    public Map<String, Object> vars() {
+        return vars;
     }
 
     @Override

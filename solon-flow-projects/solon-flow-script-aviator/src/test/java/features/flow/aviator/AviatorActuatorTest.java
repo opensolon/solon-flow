@@ -17,7 +17,7 @@ public class AviatorActuatorTest {
 
         engine.load("classpath:flow/*");
 
-        FlowContext context = new FlowContext();
+        FlowContext context = FlowContext.of();
         context.put("a", 1);
         context.put("b", 2);
 
@@ -26,7 +26,7 @@ public class AviatorActuatorTest {
         assert context.get("result") == null;
 
 
-        context = new FlowContext();
+        context = FlowContext.of();
         context.put("a", 3);
         context.put("b", 2);
 

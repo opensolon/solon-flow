@@ -2,7 +2,6 @@ package features.flow.stateful;
 
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.stateful.*;
 import org.noear.solon.flow.stateful.controller.BlockStateController;
@@ -33,7 +32,7 @@ public class BlockStatefulFlowTest {
 
 
         //获取节点
-        context = new FlowContext(instanceId1);
+        context = FlowContext.of(instanceId1);
         statefulNode = statefulService.getTask(chainId, context);
         assertNode(statefulNode, "step1");
 
@@ -43,7 +42,7 @@ public class BlockStatefulFlowTest {
         statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
         //获取节点
-        context = new FlowContext(instanceId1);
+        context = FlowContext.of(instanceId1);
         statefulNode = statefulService.getTask(chainId, context);
         assertNode(statefulNode, "step2");
 
@@ -54,7 +53,7 @@ public class BlockStatefulFlowTest {
 
 
         //获取节点
-        context = new FlowContext(instanceId1);
+        context = FlowContext.of(instanceId1);
         statefulNode = statefulService.getTask(chainId, context);
         assertNode(statefulNode, "step3");
 
@@ -65,7 +64,7 @@ public class BlockStatefulFlowTest {
 
 
         //获取节点
-        context = new FlowContext(instanceId1);
+        context = FlowContext.of(instanceId1);
         statefulNode = statefulService.getTask(chainId, context);
         assertNode(statefulNode, "step4_1");
 
@@ -77,20 +76,20 @@ public class BlockStatefulFlowTest {
 
         ///  （换一个实例）
 
-        context = new FlowContext(instanceId2);
+        context = FlowContext.of(instanceId2);
         statefulNode = statefulService.getTask(chainId, context);
         assertNode(statefulNode, "step1");
 
         statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
-        context = new FlowContext(instanceId2);
+        context = FlowContext.of(instanceId2);
         statefulNode = statefulService.getTask(chainId, context);
         assertNode(statefulNode, "step2");
 
         statefulService.postOperation(context, statefulNode.getNode(), Operation.FORWARD);
 
 
-        context = new FlowContext(instanceId2);
+        context = FlowContext.of(instanceId2);
         statefulNode = statefulService.getTask(chainId, context);
         assertNode(statefulNode, "step3");
 
@@ -98,7 +97,7 @@ public class BlockStatefulFlowTest {
         // （再换回实例）
 
         //获取节点
-        context = new FlowContext(instanceId1);
+        context = FlowContext.of(instanceId1);
         statefulNode = statefulService.getTask(chainId, context);
         assertNode(statefulNode, "step4_2");
     }
@@ -118,26 +117,26 @@ public class BlockStatefulFlowTest {
         String instanceId1 = "i3";
 
         //单步前进（上下文需要配置，实例id）
-        statefulNode = statefulService.stepForward(chainId, new FlowContext(instanceId1)); //使用实例id
+        statefulNode = statefulService.stepForward(chainId, FlowContext.of(instanceId1)); //使用实例id
         assert "step1".equals(statefulNode.getNode().getId());
 
-        statefulNode = statefulService.stepForward(chainId, new FlowContext(instanceId1)); //使用实例id
+        statefulNode = statefulService.stepForward(chainId, FlowContext.of(instanceId1)); //使用实例id
         assert "step2".equals(statefulNode.getNode().getId());
 
-        statefulNode = statefulService.stepForward(chainId, new FlowContext(instanceId1)); //使用实例id
+        statefulNode = statefulService.stepForward(chainId, FlowContext.of(instanceId1)); //使用实例id
         assert "step3".equals(statefulNode.getNode().getId());
 
         //此时，已经是：step4_1 = WAITING
-        statefulNode = statefulService.getTask(chainId, new FlowContext(instanceId1));
+        statefulNode = statefulService.getTask(chainId, FlowContext.of(instanceId1));
         assert "step4_1".equals(statefulNode.getNode().getId());
         assert StateType.WAITING == statefulNode.getState();
 
 
-        statefulNode = statefulService.stepBack(chainId, new FlowContext(instanceId1)); //使用实例id
+        statefulNode = statefulService.stepBack(chainId, FlowContext.of(instanceId1)); //使用实例id
         assert "step3".equals(statefulNode.getNode().getId());
         assert StateType.WAITING == statefulNode.getState();
 
-        statefulNode = statefulService.stepBack(chainId, new FlowContext(instanceId1)); //使用实例id
+        statefulNode = statefulService.stepBack(chainId, FlowContext.of(instanceId1)); //使用实例id
         assert "step2".equals(statefulNode.getNode().getId());
         assert StateType.WAITING == statefulNode.getState();
     }

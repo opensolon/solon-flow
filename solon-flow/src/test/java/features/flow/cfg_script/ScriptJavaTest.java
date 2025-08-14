@@ -20,7 +20,7 @@ public class ScriptJavaTest {
         chain.addNode(NodeDecl.endOf("n2"));
 
 
-        FlowContext context = new FlowContext();
+        FlowContext context = FlowContext.of();
         context.put("a", 2);
         context.put("b", 3);
         context.put("c", 4);

@@ -2,7 +2,6 @@ package demo.flow.rule;
 
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 
 /**
@@ -13,6 +12,6 @@ public class RuleDemo {
     private FlowEngine flowEngine;
 
     public void demo() throws Throwable {
-        flowEngine.eval("r1", new FlowContext().put("order", new Order()));
+        flowEngine.eval("r1", FlowContext.of().put("order", new Order()));
     }
 }

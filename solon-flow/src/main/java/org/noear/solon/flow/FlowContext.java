@@ -21,7 +21,6 @@ import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -31,52 +30,61 @@ import java.util.function.Function;
  *
  * @author noear
  * @since 3.0
+ * @since 3.5
  */
 @Preview("3.0")
-public class FlowContext {
-    //存放数据模型
-    private transient final Map<String, Object> model = new ConcurrentHashMap<>();
-    //异步执行器
-    private transient ExecutorService executor;
-
-    public FlowContext() {
-        this(null);
+public interface FlowContext {
+    static FlowContext of() {
+        return new FlowContextDefault();
     }
 
-    public FlowContext(String instanceId) {
-        put("instanceId", (instanceId == null ? "" : instanceId));
+    static FlowContext of(String instanceId) {
+        return new FlowContextDefault(instanceId);
     }
 
     /**
      * 异步执行器
      */
     @Preview("3.3")
-    public @Nullable ExecutorService executor() {
-        return executor;
-    }
+    @Nullable
+    ExecutorService executor();
 
     /**
      * 配置异步执行器
      */
     @Preview("3.3")
-    public FlowContext executor(ExecutorService executor) {
-        this.executor = executor;
-        return this;
-    }
+    FlowContext executor(ExecutorService executor);
 
     /**
      * 数据模型
      */
-    public Map<String, Object> model() {
-        return model;
+    Map<String, Object> model();
+
+
+    /// /////////////////////////////////////
+
+
+    /**
+     * 获取流实例id
+     */
+    default String getInstanceId() {
+        return get("instanceId");
+    }
+
+    /**
+     * 获取事件总线（based damibus）
+     */
+    default <C extends Object, R extends Object> DamiBus<C, R> eventBus() {
+        //通过模型，可以被转移或替代
+        return computeIfAbsent("eventBus", k -> Dami.newBus());
     }
 
     /**
      * 推入
      */
-    public FlowContext put(String key, Object value) {
+    default FlowContext put(String key, Object value) {
         if (value != null) {
-            model.put(key, value);
+            model().put(key, value);
         }
         return this;
     }
@@ -84,9 +92,9 @@ public class FlowContext {
     /**
      * 推入
      */
-    public FlowContext putIfAbsent(String key, Object value) {
+    default FlowContext putIfAbsent(String key, Object value) {
         if (value != null) {
-            model.putIfAbsent(key, value);
+            model().putIfAbsent(key, value);
         }
         return this;
     }
@@ -94,83 +102,68 @@ public class FlowContext {
     /**
      * 推入全部
      */
-    public FlowContext putAll(Map<String, Object> model) {
-        this.model.putAll(model);
+    default FlowContext putAll(Map<String, Object> model) {
+        this.model().putAll(model);
         return this;
     }
 
     /**
      * 尝试完成
      */
-    public <T> T computeIfAbsent(String key, Function<String, T> mappingFunction) {
-        return (T) model.computeIfAbsent(key, mappingFunction);
+    default <T> T computeIfAbsent(String key, Function<String, T> mappingFunction) {
+        return (T) model().computeIfAbsent(key, mappingFunction);
     }
 
     /**
      * 获取
      */
-    public <T> T get(String key) {
-        return (T) model.get(key);
+    default <T> T get(String key) {
+        return (T) model().get(key);
     }
 
-    public Object getAsObject(String key) {
+    default Object getAsObject(String key) {
         return get(key);
     }
 
-    public String getAsString(String key) {
+    default String getAsString(String key) {
         return get(key);
     }
 
-    public Number getAsNumber(String key) {
+    default Number getAsNumber(String key) {
         return get(key);
     }
 
-    public Boolean getAsBoolean(String key) {
+    default Boolean getAsBoolean(String key) {
         return get(key);
     }
 
     /**
      * 获取或默认
      */
-    public <T> T getOrDefault(String key, T def) {
-        return (T) model.getOrDefault(key, def);
+    default <T> T getOrDefault(String key, T def) {
+        return (T) model().getOrDefault(key, def);
     }
 
     /**
      * 增量添加
      */
-    public int incrAdd(String key, int delta) {
-        AtomicInteger tmp = (AtomicInteger) model.computeIfAbsent(key, k -> new AtomicInteger(0));
+    default int incrAdd(String key, int delta) {
+        AtomicInteger tmp = (AtomicInteger) model().computeIfAbsent(key, k -> new AtomicInteger(0));
         return tmp.addAndGet(delta);
     }
 
     /**
      * 增量获取
      */
-    public int incrGet(String key) {
-        AtomicInteger tmp = (AtomicInteger) model.computeIfAbsent(key, k -> new AtomicInteger(0));
+    default int incrGet(String key) {
+        AtomicInteger tmp = (AtomicInteger) model().computeIfAbsent(key, k -> new AtomicInteger(0));
         return tmp.get();
     }
 
     /**
      * 移除
      */
-    public void remove(String key) {
-        model.remove(key);
-    }
-
-    /**
-     * 获取流实例id
-     */
-    public String getInstanceId() {
-        return get("instanceId");
-    }
-
-    /**
-     * 获取事件总线（based damibus）
-     */
-    public <C extends Object, R extends Object> DamiBus<C, R> eventBus() {
-        //通过模型，可以被转移或替代
-        return computeIfAbsent("eventBus", k -> Dami.newBus());
+    default void remove(String key) {
+        model().remove(key);
     }
 }

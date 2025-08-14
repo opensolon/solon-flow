@@ -27,6 +27,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author noear
  * @since 3.4
+ * @since 3.5
  */
 @Preview("3.4")
 public class FlowStatefulServiceDefault implements FlowStatefulService {
@@ -216,10 +217,12 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public Collection<StatefulTask> getTasks(Chain chain, FlowContext context) {
-        context.put(StatefulTask.KEY_ACTIVITY_LIST_GET, true);
+        FlowExchanger exchanger = new FlowExchanger(context);
 
-        flowEngine.eval(chain, context);
-        Collection<StatefulTask> tmp = context.get(StatefulTask.KEY_ACTIVITY_LIST);
+        exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_LIST_GET, true);
+
+        flowEngine.eval(chain.getStart(), -1, exchanger);
+        Collection<StatefulTask> tmp = (Collection<StatefulTask>) exchanger.temporary().vars().get(StatefulTask.KEY_ACTIVITY_LIST);
 
         if (tmp == null) {
             return Collections.emptyList();
@@ -245,8 +248,10 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public StatefulTask getTask(Chain chain, FlowContext context) {
-        flowEngine.eval(chain, context);
-        return context.get(StatefulTask.KEY_ACTIVITY_NODE);
+        FlowExchanger exchanger = new FlowExchanger(context);
+
+        flowEngine.eval(chain.getStart(), -1, exchanger);
+        return (StatefulTask) exchanger.temporary().vars().get(StatefulTask.KEY_ACTIVITY_NODE);
     }
 
     @Override

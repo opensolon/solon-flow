@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.*;
@@ -75,7 +74,7 @@ public class ActorStateFlowTest {
     }
 
     private FlowContext getFlowContext(String role) {
-        return new FlowContext(instanceId).put("role", role).put("amount", amount);
+        return FlowContext.of(instanceId).put("role", role).put("amount", amount);
     }
 
     private Collection<StatefulTask> getEmailNode(FlowStatefulService flowEngine) {

@@ -20,7 +20,7 @@ public class SpringContainer implements Container {
 
         engine.load("classpath:flow/*");
 
-        FlowContext context = new FlowContext();
+        FlowContext context = FlowContext.of();
         context.put("a", 1);
         context.put("b", 2);
 

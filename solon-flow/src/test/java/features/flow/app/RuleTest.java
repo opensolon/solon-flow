@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.Chain;
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.test.SolonTest;
 
@@ -23,7 +22,7 @@ public class RuleTest {
         BookOrder bookOrder = new BookOrder();
         bookOrder.setOriginalPrice(10);
 
-        FlowContext ctx = new FlowContext();
+        FlowContext ctx = FlowContext.of();
         ctx.put("order", bookOrder);
 
         flowEngine.eval("book_discount", ctx);
@@ -40,7 +39,7 @@ public class RuleTest {
         BookOrder bookOrder = new BookOrder();
         bookOrder.setOriginalPrice(120);
 
-        FlowContext ctx = new FlowContext();
+        FlowContext ctx = FlowContext.of();
         ctx.put("order", bookOrder);
 
         flowEngine.eval("book_discount", ctx);
@@ -57,7 +56,7 @@ public class RuleTest {
         BookOrder bookOrder = new BookOrder();
         bookOrder.setOriginalPrice(500);
 
-        FlowContext ctx = new FlowContext();
+        FlowContext ctx = FlowContext.of();
         ctx.put("order", bookOrder);
 
         flowEngine.eval("book_discount", ctx);

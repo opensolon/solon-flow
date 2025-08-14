@@ -177,7 +177,7 @@ StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.
                 .stateRepository(new InMemoryStateRepository())
                 .build());
                 
-var context = new FlowContext("i1").put("actor", "陈鑫");
+var context = FlowContext.of("i1").put("actor", "陈鑫");
 
 //获取上下文用户的活动节点
 var statefulNode = flowEngine.getActivityNode("f1", context);

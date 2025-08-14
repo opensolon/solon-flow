@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.test.SolonTest;
 
@@ -18,7 +17,7 @@ public class IteratorTest {
 
     @Test
     public void case1(){
-        FlowContext context = new FlowContext();
+        FlowContext context = FlowContext.of();
         flowEngine.eval("fetch", context);
 
         context.remove("context");
@@ -29,7 +28,7 @@ public class IteratorTest {
 
     @Test
     public void case2(){
-        FlowContext context = new FlowContext();
+        FlowContext context = FlowContext.of();
         flowEngine.eval("fetch2", context);
 
         context.remove("context");

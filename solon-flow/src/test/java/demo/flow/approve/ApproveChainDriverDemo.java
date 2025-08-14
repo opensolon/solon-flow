@@ -2,7 +2,6 @@ package demo.flow.approve;
 
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Node;
 
@@ -15,7 +14,7 @@ public class ApproveChainDriverDemo {
 
     public void demo() throws Throwable {
         //可以在链配置时指定，也可以在运行时指定
-        FlowContext context = new FlowContext();
+        FlowContext context = FlowContext.of();
 
         context.put("instance_id", "i1");
         context.put("user_id", "u1");

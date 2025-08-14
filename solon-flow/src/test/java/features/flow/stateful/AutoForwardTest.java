@@ -31,12 +31,12 @@ public class AutoForwardTest {
         Chain chain = buildChain();
 
         String chainId = "Test"+new Date().getTime();
-        FlowContext context = new FlowContext(chainId);
+        FlowContext context = FlowContext.of(chainId);
         context.put("all_auto", true);
         StatefulTask statefulNode = statefulService.stepForward(chain, context);
         assert statefulNode==null;
 
-        context = new FlowContext(chainId);
+        context = FlowContext.of(chainId);
         context.put("all_auto", true);
         statefulNode = statefulService.stepForward(chain, context);
         assert statefulNode==null;

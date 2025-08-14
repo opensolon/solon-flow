@@ -3,7 +3,6 @@ package features.flow.cfg_test;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.Chain;
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
@@ -26,7 +25,7 @@ public class FlowTest {
         flow.register(new SimpleFlowDriver(mapContainer));
         flow.load(Chain.parseByUri("classpath:flow/flow_case8.chain.yml"));
 
-        FlowContext context = new FlowContext();
+        FlowContext context = FlowContext.of();
         context.put("log", new ArrayList<>());
         context.put("dataType", "1");
 
@@ -39,7 +38,7 @@ public class FlowTest {
 
         System.out.println("---------------------");
 
-        context = new FlowContext();
+        context = FlowContext.of();
         context.put("log", new ArrayList<>());
         context.put("dataType", "type1");
 
@@ -55,6 +54,6 @@ public class FlowTest {
         FlowEngine flow = FlowEngine.newInstance();
         flow.load(Chain.parseByUri("classpath:flow/for_case1.chain.yml"));
 
-        flow.eval("for_case1", new FlowContext());
+        flow.eval("for_case1", FlowContext.of());
     }
 }

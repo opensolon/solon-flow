@@ -44,7 +44,7 @@ public class ComJavaTest {
         chain.addNode(NodeDecl.activityOf("n4").task("@c").linkAdd("n5"));
         chain.addNode(NodeDecl.endOf("n5"));
 
-        FlowContext context = new FlowContext();
+        FlowContext context = FlowContext.of();
         context.put("a", 2);
         context.put("b", 3);
         context.put("c", 4);
@@ -57,7 +57,7 @@ public class ComJavaTest {
 
         System.out.println("------------");
 
-        context = new FlowContext();
+        context = FlowContext.of();
         context.put("a", 12);
         context.put("b", 13);
         context.put("c", 14);

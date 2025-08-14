@@ -3,7 +3,6 @@ package features.flow.stateful;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.*;
@@ -138,7 +137,7 @@ public class OaStatefulFlowTest {
     }
 
     private FlowContext getContext(String actor) throws Throwable {
-        FlowContext context = new FlowContext(instanceId);
+        FlowContext context = FlowContext.of(instanceId);
         context.put("actor", actor);
         return context;
     }
@@ -148,7 +147,7 @@ public class OaStatefulFlowTest {
 //        FlowContext context;
 //        StatefulNode statefulNode;
 //
-//        context = new FlowContext("i1").put("actor", "陈鑫");
+//        context = FlowContext.of("i1").put("actor", "陈鑫");
 //        statefulNode = flowEngine.getActivityNode(chainId, context);
 //
 //        assert "step2".equals(statefulNode.getNode().getId());
@@ -158,7 +157,7 @@ public class OaStatefulFlowTest {
 //        //提交操作
 //        flowEngine.postOperation(context, statefulNode.getNode(), StateOperation.FORWARD);
 //
-//        context = new FlowContext("i1").put("actor", "陈鑫");
+//        context = FlowContext.of("i1").put("actor", "陈鑫");
 //        statefulNode = flowEngine.getActivityNode(chainId, context);
 //
 //        assert "step3".equals(statefulNode.getNode().getId());

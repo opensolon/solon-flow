@@ -23,7 +23,7 @@ public class EventTest {
 
         CountDownLatch latch = new CountDownLatch(3);
 
-        FlowContext context = new FlowContext();
+        FlowContext context = FlowContext.of();
         context.eventBus().listen("demo.topic", event -> {
             System.out.println(event.getContent());
             latch.countDown();

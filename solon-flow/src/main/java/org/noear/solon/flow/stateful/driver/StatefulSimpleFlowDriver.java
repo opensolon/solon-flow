@@ -32,6 +32,7 @@ import java.util.List;
  *
  * @author noear
  * @since 3.1
+ * @since 3.5
  */
 @Preview("3.1")
 public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDriver, StatefulFlowDriver {
@@ -75,7 +76,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
      * 处理任务
      *
      * @param exchanger 流上下文
-     * @param task    任务
+     * @param task      任务
      */
     @Override
     public void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
@@ -99,15 +100,15 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
             } else {
                 //控制前进
                 StateType state = getStateRepository().getState(exchanger.context(), task.getNode());
-                List<StatefulTask> nodeList = exchanger.computeIfAbsent(StatefulTask.KEY_ACTIVITY_LIST, k -> new ArrayList<>());
-                boolean nodeListGet = exchanger.getOrDefault(StatefulTask.KEY_ACTIVITY_LIST_GET, false);
+                List<StatefulTask> nodeList = (List<StatefulTask>) exchanger.temporary().vars().computeIfAbsent(StatefulTask.KEY_ACTIVITY_LIST, k -> new ArrayList<>());
+                boolean nodeListGet = (boolean) exchanger.temporary().vars().getOrDefault(StatefulTask.KEY_ACTIVITY_LIST_GET, false);
 
                 if (state == StateType.UNKNOWN || state == StateType.WAITING) {
                     //检查是否为当前用户的任务
                     if (stateController.isOperatable(exchanger.context(), task.getNode())) {
                         //记录当前流程节点（用于展示）
                         StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.WAITING);
-                        exchanger.put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
+                        exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
                         nodeList.add(statefulNode);
 
                         if (nodeListGet) {
@@ -118,7 +119,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
                     } else {
                         //阻断当前分支（等待别的用户办理）
                         StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.UNKNOWN);
-                        exchanger.put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
+                        exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
                         nodeList.add(statefulNode);
 
                         exchanger.interrupt();
@@ -126,7 +127,7 @@ public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDr
                 } else if (state == StateType.TERMINATED) {
                     //终止
                     StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.TERMINATED);
-                    exchanger.put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
+                    exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
                     nodeList.add(statefulNode);
 
                     if (nodeListGet) {

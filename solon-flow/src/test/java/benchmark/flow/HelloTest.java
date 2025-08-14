@@ -3,7 +3,6 @@ package benchmark.flow;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.Chain;
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 
 /**
@@ -28,7 +27,7 @@ public class HelloTest {
     }
 
     private FlowContext case1_getContext() {
-        FlowContext context = new FlowContext();
+        FlowContext context = FlowContext.of();
         context.put("a", 3);
         context.put("b", 4);
 

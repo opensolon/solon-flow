@@ -3,7 +3,6 @@ package features.flow.stateful;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.container.MapContainer;
@@ -57,18 +56,18 @@ public class JumpFlowTest {
     public void case1() {
         FlowStatefulService statefulService = buildStatefulService();
 
-        statefulService.postOperation(new FlowContext(instanceId).put(actor, "admin"), chainId, "n3", Operation.FORWARD_JUMP);
+        statefulService.postOperation(FlowContext.of(instanceId).put(actor, "admin"), chainId, "n3", Operation.FORWARD_JUMP);
 
-        StatefulTask task = statefulService.getTask(chainId, new FlowContext(instanceId).put(actor, "admin"));
+        StatefulTask task = statefulService.getTask(chainId, FlowContext.of(instanceId).put(actor, "admin"));
 
         log.debug(task.toString());
         assert task.getState() == StateType.WAITING;
         assert task.getNode().getId().equals("n4");
 
 
-        statefulService.postOperation(new FlowContext(instanceId).put(actor, "admin"), chainId, "n1", Operation.BACK_JUMP);
+        statefulService.postOperation(FlowContext.of(instanceId).put(actor, "admin"), chainId, "n1", Operation.BACK_JUMP);
 
-        task = statefulService.getTask(chainId, new FlowContext(instanceId).put(actor, "admin"));
+        task = statefulService.getTask(chainId, FlowContext.of(instanceId).put(actor, "admin"));
 
         log.debug(task.toString());
         assert task.getState() == StateType.WAITING;

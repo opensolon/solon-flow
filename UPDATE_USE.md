@@ -23,8 +23,8 @@ ActorStateController 与 BlockStateController 的区别（可以按需再定制�
 
 使用 StatefulFlowEngine 时（兼容无状态）。以流上下文有没有“实例id”，来区分是：有状态，还是无状态。
 
-* `new FlowContext()` 无状态
-* `new FlowContext("1")` 有状态 //有实例id
+* `FlowContext.of()` 无状态
+* `FlowContext.of("1")` 有状态 //有实例id
 
 
 ```java
@@ -48,15 +48,15 @@ public class DemoConfig {
     @Bean
     public void case2(StatefulFlowEngine flowEngine) {
         //断点控制场景
-        flowEngine.stepForward("f2", new FlowContext("1"));
-        flowEngine.stepBack("f2", new FlowContext("1"));
+        flowEngine.stepForward("f2", FlowContext.of("1"));
+        flowEngine.stepBack("f2", FlowContext.of("1"));
     }
 
     @Bean
     public void case3(StatefulFlowEngine flowEngine) {
         //等待介入场景
-        StatefulNode statefulNode = flowEngine.getActivityNode("f2", new FlowContext("1"));
-        flowEngine.postActivityState(new FlowContext("1"), statefulNode.getNode(), StateType.COMPLETED);
+        StatefulNode statefulNode = flowEngine.getActivityNode("f2", FlowContext.of("1"));
+        flowEngine.postActivityState(FlowContext.of("1"), statefulNode.getNode(), StateType.COMPLETED);
     }
 }
 ```

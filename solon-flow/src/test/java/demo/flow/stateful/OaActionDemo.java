@@ -24,7 +24,7 @@ public class OaActionDemo {
 
     //审批
     public void case1() throws Exception {
-        FlowContext context = new FlowContext(instanceId);
+        FlowContext context = FlowContext.of(instanceId);
         context.put("actor", "A");
         StatefulTask task = statefulService.getTask(chainId, context);
 
@@ -36,7 +36,7 @@ public class OaActionDemo {
 
     //回退
     public void case2() throws Exception {
-        FlowContext context = new FlowContext(instanceId);
+        FlowContext context = FlowContext.of(instanceId);
         context.put("actor", "A");
         StatefulTask task = statefulService.getTask(chainId, context);
 
@@ -46,7 +46,7 @@ public class OaActionDemo {
 
     //任意跳转（通过）
     public void case3_1() throws Exception {
-        FlowContext context = new FlowContext(instanceId);
+        FlowContext context = FlowContext.of(instanceId);
 
         String nodeId = "demo1";
 
@@ -64,7 +64,7 @@ public class OaActionDemo {
 
     //任意跳转（退回）
     public void case3_2() throws Exception {
-        FlowContext context = new FlowContext(instanceId);
+        FlowContext context = FlowContext.of(instanceId);
 
         String nodeId = "demo1"; //实际可能需要遍历节点树，并检查各节点状态；再回退
 
@@ -82,7 +82,7 @@ public class OaActionDemo {
 
     //委派
     public void case4() throws Exception {
-        FlowContext context = new FlowContext(instanceId);
+        FlowContext context = FlowContext.of(instanceId);
         context.put("actor", "A");
         context.put("delegate", "B"); //需要定制下状态操作员（用A检测，但留下B的状态记录）
         StatefulTask task = statefulService.getTask(chainId, context);
@@ -93,7 +93,7 @@ public class OaActionDemo {
 
     //转办（与委派技术实现差不多）
     public void case5() throws Exception {
-        FlowContext context = new FlowContext(instanceId);
+        FlowContext context = FlowContext.of(instanceId);
         context.put("actor", "A");
         context.put("transfer", "B"); //需要定制下状态操作员（用A检测，但留下B的状态记录）
         StatefulTask task = statefulService.getTask(chainId, context);
@@ -104,7 +104,7 @@ public class OaActionDemo {
 
     //催办
     public void case6() throws Exception {
-        FlowContext context = new FlowContext(instanceId);
+        FlowContext context = FlowContext.of(instanceId);
         StatefulTask task = statefulService.getTask(chainId, context);
 
         String actor = task.getNode().getMeta("actor");
@@ -113,7 +113,7 @@ public class OaActionDemo {
 
     //取回（技术上与回退差不多）
     public void case7() throws Exception {
-        FlowContext context = new FlowContext(instanceId);
+        FlowContext context = FlowContext.of(instanceId);
         StatefulTask task = statefulService.getTask(chainId, context);
 
         //回退到顶（给发起人）；相当于重新开始走流程
@@ -123,7 +123,7 @@ public class OaActionDemo {
 
     //撤销（和回退没啥区别）
     public void case8() throws Exception {
-        FlowContext context = new FlowContext(instanceId);
+        FlowContext context = FlowContext.of(instanceId);
         StatefulTask task = statefulService.getTask(chainId, context);
 
         context.put("op", "撤销");//作为状态的一部分
@@ -132,7 +132,7 @@ public class OaActionDemo {
 
     //中止
     public void case9() throws Exception {
-        FlowContext context = new FlowContext(instanceId);
+        FlowContext context = FlowContext.of(instanceId);
         StatefulTask task = statefulService.getTask(chainId, context);
 
         context.put("op", "中止");//作为状态的一部分
@@ -141,7 +141,7 @@ public class OaActionDemo {
 
     //抄送
     public void case10() throws Exception {
-        FlowContext context = new FlowContext(instanceId);
+        FlowContext context = FlowContext.of(instanceId);
         StatefulTask node = statefulService.getTask(chainId, context);
 
         statefulService.postOperation(context, node.getNode(), Operation.FORWARD);
@@ -163,7 +163,7 @@ public class OaActionDemo {
     //减签
     public void case12() throws Exception {
         //通过状态操作员和驱动定制，让某个节点不需要处理
-        FlowContext context = new FlowContext(instanceId);
+        FlowContext context = FlowContext.of(instanceId);
         StatefulTask node = statefulService.getTask(chainId, context);
 
         statefulService.postOperation(context, node.getNode(), Operation.FORWARD);

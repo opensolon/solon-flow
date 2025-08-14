@@ -155,15 +155,13 @@ public class FlowEngineDefault implements FlowEngine {
      *
      * @param startNode 开始节点
      * @param depth     执行深度
-     * @param context   上下文
+     * @param exchanger 交换器
      */
     @Override
-    public void eval(Node startNode, int depth, FlowContext context) throws FlowException {
+    public void eval(Node startNode, int depth, FlowExchanger exchanger) throws FlowException {
         if (startNode == null) {
             throw new IllegalArgumentException("The start node was not found.");
         }
-
-        FlowExchanger exchanger = new FlowExchanger(context);
 
         initContextDo(exchanger);
 
@@ -375,13 +373,13 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     protected boolean inclusive_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
-        Stack<Integer> inclusive_stack = exchanger.counter().stack(node.getChain(), "inclusive_run");
+        Stack<Integer> inclusive_stack = exchanger.temporary().stack(node.getChain(), "inclusive_run");
 
         //::流入
         if (node.getPrevLinks().size() > 1) { //如果是多个输入链接（尝试等待）
             if (inclusive_stack.size() > 0) {
                 int start_size = inclusive_stack.peek();
-                int in_size = exchanger.counter().incr(node.getChain(), node.getId());//运行次数累计
+                int in_size = exchanger.temporary().countIncr(node.getChain(), node.getId());//运行次数累计
                 if (start_size > in_size) { //等待所有支线流入完成
                     return false;
                 }
@@ -396,7 +394,7 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     protected boolean inclusive_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
-        Stack<Integer> inclusive_stack = exchanger.counter().stack(node.getChain(), "inclusive_run");
+        Stack<Integer> inclusive_stack = exchanger.temporary().stack(node.getChain(), "inclusive_run");
 
         //::流出
         Link def_line = null;
@@ -468,7 +466,7 @@ public class FlowEngineDefault implements FlowEngine {
 
     protected boolean parallel_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
         //::流入
-        int count = exchanger.counter().incr(node.getChain(), node.getId());//运行次数累计
+        int count = exchanger.temporary().countIncr(node.getChain(), node.getId());//运行次数累计
         if (node.getPrevLinks().size() > count) { //等待所有支线计数完成
             return false;
         }
@@ -478,7 +476,7 @@ public class FlowEngineDefault implements FlowEngine {
 
     protected boolean parallel_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
         //恢复计数
-        exchanger.counter().set(node.getChain(), node.getId(), 0);
+        exchanger.temporary().countSet(node.getChain(), node.getId(), 0);
 
         //::流出
         if (exchanger.executor() == null || node.getNextNodes().size() < 2) { //没有2个，也没必要用线程池
@@ -541,7 +539,7 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     protected boolean iterator_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
-        Stack<Iterator> iterator_stack = exchanger.counter().stack(node.getChain(), "iterator_run");
+        Stack<Iterator> iterator_stack = exchanger.temporary().stack(node.getChain(), "iterator_run");
 
         //::流入
         if (iterator_stack.size() > 0) {
@@ -573,7 +571,7 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
 
-        Stack<Iterator> iterator_stack = exchanger.counter().stack(node.getChain(), "iterator_run");
+        Stack<Iterator> iterator_stack = exchanger.temporary().stack(node.getChain(), "iterator_run");
         iterator_stack.push(inIterator);
 
         //::流出
