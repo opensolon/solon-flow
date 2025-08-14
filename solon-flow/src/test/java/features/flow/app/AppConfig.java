@@ -3,7 +3,7 @@ package features.flow.app;
 import org.noear.solon.annotation.Bean;
 import org.noear.solon.annotation.Configuration;
 import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
+import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
 
 /**
  * @author noear 2025/4/7 created

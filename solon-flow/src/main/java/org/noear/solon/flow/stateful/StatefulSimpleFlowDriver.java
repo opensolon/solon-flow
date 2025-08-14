@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.stateful.driver;
+package org.noear.solon.flow.stateful;
 
 import org.noear.solon.flow.*;
-import org.noear.solon.flow.driver.SimpleFlowDriver;
+import org.noear.solon.flow.container.SolonContainer;
+import org.noear.solon.flow.script.LiquorActuator;
 import org.noear.solon.flow.Actuator;
-import org.noear.solon.flow.stateful.*;
 import org.noear.solon.lang.Preview;
 
 import java.util.ArrayList;
@@ -32,14 +32,39 @@ import java.util.List;
  * @since 3.5
  */
 @Preview("3.1")
-public class StatefulSimpleFlowDriver extends SimpleFlowDriver implements FlowDriver, StatefulFlowDriver {
+public class StatefulSimpleFlowDriver extends AbstractFlowDriver implements FlowDriver, StatefulFlowDriver {
+    private final Actuator evaluation;
+    private final Container container;
+
     public StatefulSimpleFlowDriver() {
-        super();
+        this(null, null);
     }
 
+    /**
+     * @param evaluation 脚本评估器
+     * @param container  组件容器
+     */
     public StatefulSimpleFlowDriver(Actuator evaluation, Container container) {
-        super(evaluation, container);
+        this.evaluation = (evaluation == null ? new LiquorActuator() : evaluation);
+        this.container = (container == null ? new SolonContainer() : container);
     }
+
+    /**
+     * 获取脚本评估器
+     */
+    @Override
+    protected Actuator getEvaluation() {
+        return evaluation;
+    }
+
+    /**
+     * 获取组件容器
+     */
+    @Override
+    protected Container getContainer() {
+        return container;
+    }
+    /// ////////////////////////////
 
     /**
      * 提交处理任务

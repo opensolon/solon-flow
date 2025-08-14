@@ -11,7 +11,7 @@ import org.noear.solon.flow.stateful.Operation;
 import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
-import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
+import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.test.SolonTest;
 import org.slf4j.Logger;

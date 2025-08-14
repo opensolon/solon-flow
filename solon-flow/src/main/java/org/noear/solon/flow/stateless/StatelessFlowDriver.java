@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.driver;
+package org.noear.solon.flow.stateless;
 
+import org.noear.solon.flow.AbstractFlowDriver;
 import org.noear.solon.flow.Container;
 import org.noear.solon.flow.Actuator;
 import org.noear.solon.flow.container.SolonContainer;
 import org.noear.solon.flow.script.LiquorActuator;
+import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
 
 /**
  * 简单流驱动器
@@ -26,25 +28,19 @@ import org.noear.solon.flow.script.LiquorActuator;
  * @author noear
  * @since 3.1
  */
-public class SimpleFlowDriver extends AbstractFlowDriver {
+public class StatelessFlowDriver extends AbstractFlowDriver {
     private final Actuator evaluation;
     private final Container container;
 
-    public SimpleFlowDriver() {
+    public StatelessFlowDriver() {
         this(null, null);
     }
 
-    /**
-     * @param evaluation 脚本评估器
-     */
-    public SimpleFlowDriver(Actuator evaluation) {
-        this(evaluation, null);
+    public StatelessFlowDriver(Actuator actuator) {
+        this(actuator, null);
     }
 
-    /**
-     * @param container 组件容器
-     */
-    public SimpleFlowDriver(Container container) {
+    public StatelessFlowDriver(Container container) {
         this(null, container);
     }
 
@@ -52,7 +48,7 @@ public class SimpleFlowDriver extends AbstractFlowDriver {
      * @param evaluation 脚本评估器
      * @param container  组件容器
      */
-    public SimpleFlowDriver(Actuator evaluation, Container container) {
+    public StatelessFlowDriver(Actuator evaluation, Container container) {
         this.evaluation = (evaluation == null ? new LiquorActuator() : evaluation);
         this.container = (container == null ? new SolonContainer() : container);
     }
@@ -71,5 +67,40 @@ public class SimpleFlowDriver extends AbstractFlowDriver {
     @Override
     protected Container getContainer() {
         return container;
+    }
+
+
+    public static StatefulSimpleFlowDriver.Builder builder() {
+        return new StatefulSimpleFlowDriver.Builder();
+    }
+
+    public static class Builder {
+        private Actuator evaluation;
+        private Container container;
+
+        /**
+         * 设置评估器
+         */
+        public Builder evaluation(Actuator evaluation) {
+            this.evaluation = evaluation;
+            return this;
+        }
+
+        /**
+         * 设置容器
+         */
+        public Builder container(Container container) {
+            this.container = container;
+            return this;
+        }
+
+        /**
+         * 构建
+         */
+        public StatelessFlowDriver build() {
+            return new StatelessFlowDriver(
+                    evaluation,
+                    container);
+        }
     }
 }

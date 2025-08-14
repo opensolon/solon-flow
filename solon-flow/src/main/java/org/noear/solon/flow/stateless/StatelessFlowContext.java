@@ -13,38 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.stateful;
+package org.noear.solon.flow.stateless;
 
 import org.noear.solon.flow.AbstractFlowContext;
+import org.noear.solon.flow.stateful.StateController;
+import org.noear.solon.flow.stateful.StateRepository;
+import org.noear.solon.lang.Preview;
 
 /**
- * 有状态的流上下文
+ * 无状态流上下文（不支持序列化）
  *
  * @author noear
+ * @since 3.0
  * @since 3.5
  */
-public class StatefulFlowContext extends AbstractFlowContext {
-    private StateController stateController;
-    private StateRepository stateRepository;
-
-    public StatefulFlowContext(String instanceId, StateController stateController, StateRepository stateRepository) {
-        super(instanceId);
-        this.stateController = stateController;
-        this.stateRepository = stateRepository;
-    }
+@Preview("3.0")
+public class StatelessFlowContext extends AbstractFlowContext {
 
     @Override
     public boolean isStateful() {
-        return true;
+        return false;
     }
 
     @Override
     public StateController getStateController() {
-        return stateController;
+        return null;
     }
 
     @Override
     public StateRepository getStateRepository() {
-        return stateRepository;
+        return null;
     }
 }

@@ -17,6 +17,7 @@ package org.noear.solon.flow;
 
 import org.noear.dami.Dami;
 import org.noear.dami.bus.DamiBus;
+import org.noear.solon.flow.stateless.StatelessFlowContext;
 import org.noear.solon.flow.stateful.StateController;
 import org.noear.solon.flow.stateful.StateRepository;
 import org.noear.solon.flow.stateful.StatefulFlowContext;
@@ -38,7 +39,7 @@ import java.util.function.Function;
 @Preview("3.0")
 public interface FlowContext {
     static FlowContext of() {
-        return new FlowContextDefault();
+        return new StatelessFlowContext();
     }
 
     static FlowContext of(String instanceId, StateController stateController, StateRepository stateRepository) {

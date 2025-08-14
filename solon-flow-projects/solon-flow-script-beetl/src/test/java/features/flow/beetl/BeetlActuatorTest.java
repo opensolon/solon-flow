@@ -3,7 +3,7 @@ package features.flow.beetl;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.driver.SimpleFlowDriver;
+import org.noear.solon.flow.stateless.StatelessFlowDriver;
 import org.noear.solon.flow.script.BeetlActuator;
 
 /**
@@ -13,7 +13,7 @@ public class BeetlActuatorTest {
     @Test
     public void case1() throws Throwable {
         FlowEngine engine = FlowEngine.newInstance();
-        engine.register(new SimpleFlowDriver(new BeetlActuator()));
+        engine.register(new StatelessFlowDriver(new BeetlActuator()));
 
         engine.load("classpath:flow/*");
 

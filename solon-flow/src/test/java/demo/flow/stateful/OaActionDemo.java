@@ -5,7 +5,6 @@ import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.flow.stateful.Operation;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
-import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 
 /**

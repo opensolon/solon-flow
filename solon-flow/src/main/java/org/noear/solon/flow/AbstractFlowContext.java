@@ -17,8 +17,6 @@ package org.noear.solon.flow;
 
 import org.noear.dami.Dami;
 import org.noear.dami.bus.DamiBus;
-import org.noear.solon.flow.stateful.StateController;
-import org.noear.solon.flow.stateful.StateRepository;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
@@ -32,39 +30,24 @@ import java.util.function.Function;
  * 流上下文（不支持序列化）
  *
  * @author noear
- * @since 3.0
  * @since 3.5
  */
-@Preview("3.0")
-public class FlowContextDefault implements FlowContext {
+@Preview("3.5")
+public abstract class AbstractFlowContext implements FlowContext {
     //存放数据模型
     private transient final Map<String, Object> model = new ConcurrentHashMap<>();
     //异步执行器
     private transient ExecutorService executor;
 
-    public FlowContextDefault() {
+    public AbstractFlowContext() {
         this(null);
     }
 
-    public FlowContextDefault(String instanceId) {
+    public AbstractFlowContext(String instanceId) {
         put("instanceId", (instanceId == null ? "" : instanceId));
         put("context", this);
     }
 
-    @Override
-    public boolean isStateful() {
-        return false;
-    }
-
-    @Override
-    public StateController getStateController() {
-        return null;
-    }
-
-    @Override
-    public StateRepository getStateRepository() {
-        return null;
-    }
 
     /**
      * 异步执行器
@@ -78,7 +61,7 @@ public class FlowContextDefault implements FlowContext {
      * 配置异步执行器
      */
     @Preview("3.3")
-    public FlowContextDefault executor(ExecutorService executor) {
+    public AbstractFlowContext executor(ExecutorService executor) {
         this.executor = executor;
         return this;
     }
@@ -93,7 +76,7 @@ public class FlowContextDefault implements FlowContext {
     /**
      * 推入
      */
-    public FlowContextDefault put(String key, Object value) {
+    public AbstractFlowContext put(String key, Object value) {
         if (value != null) {
             model.put(key, value);
         }
@@ -103,7 +86,7 @@ public class FlowContextDefault implements FlowContext {
     /**
      * 推入
      */
-    public FlowContextDefault putIfAbsent(String key, Object value) {
+    public AbstractFlowContext putIfAbsent(String key, Object value) {
         if (value != null) {
             model.putIfAbsent(key, value);
         }
@@ -113,7 +96,7 @@ public class FlowContextDefault implements FlowContext {
     /**
      * 推入全部
      */
-    public FlowContextDefault putAll(Map<String, Object> model) {
+    public AbstractFlowContext putAll(Map<String, Object> model) {
         this.model.putAll(model);
         return this;
     }

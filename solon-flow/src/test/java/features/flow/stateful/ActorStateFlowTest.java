@@ -9,7 +9,6 @@ import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.*;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
-import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 
 import java.util.Collection;

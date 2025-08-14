@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.SimpleSolonApp;
 import org.noear.solon.flow.*;
-import org.noear.solon.flow.driver.SimpleFlowDriver;
+import org.noear.solon.flow.stateless.StatelessFlowDriver;
 
 /**
  * 手动配装风格
@@ -21,7 +21,7 @@ public class ComJavaTest {
         SimpleSolonApp solonApp = new SimpleSolonApp(ComJavaTest.class);
         solonApp.start(null);
 
-        SimpleFlowDriver driver = new SimpleFlowDriver() {
+        StatelessFlowDriver driver = new StatelessFlowDriver() {
             @Override
             public void handleTask(FlowExchanger context, Task task) throws Throwable {
                 context.put("result", task.getNode().getId());

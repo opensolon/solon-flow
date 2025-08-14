@@ -2,12 +2,12 @@ package demo.flow.approve;
 
 import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.Task;
-import org.noear.solon.flow.driver.*;
+import org.noear.solon.flow.stateless.StatelessFlowDriver;
 
 /**
  * @author noear 2025/1/13 created
  */
-public class ApproveChainDriver extends SimpleFlowDriver {
+public class ApproveChainDriver extends StatelessFlowDriver {
     @Override
     public void handleTask(FlowExchanger context, Task task) throws Throwable {
         if (isChain(task.getDescription())) {

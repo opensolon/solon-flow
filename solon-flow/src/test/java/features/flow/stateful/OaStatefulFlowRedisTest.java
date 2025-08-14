@@ -9,7 +9,7 @@ import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.*;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
-import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
+import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
 import org.noear.solon.flow.stateful.repository.RedisStateRepository;
 import org.noear.solon.test.SolonTest;
 import org.slf4j.Logger;

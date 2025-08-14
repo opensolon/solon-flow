@@ -3,7 +3,7 @@ package features.flow.aviator;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.driver.SimpleFlowDriver;
+import org.noear.solon.flow.stateless.StatelessFlowDriver;
 import org.noear.solon.flow.script.AviatorActuator;
 
 /**
@@ -13,7 +13,7 @@ public class AviatorActuatorTest {
     @Test
     public void case1() throws Throwable {
         FlowEngine engine = FlowEngine.newInstance();
-        engine.register(new SimpleFlowDriver(new AviatorActuator()));
+        engine.register(new StatelessFlowDriver(new AviatorActuator()));
 
         engine.load("classpath:flow/*");
 
@@ -38,6 +38,6 @@ public class AviatorActuatorTest {
     //demo
     public void case2() throws Throwable {
         FlowEngine engine = FlowEngine.newInstance();
-        engine.register(new SimpleFlowDriver(new SpringContainer()));
+        engine.register(new StatelessFlowDriver(new SpringContainer()));
     }
 }

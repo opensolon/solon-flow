@@ -3,7 +3,7 @@ package features.flow.event;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
 import org.noear.solon.flow.container.MapContainer;
-import org.noear.solon.flow.driver.SimpleFlowDriver;
+import org.noear.solon.flow.stateless.StatelessFlowDriver;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -17,7 +17,7 @@ public class EventTest {
         container.putComponent("DemoCom", new DemoCom());
 
         FlowEngine flowEngine = FlowEngine.newInstance();
-        flowEngine.register(new SimpleFlowDriver(container));
+        flowEngine.register(new StatelessFlowDriver(container));
         flowEngine.load("classpath:flow/*.yml");
 
 

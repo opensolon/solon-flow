@@ -3,7 +3,7 @@ package features.flow;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
 import org.noear.solon.flow.container.MapContainer;
-import org.noear.solon.flow.driver.SimpleFlowDriver;
+import org.noear.solon.flow.stateless.StatelessFlowDriver;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +38,7 @@ public class LinkTest {
         });
 
         //构建驱动
-        SimpleFlowDriver flowDriver = new SimpleFlowDriver(container);
+        StatelessFlowDriver flowDriver = new StatelessFlowDriver(container);
 
         //构建引擎
         FlowEngine engine = FlowEngine.newInstance();

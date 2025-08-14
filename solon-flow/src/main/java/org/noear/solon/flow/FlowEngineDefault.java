@@ -18,12 +18,11 @@ package org.noear.solon.flow;
 import org.noear.solon.Utils;
 import org.noear.solon.core.util.Assert;
 import org.noear.solon.core.util.RankEntity;
-import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.intercept.ChainInterceptor;
 import org.noear.solon.flow.intercept.ChainInvocation;
 import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.flow.stateful.FlowStatefulServiceDefault;
-import org.noear.solon.flow.stateful.driver.StatefulSimpleFlowDriver;
+import org.noear.solon.flow.stateful.StatefulSimpleFlowDriver;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
