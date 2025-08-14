@@ -18,7 +18,7 @@ package org.noear.solon.flow.stateful;
 import org.noear.solon.flow.AbstractFlowContext;
 
 /**
- * 有状态的流上下文
+ * 有状态的流上下文（兼容无状态）
  *
  * @author noear
  * @since 3.5

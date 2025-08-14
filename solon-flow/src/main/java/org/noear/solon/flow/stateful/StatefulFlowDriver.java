@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 有状态的简单流驱动器
+ * 有状态的简单流驱动器（兼容无状态）
  *
  * @author noear
  * @since 3.1
