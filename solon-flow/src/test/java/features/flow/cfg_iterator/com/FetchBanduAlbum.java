@@ -13,6 +13,6 @@ public class FetchBanduAlbum implements TaskComponent {
     @Override
     public void run(FlowContext context, Node node) throws Throwable {
         String communityId = context.getAs("communityId");
-        context.put("albumIds", Arrays.asList(communityId + "-b1", communityId + "-b2", communityId + "-b3"));
+        context.put("albumIds", Arrays.asList(communityId + "_b1", communityId + "_b2", communityId + "_b3"));
     }
 }

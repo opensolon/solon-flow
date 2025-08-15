@@ -13,6 +13,6 @@ public class FetchBanduCourse implements TaskComponent {
     @Override
     public void run(FlowContext context, Node node) throws Throwable {
         String albumId = context.getAs("albumId");
-        context.put("courseIds", Arrays.asList(albumId + "-c1", albumId + "-c2", albumId + "-c3"));
+        context.put("courseIds", Arrays.asList(albumId + "_c1", albumId + "_c2", albumId + "_c3"));
     }
 }

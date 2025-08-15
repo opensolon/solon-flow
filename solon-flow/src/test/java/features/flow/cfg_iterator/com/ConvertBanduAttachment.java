@@ -11,6 +11,6 @@ public class ConvertBanduAttachment implements TaskComponent {
     @Override
     public void run(FlowContext context, Node node) throws Throwable {
         String courseId = context.getAs("courseId");
-        context.put(this.getClass().getSimpleName() + ":" + courseId, courseId);
+        context.put(this.getClass().getSimpleName() + "_" + courseId, courseId);
     }
 }

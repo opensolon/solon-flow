@@ -12,5 +12,8 @@ layout:
   - task: "@convertBanduAttachment"
   - task: "@markdownBanduAttachment"
   - {type: iterator, id: fetch-content_end}
+  - task: 'context.incrAdd("a",1);'
   - {type: iterator, id: fetch-course_end}
+  - task: 'context.incrAdd("b",1);'
   - {type: iterator, id: fetch-album_end}
+  - task: 'context.incrAdd("c",1);'

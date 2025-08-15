@@ -16,24 +16,26 @@ public class IteratorTest {
     FlowEngine flowEngine;
 
     @Test
-    public void case1(){
+    public void case1() {
         FlowContext context = FlowContext.of();
         flowEngine.eval("fetch", context);
 
         context.remove("context");
         log.warn(new TreeMap<>(context.model()).toString());
 
-        assert  115 == context.model().size();
+        assert 115 == context.model().size();
     }
 
     @Test
-    public void case2(){
+    public void case2() {
         FlowContext context = FlowContext.of();
         flowEngine.eval("fetch2", context);
 
         context.remove("context");
         log.warn(new TreeMap<>(context.model()).toString());
 
-        assert  115 == context.model().size();
+        assert context.incrGet("a") == 9;
+        assert context.incrGet("b") == 3;
+        assert context.incrGet("c") == 1;
     }
 }
