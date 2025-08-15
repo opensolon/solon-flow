@@ -24,7 +24,7 @@ public class ApproveChainDriverDemo {
         flowEngine.eval("c12", context);
 
         //运行后，获取当前展示的节点
-        Node node =context.get("result");
+        Node node =context.getAs("result");
 
         //根据转点，展示界面
     }

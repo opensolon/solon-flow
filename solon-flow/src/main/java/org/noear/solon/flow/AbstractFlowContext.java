@@ -111,24 +111,24 @@ public abstract class AbstractFlowContext implements FlowContext {
     /**
      * 获取
      */
-    public <T> T get(String key) {
+    public <T> T getAs(String key) {
         return (T) model.get(key);
     }
 
     public Object getAsObject(String key) {
-        return get(key);
+        return getAs(key);
     }
 
     public String getAsString(String key) {
-        return get(key);
+        return getAs(key);
     }
 
     public Number getAsNumber(String key) {
-        return get(key);
+        return getAs(key);
     }
 
     public Boolean getAsBoolean(String key) {
-        return get(key);
+        return getAs(key);
     }
 
     /**
@@ -165,7 +165,7 @@ public abstract class AbstractFlowContext implements FlowContext {
      * 获取流实例id
      */
     public String getInstanceId() {
-        return get("instanceId");
+        return getAs("instanceId");
     }
 
     /**

@@ -16,7 +16,6 @@
 package org.noear.solon.flow.stateful.controller;
 
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.NodeType;
 import org.noear.solon.flow.stateful.StateController;
@@ -47,7 +46,7 @@ public class ActorStateController implements StateController {
     public boolean isOperatable(FlowContext context, Node node) {
         for (String key : keys) {
             String valOfMeta = node.getMeta(key);
-            String valOfCtx = context.get(key);
+            String valOfCtx = context.getAs(key);
 
             if (Objects.equals(valOfMeta, valOfCtx)) {
                 return true;

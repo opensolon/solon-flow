@@ -53,7 +53,7 @@ public class ComJavaTest {
 
         flowEngine.eval(chain, context);
 
-        assert "n3".equals(context.get("result"));
+        assert "n3".equals(context.getAs("result"));
 
         System.out.println("------------");
 
@@ -66,6 +66,6 @@ public class ComJavaTest {
         flowEngine.eval(chain.getNode("n2"), 1, context);
 
 
-        assert "n2".equals(context.get("result"));
+        assert "n2".equals(context.getAs("result"));
     }
 }

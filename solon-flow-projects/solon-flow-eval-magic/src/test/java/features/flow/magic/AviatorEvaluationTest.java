@@ -22,7 +22,7 @@ public class AviatorEvaluationTest {
         context.put("b", 2);
 
         engine.eval("f1", context);
-        System.out.println(context.getAsObject("result"));
+        System.out.println(context.get("result"));
         assert context.get("result") == null;
 
 
@@ -31,7 +31,7 @@ public class AviatorEvaluationTest {
         context.put("b", 2);
 
         engine.eval("f1", context);
-        System.out.println(context.getAsObject("result"));
-        assert context.getAsNumber("result").intValue() == 5;
+        System.out.println(context.get("result"));
+        assert ((Number) context.get("result")).intValue() == 5;
     }
 }

@@ -2,7 +2,6 @@ package demo.flow.stateful;
 
 import org.noear.redisx.RedisClient;
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.Operation;
 import org.noear.solon.flow.stateful.repository.RedisStateRepository;
@@ -28,7 +27,7 @@ public class RedisStateRepositoryEx extends RedisStateRepository {
         String instanceId = context.getInstanceId();
         String chainId = node.getChain().getId();
         String activityNodeId = node.getId();
-        String actor = context.get("actor"); //需要什么通过 context 传递
+        String actor = context.getAs("actor"); //需要什么通过 context 传递
         long created = System.currentTimeMillis();
 
         //业务保存

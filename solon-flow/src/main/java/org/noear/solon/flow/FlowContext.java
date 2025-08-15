@@ -73,7 +73,7 @@ public interface FlowContext {
      * 获取流实例id
      */
     default String getInstanceId() {
-        return get("instanceId");
+        return getAs("instanceId");
     }
 
     /**
@@ -138,24 +138,15 @@ public interface FlowContext {
     /**
      * 获取
      */
-    default <T> T get(String key) {
+    default Object get(String key) {
+        return model().get(key);
+    }
+
+    /**
+     * 获取
+     */
+    default <T> T getAs(String key) {
         return (T) model().get(key);
-    }
-
-    default Object getAsObject(String key) {
-        return get(key);
-    }
-
-    default String getAsString(String key) {
-        return get(key);
-    }
-
-    default Number getAsNumber(String key) {
-        return get(key);
-    }
-
-    default Boolean getAsBoolean(String key) {
-        return get(key);
     }
 
     /**

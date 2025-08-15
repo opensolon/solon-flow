@@ -18,7 +18,7 @@ public class FlowTest {
     public void case1() throws Throwable {
         MapContainer mapContainer = new MapContainer();
         mapContainer.putComponent("a", (c, o) -> {
-            ((List) c.get("log")).add(o.getTitle());
+            ((List) c.getAs("log")).add(o.getTitle());
         });
 
         FlowEngine flow = FlowEngine.newInstance();
@@ -31,7 +31,7 @@ public class FlowTest {
 
         flow.eval("f8", context);
 
-        String log = context.get("log").toString();
+        String log = context.getAs("log").toString();
         System.out.println(log);
         assert "[数据预处理, 元数据填充, 瞬时数据, 构建转发数据, Http转发, Mqtt转发]".equals(log);
 
@@ -44,7 +44,7 @@ public class FlowTest {
 
         flow.eval("f8", context);
 
-         log = context.get("log").toString();
+         log = context.getAs("log").toString();
         System.out.println(log);
         assert "[数据预处理, 元数据填充, 汇总数据, 构建转发数据, Http转发, Mqtt转发, 汇总统计]".equals(log);
     }

@@ -31,7 +31,7 @@ public class JumpFlowTest2 {
     ActorStateController stateController = new ActorStateController(actor) {
         @Override
         public boolean isOperatable(FlowContext context, Node node) {
-            if ("admin".equals(context.get(actor))) {
+            if ("admin".equals(context.getAs(actor))) {
                 return true;
             }
 

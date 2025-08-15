@@ -22,9 +22,9 @@ public class ApproveChainDriver extends SimpleFlowDriver {
             return;
         }
 
-        String instance_id = exchanger.context().get("instance_id");
-        String user_id = exchanger.context().get("user_id");
-        String role_id = exchanger.context().get("role_id");
+        String instance_id = exchanger.context().getAs("instance_id");
+        String user_id = exchanger.context().getAs("user_id");
+        String role_id = exchanger.context().getAs("role_id");
 
 
         String chain_id = task.getNode().getChain().getId();

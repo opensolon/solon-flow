@@ -559,7 +559,7 @@ public class FlowEngineDefault implements FlowEngine {
     protected boolean iterator_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
         String forKey = node.getMeta("$for");
         String inKey = node.getMeta("$in");
-        Object inObj = exchanger.context().get(inKey);
+        Object inObj = exchanger.context().getAs(inKey);
 
         Iterator inIterator = null;
         if (inObj instanceof Iterator) {
