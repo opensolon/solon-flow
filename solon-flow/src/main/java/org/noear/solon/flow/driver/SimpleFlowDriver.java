@@ -65,14 +65,39 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
                 //自动前进
                 StateType state = exchanger.context().statefulSupporter().stateGet(task.getNode());
                 if (state == StateType.UNKNOWN || state == StateType.WAITING) {
-                    //添加状态
-                    exchanger.context().statefulSupporter().statePut(task.getNode(), StateType.COMPLETED);
-
                     //确保任务只被执行一次
                     postHandleTask(exchanger, task);
+
+                    if((exchanger.isInterrupted() || exchanger.isStopped())) {
+                        //中断或停止，表示处理中
+
+                        //记录当前流程节点（用于展示）
+                        StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.WAITING);
+                        exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
+
+                        //添加状态
+                        exchanger.context().statefulSupporter().statePut(task.getNode(), StateType.WAITING);
+                    } else {
+                        //没有中断或停止，表示已完成
+
+                        //记录当前流程节点（用于展示）
+                        StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.COMPLETED);
+                        exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
+
+                        //添加状态
+                        exchanger.context().statefulSupporter().statePut(task.getNode(), StateType.COMPLETED);
+                    }
                 } else if (state == StateType.TERMINATED) {
                     //终止
+                    StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.TERMINATED);
+                    exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
+
+                    //终止
                     exchanger.stop();
+                } else if(state == StateType.COMPLETED) {
+                    //完成
+                    //StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.COMPLETED);
+                    //exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
                 }
             } else {
                 //控制前进
@@ -112,6 +137,10 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
                     } else {
                         exchanger.stop();
                     }
+                } else if(state == StateType.COMPLETED) {
+                    //完成
+                    //StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.COMPLETED);
+                    //exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_NODE, statefulNode);
                 }
             }
         } else {

@@ -94,6 +94,16 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     @Override
+    public void removeInterceptor(ChainInterceptor interceptor) {
+        for(RankEntity<ChainInterceptor> i : interceptorList) {
+            if(i.target == interceptor) {
+                interceptorList.remove(i);
+                break;
+            }
+        }
+    }
+
+    @Override
     public void register(String name, FlowDriver driver) {
         if (driver != null) {
             driverMap.put(name, driver);

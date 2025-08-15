@@ -159,4 +159,11 @@ public class NodeDecl {
     public static NodeDecl parallelOf(String id) {
         return new NodeDecl(id, NodeType.PARALLEL);
     }
+
+    /**
+     * 构建循环网关节点
+     */
+    public static NodeDecl iteratorOf(String id) {
+        return new NodeDecl(id, NodeType.ITERATOR);
+    }
 }
