@@ -163,7 +163,8 @@ public class FlowEngineDefault implements FlowEngine {
             throw new IllegalArgumentException("The start node was not found.");
         }
 
-        initContextDo(exchanger);
+        //准备工作
+        prepare(exchanger);
 
         FlowDriver driver = getDriver(startNode.getChain());
 
@@ -172,9 +173,9 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     /**
-     * 初始化交换器
+     * 准备工作
      */
-    protected void initContextDo(FlowExchanger exchanger) {
+    protected void prepare(FlowExchanger exchanger) {
         if (exchanger.engine == null) {
             exchanger.engine = this;
         }
