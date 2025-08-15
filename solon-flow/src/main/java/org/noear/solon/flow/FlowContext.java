@@ -63,7 +63,7 @@ public interface FlowContext {
     FlowContext executor(ExecutorService executor);
 
     /**
-     * 交换器
+     * 交换器（只在任务执行时可获取）
      *
      * @since 3.5
      */
