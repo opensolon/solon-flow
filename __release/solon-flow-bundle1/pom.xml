@@ -20,9 +20,9 @@
         <module>../../solon-flow</module>
         <module>../../solon-flow-parent</module>
 
-        <module>../../solon-flow-projects/solon-flow-script-aviator</module>
-        <module>../../solon-flow-projects/solon-flow-script-beetl</module>
-        <module>../../solon-flow-projects/solon-flow-script-magic</module>
+        <module>../../solon-flow-projects/solon-flow-eval-aviator</module>
+        <module>../../solon-flow-projects/solon-flow-eval-beetl</module>
+        <module>../../solon-flow-projects/solon-flow-eval-magic</module>
 
     </modules>
 </project>

@@ -18,7 +18,7 @@ package org.noear.solon.flow.driver;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.*;
 import org.noear.solon.flow.container.SolonContainer;
-import org.noear.solon.flow.script.LiquorActuator;
+import org.noear.solon.flow.evaluation.LiquorEvaluation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,23 +33,23 @@ import java.util.Map;
 public abstract class AbstractFlowDriver implements FlowDriver {
     static final Logger log = LoggerFactory.getLogger(AbstractFlowDriver.class);
 
-    private final Actuator actuator;
+    private final Evaluation evaluation;
     private final Container container;
 
     /**
-     * @param actuator 脚本执行器
+     * @param evaluation 脚本执行器
      * @param container  组件容器
      */
-    public AbstractFlowDriver(Actuator actuator, Container container) {
-        this.actuator = (actuator == null ? new LiquorActuator() : actuator);
+    public AbstractFlowDriver(Evaluation evaluation, Container container) {
+        this.evaluation = (evaluation == null ? new LiquorEvaluation() : evaluation);
         this.container = (container == null ? new SolonContainer() : container);
     }
 
     /**
      * 获取脚本执行器
      */
-    protected Actuator getActuator() {
-        return actuator;
+    protected Evaluation getEvaluation() {
+        return evaluation;
     }
 
     /**
@@ -113,7 +113,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
      * 尝试作为脚本条件运行
      */
     protected boolean tryAsScriptCondition(FlowExchanger exchanger, Condition condition, String description) throws Throwable {
-        return getActuator().runTest(exchanger.context(), description);
+        return getEvaluation().runTest(exchanger.context(), description);
     }
 
     /// //////////////
@@ -194,7 +194,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
             //给脚本用
             exchanger.context().put("node", task.getNode());
 
-            getActuator().runTask(exchanger.context(), description);
+            getEvaluation().runTask(exchanger.context(), description);
         } finally {
             exchanger.context().remove("node");
         }

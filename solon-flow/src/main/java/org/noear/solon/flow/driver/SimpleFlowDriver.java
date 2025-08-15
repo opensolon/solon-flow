@@ -16,7 +16,7 @@
 package org.noear.solon.flow.driver;
 
 import org.noear.solon.flow.*;
-import org.noear.solon.flow.Actuator;
+import org.noear.solon.flow.Evaluation;
 import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.lang.Preview;
@@ -37,16 +37,16 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
         this(null, null);
     }
 
-    public SimpleFlowDriver(Actuator actuator) {
-        super(actuator, null);
+    public SimpleFlowDriver(Evaluation evaluation) {
+        super(evaluation, null);
     }
 
     public SimpleFlowDriver(Container container) {
         super(null, container);
     }
 
-    public SimpleFlowDriver(Actuator actuator, Container container) {
-        super(actuator, container);
+    public SimpleFlowDriver(Evaluation evaluation, Container container) {
+        super(evaluation, container);
     }
 
     /// ////////////////////////////
@@ -126,14 +126,14 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
     }
 
     public static class Builder {
-        private Actuator actuator;
+        private Evaluation evaluation;
         private Container container;
 
         /**
          * 设置评估器
          */
-        public Builder actuator(Actuator actuator) {
-            this.actuator = actuator;
+        public Builder evaluation(Evaluation evaluation) {
+            this.evaluation = evaluation;
             return this;
         }
 
@@ -150,7 +150,7 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
          */
         public SimpleFlowDriver build() {
             return new SimpleFlowDriver(
-                    actuator,
+                    evaluation,
                     container);
         }
     }

@@ -6,7 +6,6 @@
 * 调整 solon-flow FlowContext 移除 result 字段（所有数据基于 model 交换）
 * 调整 solon-flow 移除 StatefulSimpleFlowDriver 功能合并到 SimpleFlowDriver（简化）
 * 调整 solon-flow 新增 stateless 包，明确有状态与无状态这两个概念（StatelessFlowContext 更名为 StatefulFlowContext）
-* 调整 solon-flow Evaluation 更名为 Actuator（脚本执行器）
 * 调整 solon-flow FlowStatefulService 接口，每个方法的 context 参数移到最后位（保持一致性）
 * 调整 solon-flow 新增 StatefulSupporter 接口，方便 FlowContext 完整的状态控制
 * 调整 solon-flow StateRepository 接口的方法命名，与 StatefulSupporter 保持一致性
@@ -114,7 +113,7 @@
 * 新增 solon-flow-eval-aviator 插件
 * 新增 solon-flow-eval-beetl 插件
 * 新增 solon-flow-eval-magic 插件
-* 添加 solon-flow Actuator 接口，为脚本执行解耦
+* 添加 solon-flow Evaluation 接口，为脚本执行解耦
 * 添加 solon-flow Container 接口，为组件获取解耦
 * 调整 solon-flow ChainContext 更名为 FlowContext (之前的名字容易误解)
 * 调整 solon-flow ChainDriver 更名为 FlowDriver (之前的名字容易误解)
