@@ -7,14 +7,18 @@ import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.flow.stateful.StatefulSupporter;
 
 /**
- *
- * @author noear 2025/8/15 created
- *
+ * 示例
  */
-public class FlowContextImpl extends AbstractFlowContext implements FlowContext, StatefulSupporter {
+public class ApprovalFlowContext extends AbstractFlowContext implements FlowContext, StatefulSupporter {
+    private final String instanceId;
+    public ApprovalFlowContext(String instanceId){
+        super(instanceId);
+        this.instanceId = instanceId;
+    }
+
     @Override
     public boolean isStateful() {
-        return false;
+        return true;
     }
 
     @Override
