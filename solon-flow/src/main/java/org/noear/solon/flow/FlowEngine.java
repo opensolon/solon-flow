@@ -67,6 +67,15 @@ public interface FlowEngine {
      */
     void addInterceptor(ChainInterceptor interceptor, int index);
 
+    /**
+     * 添加拦截器
+     *
+     * @param interceptor 拦截器
+     */
+    default void addInterceptor(ChainInterceptor interceptor){
+        addInterceptor(interceptor,0);
+    }
+
 
     /**
      * 注册链驱动器
