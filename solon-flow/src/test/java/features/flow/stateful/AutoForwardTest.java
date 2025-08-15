@@ -3,6 +3,7 @@ package features.flow.stateful;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
 import org.noear.solon.flow.stateful.FlowStatefulService;
+import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.controller.BlockStateController;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
@@ -33,10 +34,10 @@ public class AutoForwardTest {
         FlowContext context = FlowContext.of(chainId, stateController, stateRepository);
         context.put("all_auto", true);
         StatefulTask statefulNode = statefulService.stepForward(chain, context);
-        assert statefulNode == null;
+        assert statefulNode != null;
+        assert statefulNode.getNode().getId().equals("01");
+        assert statefulNode.getState() == StateType.COMPLETED;
 
-        context = FlowContext.of(chainId, stateController, stateRepository);
-        context.put("all_auto", true);
         statefulNode = statefulService.stepForward(chain, context);
         assert statefulNode == null;
     }
