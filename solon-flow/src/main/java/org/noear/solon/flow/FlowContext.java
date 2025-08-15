@@ -63,6 +63,17 @@ public interface FlowContext {
     FlowContext executor(ExecutorService executor);
 
     /**
+     * 交换器
+     *
+     * @since 3.5
+     */
+    @Preview("3.5")
+    @Nullable
+    default FlowExchanger exchanger() {
+        return getAs(FlowExchanger.TAG);
+    }
+
+    /**
      * 数据模型
      */
     Map<String, Object> model();

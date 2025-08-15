@@ -27,6 +27,8 @@ import java.util.*;
  * @since 3.0
  * */
 public class Node {
+    public static final String TAG = "node";
+
     private final transient Chain chain;
 
     private final NodeDecl decl;
