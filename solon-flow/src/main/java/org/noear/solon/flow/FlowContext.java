@@ -69,6 +69,12 @@ public interface FlowContext {
 
     /// /////////////////////////////////////
 
+    /**
+     * 获取流实例id
+     */
+    default String getInstanceId() {
+        return get("instanceId");
+    }
 
     /**
      * 是否为有状态的
@@ -85,13 +91,6 @@ public interface FlowContext {
 
     /// /////////////////////////////////////
 
-
-    /**
-     * 获取流实例id
-     */
-    default String getInstanceId() {
-        return get("instanceId");
-    }
 
     /**
      * 获取事件总线（based damibus）

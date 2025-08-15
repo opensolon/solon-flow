@@ -131,7 +131,7 @@ public interface FlowEngine {
     Chain getChain(String chainId);
 
     /**
-     * 评估
+     * 运行
      *
      * @param chainId 链Id
      */
@@ -140,7 +140,7 @@ public interface FlowEngine {
     }
 
     /**
-     * 评估
+     * 运行
      *
      * @param chainId 链Id
      * @param context 上下文
@@ -150,7 +150,7 @@ public interface FlowEngine {
     }
 
     /**
-     * 评估
+     * 运行
      *
      * @param chainId 链Id
      * @param startId 开始Id
@@ -161,7 +161,7 @@ public interface FlowEngine {
     }
 
     /**
-     * 评估
+     * 运行
      *
      * @param chainId 链Id
      * @param startId 开始Id
@@ -171,7 +171,7 @@ public interface FlowEngine {
     void eval(String chainId, String startId, int depth, FlowContext context) throws FlowException;
 
     /**
-     * 评估
+     * 运行
      *
      * @param chain 链
      */
@@ -180,7 +180,7 @@ public interface FlowEngine {
     }
 
     /**
-     * 评估
+     * 运行
      *
      * @param chain   链
      * @param context 上下文
@@ -190,7 +190,7 @@ public interface FlowEngine {
     }
 
     /**
-     * 评估
+     * 运行
      *
      * @param startNode 开始节点
      */
@@ -199,7 +199,7 @@ public interface FlowEngine {
     }
 
     /**
-     * 评估
+     * 运行
      *
      * @param startNode 开始节点
      * @param context   上下文
@@ -209,7 +209,7 @@ public interface FlowEngine {
     }
 
     /**
-     * 评估
+     * 运行
      *
      * @param startNode 开始节点
      * @param depth     执行深度
@@ -220,7 +220,7 @@ public interface FlowEngine {
     }
 
     /**
-     * 评估
+     * 运行
      *
      * @param startNode 开始节点
      * @param depth     执行深度
