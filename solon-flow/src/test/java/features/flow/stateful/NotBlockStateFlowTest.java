@@ -13,7 +13,7 @@ import org.noear.solon.flow.stateful.controller.NotBlockStateController;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 
 @Slf4j
-public class NoBlockStateFlowTest {
+public class NotBlockStateFlowTest {
     final int amount = 900000;
     final String chainId = "test1";
 
@@ -121,6 +121,12 @@ public class NoBlockStateFlowTest {
         context = FlowContext.of("4", stateController, stateRepository)
                 .put("tag", "n1");
 
+        statefulNode = statefulService.getTask(chain, context);
+        Assertions.assertNotNull(statefulNode);
+        Assertions.assertEquals("n1", statefulNode.getNode().getId());
+        Assertions.assertEquals(StateType.WAITING, statefulNode.getState());
+
+        //再跑（仍在原位、原状态）
         statefulNode = statefulService.getTask(chain, context);
         Assertions.assertNotNull(statefulNode);
         Assertions.assertEquals("n1", statefulNode.getNode().getId());
