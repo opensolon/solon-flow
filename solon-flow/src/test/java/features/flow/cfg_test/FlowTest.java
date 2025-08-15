@@ -5,7 +5,7 @@ import org.noear.solon.flow.Chain;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.container.MapContainer;
-import org.noear.solon.flow.stateless.StatelessFlowDriver;
+import org.noear.solon.flow.driver.SimpleFlowDriver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class FlowTest {
         });
 
         FlowEngine flow = FlowEngine.newInstance();
-        flow.register(new StatelessFlowDriver(mapContainer));
+        flow.register(new SimpleFlowDriver(mapContainer));
         flow.load(Chain.parseByUri("classpath:flow/flow_case8.chain.yml"));
 
         FlowContext context = FlowContext.of();

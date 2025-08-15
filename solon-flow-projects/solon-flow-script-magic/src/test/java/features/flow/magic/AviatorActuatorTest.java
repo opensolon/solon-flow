@@ -3,7 +3,7 @@ package features.flow.magic;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.stateless.StatelessFlowDriver;
+import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.script.MagicActuator;
 
 /**
@@ -13,7 +13,7 @@ public class AviatorActuatorTest {
     @Test
     public void case1() throws Throwable {
         FlowEngine engine = FlowEngine.newInstance();
-        engine.register(new StatelessFlowDriver(new MagicActuator()));
+        engine.register(new SimpleFlowDriver(new MagicActuator()));
 
         engine.load("classpath:flow/*");
 

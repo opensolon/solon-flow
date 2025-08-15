@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.solon.flow.stateful;
+package org.noear.solon.flow.driver;
 
 import org.noear.solon.flow.*;
 import org.noear.solon.flow.Actuator;
+import org.noear.solon.flow.stateful.StateType;
+import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.lang.Preview;
 
 import java.util.ArrayList;
@@ -30,20 +32,20 @@ import java.util.List;
  * @since 3.5
  */
 @Preview("3.1")
-public class StatefulFlowDriver extends AbstractFlowDriver implements FlowDriver {
-    public StatefulFlowDriver() {
+public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
+    public SimpleFlowDriver() {
         this(null, null);
     }
 
-    public StatefulFlowDriver(Actuator actuator) {
+    public SimpleFlowDriver(Actuator actuator) {
         super(actuator, null);
     }
 
-    public StatefulFlowDriver(Container container) {
+    public SimpleFlowDriver(Container container) {
         super(null, container);
     }
 
-    public StatefulFlowDriver(Actuator actuator, Container container) {
+    public SimpleFlowDriver(Actuator actuator, Container container) {
         super(actuator, container);
     }
 
@@ -146,8 +148,8 @@ public class StatefulFlowDriver extends AbstractFlowDriver implements FlowDriver
         /**
          * 构建
          */
-        public StatefulFlowDriver build() {
-            return new StatefulFlowDriver(
+        public SimpleFlowDriver build() {
+            return new SimpleFlowDriver(
                     actuator,
                     container);
         }

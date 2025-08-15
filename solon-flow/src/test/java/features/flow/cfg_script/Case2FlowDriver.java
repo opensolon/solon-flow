@@ -2,12 +2,12 @@ package features.flow.cfg_script;
 
 import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.Task;
-import org.noear.solon.flow.stateless.StatelessFlowDriver;
+import org.noear.solon.flow.driver.SimpleFlowDriver;
 
 /**
  * @author noear 2025/1/11 created
  */
-public class Case2FlowDriver extends StatelessFlowDriver {
+public class Case2FlowDriver extends SimpleFlowDriver {
     @Override
     public void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
         exchanger.context().put("result", task.getNode().getId());
