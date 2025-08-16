@@ -12,6 +12,11 @@
 * 调整 solon-flow StateRepository 接口的方法命名，与 StatefulSupporter 保持一致性
 * 调整 solon-flow ChainInterceptor:onNodeStart,onNodeEnd 入参改为 FlowExchanger（保持与 FlowDriver 保持一致）
 
+新定位：
+
+* FlowContext 侧重输入侧（用于传参）
+* FlowExchanger 侧重接收侧（用于定制和控制）
+
 ### 3.4.3
 
 * 新增 solon-flow iterator 循环网关（`$for`,`$in`）
