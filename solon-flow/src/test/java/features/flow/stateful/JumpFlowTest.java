@@ -38,7 +38,6 @@ public class JumpFlowTest {
             return super.isOperatable(context, node);
         }
     };
-    InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
     private FlowStatefulService buildStatefulService() {
         MapContainer container = new MapContainer();
@@ -55,7 +54,7 @@ public class JumpFlowTest {
     @Test
     public void case1() {
         FlowStatefulService statefulService = buildStatefulService();
-        FlowContext context = FlowContext.of(instanceId, stateController, stateRepository).put(actor, "admin");
+        FlowContext context = FlowContext.of(instanceId, stateController).put(actor, "admin");
 
         statefulService.postOperation(chainId, "n3", Operation.FORWARD_JUMP, context);
 

@@ -22,7 +22,6 @@ public class AutoForwardTest {
                     || context.getOrDefault("all_auto", false);
         }
     };
-    InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
     @Test
     public void case11() throws Exception {
@@ -31,7 +30,8 @@ public class AutoForwardTest {
         Chain chain = buildChain();
 
         String chainId = "Test" + new Date().getTime();
-        FlowContext context = FlowContext.of(chainId, stateController, stateRepository);
+        FlowContext context = FlowContext.of(chainId, stateController);
+
         context.put("all_auto", true);
         StatefulTask statefulNode = statefulService.stepForward(chain, context);
         assert statefulNode != null;
