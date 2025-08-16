@@ -18,6 +18,7 @@ package org.noear.solon.flow;
 import org.noear.dami.Dami;
 import org.noear.dami.bus.DamiBus;
 import org.noear.solon.flow.stateful.StatefulSupporter;
+import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.flow.stateless.StatelessFlowContext;
 import org.noear.solon.flow.stateful.StateController;
 import org.noear.solon.flow.stateful.StateRepository;
@@ -47,6 +48,11 @@ public interface FlowContext {
     static FlowContext of(String instanceId, StateController stateController, StateRepository stateRepository) {
         //有状态
         return new StatefulFlowContext(instanceId, stateController, stateRepository);
+    }
+
+    static FlowContext of(String instanceId, StateController stateController) {
+        //有状态（用于一次性场景）
+        return new StatefulFlowContext(instanceId, stateController, new InMemoryStateRepository());
     }
 
     /**
