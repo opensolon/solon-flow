@@ -14,7 +14,7 @@
 
 新定位：
 
-* FlowContext 侧重输入侧（用于传参）
+* FlowContext 侧重输入侧（用于传参、策略，状态）
 * FlowExchanger 侧重接收侧（用于定制和控制）
 
 ### 3.4.3
