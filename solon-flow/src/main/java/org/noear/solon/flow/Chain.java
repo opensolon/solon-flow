@@ -216,12 +216,12 @@ public class Chain {
         }
 
         //节点（倒序加载，方便自动构建 link）
-        List<ONode> layoutTmp = null;
+        final List<ONode> layoutTmp;
         if (dom.contains("layout")) {
             //新用 layout
             layoutTmp = dom.get("layout").ary();
         } else {
-            //弃用 3.1
+            //弃用 v3.1
             layoutTmp = dom.get("nodes").ary();
         }
 
@@ -292,7 +292,13 @@ public class Chain {
      */
     private static void addLink(NodeDecl nodeDecl, ONode l1) {
         //支持 when 简写条件
-        String whenStr = l1.contains("when") ? l1.get("when").getString() : l1.get("condition").getString();
+        final String whenStr;
+        if (l1.contains("when")) {
+            whenStr = l1.get("when").getString();
+        } else {
+            //弃用 v3.3
+            whenStr = l1.get("condition").getString();
+        }
 
         nodeDecl.linkAdd(l1.get("nextId").getString(), ld -> ld
                 .title(l1.get("title").getString())
