@@ -23,7 +23,9 @@ public class NotBlockStateFlowTest {
         public void statePut(FlowContext context, Node node, StateType state) {
             super.statePut(context, node, state);
             //todo: 打印放这儿，顺序更真实
-            log.info("{} 完成", node.getId());
+            if (state == StateType.COMPLETED) {
+                log.info("{} 完成", node.getId());
+            }
         }
     };
 
