@@ -155,7 +155,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     protected void tryAsChainTask(FlowExchanger exchanger, Task task, String description) throws Throwable {
         //调用其它链
         String chainId = description.substring(1);
-        exchanger.engine().eval(chainId, exchanger.context());
+        exchanger.engine().eval(chainId, null, -1, exchanger);
     }
 
     /**

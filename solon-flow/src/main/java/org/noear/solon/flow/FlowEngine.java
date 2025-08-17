@@ -183,7 +183,19 @@ public interface FlowEngine {
      * @param depth   执行深度
      * @param context 上下文
      */
-    void eval(String chainId, String startId, int depth, FlowContext context) throws FlowException;
+    default void eval(String chainId, String startId, int depth, FlowContext context) throws FlowException {
+        eval(chainId, startId, depth, new FlowExchanger(context));
+    }
+
+    /**
+     * 运行
+     *
+     * @param chainId   链Id
+     * @param startId   开始Id
+     * @param depth     执行深度
+     * @param exchanger 交换器
+     */
+    void eval(String chainId, String startId, int depth, FlowExchanger exchanger) throws FlowException;
 
     /**
      * 运行

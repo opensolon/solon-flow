@@ -95,8 +95,8 @@ public class FlowEngineDefault implements FlowEngine {
 
     @Override
     public void removeInterceptor(ChainInterceptor interceptor) {
-        for(RankEntity<ChainInterceptor> i : interceptorList) {
-            if(i.target == interceptor) {
+        for (RankEntity<ChainInterceptor> i : interceptorList) {
+            if (i.target == interceptor) {
                 interceptorList.remove(i);
                 break;
             }
@@ -140,11 +140,11 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 评估
      *
-     * @param chainId 链
-     * @param context 上下文
+     * @param chainId   链
+     * @param exchanger 交换器
      */
     @Override
-    public void eval(String chainId, String startId, int depth, FlowContext context) throws FlowException {
+    public void eval(String chainId, String startId, int depth, FlowExchanger exchanger) throws FlowException {
         Chain chain = chainMap.get(chainId);
         if (chain == null) {
             throw new IllegalArgumentException("No chain found for id: " + chainId);
@@ -157,7 +157,7 @@ public class FlowEngineDefault implements FlowEngine {
             startNode = chain.getNode(startId);
         }
 
-        eval(startNode, depth, context);
+        eval(startNode, depth, exchanger);
     }
 
     /**
@@ -179,15 +179,20 @@ public class FlowEngineDefault implements FlowEngine {
         FlowDriver driver = getDriver(startNode.getChain());
 
         //开始执行
-        FlowExchanger bak = exchanger.context().getAs(FlowExchanger.TAG);
+        FlowExchanger bak = exchanger.context().getAs(FlowExchanger.TAG); //跨链调用时，可能会有
         try {
-            exchanger.context().put(FlowExchanger.TAG, exchanger);
+            if (bak != exchanger) {
+                exchanger.context().put(FlowExchanger.TAG, exchanger);
+            }
+
             new ChainInvocation(driver, exchanger, startNode, depth, this.interceptorList, this::evalDo).invoke();
         } finally {
-            if (bak == null) {
-                exchanger.context().remove(FlowExchanger.TAG);
-            } else {
-                exchanger.context().put(FlowExchanger.TAG, bak);
+            if (bak != exchanger) {
+                if (bak == null) {
+                    exchanger.context().remove(FlowExchanger.TAG);
+                } else {
+                    exchanger.context().put(FlowExchanger.TAG, bak);
+                }
             }
         }
     }
