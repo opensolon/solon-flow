@@ -68,7 +68,7 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
                     //确保任务只被执行一次
                     postHandleTask(exchanger, task);
 
-                    if((exchanger.isInterrupted() || exchanger.isStopped())) {
+                    if((exchanger.isStopped() || exchanger.isInterrupted())) {
                         //中断或停止，表示处理中
 
                         //记录当前流程节点（用于展示）
