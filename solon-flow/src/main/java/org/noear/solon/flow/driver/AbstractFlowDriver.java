@@ -171,13 +171,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
         } else if (component instanceof TaskComponent == false) {
             throw new IllegalStateException("The component '" + beanName + "' is not TaskComponent");
         } else {
-            try {
-                exchanger.context().put(FlowExchanger.TAG, exchanger);
-
-                ((TaskComponent) component).run(exchanger.context(), task.getNode());
-            } finally {
-                exchanger.context().remove(FlowExchanger.TAG);
-            }
+            ((TaskComponent) component).run(exchanger.context(), task.getNode());
         }
     }
 
@@ -199,12 +193,10 @@ public abstract class AbstractFlowDriver implements FlowDriver {
         try {
             //给脚本用
             exchanger.context().put(Node.TAG, task.getNode());
-            exchanger.context().put(FlowExchanger.TAG, exchanger);
 
             getEvaluation().runTask(exchanger.context(), description);
         } finally {
             exchanger.context().remove(Node.TAG);
-            exchanger.context().remove(FlowExchanger.TAG);
         }
     }
 
