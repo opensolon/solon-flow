@@ -56,8 +56,7 @@ public class NotBlockStateFlowTest2 {
         Assertions.assertEquals(StateType.WAITING, statefulNode.getState());
 
 
-        context = FlowContext.of("4", stateController, stateRepository)
-                .put("tag", "n2");
+        context.put("tag", "n2");
 
         statefulNode = statefulService.getTask(chain, context);
         System.out.println("--------------------");
@@ -65,8 +64,7 @@ public class NotBlockStateFlowTest2 {
         Assertions.assertEquals("n2", statefulNode.getNode().getId());
         Assertions.assertEquals(StateType.WAITING, statefulNode.getState());
 
-        context = FlowContext.of("4", stateController, stateRepository)
-                .put("tag", "");
+        context.put("tag", "");
 
         statefulNode = statefulService.getTask(chain, context);
         System.out.println("--------------------");
