@@ -17,7 +17,7 @@ public class HelloTest {
         }
 
         //测试
-        int count = 10_000; //flow(on macbook): 1.4s 跑完
+        int count = 10_000; //flow(on macbook): 1.2s 跑完
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
             Chain.parseByText(case1_yml);
@@ -26,31 +26,27 @@ public class HelloTest {
         System.out.println("parse1:" + time1);
     }
 
-    private FlowContext case1_getContext() {
-        FlowContext context = FlowContext.of();
-        context.put("a", 3);
-        context.put("b", 4);
-
-        return context;
-    }
-
     //没有 io
     @Test
     public void case1() {
         FlowEngine flowEngine = FlowEngine.newInstance();
         flowEngine.load(Chain.parseByText(case1_yml));
 
+        FlowContext context = FlowContext.of();
+        context.put("a", 3);
+        context.put("b", 4);
+
         //预热
         for (int i = 0; i < 10; i++) {
-            flowEngine.eval("case1", case1_getContext());
+            flowEngine.eval("case1", context);
             case1_java(3, 4);
         }
 
         //测试
-        int count = 1_000_000; //flow(on macbook): 1s 跑完
+        int count = 1_000_000; //flow(on macbook): 1.3s 跑完
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
-            flowEngine.eval("case1", case1_getContext());
+            flowEngine.eval("case1", context);
         }
         long time_flow = System.currentTimeMillis() - start;
 
@@ -86,7 +82,7 @@ public class HelloTest {
         }
 
         //测试
-        int count = 100_000; //flow: 0.5s 跑完
+        int count = 100_000; //flow: 0.6s 跑完
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
             flowEngine.eval("case2");
@@ -115,11 +111,11 @@ public class HelloTest {
             "      - nextId: sub\n" +
             "  - id: sum\n" +
             "    title: \"加法\"\n" +
-            "    task: \"context.result = a + b;\"\n" +
+            "    task: 'context.put(\"result\", a + b);'\n" +
             "    link: end\n" +
             "  - id: sub\n" +
             "    title: \"减法\"\n" +
-            "    task: \"context.result = a - b;\"\n" +
+            "    task: 'context.put(\"result\", a - b);'\n" +
             "    link: end\n" +
             "  - id: end\n" +
             "    type: end";
