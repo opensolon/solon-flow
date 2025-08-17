@@ -10,12 +10,11 @@
 * 调整 solon-flow FlowStatefulService 接口，每个方法的 context 参数移到最后位（保持一致性）
 * 调整 solon-flow 新增 StatefulSupporter 接口，方便 FlowContext 完整的状态控制
 * 调整 solon-flow StateRepository 接口的方法命名，与 StatefulSupporter 保持一致性
-* 调整 solon-flow ChainInterceptor:onNodeStart,onNodeEnd 入参改为 FlowExchanger（保持与 FlowDriver 保持一致）
 
 新定位：
 
-* FlowContext 侧重输入侧（用于传参、策略，状态）
-* FlowExchanger 侧重接收侧（用于定制和控制）
+* FlowContext 侧重对外（用于传参、策略，状态）
+* FlowExchanger 侧重对内（用于定制和控制）
 
 ### 3.4.3
 
