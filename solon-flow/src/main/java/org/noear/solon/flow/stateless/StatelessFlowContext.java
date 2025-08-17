@@ -29,6 +29,14 @@ import org.noear.solon.lang.Preview;
 @Preview("3.0")
 public class StatelessFlowContext extends AbstractFlowContext {
 
+    public StatelessFlowContext(String instanceId) {
+        super(instanceId);
+    }
+
+    public StatelessFlowContext() {
+        super();
+    }
+
     @Override
     public final boolean isStateful() {
         return false;

@@ -45,6 +45,11 @@ public interface FlowContext {
         return new StatelessFlowContext();
     }
 
+    static FlowContext of(String instanceId) {
+        //无状态
+        return new StatelessFlowContext(instanceId);
+    }
+
     static FlowContext of(String instanceId, StateController stateController, StateRepository stateRepository) {
         //有状态
         return new StatefulFlowContext(instanceId, stateController, stateRepository);
