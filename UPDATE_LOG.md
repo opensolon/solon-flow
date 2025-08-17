@@ -2,6 +2,7 @@
 ### 3.5.0
 
 * 添加 solon-flow FlowDriver:postHandleTask 方法
+* 添加 solon-flow FlowContext:exchanger 方法（可获取 FlowExchanger 实例）
 * 调整 solon-flow FlowContext 拆分为：FlowContext（对外） 和 FlowExchanger（对内）
 * 调整 solon-flow FlowContext 移除 result 字段（所有数据基于 model 交换）
 * 调整 solon-flow FlowContext get 改为返回 Object（之前为 T），新增 getAs 返回 T（解决 get 不能直接打印的问题）
@@ -13,8 +14,8 @@
 
 新定位：
 
-* FlowContext 侧重对外（用于传参、策略，状态）
-* FlowExchanger 侧重对内（用于定制和控制）
+* FlowContext 侧重对外，可复用（用于传参、策略，状态）
+* FlowExchanger 侧重对内，不可复用（用于控制、中间临时状态或变量）
 
 ### 3.4.3
 
