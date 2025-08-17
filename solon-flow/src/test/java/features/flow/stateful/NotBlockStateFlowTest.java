@@ -42,13 +42,13 @@ public class NotBlockStateFlowTest {
 
         FlowContext context = FlowContext.of("1", stateController, stateRepository)
                 .put("amount", amount);
-        StatefulTask statefulNode;
+        StatefulTask task;
 
 
-        statefulNode = statefulService.getTask(chainId, context);
+        task = statefulService.getTask(chainId, context);
 
-        Assertions.assertEquals("n5", statefulNode.getNode().getId());
-        Assertions.assertEquals(StateType.COMPLETED, statefulNode.getState());
+        Assertions.assertEquals("n5", task.getNode().getId());
+        Assertions.assertEquals(StateType.COMPLETED, task.getState());
     }
 
     @Test
@@ -78,31 +78,31 @@ public class NotBlockStateFlowTest {
 
         FlowContext context = FlowContext.of("2", stateController, stateRepository)
                 .put("amount", amount);
-        StatefulTask statefulNode;
+        StatefulTask task;
 
 
-        statefulNode = statefulService.getTask(chainId, context);
+        task = statefulService.getTask(chainId, context);
 
-        Assertions.assertEquals("n0", statefulNode.getNode().getId());
-        Assertions.assertEquals(StateType.COMPLETED, statefulNode.getState());
+        Assertions.assertEquals("n0", task.getNode().getId());
+        Assertions.assertEquals(StateType.COMPLETED, task.getState());
 
 
-        statefulNode = statefulService.getTask(chainId, context);
+        task = statefulService.getTask(chainId, context);
 
-        Assertions.assertNull(statefulNode); //提前中断，没有节点可取了
+        Assertions.assertNull(task); //提前中断，没有节点可取了
 
         System.out.println("---------------------");
 
         flowEngine.removeInterceptor(interceptor);
 
-        statefulNode = statefulService.getTask(chainId, context);
+        task = statefulService.getTask(chainId, context);
 
-        Assertions.assertEquals("n5", statefulNode.getNode().getId());
-        Assertions.assertEquals(StateType.COMPLETED, statefulNode.getState());
+        Assertions.assertEquals("n5", task.getNode().getId());
+        Assertions.assertEquals(StateType.COMPLETED, task.getState());
 
 
-        statefulNode = statefulService.getTask(chainId, context);
+        task = statefulService.getTask(chainId, context);
 
-        Assertions.assertNull(statefulNode); //全部完成，没有节点可取了
+        Assertions.assertNull(task); //全部完成，没有节点可取了
     }
 }

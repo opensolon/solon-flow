@@ -27,56 +27,9 @@ public class NotBlockStateFlowTest2 {
     };
 
     @Test
-    public void useFlowStatefulService() {
-        FlowEngine flowEngine = FlowEngine.newInstance();
-        FlowStatefulService statefulService = flowEngine.statefulService();
-        Chain chain = getChain();
-
-        FlowContext context = FlowContext.of("3", stateController, stateRepository)
-                .put("tag", "");
-
-        StatefulTask statefulNode = statefulService.getTask(chain, context);
-        System.out.println("--------------------");
-        Assertions.assertNotNull(statefulNode);
-        Assertions.assertEquals("n3", statefulNode.getNode().getId());
-        Assertions.assertEquals(StateType.COMPLETED, statefulNode.getState());
-
-        context = FlowContext.of("4", stateController, stateRepository)
-                .put("tag", "n1");
-
-        statefulNode = statefulService.getTask(chain, context);
-        System.out.println("--------------------");
-        Assertions.assertNotNull(statefulNode);
-        Assertions.assertEquals("n1", statefulNode.getNode().getId());
-        Assertions.assertEquals(StateType.WAITING, statefulNode.getState());
-
-        //再跑（仍在原位、原状态）
-        statefulNode = statefulService.getTask(chain, context);
-        System.out.println("--------------------");
-        Assertions.assertNotNull(statefulNode);
-        Assertions.assertEquals("n1", statefulNode.getNode().getId());
-        Assertions.assertEquals(StateType.WAITING, statefulNode.getState());
-
-
-        context.put("tag", "n2");
-
-        statefulNode = statefulService.getTask(chain, context);
-        System.out.println("--------------------");
-        Assertions.assertNotNull(statefulNode);
-        Assertions.assertEquals("n2", statefulNode.getNode().getId());
-        Assertions.assertEquals(StateType.WAITING, statefulNode.getState());
-
-        context.put("tag", "");
-
-        statefulNode = statefulService.getTask(chain, context);
-        System.out.println("--------------------");
-        Assertions.assertNotNull(statefulNode);
-        Assertions.assertEquals("n3", statefulNode.getNode().getId());
-        Assertions.assertEquals(StateType.COMPLETED, statefulNode.getState());
-    }
-
-    @Test
     public void useEval() {
+        //计算后，不能获取最新状态
+
         FlowEngine flowEngine = FlowEngine.newInstance();
         Chain chain = getChain();
 
@@ -103,6 +56,57 @@ public class NotBlockStateFlowTest2 {
         context.put("tag", "");
         flowEngine.eval(chain, context);
         System.out.println("--------------------");
+    }
+
+    @Test
+    public void useFlowStatefulService() {
+        //计算后，可获取最新状态
+
+        FlowEngine flowEngine = FlowEngine.newInstance();
+        FlowStatefulService statefulService = flowEngine.statefulService();
+        Chain chain = getChain();
+
+        FlowContext context = FlowContext.of("3", stateController, stateRepository)
+                .put("tag", "");
+
+        StatefulTask task = statefulService.getTask(chain, context);
+        System.out.println("--------------------");
+        Assertions.assertNotNull(task);
+        Assertions.assertEquals("n3", task.getNode().getId());
+        Assertions.assertEquals(StateType.COMPLETED, task.getState());
+
+        context = FlowContext.of("4", stateController, stateRepository)
+                .put("tag", "n1");
+
+        task = statefulService.getTask(chain, context);
+        System.out.println("--------------------");
+        Assertions.assertNotNull(task);
+        Assertions.assertEquals("n1", task.getNode().getId());
+        Assertions.assertEquals(StateType.WAITING, task.getState());
+
+        //再跑（仍在原位、原状态）
+        task = statefulService.getTask(chain, context);
+        System.out.println("--------------------");
+        Assertions.assertNotNull(task);
+        Assertions.assertEquals("n1", task.getNode().getId());
+        Assertions.assertEquals(StateType.WAITING, task.getState());
+
+
+        context.put("tag", "n2");
+
+        task = statefulService.getTask(chain, context);
+        System.out.println("--------------------");
+        Assertions.assertNotNull(task);
+        Assertions.assertEquals("n2", task.getNode().getId());
+        Assertions.assertEquals(StateType.WAITING, task.getState());
+
+        context.put("tag", "");
+
+        task = statefulService.getTask(chain, context);
+        System.out.println("--------------------");
+        Assertions.assertNotNull(task);
+        Assertions.assertEquals("n3", task.getNode().getId());
+        Assertions.assertEquals(StateType.COMPLETED, task.getState());
     }
 
     private Chain getChain() {
