@@ -15,7 +15,6 @@
  */
 package org.noear.solon.flow;
 
-import org.noear.snack.ONode;
 import org.noear.solon.Utils;
 import org.noear.solon.lang.Preview;
 
@@ -175,15 +174,6 @@ public class Chain {
      */
     public static Chain parseByText(String text) {
         return parseByDecl(ChainDecl.parseByText(text));
-    }
-
-    /**
-     * 解析配置文档模型
-     *
-     * @param dom 配置文档模型
-     */
-    public static Chain parseByDom(ONode dom) {
-        return parseByDecl(ChainDecl.parseByDom(dom));
     }
 
     /**
