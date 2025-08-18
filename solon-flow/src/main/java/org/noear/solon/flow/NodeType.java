@@ -50,15 +50,15 @@ public enum NodeType {
     /**
      * 包容网关（多选）
      */
-    INCLUSIVE(22),
+    INCLUSIVE(31),
     /**
      * 并行网关（全选）
      */
-    PARALLEL(23),
+    PARALLEL(32),
     /**
      * 遍历网关（循环）
      */
-    ITERATOR(24);
+    ITERATOR(33);
 
     private int code;
 
