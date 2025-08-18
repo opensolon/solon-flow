@@ -99,14 +99,14 @@ public class Chain {
      * 获取所有节点
      */
     public Map<String, Node> getNodes() {
-        return nodes; //Collections.unmodifiableMap(nodes);
+        return Collections.unmodifiableMap(nodes);
     }
 
     /**
      * 获取所有连接
      */
     public List<Link> getLinks() {
-        return links; //Collections.unmodifiableList(links);
+        return Collections.unmodifiableList(links);
     }
 
 
