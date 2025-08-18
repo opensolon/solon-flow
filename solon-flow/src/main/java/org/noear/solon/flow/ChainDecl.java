@@ -84,6 +84,14 @@ public class ChainDecl {
     /// ///////////////////////////
 
     /**
+     * 复制
+     */
+    public static ChainDecl copy(Chain chain) {
+        return parseByText(chain.toJson());
+    }
+
+
+    /**
      * 解析配置文件
      */
     public static ChainDecl parseByUri(String uri) {
