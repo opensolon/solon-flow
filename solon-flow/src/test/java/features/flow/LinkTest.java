@@ -17,12 +17,11 @@ import java.util.List;
 public class LinkTest {
     @Test
     public void case1() {
-        Chain chain = new Chain("c1");
         List<Link> links = new ArrayList<>();
 
-        links.add(new Link(chain, "n1", new LinkDecl("n2").priority(1)));
-        links.add(new Link(chain, "n1", new LinkDecl("n3").priority(3)));
-        links.add(new Link(chain, "n1", new LinkDecl("n4").priority(2)));
+        links.add(new Link(null, "n1", new LinkDecl("n2").priority(1)));
+        links.add(new Link(null, "n1", new LinkDecl("n3").priority(3)));
+        links.add(new Link(null, "n1", new LinkDecl("n4").priority(2)));
 
         Collections.sort(links);
 
@@ -47,8 +46,9 @@ public class LinkTest {
         //-----
 
         //动态构建链，并执行
-        Chain chain = new Chain("c1");
-        chain.addNode(NodeDecl.activityOf("n1").task("@DemoCom"));
+        Chain chain = new ChainDecl("c1").create(decl -> {
+            decl.addNode(NodeDecl.activityOf("n1").task("@DemoCom"));
+        });
 
         engine.eval(chain.getNode("n1"));
     }

@@ -116,6 +116,39 @@ public class NodeDecl {
         return this;
     }
 
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("NodeDecl{");
+        sb.append("id='").append(id).append('\'');
+
+        if (Utils.isNotEmpty(title)) {
+            sb.append(", title='").append(title).append('\'');
+        }
+
+        if (type != null) {
+            sb.append(", type=").append(type);
+        }
+
+        if (Utils.isNotEmpty(meta)) {
+            sb.append(", meta=").append(meta);
+        }
+
+        if (Utils.isNotEmpty(links)) {
+            sb.append(", links=").append(links);
+        }
+
+        if (Utils.isNotEmpty(when)) {
+            sb.append(", when='").append(when).append('\'');
+        }
+
+        if (Utils.isNotEmpty(task)) {
+            sb.append(", task='").append(task).append('\'');
+        }
+
+        sb.append('}');
+        return sb.toString();
+    }
+
     /// ///////////////
 
     /**

@@ -43,21 +43,23 @@ public class AutoForwardTest {
     }
 
     private Chain buildChain() {
-        Chain chain = new Chain("test_case11", "test_case11");
-        NodeDecl nodeDecl = null;
+        Chain chain = new ChainDecl("test_case11", "test_case11").create(decl -> {
+            NodeDecl nodeDecl = null;
 
-        nodeDecl = new NodeDecl("start", NodeType.START).title("开始").linkAdd("01");
-        chain.addNode(nodeDecl);
+            nodeDecl = new NodeDecl("start", NodeType.START).title("开始").linkAdd("01");
+            decl.addNode(nodeDecl);
 
 
-        nodeDecl = new NodeDecl("01", NodeType.ACTIVITY).title("01").linkAdd("end")
-        //.metaPut("auto", true)
-        ;
-        nodeDecl.task("@oaMetaProcessCom");
-        chain.addNode(nodeDecl);
+            nodeDecl = new NodeDecl("01", NodeType.ACTIVITY).title("01").linkAdd("end")
+            //.metaPut("auto", true)
+            ;
+            nodeDecl.task("@oaMetaProcessCom");
+            decl.addNode(nodeDecl);
 
-        nodeDecl = new NodeDecl("end", NodeType.END).title("结束");
-        chain.addNode(nodeDecl);
+            nodeDecl = new NodeDecl("end", NodeType.END).title("结束");
+            decl.addNode(nodeDecl);
+        });
+
 
         return chain;
     }

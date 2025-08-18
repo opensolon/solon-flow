@@ -13,12 +13,11 @@ public class ScriptJavaTest {
 
     @Test
     public void case1() throws Throwable {
-        Chain chain = new Chain("c1");
-
-        chain.addNode(NodeDecl.startOf("n1").linkAdd("n2"));
-        chain.addNode(NodeDecl.activityOf("n2").task("context.put(\"result\", 111 + a);").linkAdd("n3"));
-        chain.addNode(NodeDecl.endOf("n2"));
-
+        Chain chain = new ChainDecl("c1").create(decl -> {
+            decl.addNode(NodeDecl.startOf("n1").linkAdd("n2"));
+            decl.addNode(NodeDecl.activityOf("n2").task("context.put(\"result\", 111 + a);").linkAdd("n3"));
+            decl.addNode(NodeDecl.endOf("n2"));
+        });
 
         FlowContext context = FlowContext.of();
         context.put("a", 2);

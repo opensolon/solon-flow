@@ -35,14 +35,14 @@ public class ComJavaTest {
 
         flowEngine.register(driver);
 
-        Chain chain = new Chain("c1", "c1");
+        Chain chain = new ChainDecl("c1", "c1").create(decl -> {
+            decl.addNode(NodeDecl.startOf("n1").linkAdd("n2"));
+            decl.addNode(NodeDecl.activityOf("n2").task("@a").linkAdd("n3"));
+            decl.addNode(NodeDecl.activityOf("n3").task("@b").linkAdd("n4"));
+            decl.addNode(NodeDecl.activityOf("n4").task("@c").linkAdd("n5"));
+            decl.addNode(NodeDecl.endOf("n5"));
+        });
 
-
-        chain.addNode(NodeDecl.startOf("n1").linkAdd("n2"));
-        chain.addNode(NodeDecl.activityOf("n2").task("@a").linkAdd("n3"));
-        chain.addNode(NodeDecl.activityOf("n3").task("@b").linkAdd("n4"));
-        chain.addNode(NodeDecl.activityOf("n4").task("@c").linkAdd("n5"));
-        chain.addNode(NodeDecl.endOf("n5"));
 
         FlowContext context = FlowContext.of();
         context.put("a", 2);

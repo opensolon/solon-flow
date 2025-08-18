@@ -110,16 +110,16 @@ public class NotBlockStateFlowTest2 {
     }
 
     private Chain getChain() {
-        Chain chain = new Chain("tmp-" + System.currentTimeMillis());
+        Chain chain = new ChainDecl("tmp-" + System.currentTimeMillis()).create(decl -> {
+            String task = "if(tag.equals(node.getId())){exchanger.interrupt();}";
 
-        String task = "if(tag.equals(node.getId())){exchanger.interrupt();}";
-
-        chain.addNode(NodeDecl.startOf("s").linkAdd("n0"));
-        chain.addNode(NodeDecl.activityOf("n0").task(task).linkAdd("n1"));
-        chain.addNode(NodeDecl.activityOf("n1").task(task).linkAdd("n2"));
-        chain.addNode(NodeDecl.activityOf("n2").task(task).linkAdd("n3"));
-        chain.addNode(NodeDecl.activityOf("n3").task(task).linkAdd("e"));
-        chain.addNode(NodeDecl.endOf("e"));
+            decl.addNode(NodeDecl.startOf("s").linkAdd("n0"));
+            decl.addNode(NodeDecl.activityOf("n0").task(task).linkAdd("n1"));
+            decl.addNode(NodeDecl.activityOf("n1").task(task).linkAdd("n2"));
+            decl.addNode(NodeDecl.activityOf("n2").task(task).linkAdd("n3"));
+            decl.addNode(NodeDecl.activityOf("n3").task(task).linkAdd("e"));
+            decl.addNode(NodeDecl.endOf("e"));
+        });
 
         return chain;
     }

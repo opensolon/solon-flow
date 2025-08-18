@@ -149,12 +149,13 @@ public class OaActionDemo {
     //加签
     public void case11() throws Exception {
         String gatewayId = "g1";
-        Chain chain = Chain.parseByText(flowEngine.getChain(chainId).toJson()); //复制
+        ChainDecl chainDecl = ChainDecl.parseByText(flowEngine.getChain(chainId).toJson()); //复制
         //添加节点
-        chain.addNode(NodeDecl.activityOf("a3").linkAdd("b2"));
+        chainDecl.addNode(NodeDecl.activityOf("a3").linkAdd("b2"));
         //替代旧的网关（加上 a3 节点）
-        chain.addNode(NodeDecl.parallelOf(gatewayId).linkAdd("a1").linkAdd("a2").linkAdd("a3"));
+        chainDecl.addNode(NodeDecl.parallelOf(gatewayId).linkAdd("a1").linkAdd("a2").linkAdd("a3"));
 
+        Chain chain = chainDecl.create();
         //把新的链配置，做为实例对应的流配置
     }
 
