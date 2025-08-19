@@ -20,6 +20,13 @@
 * Chain 为运行态（不可修改）
 * ChainDecl 为声明或配置态（可以随时修改）
 
+
+FlowContext 改成接口之后，实例化方式建议：
+
+```java
+FlowContext context = FlowContext.of(); //有四个生栽方法，包括：无状态 和 有状态
+```
+
 ### 3.4.3
 
 * 新增 solon-flow iterator 循环网关（`$for`,`$in`）
