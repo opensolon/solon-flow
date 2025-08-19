@@ -1,19 +1,44 @@
 
 ### 3.5.0
 
+
+本次更新，主要统一了“无状态”、“有状态”流程的基础：引擎、驱动。通过上下文来识别是否为有状态及相关支持。
+
+FlowContext 改为接口，增加了两个重要的方法：
+
+```java
+boolean isStateful();
+StatefulSupporter statefulSupporter();
+```
+
+且，FlowContext 做了分离。解决了，之前在实例范围内不可复用的问题。
+
+
+#### 兼容说明
+
+* stateful 相关概念与接口有调整
+* FlowContext 改为接口，并移除 result 字段（所有数据基于 model 交换）
+* FlowContext 内置实现分为：StatelessFlowContext 和 StatefulFlowContext。通过 `FlowContext.of(...)` 实例化。（也可按需定制）
+* StateRepository 接口的方法命名调整，与 StatefulSupporter 保持一致性
+
+升级请做好调整与测试。
+
+#### 具体更新
+
+
 * 添加 solon-flow FlowDriver:postHandleTask 方法
 * 添加 solon-flow FlowContext:exchanger 方法（可获取 FlowExchanger 实例）
 * 调整 solon-flow FlowContext 拆分为：FlowContext（对外） 和 FlowExchanger（对内）
 * 调整 solon-flow FlowContext 移除 result 字段（所有数据基于 model 交换）
 * 调整 solon-flow FlowContext get 改为返回 Object（之前为 T），新增 getAs 返回 T（解决 get 不能直接打印的问题）
 * 调整 solon-flow 移除 StatefulSimpleFlowDriver 功能合并到 SimpleFlowDriver（简化）
-* 调整 solon-flow 新增 stateless 包，明确有状态与无状态这两个概念（StatelessFlowContext 更名为 StatefulFlowContext）
+* 调整 solon-flow 新增 stateless 包，明确 “有状态” 与 “无状态” 这两个概念（StatelessFlowContext 和 StatefulFlowContext）
 * 调整 solon-flow FlowStatefulService 接口，每个方法的 context 参数移到最后位（保持一致性）
 * 调整 solon-flow 新增 StatefulSupporter 接口，方便 FlowContext 完整的状态控制
 * 调整 solon-flow StateRepository 接口的方法命名，与 StatefulSupporter 保持一致性
 * 调整 solon-flow Chain 拆分为：Chain 和 ChainDecl
 
-新定位：
+两对拆分类的定位：
 
 * FlowContext 侧重对外，可复用（用于传参、策略，状态）
 * FlowExchanger 侧重对内，不可复用（用于控制、中间临时状态或变量）
@@ -21,10 +46,27 @@
 * ChainDecl 为声明或配置态（可以随时修改）
 
 
-FlowContext 改成接口之后，实例化方式建议：
+应用示例：
 
 ```java
-FlowContext context = FlowContext.of(); //有四个生栽方法，包括：无状态 和 有状态
+//FlowContext 构建
+FlowContext context = FlowContext.of(); //无状态的
+FlowContext context = FlowContext.of("1", stateController); //有状态控制的
+FlowContext context = FlowContext.of("1", stateController, stateRepository); //有状态控制的和状态持久化的
+
+
+//Chain 手动声明
+Chain chain = new ChainDecl("d3", "风控计算").create(decl->{
+            decl.addNode(NodeDecl.startOf("s").linkAdd("n2"));
+            decl.addNode(NodeDecl.activityOf("n1").title("基本信息评分").linkAdd("g1").task("@base_score"));
+            decl.addNode(NodeDecl.exclusiveOf("g1").title("分流")
+                    .linkAdd("e", l -> l.title("优质用户（评分90以上）").condition("score > 90"))
+                    .linkAdd("n2", l -> l.title("普通用户")) //没条件时，做为默认
+            );
+            decl.addNode(NodeDecl.activityOf("n2").title("电商消费评分").linkAdd("n3").task("@ec_score"));
+            decl.addNode(NodeDecl.activityOf("n3").title("黑名单检测").linkAdd("e").task("@bl_score"));
+            decl.addNode(NodeDecl.endOf("e").task("."));
+        });
 ```
 
 ### 3.4.3
