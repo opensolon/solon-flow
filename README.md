@@ -76,7 +76,7 @@ Solon-Flow
 ## 六大特性展示
 
 
-### 1、采用 yaml 和 json 列式编排格式
+### 1、采用 yaml 和 json 偏平式编排格式
 
 配置简洁，关系清晰。内容多了后有点像 docker-compose。
 
