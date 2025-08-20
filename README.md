@@ -76,7 +76,7 @@ Solon-Flow
 ## 六大特性展示
 
 
-### 1、采用 yaml 和 json 编排格式
+### 1、采用 yaml 和 json 列式编排格式
 
 配置简洁，关系清晰。内容多了后有点像 docker-compose。
 
@@ -160,10 +160,13 @@ layout:
 
 支持丰富的应用场景：
 
-* 可用于计算（或任务）的编排场景
-* 可用于业务规则和决策处理型的编排场景
-* 可用于办公审批型（有状态、可中断，人员参与）的编排场景
-* 可用于长时间流程（结合自动前进，等待介入）的编排场景
+* 支持无状态流程
+  * 可用于计算（或任务）的编排场景
+  * 可用于业务规则和决策处理型的编排场景
+* 支持有状态流程
+  * 可用于办公审批型（有状态、可中断，人员参与）的编排场景
+  * 可用于长时间流程（结合自动前进，等待介入）的编排场景
+
 
 自身也相当于一个低代码的运行引擎（单个 yml 或 json 文件，即可满足所有的执行需求）。
 
@@ -171,22 +174,27 @@ layout:
 ### 6、驱动定制（是像 JDBC 有 MySql, PostgreSQL，还可能有 Elasticsearch）
 
 这是一个定制后的，支持基于状态驱动的流引擎效果。
+
 ```java
-StatefulFlowEngine flowEngine = new StatefulFlowEngine(StatefulSimpleFlowDriver.builder()
-                .stateOperator(new MetaStateOperator("actor"))
-                .stateRepository(new InMemoryStateRepository())
-                .build());
+public class SimpleFlowDriverPlus extends SimpleFlowDriver {
+    ...
+}
+
+FlowEngine flowEngine =FlowEngine.newInstance(new SimpleFlowDriverPlus());
+
+StateController stateController = new ActorStateController("actor");
+StateRepository stateRepository = new InMemoryStateRepository();
                 
-var context = FlowContext.of("i1").put("actor", "陈鑫");
+var context = FlowContext.of("i1", stateController, stateRepository).put("actor", "陈鑫");
 
 //获取上下文用户的活动节点
-var statefulNode = flowEngine.getActivityNode("f1", context);
+var task = flowEngine.statefulService().getTask("f1", context);
 
-assert "step2".equals(statefulNode.getNode().getId());
-assert StateType.UNKNOWN == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
+assert "step2".equals(task.getNode().getId());
+assert StateType.UNKNOWN == task.getState(); //没有权限启动任务（因为没有配置操作员）
 
 //提交操作
-flowEngine.postOperation(context, "f1", statefulNode.getNode().getId(), StateOperation.FORWARD);
+flowEngine.statefulService().postOperation(context, "f1", task.getNode().getId(), Operation.FORWARD);
 ```
 
 流程配置样例：
