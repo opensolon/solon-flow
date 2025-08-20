@@ -176,11 +176,11 @@ layout:
 这是一个定制后的，支持基于状态驱动的流引擎效果。
 
 ```java
-public class SimpleFlowDriverPlus extends SimpleFlowDriver {
+public class DemoFlowDriver implements FlowDriver {
     ...
 }
 
-FlowEngine flowEngine =FlowEngine.newInstance(new SimpleFlowDriverPlus());
+FlowEngine flowEngine =FlowEngine.newInstance(new DemoFlowDriver());
 
 StateController stateController = new ActorStateController("actor");
 StateRepository stateRepository = new InMemoryStateRepository();
