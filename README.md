@@ -6,7 +6,7 @@ Solon-Flow
 <p align="center">
 	<strong>Java 通用流程编排框架（采用 yaml 和 json 编排格式）</strong>
     <br/>
-    <strong>【基于 Solon 应用开发框架构建】</strong>
+    <strong>克制、高效、开放</strong>
 </p>
 <p align="center">
 	<a href="https://solon.noear.org/article/learn-solon-flow">https://solon.noear.org/article/learn-solon-flow</a>
