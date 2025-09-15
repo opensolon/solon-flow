@@ -148,11 +148,11 @@ public class MetaProcessCom implements TaskComponent {
 id: f4
 layout:
   - task: |
-      //只发送
+      //发送
       context.<String,String>eventBus().send("demo.topic", "hello");  //支持泛型（类型按需指定，不指定时为 object）
   - task: |
-      //发送并要求响应（就是要给答复）
-      String rst = context.<String,String>eventBus().sendAndRequest("demo.topic.get", "hello");
+      //调用（要求答复）
+      String rst = context.<String,String>eventBus().call("demo.topic.get", "hello");
       System.out.println(rst);
 ```
 
