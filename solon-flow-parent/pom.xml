@@ -18,7 +18,7 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <dami.version>1.0.6</dami.version>
+        <dami.version>1.1.0</dami.version>
         <aviator.version>5.3.2</aviator.version>
         <magic.version>1.8.8</magic.version>
     </properties>
