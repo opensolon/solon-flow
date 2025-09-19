@@ -551,7 +551,7 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     protected boolean iterator_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
-        if (node.getMeta("$for") == null) {
+        if (Utils.isEmpty((String) node.getMeta("$for"))) {
             //结束
             if (iterator_run_in(driver, exchanger, node, depth)) {
                 return node_run(driver, exchanger, node.getNextNode(), depth);
