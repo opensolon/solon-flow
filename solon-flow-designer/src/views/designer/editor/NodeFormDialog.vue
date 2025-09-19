@@ -19,12 +19,14 @@ import InclusiveNodeForm from '../nodeForm/InclusiveNodeForm.vue'
 import ExclusiveNodeForm from '../nodeForm/ExclusiveNodeForm.vue'
 import ParallelNodeForm from '../nodeForm/ParallelNodeForm.vue'
 import ActivityNodeForm from '../nodeForm/ActivityNodeForm.vue'
+import IteratorNodeForm from '../nodeForm/IteratorNodeForm.vue'
 
 const nodeTypeFormMap = { // 节点类型与表单组件的映射关系，用于根据节点类型动态加载对应的表单组件
     start: StartNodeForm, // 开始节点的表单组件
     end: EndNodeForm, // 结束节点的表单组件
     inclusive: InclusiveNodeForm, // 包容网关节点的表单组件
     exclusive: ExclusiveNodeForm, // 排他网关节点的表单组件
+    iterator: IteratorNodeForm, // 循环网关节点的表单组件
     parallel: ParallelNodeForm, // 并行网关节点的表单组件
     activity: ActivityNodeForm, // 活动节点的表单组件
     default: StartNodeForm // 默认表单组件

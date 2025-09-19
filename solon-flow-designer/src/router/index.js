@@ -10,11 +10,6 @@ const routes = [
     path: '/design',
     name: 'Design',
     component: () => import('@/views/designer/Index.vue')
-  },
-  {
-    path: '/import',
-    name: 'Import',
-    component: () => import('@/views/designer/import/Index.vue')
   }
 ]
 
