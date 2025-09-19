@@ -29,8 +29,6 @@ public class EventTest {
             latch.countDown();
         });
 
-        //context.<String,String>eventBus(); //泛型模式
-
         flowEngine.eval("event1", context);
 
         assert latch.getCount() == 0;
@@ -44,7 +42,7 @@ public class EventTest {
             context.eventBus().send("demo.topic", "hello-com");
 
             //泛型模式
-            context.<String, String>eventBus().send("demo.topic", "hello-com2");
+            context.eventBus().send("demo.topic", "hello-com2");
         }
     }
 }

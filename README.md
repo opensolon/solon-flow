@@ -149,10 +149,10 @@ id: f4
 layout:
   - task: |
       //发送
-      context.<String,String>eventBus().send("demo.topic", "hello");  //支持泛型（类型按需指定，不指定时为 object）
+      context.eventBus().send("demo.topic", "hello");  //支持泛型（类型按需指定，不指定时为 object）
   - task: |
       //调用（要求答复）
-      String rst = context.<String,String>eventBus().call("demo.topic.get", "hello");
+      String rst = context.eventBus().call("demo.topic.get", "hello").get();
       System.out.println(rst);
 ```
 
