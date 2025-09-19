@@ -67,7 +67,7 @@ public class ActorStateController implements StateController {
                 }
             }
 
-            //如果需要的 key，则自动前进
+            //如果没有操作相关的的 key，则自动前进
             return true;
         }
     }
