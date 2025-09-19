@@ -5,6 +5,7 @@
         <NodeFormDialog ref="nodeFormDialogRef"></NodeFormDialog>
         <EdgeFormDialog ref="edgeFormDialogRef"></EdgeFormDialog>
         <ChainFormDialog ref="chainFormDialogRef"></ChainFormDialog>
+        <div id="minimap" style="bottom: 20px;left: 20px;position: absolute;"></div>
     </div>
 </template>
 <script setup>
@@ -12,6 +13,7 @@ import { onMounted, defineComponent, ref, nextTick } from 'vue';
 import { Graph, Shape } from "@antv/x6";
 import { Snapline } from '@antv/x6-plugin-snapline'
 import { Selection } from '@antv/x6-plugin-selection'
+import { MiniMap } from '@antv/x6-plugin-minimap'
 import { Dnd } from '@antv/x6-plugin-dnd'
 import { register, getTeleport } from '@antv/x6-vue-shape'
 import { nodeTypeDef } from '../nodeTypeDef.js';
@@ -222,8 +224,23 @@ function initGraph() {
                 if (sourceCell === targetCell) {
                     return false
                 }
+                const nodeType = targetCell.data.type;
+                if(nodeType){
+                    if(nodeTypeDef[nodeType].validateMagnet){
+                        return nodeTypeDef[nodeType].validateConnection(graph,sourceCell,targetCell)
+                    }
+                }
                 return true
 
+            },
+            validateMagnet(args) {
+                const nodeType = args.cell.data.type;
+                if(nodeType){
+                    if(nodeTypeDef[nodeType].validateMagnet){
+                        return nodeTypeDef[nodeType].validateMagnet(graph,args.cell)
+                    }
+                }
+                return true;
             }
         },
         // scroller: true,
@@ -240,6 +257,11 @@ function initGraph() {
     graph.use(
         new Selection({
             enabled: true,
+        }),
+    )
+    graph.use(
+        new MiniMap({
+            container: document.getElementById('minimap'),
         }),
     )
 

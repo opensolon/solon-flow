@@ -1,7 +1,8 @@
 <template>
   <div class="editor">
     <div class="editor-header">
-      <Header @editChainConfig="onEditChainConfig" @toExport="toExport" @toImport="toImport" @toClear="toClear"></Header>
+      <Header @editChainConfig="onEditChainConfig" @toExport="toExport" @toImport="toImport" @toClear="toClear">
+      </Header>
     </div>
     <div class="editor-content">
       <div class="editor-sider">
@@ -15,14 +16,15 @@
             <a-button type="primary" @click="handleCopyExport">复制</a-button>
           </template>
         </a-modal>
-        <a-modal v-model:open="state.isImportDialogOpen" title="导入" @ok="handleImport" @cancel="state.isImportDialogOpen = false">
+        <a-modal v-model:open="state.isImportDialogOpen" title="导入" @ok="handleImport"
+          @cancel="state.isImportDialogOpen = false">
           <a-divider orientation="left">1.黏贴内容</a-divider>
           <a-textarea :rows="10" v-model:value="state.importData" />
           <a-divider orientation="left">2.选择布局</a-divider>
           <a-select v-model:value="state.layoutType">
-                <a-select-option value="TB">从上到下</a-select-option>
-                <a-select-option value="LR">从左到右</a-select-option>
-              </a-select>
+            <a-select-option value="TB">从上到下</a-select-option>
+            <a-select-option value="LR">从左到右</a-select-option>
+          </a-select>
         </a-modal>
       </div>
     </div>
@@ -30,7 +32,7 @@
 </template>
 
 <script setup>
-import { ref,reactive } from 'vue';
+import { ref, reactive } from 'vue';
 import Header from './editor/Header.vue';
 import Sider from './editor/Sider.vue';
 import FlowCanvas from './editor/Canvas.vue';
@@ -48,8 +50,8 @@ const state = reactive({
   layoutType: 'TB', // 布局类型
 })
 
-const onStartDrag = ({e,nodeType}) => {
-  flowCanvasRef.value.onSiderStartDrag(e,nodeType); // 调用画布容器的方法
+const onStartDrag = ({ e, nodeType }) => {
+  flowCanvasRef.value.onSiderStartDrag(e, nodeType); // 调用画布容器的方法
 }
 const onEditChainConfig = () => {
   flowCanvasRef.value.onEditChainConfig();
@@ -63,22 +65,22 @@ const toExport = (type) => {
   let nodeEnd = null;
 
   data.graphData.cells.forEach(cell => {
-    if(cell.shape == 'flow-edge'){
+    if (cell.shape == 'flow-edge') {
       const edgeData = cell.data || {}
-      const edge ={
-        v_source:cell.source.cell,
-        v_sourcePort:cell.source.port,
-        v_target:cell.target.cell,
-        v_targetPort:cell.target.port,
+      const edge = {
+        v_source: cell.source.cell,
+        v_sourcePort: cell.source.port,
+        v_target: cell.target.cell,
+        v_targetPort: cell.target.port,
 
         nextId: cell.target.cell, // 边的目标节点
-        id:cell.id,
-        title:edgeData.title,
+        id: cell.id,
+        title: edgeData.title,
         condition: edgeData.condition
       }
       nodeLinkMap[cell.source.cell] = nodeLinkMap[cell.source.cell] || []; // 初始化节点的边数组
       nodeLinkMap[cell.source.cell].push(edge); // 将边添加到节点的边数组中
-    }else {
+    } else {
       const nodeData = cell.data || {};
       const node = {
         id: cell.id,
@@ -113,13 +115,13 @@ const toExport = (type) => {
   })
 
   //排序（确保 end 在最后）
-  if(nodeEnd) {
+  if (nodeEnd) {
     nodes.push(nodeEnd);
   }
 
   nodes.forEach(node => {
     let link = nodeLinkMap[node.id];
-    if(link) {
+    if (link) {
       //简化输出
       if (link instanceof Array) {
         if (link.length > 0) {
@@ -134,10 +136,10 @@ const toExport = (type) => {
   const chainData = data.chain; // 构建最终的 JSON 数据
   chainData.layout = nodes
 
-  console.log('chainData',chainData)
-  if('json' == type){
-    state.exportData = JSON.stringify(chainData,null,4); // 格式化输出 JSON 数据
-  }else{
+  console.log('chainData', chainData)
+  if ('json' == type) {
+    state.exportData = JSON.stringify(chainData, null, 4); // 格式化输出 JSON 数据
+  } else {
     state.exportData = yamlUtils.dump(chainData); // 格式化输出 YAML 数据
   }
 
@@ -153,32 +155,32 @@ function handleImport() {
   let dirType = state.layoutType // TB 从上到下 LR 从左到右
   let data = null
   let isAutoLayout = false;// 是否自动布局
-  if(state.importType == 'json'){
+  if (state.importType == 'json') {
     data = JSON.parse(state.importData); // 解析导入的数据
-  }else{
+  } else {
     data = yamlUtils.load(state.importData); // 解析导入的数据
   }
 
-  let portPosDef = [ 'port_b1','port_t1']
-  if(dirType == 'LR'){
-    portPosDef = [ 'port_r1','port_l1']
+  let portPosDef = ['port_b1', 'port_t1']
+  if (dirType == 'LR') {
+    portPosDef = ['port_r1', 'port_l1']
   }
-  
+
   flowCanvasRef.value.clear(false); // 清空画布容器中的内容
   flowCanvasRef.value.setChain(data); // 
   // 组织数据，将solon-flow格式转换为antv-x6格式
 
   let layoutNodes = data.layout || data.nodes; //早期有配置是 nodes
-  if(layoutNodes){
+  if (layoutNodes) {
     const graphData = {
       cells: [], // 存储节点和边的数组
     };
-    
+
     let preNode = null; // 记录上一个节点
 
     let temp_x = 10;
     let temp_y = 10;
-    if(typeof layoutNodes[0].v_x =='undefined' || typeof  layoutNodes[0].v_y=='undefined' || layoutNodes[0].v_x==null || layoutNodes[0].v_y==null){
+    if (typeof layoutNodes[0].v_x == 'undefined' || typeof layoutNodes[0].v_y == 'undefined' || layoutNodes[0].v_x == null || layoutNodes[0].v_y == null) {
       isAutoLayout = true;
     }
 
@@ -196,13 +198,13 @@ function handleImport() {
     });
 
     //排序（确保 end 在最后）
-    if(nodeEnd) {
+    if (nodeEnd) {
       nodes.push(nodeEnd);
     }
 
     nodes.forEach(node => {
       node.type = node.type || 'activity'
-      node.id = node.id || 'node_'+utils.uuid2()
+      node.id = node.id || 'node_' + utils.uuid2()
       const nodeData = {
         id: node.id, // 节点的唯一标识符
         shape: node.type, // 节点的形状
@@ -220,7 +222,7 @@ function handleImport() {
         },
       }
 
-      if(typeof node.v_x =='undefined' || typeof  node.v_y=='undefined' || node.v_x==null || node.v_y==null){
+      if (typeof node.v_x == 'undefined' || typeof node.v_y == 'undefined' || node.v_x == null || node.v_y == null) {
         nodeData.position = {
           x: temp_x, // 节点的 x 坐标
           y: temp_y, // 节点的 y 坐标
@@ -231,20 +233,20 @@ function handleImport() {
 
       graphData.cells.push(nodeData); // 将节点数据添加到数组中
 
-      if(node.link){
-        if(Array.isArray(node.link)){
+      if (node.link) {
+        if (Array.isArray(node.link)) {
           node.link.forEach(link => {
-            if(typeof link == 'object'){
-              if(!link.id){
-                link.id = 'edge_'+utils.uuid2()
+            if (typeof link == 'object') {
+              if (!link.id) {
+                link.id = 'edge_' + utils.uuid2()
               }
-              if(!link.v_source){
+              if (!link.v_source) {
                 link.v_source = node.id,
-                link.v_sourcePort = portPosDef[0]
+                  link.v_sourcePort = portPosDef[0]
               }
-              if(!link.v_target){
+              if (!link.v_target) {
                 link.v_target = link.nextId,
-                link.v_targetPort = portPosDef[1]
+                  link.v_targetPort = portPosDef[1]
               }
               const edgeData = {
                 id: link.id, // 边的唯一标识符
@@ -258,40 +260,40 @@ function handleImport() {
                   condition: link.when || link.condition, //支持 when 配置（未来替代 condition）
                 },
               }
-              if(link.title){
-                edgeData.labels=[link.title]
-              } else if(link.condition){
-                edgeData.labels=[link.condition]
+              if (link.title) {
+                edgeData.labels = [link.title]
+              } else if (link.condition) {
+                edgeData.labels = [link.condition]
               }
               graphData.cells.push(edgeData); // 将边数据添加到数组中
-            }else{// string的情况
-              const edgeData = buildEdgeForStringType(node.id,link,portPosDef) // 构建边数据的函数
+            } else {// string的情况
+              const edgeData = buildEdgeForStringType(node.id, link, portPosDef) // 构建边数据的函数
               graphData.cells.push(edgeData); // 将边数据添加到数组中
             }
-            
+
 
           })
-        }else{
+        } else {
           // string的情况
-          const edgeData = buildEdgeForStringType(node.id,node.link,portPosDef) // 构建边数据的函数
+          const edgeData = buildEdgeForStringType(node.id, node.link, portPosDef) // 构建边数据的函数
           graphData.cells.push(edgeData); // 将边数据添加到数组中
         }
       }
 
-      if(preNode && (!preNode.link || preNode.link.length==0)){
-          const cell = preNode
-          const nextCell = node
-          
-          const edgeData = buildEdgeForStringType(cell.id,nextCell.id,portPosDef) // 构建边数据的函数
-          graphData.cells.push(edgeData); 
-        }
+      if (preNode && (!preNode.link || preNode.link.length == 0)) {
+        const cell = preNode
+        const nextCell = node
 
-      preNode=node;
+        const edgeData = buildEdgeForStringType(cell.id, nextCell.id, portPosDef) // 构建边数据的函数
+        graphData.cells.push(edgeData);
+      }
+
+      preNode = node;
     })
 
-    console.log('graphData',graphData)
+    console.log('graphData', graphData)
     flowCanvasRef.value.setData(graphData); // 将节点和边数据设置到画布容器中
-    if(isAutoLayout){
+    if (isAutoLayout) {
       flowCanvasRef.value.autoLayout(dirType); // 自动缩放画布容器以适应所有节点和边
     }
   }
@@ -305,9 +307,9 @@ function toClear() {
   flowCanvasRef.value.clear(); // 清空画布容器中的内容
 }
 
-function buildEdgeForStringType(source,target,portPosDef){
-  const edgeId = 'edge_'+utils.uuid2()
-  
+function buildEdgeForStringType(source, target, portPosDef) {
+  const edgeId = 'edge_' + utils.uuid2()
+
   const edgeData = {
     id: edgeId, // 边的唯一标识符
     shape: 'flow-edge', // 边的形状
@@ -323,14 +325,14 @@ function buildEdgeForStringType(source,target,portPosDef){
 }
 
 async function handleCopyExport() {
-  try{
+  try {
     await navigator.clipboard.writeText(state.exportData); // 将数据复制到剪贴板
     notification.info({
       message: '提示',
       description: '复制成功',
-      duration:0.8,
+      duration: 0.8,
     })
-  }catch(e){
+  } catch (e) {
     console.log(e)
     notification.error({
       message: '提示',
@@ -363,11 +365,12 @@ async function handleCopyExport() {
     overflow: hidden;
   }
 
- .editor-sider {
+  .editor-sider {
     width: 200px;
     background-color: #fff;
     border-right: 1px solid #ccc;
   }
+
   .editor-canvas {
     flex: 1;
     background-color: #fff;
@@ -375,42 +378,42 @@ async function handleCopyExport() {
 }
 
 .node {
-        width:160px;
-        height: 40px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        cursor: move;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        background-color: #fff;
+  width: 160px;
+  height: 40px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  cursor: move;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  background-color: #fff;
 
-        &:hover {
-                background-color: #deeff5;
-                border-color: #0099ff;
-            }
+  &:hover {
+    background-color: #deeff5;
+    border-color: #0099ff;
+  }
 
-        .node-icon {
-            margin-right: 10px;
-            font-size: 14px;
-            color: #FFF;
-            border-radius: 5px;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+  .node-icon {
+    margin-right: 10px;
+    font-size: 14px;
+    color: #FFF;
+    border-radius: 5px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-            
-        }
 
-       .node-title {
-            font-size: 14px;
-            overflow: hidden;
-            /** 不换行 自动省略 */
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            max-width: 100px;
-        }
-    }
+  }
+
+  .node-title {
+    font-size: 14px;
+    overflow: hidden;
+    /** 不换行 自动省略 */
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100px;
+  }
+}
 </style>

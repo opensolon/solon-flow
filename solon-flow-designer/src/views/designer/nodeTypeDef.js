@@ -10,6 +10,9 @@ const nodeTypeDef = {
         "title": "结束",
         "color": "#5d1dd0",
         "icon": "fa-solid fa-stop",
+        validateMagnet(graph, cell) {
+            return false
+        }
     },
     "inclusive": {
         "type": "inclusive",
@@ -34,6 +37,20 @@ const nodeTypeDef = {
         "title": "活动节点",
         "color": "#047cc2",
         "icon": "fa-solid fa-user",
+    },
+    "iterator": {
+        "type": "iterator",
+        "title": "循环网关",
+        "color": "#00b401",
+        "icon": "fa-solid fa-repeat",
+        validateMagnet(graph, cell) {
+            const edges = graph.getOutgoingEdges(cell)
+            return !edges || edges.length < 1
+        },
+        validateConnection(graph, srccell, targetcell) {
+            const edges = graph.getIncomingEdges(targetcell)
+            return !edges || edges.length < 1
+        }
     }
     /*
     ,
@@ -53,9 +70,9 @@ const nodeTypeDef = {
 }
 
 const groupMap = [
-    {"title":"开关节点","value":"switch","nodes":["start","end"]},
-    {"title":"网关节点","value":"gateway","nodes":["inclusive","exclusive","parallel"]},
-    {"title":"活动节点","value":"activity","nodes":["activity"]}
+    { "title": "开关节点", "value": "switch", "nodes": ["start", "end"] },
+    { "title": "网关节点", "value": "gateway", "nodes": ["inclusive", "exclusive", "parallel", "iterator"] },
+    { "title": "活动节点", "value": "activity", "nodes": ["activity"] }
 ]
 
-export {nodeTypeDef,groupMap}
+export { nodeTypeDef, groupMap }
