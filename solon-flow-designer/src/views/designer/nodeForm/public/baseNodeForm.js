@@ -19,7 +19,7 @@ export function useNodeForm(emit, emitEvents = []) {
         title: null,  // 节点标题
         task: null,   // 任务配置
         when: null,   // 任务条件
-        meta: null    // 元数据
+        meta: {}    // 元数据
     })
 
     // 当前编辑的节点实例
@@ -52,7 +52,9 @@ export function useNodeForm(emit, emitEvents = []) {
             formData.title = data.title || ''
             formData.task = data.task || ''
             formData.when = data.when || ''
-            formData.meta = data.meta || {}
+            if(data.meta){
+                formData.meta = data.meta
+            }
 
             // 数据加载完成后触发一次 onChange 以同步数据
             onChange()
