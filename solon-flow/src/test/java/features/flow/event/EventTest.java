@@ -25,7 +25,7 @@ public class EventTest {
 
         FlowContext context = FlowContext.of();
         context.eventBus().listen("demo.topic", event -> {
-            System.out.println(event.getContent());
+            System.out.println(event.getPayload());
             latch.countDown();
         });
 

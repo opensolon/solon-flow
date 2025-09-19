@@ -15,8 +15,8 @@
  */
 package org.noear.solon.flow;
 
-import org.noear.dami.Dami;
-import org.noear.dami.bus.DamiBus;
+import org.noear.dami2.Dami;
+import org.noear.dami2.bus.DamiBus;
 import org.noear.solon.flow.stateful.StatefulSupporter;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.flow.stateless.StatelessFlowContext;
@@ -117,7 +117,7 @@ public interface FlowContext {
     /**
      * 获取事件总线（based damibus）
      */
-    default <C extends Object, R extends Object> DamiBus<C, R> eventBus() {
+    default DamiBus eventBus() {
         //通过模型，可以被转移或替代
         return computeIfAbsent("eventBus", k -> Dami.newBus());
     }

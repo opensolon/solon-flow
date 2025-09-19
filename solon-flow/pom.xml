@@ -44,8 +44,8 @@
 
         <dependency>
             <groupId>org.noear</groupId>
-            <artifactId>dami</artifactId>
-            <version>${dami.version}</version>
+            <artifactId>dami2</artifactId>
+            <version>${dami2.version}</version>
         </dependency>
 
         <dependency>

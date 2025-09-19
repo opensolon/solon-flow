@@ -15,8 +15,8 @@
  */
 package org.noear.solon.flow;
 
-import org.noear.dami.Dami;
-import org.noear.dami.bus.DamiBus;
+import org.noear.dami2.Dami;
+import org.noear.dami2.bus.DamiBus;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
@@ -171,7 +171,7 @@ public abstract class AbstractFlowContext implements FlowContext {
     /**
      * 获取事件总线（based damibus）
      */
-    public <C extends Object, R extends Object> DamiBus<C, R> eventBus() {
+    public DamiBus eventBus() {
         //通过模型，可以被转移或替代
         return computeIfAbsent("eventBus", k -> Dami.newBus());
     }
