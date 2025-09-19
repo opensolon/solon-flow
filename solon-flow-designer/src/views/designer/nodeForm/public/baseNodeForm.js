@@ -15,6 +15,7 @@ export function useNodeForm(emit, emitEvents = []) {
     // 表单数据模型，使用 reactive 创建响应式对象
     const formData = reactive({
         id: null,     // 节点ID
+        type: null,     // 节点类型
         title: null,  // 节点标题
         task: null,   // 任务配置
         when: null,   // 任务条件
@@ -47,6 +48,7 @@ export function useNodeForm(emit, emitEvents = []) {
         console.log(data)
         if (data) {
             formData.id = data.id
+            formData.type = data.type
             formData.title = data.title || ''
             formData.task = data.task || ''
             formData.when = data.when || ''
@@ -66,6 +68,7 @@ export function useNodeForm(emit, emitEvents = []) {
         // 将表单数据同步到节点
         _currentEditNode.setData({
             id: formData.id,
+            type: formData.type,
             title: formData.title,
             task: formData.task,
             when: formData.when,
