@@ -5,7 +5,7 @@
         <NodeFormDialog ref="nodeFormDialogRef"></NodeFormDialog>
         <EdgeFormDialog ref="edgeFormDialogRef"></EdgeFormDialog>
         <ChainFormDialog ref="chainFormDialogRef"></ChainFormDialog>
-        <div id="minimap" style="bottom: 20px;left: 20px;position: absolute;"></div>
+        <div id="minimap" style="bottom: 20px;right: 20px;position: absolute;"></div>
     </div>
 </template>
 <script setup>
@@ -226,7 +226,7 @@ function initGraph() {
                 }
                 const nodeType = targetCell.data.type;
                 if(nodeType){
-                    if(nodeTypeDef[nodeType].validateMagnet){
+                    if(nodeTypeDef[nodeType].validateConnection){
                         return nodeTypeDef[nodeType].validateConnection(graph,sourceCell,targetCell)
                     }
                 }
@@ -262,6 +262,8 @@ function initGraph() {
     graph.use(
         new MiniMap({
             container: document.getElementById('minimap'),
+            width:150,
+            height:150,
         }),
     )
 
