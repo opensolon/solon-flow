@@ -8,6 +8,7 @@
 ### 3.6.0
 
 * dami 升为 2.0.0
+* 添加 solon-flow Node:getMetaAsString, getMetaAsNumber, getMetaAsBool 方法
 
 ### 3.5.0
 

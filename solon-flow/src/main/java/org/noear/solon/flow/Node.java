@@ -153,6 +153,40 @@ public class Node {
     }
 
     /**
+     * 获取元数据并转为 bool
+     */
+    public Boolean getMetaAsBool(String key) {
+        Object tmp = decl.meta.get(key);
+        if (tmp == null) {
+            return null;
+        } else if (tmp instanceof Boolean) {
+            return (Boolean) tmp;
+        } else if (tmp instanceof String) {
+            return Boolean.parseBoolean((String) tmp);
+        } else if (tmp instanceof Number) {
+            return ((Number) tmp).doubleValue() > 0;
+        } else {
+            throw new UnsupportedOperationException(key);
+        }
+    }
+
+    /**
+     * 获取元数据并转为 bool
+     */
+    public Number getMetaAsNumber(String key) {
+        Object tmp = decl.meta.get(key);
+        if (tmp == null) {
+            return null;
+        } else if (tmp instanceof String) {
+            return Double.parseDouble((String) tmp);
+        } else if (tmp instanceof Number) {
+            return (Number) tmp;
+        } else {
+            throw new UnsupportedOperationException(key);
+        }
+    }
+
+    /**
      * 获取元数据或默认
      */
     public <T> T getMetaOrDefault(String key, T def) {
