@@ -41,7 +41,7 @@ public class ApproveChainDriver extends SimpleFlowDriver {
             //...
 
             //如果当前用户匹配这个节点任务
-            if(role_id.equals(task.getNode().getMeta("role_id"))){
+            if(role_id.equals(task.getNode().getMetaAsString("role_id"))){
                 //则把这个节点，作为结果（用于展示界面）
                 exchanger.context().put("result", task.getNode());
             }

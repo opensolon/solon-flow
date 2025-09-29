@@ -105,7 +105,7 @@ public class OaActionDemo {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         StatefulTask task = statefulService.getTask(chainId, context);
 
-        String actor = task.getNode().getMeta("actor");
+        String actor = task.getNode().getMetaAsString("actor");
         //发邮件（或通知）
     }
 

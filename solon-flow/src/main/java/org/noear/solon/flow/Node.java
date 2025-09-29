@@ -61,11 +61,11 @@ public class Node {
 
     private void ioModeInit() {
         //流入
-        String i_mode = getMeta("$imode");
+        String i_mode = getMetaAsString("$imode");
         this.imode = NodeType.nameOf(i_mode, NodeType.UNKNOWN);
 
         //流出
-        String o_mode = getMeta("$omode");
+        String o_mode = getMetaAsString("$omode");
         this.omode = NodeType.nameOf(o_mode, NodeType.UNKNOWN);
     }
 
@@ -136,6 +136,20 @@ public class Node {
      */
     public boolean hasMeta(String key) {
         return decl.meta.containsKey(key);
+    }
+
+    /**
+     * 获取元数据并转为 string
+     */
+    public String getMetaAsString(String key) {
+        Object tmp = decl.meta.get(key);
+        if (tmp == null) {
+            return null;
+        } else if (tmp instanceof String) {
+            return (String) tmp;
+        } else {
+            return tmp.toString();
+        }
     }
 
     /**

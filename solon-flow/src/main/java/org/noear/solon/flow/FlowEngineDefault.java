@@ -551,7 +551,7 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     protected boolean iterator_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
-        if (Utils.isEmpty((String) node.getMeta("$for"))) {
+        if (Utils.isEmpty(node.getMetaAsString("$for"))) {
             //结束
             if (iterator_run_in(driver, exchanger, node, depth)) {
                 return node_run(driver, exchanger, node.getNextNode(), depth);
@@ -583,8 +583,8 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     protected boolean iterator_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
-        String forKey = node.getMeta("$for");
-        String inKey = node.getMeta("$in");
+        String forKey = node.getMetaAsString("$for");
+        String inKey = node.getMetaAsString("$in");
         Object inObj = exchanger.context().getAs(inKey);
 
         Iterator inIterator = null;

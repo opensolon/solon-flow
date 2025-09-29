@@ -45,7 +45,7 @@ public class ActorStateController implements StateController {
     @Override
     public boolean isOperatable(FlowContext context, Node node) {
         for (String key : keys) {
-            String valOfMeta = node.getMeta(key);
+            String valOfMeta = node.getMetaAsString(key);
             String valOfCtx = context.getAs(key);
 
             if (Objects.equals(valOfMeta, valOfCtx)) {
