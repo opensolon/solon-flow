@@ -199,4 +199,32 @@ public class NodeDecl {
     public static NodeDecl iteratorOf(String id) {
         return new NodeDecl(id, NodeType.ITERATOR);
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public NodeType getType() {
+        return type;
+    }
+
+    public Map<String, Object> getMeta() {
+        return meta;
+    }
+
+    public List<LinkDecl> getLinks() {
+        return links;
+    }
+
+    public String getWhen() {
+        return when;
+    }
+
+    public String getTask() {
+        return task;
+    }
 }
