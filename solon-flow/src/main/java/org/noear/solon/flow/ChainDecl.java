@@ -314,4 +314,24 @@ public class ChainDecl {
 
         return domRoot;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDriver() {
+        return driver;
+    }
+
+    public Map<String, Object> getMeta() {
+        return meta;
+    }
+
+    public Map<String, NodeDecl> getNodes() {
+        return nodes;
+    }
 }

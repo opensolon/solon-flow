@@ -120,4 +120,24 @@ public class LinkDecl {
 
         return buf.toString();
     }
+
+    public String getNextId() {
+        return nextId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Map<String, Object> getMeta() {
+        return meta;
+    }
+
+    public String getWhen() {
+        return when;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
 }
