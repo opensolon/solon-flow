@@ -186,20 +186,20 @@ function handleImport() {
 
     //排序（确保 start 在最前）
     const nodes = [];
-    let nodeEnd = null;
+    let nodeEnd = [];
     layoutNodes.forEach(node => {
       if (node.type == 'start') {
         nodes.unshift(node); //插到前面
       } else if (node.type == 'end') {
-        nodeEnd = node;
+        nodeEnd.push(node);
       } else {
         nodes.push(node);
       }
     });
 
     //排序（确保 end 在最后）
-    if (nodeEnd) {
-      nodes.push(nodeEnd);
+    if (nodeEnd.length > 0) {
+      nodes.push(...nodeEnd);
     }
 
     nodes.forEach(node => {
@@ -284,6 +284,12 @@ function handleImport() {
         const cell = preNode
         const nextCell = node
 
+        // 如果cell和nextCell都是end，不连接
+        if (cell.type == 'end' && nextCell.type == 'end') {
+            preNode = node;
+            // 两个节点类型都为 end 时，跳过当前循环
+            return;
+        }
         const edgeData = buildEdgeForStringType(cell.id, nextCell.id, portPosDef) // 构建边数据的函数
         graphData.cells.push(edgeData);
       }
