@@ -22,10 +22,7 @@ import org.noear.solon.lang.Preview;
 import org.yaml.snakeyaml.Yaml;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -328,10 +325,10 @@ public class ChainDecl {
     }
 
     public Map<String, Object> getMeta() {
-        return meta;
+        return Collections.unmodifiableMap(meta);
     }
 
     public Map<String, NodeDecl> getNodes() {
-        return nodes;
+        return Collections.unmodifiableMap(nodes);
     }
 }

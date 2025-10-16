@@ -213,11 +213,11 @@ public class NodeDecl {
     }
 
     public Map<String, Object> getMeta() {
-        return meta;
+        return Collections.unmodifiableMap(meta);
     }
 
     public List<LinkDecl> getLinks() {
-        return links;
+        return Collections.unmodifiableList(links);
     }
 
     public String getWhen() {

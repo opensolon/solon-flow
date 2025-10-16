@@ -17,6 +17,7 @@ package org.noear.solon.flow;
 
 import org.noear.solon.Utils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -130,7 +131,7 @@ public class LinkDecl {
     }
 
     public Map<String, Object> getMeta() {
-        return meta;
+        return Collections.unmodifiableMap(meta);
     }
 
     public String getWhen() {
