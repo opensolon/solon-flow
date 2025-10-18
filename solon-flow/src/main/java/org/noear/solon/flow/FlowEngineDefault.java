@@ -388,7 +388,7 @@ public class FlowEngineDefault implements FlowEngine {
             return inclusive_run_out(driver, exchanger, node, depth);
         } else {
             //默认：排它网关模式
-            return exclusive_run(driver, exchanger, node, depth);
+            return exclusive_run_out(driver, exchanger, node, depth);
         }
     }
 
@@ -462,6 +462,11 @@ public class FlowEngineDefault implements FlowEngine {
      * 运行排他网关
      */
     protected boolean exclusive_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
+        //::流出
+       return exclusive_run_out(driver, exchanger, node, depth);
+    }
+
+    protected boolean exclusive_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
         //::流出
         Link def_line = null; //默认线
         for (Link l : node.getNextLinks()) {
