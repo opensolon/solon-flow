@@ -6,7 +6,6 @@ import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.controller.BlockStateController;
-import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.test.SolonTest;
 
 import java.util.Date;
@@ -25,7 +24,7 @@ public class AutoForwardTest {
 
     @Test
     public void case11() throws Exception {
-        FlowStatefulService statefulService = FlowEngine.newInstance().statefulService();
+        FlowStatefulService statefulService = FlowEngine.newInstance().forStateful();
 
         Chain chain = buildChain();
 

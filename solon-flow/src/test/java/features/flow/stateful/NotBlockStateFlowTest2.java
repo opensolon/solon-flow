@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
-import org.noear.solon.flow.intercept.ChainInterceptor;
-import org.noear.solon.flow.intercept.ChainInvocation;
 import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.flow.stateful.StatefulTask;
@@ -63,7 +61,7 @@ public class NotBlockStateFlowTest2 {
         //计算后，可获取最新状态
 
         FlowEngine flowEngine = FlowEngine.newInstance();
-        FlowStatefulService statefulService = flowEngine.statefulService();
+        FlowStatefulService statefulService = flowEngine.forStateful();
         Chain chain = getChain();
 
         FlowContext context = FlowContext.of("3", stateController, stateRepository)

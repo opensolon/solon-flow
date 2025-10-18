@@ -45,7 +45,7 @@ public class AiBlockFlowTest2 {
 
         fe.load("classpath:flow/*.yml");
 
-        return fe.statefulService();
+        return fe.forStateful();
     }
 
     @Test

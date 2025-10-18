@@ -21,7 +21,7 @@ public class BlockStatefulFlowTest {
 
         BlockStateController stateController = new BlockStateController();
         InMemoryStateRepository stateRepository = new InMemoryStateRepository();
-        FlowStatefulService statefulService = flowEngine.statefulService();
+        FlowStatefulService statefulService = flowEngine.forStateful();
 
 
         StatefulTask statefulNode;
@@ -102,7 +102,7 @@ public class BlockStatefulFlowTest {
 
         BlockStateController stateController = new BlockStateController();
         InMemoryStateRepository stateRepository = new InMemoryStateRepository();
-        FlowStatefulService statefulService = flowEngine.statefulService();
+        FlowStatefulService statefulService = flowEngine.forStateful();
 
         StatefulTask statefulNode;
         String instanceId1 = "i3";

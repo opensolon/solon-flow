@@ -55,9 +55,19 @@ public interface FlowEngine {
     <T extends FlowDriver> T getDriverAs(Chain chain, Class<T> driverClass);
 
     /**
-     * 有状态的服务
+     * 为有状态场景
      */
-    FlowStatefulService statefulService();
+    FlowStatefulService forStateful();
+
+    /**
+     * 有状态的服务
+     *
+     * @deprecated 3.6 {@link #forStateful()}
+     */
+    @Deprecated
+    default FlowStatefulService statefulService(){
+        return forStateful();
+    }
 
     /**
      * 添加拦截器

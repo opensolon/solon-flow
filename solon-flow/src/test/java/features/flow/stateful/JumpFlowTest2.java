@@ -50,7 +50,7 @@ public class JumpFlowTest2 {
 
         fe.load("classpath:flow/stateful/*.yml");
 
-        return fe.statefulService();
+        return fe.forStateful();
     }
 
     @Test

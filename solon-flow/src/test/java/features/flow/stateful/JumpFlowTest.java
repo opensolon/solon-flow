@@ -12,7 +12,6 @@ import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
-import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.test.SolonTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +47,7 @@ public class JumpFlowTest {
 
         fe.load("classpath:flow/stateful/*.yml");
 
-        return fe.statefulService();
+        return fe.forStateful();
     }
 
     @Test

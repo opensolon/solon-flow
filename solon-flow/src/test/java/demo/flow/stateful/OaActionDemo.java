@@ -13,7 +13,7 @@ import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 public class OaActionDemo {
     FlowEngine flowEngine = FlowEngine.newInstance();
 
-    FlowStatefulService statefulService = flowEngine.statefulService();
+    FlowStatefulService statefulService = flowEngine.forStateful();
     ActorStateController stateController = new ActorStateController();
     InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 

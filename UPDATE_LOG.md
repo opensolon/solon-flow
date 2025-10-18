@@ -4,6 +4,10 @@
 * 优化 solon-flow iterator 网关，支持多线程并发（要解决 item 变量的传递问题）???
 
 
+### 3.6.1
+
+* 添加 FlowEngine:forStateful，statefulService 标为弃用
+
 
 ### 3.6.0
 
