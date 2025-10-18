@@ -255,7 +255,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 执行任务
      */
-    protected void task_exec(FlowDriver driver, FlowExchanger exchanger, Node node) throws FlowException {
+    protected boolean task_exec(FlowDriver driver, FlowExchanger exchanger, Node node) throws FlowException {
         //尝试检测条件；缺省为 true
         if (condition_test(driver, exchanger, node.getWhen(), true)) {
             //起到触发事件的作用 //处理方会“过滤”空任务
@@ -267,6 +267,20 @@ public class FlowEngineDefault implements FlowEngine {
                 throw new FlowException("The task handle failed: " + node.getChain().getId() + " / " + node.getId(), e);
             }
         }
+
+        //如果停止
+        if (exchanger.isStopped()) {
+            return false;
+        }
+
+        //如果阻断，就不再执行了（onNodeBefore 可能会触发中断）
+        if (exchanger.isInterrupted()) {
+            //重置阻断（不影响别的分支）
+            exchanger.interrupt(false);
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -360,19 +374,10 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
         //尝试执行任务（可能为空）
-        task_exec(driver, exchanger, node);
-
-        //如果停止
-        if (exchanger.isStopped()) {
+        if(task_exec(driver, exchanger, node) == false){
             return false;
         }
 
-        //如果阻断，就不再执行了（onNodeBefore 可能会触发中断）
-        if (exchanger.isInterrupted()) {
-            //重置阻断（不影响别的分支）
-            exchanger.interrupt(false);
-            return false;
-        }
 
         //流出模式
         if (node.getOmode() == NodeType.PARALLEL) {
@@ -391,11 +396,11 @@ public class FlowEngineDefault implements FlowEngine {
      * 运行包容网关
      */
     protected boolean inclusive_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
-        if (inclusive_run_in(driver, exchanger, node, depth)) {
-            return inclusive_run_out(driver, exchanger, node, depth);
-        } else {
+        if (inclusive_run_in(driver, exchanger, node, depth) == false) {
             return false;
         }
+
+        return inclusive_run_out(driver, exchanger, node, depth);
     }
 
     protected boolean inclusive_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
@@ -483,11 +488,11 @@ public class FlowEngineDefault implements FlowEngine {
      * 运行并行网关
      */
     protected boolean parallel_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
-        if (parallel_run_in(driver, exchanger, node, depth)) {
-            return parallel_run_out(driver, exchanger, node, depth);
-        } else {
+        if (parallel_run_in(driver, exchanger, node, depth) == false) {
             return false;
         }
+
+        return parallel_run_out(driver, exchanger, node, depth);
     }
 
     protected boolean parallel_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
@@ -552,14 +557,14 @@ public class FlowEngineDefault implements FlowEngine {
 
     protected boolean iterator_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
         if (Utils.isEmpty(node.getMetaAsString("$for"))) {
-            //结束
+            //流入（结束）
             if (iterator_run_in(driver, exchanger, node, depth)) {
                 return node_run(driver, exchanger, node.getNextNode(), depth);
             } else {
                 return false;
             }
         } else {
-            //开始
+            //流出（开始）
             return iterator_run_out(driver, exchanger, node, depth);
         }
     }
