@@ -400,6 +400,12 @@ public class FlowEngineDefault implements FlowEngine {
             return false;
         }
 
+        //尝试执行任务（可能为空）
+        if(task_exec(driver, exchanger, node) == false){
+            return false;
+        }
+
+
         return inclusive_run_out(driver, exchanger, node, depth);
     }
 
@@ -462,8 +468,13 @@ public class FlowEngineDefault implements FlowEngine {
      * 运行排他网关
      */
     protected boolean exclusive_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
+        //尝试执行任务（可能为空）
+        if (task_exec(driver, exchanger, node) == false) {
+            return false;
+        }
+
         //::流出
-       return exclusive_run_out(driver, exchanger, node, depth);
+        return exclusive_run_out(driver, exchanger, node, depth);
     }
 
     protected boolean exclusive_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
@@ -494,6 +505,11 @@ public class FlowEngineDefault implements FlowEngine {
      */
     protected boolean parallel_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
         if (parallel_run_in(driver, exchanger, node, depth) == false) {
+            return false;
+        }
+
+        //尝试执行任务（可能为空）
+        if(task_exec(driver, exchanger, node) == false){
             return false;
         }
 
@@ -563,12 +579,24 @@ public class FlowEngineDefault implements FlowEngine {
     protected boolean iterator_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
         if (Utils.isEmpty(node.getMetaAsString("$for"))) {
             //流入（结束）
-            if (iterator_run_in(driver, exchanger, node, depth)) {
-                return node_run(driver, exchanger, node.getNextNode(), depth);
-            } else {
+            if (iterator_run_in(driver, exchanger, node, depth) == false) {
                 return false;
             }
+
+            //尝试执行任务（可能为空）
+            if(task_exec(driver, exchanger, node) == false){
+                return false;
+            }
+
+            //流出
+            return node_run(driver, exchanger, node.getNextNode(), depth);
         } else {
+            //尝试执行任务（可能为空）
+            if(task_exec(driver, exchanger, node) == false){
+                return false;
+            }
+
+
             //流出（开始）
             return iterator_run_out(driver, exchanger, node, depth);
         }

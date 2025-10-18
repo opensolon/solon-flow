@@ -36,6 +36,6 @@ public interface StateController {
      * 是否自动前进
      */
     default boolean isAutoForward(FlowContext context, Node node) {
-        return node.getType() == NodeType.END;
+        return node.getType() != NodeType.ACTIVITY;
     }
 }
