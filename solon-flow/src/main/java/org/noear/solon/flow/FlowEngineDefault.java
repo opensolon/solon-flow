@@ -23,6 +23,8 @@ import org.noear.solon.flow.intercept.ChainInvocation;
 import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.flow.stateful.FlowStatefulServiceDefault;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +38,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 3.0
  */
 public class FlowEngineDefault implements FlowEngine {
+    static final Logger log = LoggerFactory.getLogger(FlowEngineDefault.class);
+
     protected final Map<String, Chain> chainMap = new ConcurrentHashMap<>();
     protected final Map<String, FlowDriver> driverMap = new ConcurrentHashMap<>();
     protected final List<RankEntity<ChainInterceptor>> interceptorList = new ArrayList<>();
@@ -362,33 +366,54 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     protected boolean activity_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
-        //流入模式
+        //流入 //v3.4.3 添加, v3.6.1 取消（不利于画线的控制）
         if (node.getImode() == NodeType.PARALLEL) {
+            //v3.6.1
+            log.warn("Deprecated, requires the 'parallel' node type");
+
             if (parallel_run_in(driver, exchanger, node, depth) == false) {
                 return false;
             }
         } else if (node.getImode() == NodeType.INCLUSIVE) {
+            //v3.6.1
+            log.warn("Deprecated, requires the 'inclusive' node type");
+
             if (inclusive_run_in(driver, exchanger, node, depth) == false) {
                 return false;
             }
         }
 
         //尝试执行任务（可能为空）
-        if(task_exec(driver, exchanger, node) == false){
+        if (task_exec(driver, exchanger, node) == false) {
             return false;
         }
 
+        //流出（原始态）
+        //return node_run(driver, exchanger, node.getNextNode(), depth);
 
-        //流出模式
+        //流出（支持 排它流出）//v3.3.2 添加，v3.6.1 弃用（不利于画线的控制）
+        //return exclusive_run_out(driver, exchanger, node, depth);
+
+        //流出（支持 omode 配置） //v3.4.3 添加, v3.6.1 取消（不利于画线的控制）
         if (node.getOmode() == NodeType.PARALLEL) {
-            //并行网关模式
+            //v3.6.1
+            log.warn("Deprecated, requires the 'parallel' node type");
+
             return parallel_run_out(driver, exchanger, node, depth);
         } else if (node.getOmode() == NodeType.EXCLUSIVE) {
-            //包容网关模式
+            //v3.6.1
+            log.warn("Deprecated, requires the 'inclusive' node type");
+
             return inclusive_run_out(driver, exchanger, node, depth);
         } else {
-            //默认：排它网关模式
-            return exclusive_run_out(driver, exchanger, node, depth);
+            if (node.getNextLinks().size() > 1) {
+                //v3.6.1
+                log.warn("Deprecated, requires the 'exclusive' node type");
+
+                return exclusive_run_out(driver, exchanger, node, depth);
+            } else {
+                return node_run(driver, exchanger, node.getNextNode(), depth);
+            }
         }
     }
 
@@ -595,7 +620,6 @@ public class FlowEngineDefault implements FlowEngine {
             if(task_exec(driver, exchanger, node) == false){
                 return false;
             }
-
 
             //流出（开始）
             return iterator_run_out(driver, exchanger, node, depth);
