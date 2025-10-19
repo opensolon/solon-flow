@@ -1,4 +1,4 @@
-package features.flow.cfg_iterator;
+package features.flow.cfg_loop;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ import java.util.TreeMap;
 
 @Slf4j
 @SolonTest
-public class IteratorTest {
+public class LoopTest {
     @Inject
     FlowEngine flowEngine;
 
@@ -37,5 +37,21 @@ public class IteratorTest {
         assert context.incrGet("a") == 9;
         assert context.incrGet("b") == 3;
         assert context.incrGet("c") == 1;
+    }
+
+    @Test
+    public void case_demo2() {
+        FlowContext context = FlowContext.of();
+        flowEngine.eval("loop_demo2", context);
+
+        assert "c".equals(context.get("temp"));
+    }
+
+    @Test
+    public void case_demo3() {
+        FlowContext context = FlowContext.of();
+        flowEngine.eval("loop_demo3", context);
+
+        assert context.get("temp") instanceof Integer;
     }
 }

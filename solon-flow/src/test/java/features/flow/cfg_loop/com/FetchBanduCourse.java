@@ -1,4 +1,4 @@
-package features.flow.cfg_iterator.com;
+package features.flow.cfg_loop.com;
 
 import org.noear.solon.annotation.Component;
 import org.noear.solon.flow.FlowContext;
