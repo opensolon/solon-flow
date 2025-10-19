@@ -351,8 +351,8 @@ public class FlowEngineDefault implements FlowEngine {
             case PARALLEL: //并行网关（全选）
                 node_end = parallel_run(driver, exchanger, node, depth);
                 break;
-            case ITERATOR:
-                node_end = iterator_run(driver, exchanger, node, depth);
+            case LOOPING:
+                node_end = looping_run(driver, exchanger, node, depth);
                 break;
         }
 
@@ -601,10 +601,10 @@ public class FlowEngineDefault implements FlowEngine {
         return true;
     }
 
-    protected boolean iterator_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
+    protected boolean looping_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
         if (Utils.isEmpty(node.getMetaAsString("$for"))) {
             //流入（结束）
-            if (iterator_run_in(driver, exchanger, node, depth) == false) {
+            if (looping_run_in(driver, exchanger, node, depth) == false) {
                 return false;
             }
 
@@ -622,11 +622,11 @@ public class FlowEngineDefault implements FlowEngine {
             }
 
             //流出（开始）
-            return iterator_run_out(driver, exchanger, node, depth);
+            return looping_run_out(driver, exchanger, node, depth);
         }
     }
 
-    protected boolean iterator_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
+    protected boolean looping_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
         Stack<Iterator> iterator_stack = exchanger.temporary().stack(node.getChain(), "iterator_run");
 
         //::流入
@@ -644,7 +644,7 @@ public class FlowEngineDefault implements FlowEngine {
         return true;
     }
 
-    protected boolean iterator_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
+    protected boolean looping_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
         String forKey = node.getMetaAsString("$for");
         String inKey = node.getMetaAsString("$in");
         Object inObj = exchanger.context().getAs(inKey);

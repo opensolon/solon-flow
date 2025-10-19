@@ -15,6 +15,9 @@
  */
 package org.noear.solon.flow;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 节点类型
  *
@@ -56,9 +59,11 @@ public enum NodeType {
      */
     PARALLEL(32),
     /**
-     * 遍历网关（循环）
+     * 循环网关（循环）
      */
-    ITERATOR(33);
+    LOOPING(33);
+
+    static final Logger log = LoggerFactory.getLogger(NodeType.class);
 
     private int code;
 
@@ -81,6 +86,11 @@ public enum NodeType {
                 if (v.name().equalsIgnoreCase(name)) {
                     return v;
                 }
+            }
+
+            if ("iterator".equals(name)) {
+                log.warn("Deprecated, requires the 'looping' node type");
+                return LOOPING;
             }
         }
 

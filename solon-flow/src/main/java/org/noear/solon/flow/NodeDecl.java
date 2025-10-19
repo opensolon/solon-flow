@@ -196,8 +196,18 @@ public class NodeDecl {
     /**
      * 构建循环网关节点
      */
+    public static NodeDecl loopingOf(String id) {
+        return new NodeDecl(id, NodeType.LOOPING);
+    }
+
+    /**
+     * 构建循环网关节点
+     * 
+     * @deprecated 3.6 {@link #loopingOf(String)}
+     */
+    @Deprecated
     public static NodeDecl iteratorOf(String id) {
-        return new NodeDecl(id, NodeType.ITERATOR);
+        return loopingOf(id);
     }
 
     public String getId() {
