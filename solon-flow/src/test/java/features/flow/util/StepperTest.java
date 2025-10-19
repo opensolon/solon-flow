@@ -2,7 +2,6 @@ package features.flow.util;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.noear.solon.flow.FlowException;
 import org.noear.solon.flow.util.Stepper;
 
 /**
@@ -17,14 +16,11 @@ public class StepperTest {
 
 
         System.out.println(stepper);
-        assert stepper.toString().equals("Stepper{start=1, end=3, step=1, current=1}");
+        assert stepper.toString().equals("Stepper{start=1, end=3, step=1}");
 
-        stepper.next();
-        assert stepper.toString().equals("Stepper{start=1, end=3, step=1, current=1}");
+        assert stepper.next().equals(1);
 
-        stepper.next();
-        assert stepper.toString().equals("Stepper{start=1, end=3, step=1, current=2}");
-
+        assert stepper.next().equals(2);
 
         Assertions.assertThrows(Throwable.class, () -> stepper.next());
     }
@@ -35,13 +31,11 @@ public class StepperTest {
 
 
         System.out.println(stepper);
-        assert stepper.toString().equals("Stepper{start=1, end=3, step=1, current=1}");
+        assert stepper.toString().equals("Stepper{start=1, end=3, step=1}");
 
-        stepper.next();
-        assert stepper.toString().equals("Stepper{start=1, end=3, step=1, current=1}");
+        assert stepper.next().equals(1);
 
-        stepper.next();
-        assert stepper.toString().equals("Stepper{start=1, end=3, step=1, current=2}");
+        assert stepper.next().equals(2);
 
         Assertions.assertThrows(Throwable.class, () -> stepper.next());
     }

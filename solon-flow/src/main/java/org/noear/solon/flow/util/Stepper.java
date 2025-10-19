@@ -27,9 +27,9 @@ import java.util.NoSuchElementException;
  */
 public class Stepper implements Iterator {
     public static Stepper from(String str) {
-        //"start:end:setp"
-
+        //"start:end:setp" || "1...9"
         int ellipsisIdx = str.indexOf("...");
+
         if (ellipsisIdx > 0) {
             String startStr = str.substring(0, ellipsisIdx);
             String endStr = str.substring(ellipsisIdx + 3);
@@ -64,10 +64,8 @@ public class Stepper implements Iterator {
     private final int start;
     private final int end;
     private final int step;
-
-    private int current;
-    private boolean firstAccess = true;
-    private final boolean hasElements; // 预计算是否有元素
+    private int nextValue;
+    private final boolean hasElements;
 
     public Stepper(int start, int end, int step) {
         if (step <= 0) {
@@ -77,8 +75,8 @@ public class Stepper implements Iterator {
         this.start = start;
         this.end = end;
         this.step = step;
-        this.current = start;
-        this.hasElements = start <= end; // 预计算是否有元素
+        this.nextValue = start;
+        this.hasElements = start < end; // 根据关系调整
     }
 
     @Override
@@ -87,12 +85,8 @@ public class Stepper implements Iterator {
             return false;
         }
 
-        if (firstAccess) {
-            return true;
-        }
-
-        // 使用减法避免溢出，比加法更安全
-        return (end - current) > step;
+        // 直接检查下一个值是否在范围内
+        return nextValue < end;
     }
 
     @Override
@@ -101,18 +95,14 @@ public class Stepper implements Iterator {
             throw new NoSuchElementException("No more elements in stepper");
         }
 
-        if (firstAccess) {
-            firstAccess = false;
-            return current;
+        int result = nextValue;
+
+        // 检查并计算下一个值
+        if (nextValue <= end - step) {
+            nextValue += step;
         }
 
-        // 边界检查
-        if (step > 0 && current > Integer.MAX_VALUE - step) {
-            throw new ArithmeticException("Integer overflow occurred");
-        }
-
-        current += step;
-        return current;
+        return result;
     }
 
     @Override
@@ -121,7 +111,6 @@ public class Stepper implements Iterator {
                 "start=" + start +
                 ", end=" + end +
                 ", step=" + step +
-                ", current=" + current +
                 '}';
     }
 }
