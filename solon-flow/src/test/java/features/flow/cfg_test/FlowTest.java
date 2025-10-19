@@ -54,6 +54,10 @@ public class FlowTest {
         FlowEngine flow = FlowEngine.newInstance();
         flow.load(Chain.parseByUri("classpath:flow/for_case1.chain.yml"));
 
-        flow.eval("for_case1", FlowContext.of());
+        FlowContext context = FlowContext.of();
+
+        flow.eval("for_case1", context);
+
+        assert  context.incrGet("demo") == 5;
     }
 }
