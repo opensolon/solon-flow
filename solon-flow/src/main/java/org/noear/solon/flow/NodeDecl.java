@@ -197,7 +197,7 @@ public class NodeDecl {
      * 构建循环网关节点
      */
     public static NodeDecl loopingOf(String id) {
-        return new NodeDecl(id, NodeType.LOOPING);
+        return new NodeDecl(id, NodeType.LOOP);
     }
 
     /**

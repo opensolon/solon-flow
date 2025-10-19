@@ -351,7 +351,7 @@ public class FlowEngineDefault implements FlowEngine {
             case PARALLEL: //并行网关（全选）
                 node_end = parallel_run(driver, exchanger, node, depth);
                 break;
-            case LOOPING:
+            case LOOP:
                 node_end = looping_run(driver, exchanger, node, depth);
                 break;
         }

@@ -61,7 +61,7 @@ public enum NodeType {
     /**
      * 循环网关（循环）
      */
-    LOOPING(33);
+    LOOP(33);
 
     static final Logger log = LoggerFactory.getLogger(NodeType.class);
 
@@ -90,7 +90,7 @@ public enum NodeType {
 
             if ("iterator".equals(name)) {
                 log.warn("Deprecated, requires the 'looping' node type");
-                return LOOPING;
+                return LOOP;
             }
         }
 
