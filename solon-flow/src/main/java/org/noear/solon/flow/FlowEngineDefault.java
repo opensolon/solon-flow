@@ -23,6 +23,7 @@ import org.noear.solon.flow.intercept.ChainInvocation;
 import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.flow.stateful.FlowStatefulServiceDefault;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
+import org.noear.solon.flow.util.Stepper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -650,9 +651,20 @@ public class FlowEngineDefault implements FlowEngine {
         Object inObj = null;
 
         if (inKey instanceof List) {
+            //常量集合
             inObj = inKey;
+        } else if (inKey instanceof String) {
+            String inKeyStr = inKey.toString();
+
+            if (inKeyStr.indexOf(':') < 0 && inKeyStr.indexOf("...") < 0) {
+                //变量
+                inObj = exchanger.context().getAs(inKeyStr);
+            } else {
+                //步进器："start:end:setp"
+                inObj = Stepper.from(inKeyStr);
+            }
         } else {
-            inObj = exchanger.context().getAs(inKey.toString());
+            throw new FlowException("The '$in' must be a list or a string");
         }
 
         Iterator inIter = null;
