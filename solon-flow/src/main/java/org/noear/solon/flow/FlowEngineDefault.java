@@ -352,7 +352,7 @@ public class FlowEngineDefault implements FlowEngine {
                 node_end = parallel_run(driver, exchanger, node, depth);
                 break;
             case LOOP:
-                node_end = looping_run(driver, exchanger, node, depth);
+                node_end = loop_run(driver, exchanger, node, depth);
                 break;
         }
 
@@ -426,7 +426,7 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
         //尝试执行任务（可能为空）
-        if(task_exec(driver, exchanger, node) == false){
+        if (task_exec(driver, exchanger, node) == false) {
             return false;
         }
 
@@ -534,7 +534,7 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
         //尝试执行任务（可能为空）
-        if(task_exec(driver, exchanger, node) == false){
+        if (task_exec(driver, exchanger, node) == false) {
             return false;
         }
 
@@ -601,15 +601,15 @@ public class FlowEngineDefault implements FlowEngine {
         return true;
     }
 
-    protected boolean looping_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
+    protected boolean loop_run(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
         if (Utils.isEmpty(node.getMetaAsString("$for"))) {
             //流入（结束）
-            if (looping_run_in(driver, exchanger, node, depth) == false) {
+            if (loop_run_in(driver, exchanger, node, depth) == false) {
                 return false;
             }
 
             //尝试执行任务（可能为空）
-            if(task_exec(driver, exchanger, node) == false){
+            if (task_exec(driver, exchanger, node) == false) {
                 return false;
             }
 
@@ -617,54 +617,60 @@ public class FlowEngineDefault implements FlowEngine {
             return node_run(driver, exchanger, node.getNextNode(), depth);
         } else {
             //尝试执行任务（可能为空）
-            if(task_exec(driver, exchanger, node) == false){
+            if (task_exec(driver, exchanger, node) == false) {
                 return false;
             }
 
             //流出（开始）
-            return looping_run_out(driver, exchanger, node, depth);
+            return loop_run_out(driver, exchanger, node, depth);
         }
     }
 
-    protected boolean looping_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
-        Stack<Iterator> iterator_stack = exchanger.temporary().stack(node.getChain(), "iterator_run");
+    protected boolean loop_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
+        Stack<Iterator> loop_stack = exchanger.temporary().stack(node.getChain(), "loop_run");
 
         //::流入
-        if (iterator_stack.size() > 0) {
-            Iterator inIterator = iterator_stack.peek();
-            if (inIterator.hasNext()) { //等待遍历完成
+        if (loop_stack.size() > 0) {
+            Iterator inIter = loop_stack.peek();
+            if (inIter.hasNext()) { //等待遍历完成
                 return false;
             }
 
             //聚合结束，取消这个栈节点
-            iterator_stack.pop();
+            loop_stack.pop();
         }
         //如果没有 gt 0，说明之前还没有流出的
 
         return true;
     }
 
-    protected boolean looping_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
+    protected boolean loop_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
         String forKey = node.getMetaAsString("$for");
-        String inKey = node.getMetaAsString("$in");
-        Object inObj = exchanger.context().getAs(inKey);
+        Object inKey = node.getMeta("$in");
+        Object inObj = null;
 
-        Iterator inIterator = null;
-        if (inObj instanceof Iterator) {
-            inIterator = (Iterator) inObj;
-        } else if (inObj instanceof Iterable) {
-            inIterator = ((Iterable) inObj).iterator();
+        if (inKey instanceof List) {
+            inObj = inKey;
         } else {
-            throw new FlowException(inKey + " is not a Iterable");
+            inObj = exchanger.context().getAs(inKey.toString());
+        }
+
+        Iterator inIter = null;
+        if (inObj instanceof Iterator) {
+            inIter = (Iterator) inObj;
+        } else if (inObj instanceof Iterable) {
+            inIter = ((Iterable) inObj).iterator();
+        } else {
+            throw new FlowException(inKey + " is not a collection");
         }
 
 
-        Stack<Iterator> iterator_stack = exchanger.temporary().stack(node.getChain(), "iterator_run");
-        iterator_stack.push(inIterator);
+        Stack<Iterator> loop_stack = exchanger.temporary().stack(node.getChain(), "loop_run");
+        loop_stack.push(inIter);
 
         //::流出
-        while (inIterator.hasNext()) {
-            Object item = inIterator.next();
+        while (inIter.hasNext()) {
+            Object item = inIter.next();
             exchanger.context().put(forKey, item);
             node_run(driver, exchanger, node.getNextNode(), depth);
         }

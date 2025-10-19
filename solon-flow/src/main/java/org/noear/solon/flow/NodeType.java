@@ -89,7 +89,7 @@ public enum NodeType {
             }
 
             if ("iterator".equals(name)) {
-                log.warn("Deprecated, requires the 'looping' node type");
+                log.warn("Deprecated, requires the 'loop' node type");
                 return LOOP;
             }
         }

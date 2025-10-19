@@ -7,10 +7,14 @@
 ### 3.6.1
 
 * 添加 `solon-flow` FlowEngine:forStateful，statefulService 标为弃用
-* 调整 `solon-flow` 增加 `loop` 类型替代 `iterator`（iterator 增加弃用提醒）
+* 调整 `solon-flow` 增加 `loop` 类型替代 `iterator`（iterator 增加弃用提醒），并提供更多功能
 * 调整 `solon-flow` 所有网关节点增加 `task` 支持，不再需要 `$imode` 和 `$omode`。更适合前端连线控制
 * 调整 `solon-flow` 节点属性 `$imode` 和 `$omode` 标为弃用
 
+
+```yaml
+{type: 'loop',meta: {'$for': 'item','$in': [1,3,4]}}
+```
 
 ### 3.6.0
 
