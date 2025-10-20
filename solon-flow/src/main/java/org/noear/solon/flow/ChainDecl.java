@@ -15,7 +15,7 @@
  */
 package org.noear.solon.flow;
 
-import org.noear.snack.ONode;
+import org.noear.snack4.ONode;
 import org.noear.solon.Utils;
 import org.noear.solon.core.util.ResourceUtil;
 import org.noear.solon.lang.Preview;
@@ -115,7 +115,7 @@ public class ChainDecl {
      */
     public static ChainDecl parseByText(String text) {
         Object dom = new Yaml().load(text);
-        return parseByDom(ONode.load(dom));
+        return parseByDom(ONode.ofBean(dom));
     }
 
     /**
@@ -131,19 +131,19 @@ public class ChainDecl {
         ChainDecl chainDecl = new ChainDecl(id, title, driver);
 
         //元数据
-        Map metaTmp = dom.get("meta").toObject(Map.class);
+        Map metaTmp = dom.get("meta").toBean(Map.class);
         if (Utils.isNotEmpty(metaTmp)) {
             chainDecl.meta.putAll(metaTmp);
         }
 
         //节点（倒序加载，方便自动构建 link）
         final List<ONode> layoutTmp;
-        if (dom.contains("layout")) {
+        if (dom.hasKey("layout")) {
             //新用 layout
-            layoutTmp = dom.get("layout").ary();
+            layoutTmp = dom.get("layout").getArray();
         } else {
             //弃用 v3.1
-            layoutTmp = dom.get("nodes").ary();
+            layoutTmp = dom.get("nodes").getArray();
         }
 
         List<NodeDecl> nodeDeclList = new ArrayList<>();
@@ -163,7 +163,7 @@ public class ChainDecl {
             NodeDecl nodeDecl = new NodeDecl(n1_id, n1_type);
 
             nodeDecl.title(n1.get("title").getString());
-            nodeDecl.meta(n1.get("meta").toObject(Map.class));
+            nodeDecl.meta(n1.get("meta").toBean(Map.class));
             nodeDecl.when(n1.get("when").getString());
             nodeDecl.task(n1.get("task").getString());
 
@@ -171,7 +171,7 @@ public class ChainDecl {
             ONode linkNode = n1.get("link");
             if (linkNode.isArray()) {
                 //数组模式（多个）
-                for (ONode l1 : linkNode.ary()) {
+                for (ONode l1 : linkNode.getArrayUnsafe()) {
                     if (l1.isObject()) {
                         //对象模式
                         addLink(nodeDecl, l1);
@@ -212,7 +212,7 @@ public class ChainDecl {
     private static void addLink(NodeDecl nodeDecl, ONode l1) {
         //支持 when 简写条件
         final String whenStr;
-        if (l1.contains("when")) {
+        if (l1.hasKey("when")) {
             whenStr = l1.get("when").getString();
         } else {
             //弃用 v3.3
@@ -221,7 +221,7 @@ public class ChainDecl {
 
         nodeDecl.linkAdd(l1.get("nextId").getString(), ld -> ld
                 .title(l1.get("title").getString())
-                .meta(l1.get("meta").toObject(Map.class))
+                .meta(l1.get("meta").toBean(Map.class))
                 .when(whenStr));
     }
 
@@ -236,7 +236,7 @@ public class ChainDecl {
      * 转为 json
      */
     public String toJson() {
-        return ONode.stringify(buildDom());
+        return ONode.serialize(buildDom());
     }
 
     protected Map<String, Object> buildDom() {
