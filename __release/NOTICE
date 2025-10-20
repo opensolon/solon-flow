@@ -13,8 +13,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 This project includes:
+  __release under The Apache Software License, Version 2.0
+  ANTLR 4 Runtime under The BSD License
   Apache Commons Pool under Apache-2.0
   asm under BSD-3-Clause
+  aviator under GNU LESSER GENERAL PUBLIC LICENSE
+  beetl under BSD License
+  beetl-core under BSD License
+  beetl-default-antlr4.9-support under BSD License
+  beetl-ext under BSD License
   Byte Buddy (without dependencies) under Apache License, Version 2.0
   Byte Buddy agent under Apache License, Version 2.0
   dami2 under The Apache Software License, Version 2.0
@@ -31,6 +38,7 @@ This project includes:
   JUnit Platform Engine API under Eclipse Public License v2.0
   liquor under The Apache Software License, Version 2.0
   liquor-eval under The Apache Software License, Version 2.0
+  magic-script under The MIT License (MIT)
   mockito-core under The MIT License
   mockito-junit-jupiter under The MIT License
   Objenesis under Apache License, Version 2.0
@@ -51,6 +59,11 @@ This project includes:
   solon-data under The Apache Software License, Version 2.0
   solon-expression under The Apache Software License, Version 2.0
   solon-flow under The Apache Software License, Version 2.0
+  solon-flow-bundle1 under The Apache Software License, Version 2.0
+  solon-flow-eval-aviator under The Apache Software License, Version 2.0
+  solon-flow-eval-beetl under The Apache Software License, Version 2.0
+  solon-flow-eval-magic under The Apache Software License, Version 2.0
+  solon-flow-parent under The Apache Software License, Version 2.0
   solon-handle under The Apache Software License, Version 2.0
   solon-logging under The Apache Software License, Version 2.0
   solon-logging-simple under The Apache Software License, Version 2.0
