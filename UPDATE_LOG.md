@@ -14,6 +14,8 @@
 
 ```yaml
 {type: 'loop',meta: {'$for': 'item','$in': [1,3,4]}}
+{type: 'loop',meta: {'$for': 'item','$in': "1...9"}}
+{type: 'loop',meta: {'$for': 'item','$in': "1:9:1"}}
 ```
 
 ### 3.6.0
