@@ -193,6 +193,9 @@ function handleImport() {
       } else if (node.type == 'end') {
         nodeEnd.push(node);
       } else {
+        if (node.type == 'loop') {
+          node.type = 'iterator';
+        }
         nodes.push(node);
       }
     });
