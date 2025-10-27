@@ -9,6 +9,12 @@
         <a-form-item label="元数据">
             <MetaInputField v-model:value="formData.meta" @change="onChange" />
         </a-form-item>
+        <a-form-item label="任务">
+          <TaskInputField v-model:value="formData.task" @change="onChange" />
+        </a-form-item>
+        <a-form-item label="任务条件">
+          <ConditionInputField v-model:value="formData.when" @change="onChange" />
+        </a-form-item>
     </a-form>
 </template>
 <script setup>
@@ -16,6 +22,8 @@ import { ref, reactive, nextTick, watch } from 'vue'
 import MetaInputField from "@/components/CodeEditor/MetaInputField.vue";
 
 import { useNodeForm } from "@/views/designer/nodeForm/public/baseNodeForm.js";
+import TaskInputField from "@/components/CodeEditor/TaskInputField.vue";
+import ConditionInputField from "@/components/CodeEditor/ConditionInputField.vue";
 
 // 显式定义事件列表
 const emitEvents = ['change']
