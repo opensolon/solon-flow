@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "solon.flow",
+      "type": "java.lang.String[]",
+      "description": "流程资源"
+    }
+  ]
+}
