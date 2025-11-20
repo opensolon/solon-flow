@@ -4,6 +4,10 @@
 * 优化 solon-flow iterator 网关，支持多线程并发（要解决 item 变量的传递问题）???
 
 
+### 3.6.5
+
+* dami2 升为 2.0.3
+
 ### 3.6.1
 
 * 添加 `solon-flow` FlowEngine:forStateful，statefulService 标为弃用
