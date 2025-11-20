@@ -3,6 +3,7 @@
     {
       "name": "solon.flow",
       "type": "java.lang.String[]",
+      "defaultValue": "classpath:flow/*.yml",
       "description": "流程资源"
     }
   ]
