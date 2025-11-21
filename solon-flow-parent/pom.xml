@@ -7,18 +7,18 @@
     <parent>
         <groupId>org.noear</groupId>
         <artifactId>solon-parent</artifactId>
-        <version>3.7.2-SNAPSHOT</version>
+        <version>3.7.2</version>
         <relativePath/>
     </parent>
 
     <artifactId>solon-flow-parent</artifactId>
-    <version>3.7.2-SNAPSHOT</version>
+    <version>3.7.2</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
 
     <properties>
-        <dami2.version>2.0.3</dami2.version>
+        <dami2.version>2.0.4</dami2.version>
         <aviator.version>5.3.2</aviator.version>
         <magic.version>1.8.8</magic.version>
     </properties>
