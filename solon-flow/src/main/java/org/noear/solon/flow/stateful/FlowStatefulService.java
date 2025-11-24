@@ -35,21 +35,33 @@ public interface FlowStatefulService {
 
     /**
      * 单步前进
+     *
+     * @param chainId 链id
+     * @param context 流上下文
      */
     StatefulTask stepForward(String chainId, FlowContext context);
 
     /**
      * 单步前进
+     *
+     * @param chain   链
+     * @param context 流上下文
      */
     StatefulTask stepForward(Chain chain, FlowContext context);
 
     /**
      * 单步后退
+     *
+     * @param chainId 链id
+     * @param context 流上下文
      */
     StatefulTask stepBack(String chainId, FlowContext context);
 
     /**
      * 单步后退
+     *
+     * @param chain   链
+     * @param context 流上下文
      */
     StatefulTask stepBack(Chain chain, FlowContext context);
 
@@ -58,21 +70,39 @@ public interface FlowStatefulService {
 
     /**
      * 提交操作（如果当前任务为等待介入）
+     *
+     * @param chainId   链id
+     * @param nodeId    节点id
+     * @param operation 操作
+     * @param context   流上下文
      */
     boolean postOperationIfWaiting(String chainId, String nodeId, Operation operation, FlowContext context);
 
     /**
      * 提交操作（如果当前任务为等待介入）
+     *
+     * @param node      节点
+     * @param operation 操作
+     * @param context   流上下文
      */
     boolean postOperationIfWaiting(Node node, Operation operation, FlowContext context);
 
     /**
      * 提交操作
+     *
+     * @param chainId   链id
+     * @param nodeId    节点id
+     * @param operation 操作
+     * @param context   流上下文
      */
     void postOperation(String chainId, String nodeId, Operation operation, FlowContext context);
 
     /**
      * 提交操作
+     *
+     * @param node      节点
+     * @param operation 操作
+     * @param context   流上下文
      */
     void postOperation(Node node, Operation operation, FlowContext context);
 
@@ -82,6 +112,7 @@ public interface FlowStatefulService {
     /**
      * 获取多个任务
      *
+     * @param chainId 链id
      * @param context 流上下文（不需要有人员配置）
      */
     Collection<StatefulTask> getTasks(String chainId, FlowContext context);
@@ -89,6 +120,7 @@ public interface FlowStatefulService {
     /**
      * 获取多个任务
      *
+     * @param chain   链
      * @param context 流上下文（不需要有人员配置）
      */
     Collection<StatefulTask> getTasks(Chain chain, FlowContext context);
@@ -96,6 +128,7 @@ public interface FlowStatefulService {
     /**
      * 获取当前任务
      *
+     * @param chainId 链id
      * @param context 流上下文（要有人员配置）
      */
     StatefulTask getTask(String chainId, FlowContext context);
@@ -103,6 +136,7 @@ public interface FlowStatefulService {
     /**
      * 获取当前任务
      *
+     * @param chain   链
      * @param context 流上下文（要有人员配置）
      */
     StatefulTask getTask(Chain chain, FlowContext context);
@@ -111,11 +145,17 @@ public interface FlowStatefulService {
 
     /**
      * 清空状态
+     *
+     * @param chainId 链id
+     * @param context 流上下文
      */
     void clearState(String chainId, FlowContext context);
 
     /**
      * 清空状态
+     *
+     * @param chain   链
+     * @param context 流上下文
      */
     void clearState(Chain chain, FlowContext context);
 }
