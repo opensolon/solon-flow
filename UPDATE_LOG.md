@@ -4,6 +4,12 @@
 * 优化 solon-flow iterator 网关，支持多线程并发（要解决 item 变量的传递问题）???
 
 
+### 3.7.3
+
+* 调整 `solon-flow` Chain 更名为 Graph，ChainDecl 更名为 GraphDecl
+* 调整 `solon-flow` ChainInterceptor 更名为 FlowInterceptor
+
+
 ### 3.7.2
 
 * dami2 升为 2.0.4
