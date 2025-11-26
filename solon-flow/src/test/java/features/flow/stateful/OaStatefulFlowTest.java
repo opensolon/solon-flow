@@ -22,7 +22,7 @@ import java.util.Collection;
 public class OaStatefulFlowTest {
     static final Logger log = LoggerFactory.getLogger(OaStatefulFlowTest.class);
 
-    final String chainId = "sf1";
+    final String graphId = "sf1";
     final String instanceId = Utils.uuid();
 
     ActorStateController stateController = new ActorStateController();
@@ -52,7 +52,7 @@ public class OaStatefulFlowTest {
 
 
         context = getContext("刘涛");
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step1".equals(statefulNode.getNode().getId());
@@ -65,7 +65,7 @@ public class OaStatefulFlowTest {
 
 
         context = getContext("陈鑫");
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -73,7 +73,7 @@ public class OaStatefulFlowTest {
 
         //二次测试
         context = getContext("陈鑫");
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -86,18 +86,18 @@ public class OaStatefulFlowTest {
 
 
         context = getContext(null);
-        Collection<StatefulTask> nodes = statefulService.getTasks(chainId, context);
+        Collection<StatefulTask> nodes = statefulService.getTasks(graphId, context);
         assert nodes.size() == 2;
         assert 0 == nodes.stream().filter(n -> n.getState() == StateType.WAITING).count();
 
         context = getContext("陈宇");
-        nodes = statefulService.getTasks(chainId, context);
+        nodes = statefulService.getTasks(graphId, context);
         assert nodes.size() == 2;
         assert 1 == nodes.stream().filter(n -> n.getState() == StateType.WAITING).count();
 
 
         context = getContext("陈鑫");
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4");
@@ -105,7 +105,7 @@ public class OaStatefulFlowTest {
 
 
         context = getContext("陈宇");
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_1");
@@ -117,7 +117,7 @@ public class OaStatefulFlowTest {
 
 
         context = getContext("吕方");
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_2");
@@ -129,11 +129,11 @@ public class OaStatefulFlowTest {
 
 
         context = getContext("吕方");
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode == null;
 
-        statefulService.clearState(chainId, context);
+        statefulService.clearState(graphId, context);
     }
 
     private FlowContext getContext(String actor) throws Throwable {
@@ -150,7 +150,7 @@ public class OaStatefulFlowTest {
         //初始化引擎
         FlowStatefulService statefulService = buildStatefulService();
 
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
 
         assert "step2".equals(statefulNode.getNode().getId());
         assert StateType.UNKNOWN == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
@@ -159,7 +159,7 @@ public class OaStatefulFlowTest {
         //提交操作
         statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
 
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
 
         assert "step3".equals(statefulNode.getNode().getId());
         assert StateType.WAITING == statefulNode.getState(); //等待当前用户处理（有权限操作）

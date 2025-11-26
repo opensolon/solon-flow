@@ -26,23 +26,23 @@ public class AutoForwardTest {
     public void case11() throws Exception {
         FlowStatefulService statefulService = FlowEngine.newInstance().forStateful();
 
-        Chain chain = buildChain();
+        Graph graph = buildGraph();
 
-        String chainId = "Test" + new Date().getTime();
-        FlowContext context = FlowContext.of(chainId, stateController);
+        String graphId = "Test" + new Date().getTime();
+        FlowContext context = FlowContext.of(graphId, stateController);
 
         context.put("all_auto", true);
-        StatefulTask statefulNode = statefulService.stepForward(chain, context);
+        StatefulTask statefulNode = statefulService.stepForward(graph, context);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().equals("01");
         assert statefulNode.getState() == StateType.COMPLETED;
 
-        statefulNode = statefulService.stepForward(chain, context);
+        statefulNode = statefulService.stepForward(graph, context);
         assert statefulNode == null;
     }
 
-    private Chain buildChain() {
-        Chain chain = new ChainDecl("test_case11", "test_case11").create(decl -> {
+    private Graph buildGraph() {
+        Graph graph = new GraphDecl("test_case11", "test_case11").create(decl -> {
             NodeDecl nodeDecl = null;
 
             nodeDecl = new NodeDecl("start", NodeType.START).title("开始").linkAdd("01");
@@ -60,6 +60,6 @@ public class AutoForwardTest {
         });
 
 
-        return chain;
+        return graph;
     }
 }

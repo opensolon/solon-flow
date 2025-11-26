@@ -17,7 +17,6 @@ package org.noear.solon.flow.stateful.repository;
 
 import org.noear.redisx.RedisClient;
 import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowExchanger;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.flow.stateful.StateRepository;
@@ -43,7 +42,7 @@ public class RedisStateRepository implements StateRepository {
 
     @Override
     public StateType stateGet(FlowContext context, Node node) {
-        String stateKey = node.getChain().getId() + ":" + node.getId();
+        String stateKey = node.getGraph().getId() + ":" + node.getId();
 
         Integer code = client.getHash(statePrefix + context.getInstanceId()).getAsInt(stateKey);
         if (code == null) {
@@ -55,13 +54,13 @@ public class RedisStateRepository implements StateRepository {
 
     @Override
     public void statePut(FlowContext context, Node node, StateType state) {
-        String stateKey = node.getChain().getId() + ":" + node.getId();
+        String stateKey = node.getGraph().getId() + ":" + node.getId();
         client.getHash(statePrefix + context.getInstanceId()).put(stateKey, state.getCode());
     }
 
     @Override
     public void stateRemove(FlowContext context, Node node) {
-        String stateKey = node.getChain().getId() + ":" + node.getId();
+        String stateKey = node.getGraph().getId() + ":" + node.getId();
         client.getHash(statePrefix + context.getInstanceId()).remove(stateKey);
     }
 

@@ -7,12 +7,12 @@ import org.noear.solon.flow.driver.SimpleFlowDriver;
 /**
  * @author noear 2025/1/13 created
  */
-public class ApproveChainDriver extends SimpleFlowDriver {
+public class ApproveFlowDriver extends SimpleFlowDriver {
     @Override
     public void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
-        if (isChain(task.getDescription())) {
-            //如果跨链调用
-            tryAsChainTask(exchanger, task, task.getDescription());
+        if (isGraph(task.getDescription())) {
+            //如果跨图调用
+            tryAsGraphTask(exchanger, task, task.getDescription());
             return;
         }
 
@@ -27,7 +27,7 @@ public class ApproveChainDriver extends SimpleFlowDriver {
         String role_id = exchanger.context().getAs("role_id");
 
 
-        String chain_id = task.getNode().getChain().getId();
+        String graph_id = task.getNode().getGraph().getId();
         String task_id = task.getNode().getId();
 
         //把状态批量加载到上下文参考（或者通过数据库查找状态）

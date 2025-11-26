@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 public class AiBlockFlowTest {
     static final Logger log = LoggerFactory.getLogger(AiBlockFlowTest.class);
 
-    final String chainId = "sf1";
+    final String graphId = "sf1";
     final String instanceId = "i2";
 
     BlockStateController stateController = new BlockStateController() {
@@ -56,19 +56,19 @@ public class AiBlockFlowTest {
         StatefulTask statefulNode;
 
 
-        statefulNode = statefulService.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step1".equals(statefulNode.getNode().getId());
 
-        statefulNode = statefulService.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step2".equals(statefulNode.getNode().getId());
 
         /// ////////////////
 
-        statefulNode = statefulService.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -76,25 +76,25 @@ public class AiBlockFlowTest {
 
         /// ////////////////
 
-        statefulNode = statefulService.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_1");
 
-        statefulNode = statefulService.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_2");
 
         /// ////////////////
 
-        statefulNode = statefulService.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(graphId, context);
         log.warn("{}", statefulNode);
         assert "step5".equals(statefulNode.getNode().getId()); //抄送节点
 
         /// ////////////////
 
-        statefulNode = statefulService.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode == null; //抄送节点
     }

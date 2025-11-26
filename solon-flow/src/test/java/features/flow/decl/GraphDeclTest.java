@@ -1,7 +1,7 @@
 package features.flow.decl;
 
 import org.junit.jupiter.api.Test;
-import org.noear.solon.flow.ChainDecl;
+import org.noear.solon.flow.GraphDecl;
 import org.noear.solon.flow.NodeDecl;
 import org.noear.solon.flow.NodeType;
 import org.noear.solon.flow.LinkDecl;
@@ -12,22 +12,22 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * ChainDecl 属性获取方法测试类
+ * GraphDecl 属性获取方法测试类
  */
-public class ChainDeclTest {
+public class GraphDeclTest {
 
     @Test
-    public void testChainDeclGetters() {
-        // 创建 ChainDecl 实例
-        ChainDecl chainDecl = new ChainDecl("test-id", "test-title", "test-driver");
+    public void testGraphDeclGetters() {
+        // 创建 GraphDecl 实例
+        GraphDecl graphDecl = new GraphDecl("test-id", "test-title", "test-driver");
 
         // 测试基础属性获取方法
-        assertEquals("test-id", chainDecl.getId());
-        assertEquals("test-title", chainDecl.getTitle());
-        assertEquals("test-driver", chainDecl.getDriver());
+        assertEquals("test-id", graphDecl.getId());
+        assertEquals("test-title", graphDecl.getTitle());
+        assertEquals("test-driver", graphDecl.getDriver());
 
         // 测试元数据获取方法
-        Map<String, Object> meta = chainDecl.getMeta();
+        Map<String, Object> meta = graphDecl.getMeta();
         assertNotNull(meta);
         assertTrue(meta.isEmpty()); // 初始应为空
     }
@@ -52,7 +52,7 @@ public class ChainDeclTest {
         Map<String, Object> meta = nodeDecl.getMeta();
         assertEquals("value1", meta.get("key1"));
 
-        // 测试链接获取
+        // 测试连接获取
         nodeDecl.linkAdd("next-node");
         List<LinkDecl> links = nodeDecl.getLinks();
         assertEquals(1, links.size());
@@ -63,14 +63,14 @@ public class ChainDeclTest {
     public void testLinkDeclGetters() {
         // 创建 LinkDecl 实例
         LinkDecl linkDecl = new LinkDecl("target-node");
-        linkDecl.title("测试链接")
+        linkDecl.title("测试连接")
                 .when("${age} > 18")
                 .priority(10)
                 .metaPut("link-key", "link-value");
 
         // 测试 LinkDecl 获取属性方法
         assertEquals("target-node", linkDecl.getNextId());
-        assertEquals("测试链接", linkDecl.getTitle());
+        assertEquals("测试连接", linkDecl.getTitle());
         assertEquals("${age} > 18", linkDecl.getWhen());
         assertEquals(10, linkDecl.getPriority());
 

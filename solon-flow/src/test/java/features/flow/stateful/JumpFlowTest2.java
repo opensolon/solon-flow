@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 public class JumpFlowTest2 {
     static final Logger log = LoggerFactory.getLogger(JumpFlowTest2.class);
 
-    final String chainId = "test3";
+    final String graphId = "test3";
     final String instanceId = Utils.uuid();
     final String actor = "role";
 
@@ -58,18 +58,18 @@ public class JumpFlowTest2 {
         FlowStatefulService statefulService = buildStatefulService();
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository).put(actor, "admin");
 
-        statefulService.postOperation(chainId, "n3", Operation.FORWARD_JUMP, context);
+        statefulService.postOperation(graphId, "n3", Operation.FORWARD_JUMP, context);
 
-        StatefulTask task = statefulService.getTask(chainId, context);
+        StatefulTask task = statefulService.getTask(graphId, context);
 
         log.debug(task.toString());
         assert task.getState() == StateType.WAITING;
         assert task.getNode().getId().equals("n4");
 
 
-        statefulService.postOperation(chainId, "n1", Operation.BACK_JUMP, context);
+        statefulService.postOperation(graphId, "n1", Operation.BACK_JUMP, context);
 
-        task = statefulService.getTask(chainId, context);
+        task = statefulService.getTask(graphId, context);
 
         log.debug(task.toString());
         assert task.getState() == StateType.WAITING;
@@ -81,15 +81,15 @@ public class JumpFlowTest2 {
         FlowStatefulService statefulService = buildStatefulService();
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository).put(actor, "admin");
 
-        StatefulTask task = statefulService.getTask(chainId, context);
+        StatefulTask task = statefulService.getTask(graphId, context);
         log.debug(task.toString());
 
         statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
-        StatefulTask task2 = statefulService.getTask(chainId, context);
+        StatefulTask task2 = statefulService.getTask(graphId, context);
         log.debug(task2.toString());
 
         statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
-        StatefulTask task3 = statefulService.getTask(chainId, context);
+        StatefulTask task3 = statefulService.getTask(graphId, context);
         log.debug(task3.toString());
 
         //重复提交相同节点后，获取的任务仍是相同的（说明可以重复提交）
@@ -101,7 +101,7 @@ public class JumpFlowTest2 {
         FlowStatefulService statefulService = buildStatefulService();
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository).put(actor, "admin");
 
-        StatefulTask task = statefulService.getTask(chainId, context);
+        StatefulTask task = statefulService.getTask(graphId, context);
         log.debug(task.toString());
 
         task.runTask(context);

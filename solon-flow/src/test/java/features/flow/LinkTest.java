@@ -45,11 +45,11 @@ public class LinkTest {
 
         //-----
 
-        //动态构建链，并执行
-        Chain chain = new ChainDecl("c1").create(decl -> {
+        //动态构建图，并执行
+        Graph graph = new GraphDecl("c1").create(decl -> {
             decl.addNode(NodeDecl.activityOf("n1").task("@DemoCom"));
         });
 
-        engine.eval(chain.getNode("n1"));
+        engine.eval(graph.getNode("n1"));
     }
 }

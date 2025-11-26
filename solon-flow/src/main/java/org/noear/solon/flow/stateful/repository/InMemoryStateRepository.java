@@ -40,7 +40,7 @@ public class InMemoryStateRepository implements StateRepository {
 
     @Override
     public StateType stateGet(FlowContext context, Node node) {
-        String stateKey = node.getChain().getId() + ":" + node.getId();
+        String stateKey = node.getGraph().getId() + ":" + node.getId();
 
         Integer code = getStates(context.getInstanceId()).get(stateKey);
         if (code == null) {
@@ -52,13 +52,13 @@ public class InMemoryStateRepository implements StateRepository {
 
     @Override
     public void statePut(FlowContext context, Node node, StateType state) {
-        String stateKey = node.getChain().getId() + ":" + node.getId();
+        String stateKey = node.getGraph().getId() + ":" + node.getId();
         getStates(context.getInstanceId()).put(stateKey, state.getCode());
     }
 
     @Override
     public void stateRemove(FlowContext context, Node node) {
-        String stateKey = node.getChain().getId() + ":" + node.getId();
+        String stateKey = node.getGraph().getId() + ":" + node.getId();
         getStates(context.getInstanceId()).remove(stateKey);
     }
 

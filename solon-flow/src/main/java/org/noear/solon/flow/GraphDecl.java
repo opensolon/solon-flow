@@ -26,38 +26,38 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * 链申明
+ * 图申明
  *
  * @author noear
  * @since 3.5
  */
 @Preview("3.5")
-public class ChainDecl {
+public class GraphDecl {
     protected final String id;
     protected final String title;
     protected final String driver;
     protected final Map<String, Object> meta = new LinkedHashMap<>(); //元数据
     protected final Map<String, NodeDecl> nodes = new LinkedHashMap<>();
 
-    public ChainDecl(String id) {
+    public GraphDecl(String id) {
         this(id, null, null);
     }
 
-    public ChainDecl(String id, String title) {
+    public GraphDecl(String id, String title) {
         this(id, title, null);
     }
 
-    public ChainDecl(String id, String title, String driver) {
+    public GraphDecl(String id, String title, String driver) {
         this.id = id;
         this.title = (title == null ? id : title);
         this.driver = (driver == null ? "" : driver);
     }
 
-    public Chain create() {
-        return new Chain(this);
+    public Graph create() {
+        return new Graph(this);
     }
 
-    public Chain create(Consumer<ChainDecl> declaration) {
+    public Graph create(Consumer<GraphDecl> declaration) {
         declaration.accept(this);
         return create();
     }
@@ -83,15 +83,15 @@ public class ChainDecl {
     /**
      * 复制
      */
-    public static ChainDecl copy(Chain chain) {
-        return parseByText(chain.toJson());
+    public static GraphDecl copy(Graph graph) {
+        return parseByText(graph.toJson());
     }
 
 
     /**
      * 解析配置文件
      */
-    public static ChainDecl parseByUri(String uri) {
+    public static GraphDecl parseByUri(String uri) {
         URL url = ResourceUtil.findResource(uri, false);
         if (url == null) {
             throw new IllegalArgumentException("Can't find resource: " + uri);
@@ -113,7 +113,7 @@ public class ChainDecl {
      *
      * @param text 配置文本（支持 yml, json 格式）
      */
-    public static ChainDecl parseByText(String text) {
+    public static GraphDecl parseByText(String text) {
         Object dom = new Yaml().load(text);
         return parseByDom(ONode.ofBean(dom));
     }
@@ -123,17 +123,17 @@ public class ChainDecl {
      *
      * @param dom 配置文档模型
      */
-    public static ChainDecl parseByDom(ONode dom) {
+    public static GraphDecl parseByDom(ONode dom) {
         String id = dom.get("id").getString();
         String title = dom.get("title").getString();
         String driver = dom.get("driver").getString();
 
-        ChainDecl chainDecl = new ChainDecl(id, title, driver);
+        GraphDecl graphDecl = new GraphDecl(id, title, driver);
 
         //元数据
         Map metaTmp = dom.get("meta").toBean(Map.class);
         if (Utils.isNotEmpty(metaTmp)) {
-            chainDecl.meta.putAll(metaTmp);
+            graphDecl.meta.putAll(metaTmp);
         }
 
         //节点（倒序加载，方便自动构建 link）
@@ -197,13 +197,13 @@ public class ChainDecl {
             nodeDeclList.add(nodeDecl);
         }
 
-        //倒排加入链
+        //倒排加入图
         for (int i = nodeDeclList.size(); i > 0; i--) {
-            chainDecl.addNode(nodeDeclList.get(i - 1));
+            graphDecl.addNode(nodeDeclList.get(i - 1));
         }
 
 
-        return chainDecl;
+        return graphDecl;
     }
 
     /**

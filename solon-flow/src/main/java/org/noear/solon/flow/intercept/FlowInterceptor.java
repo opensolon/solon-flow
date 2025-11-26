@@ -21,20 +21,21 @@ import org.noear.solon.flow.Node;
 import org.noear.solon.lang.Preview;
 
 /**
- * 链拦截器
+ * 流拦截器
  *
  * @author noear
  * @since 3.1
  * @since 3.5
+ * @since 3.7
  */
 @Preview("3.1")
-public interface ChainInterceptor {
+public interface FlowInterceptor {
     /**
-     * 拦截链执行
+     * 拦截执行
      *
-     * @param invocation 链调用者
+     * @param invocation 调用者
      */
-    void doIntercept(ChainInvocation invocation) throws FlowException;
+    void doIntercept(FlowInvocation invocation) throws FlowException;
 
     /**
      * 节点运行开始时

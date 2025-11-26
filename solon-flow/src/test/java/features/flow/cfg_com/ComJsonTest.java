@@ -2,7 +2,7 @@ package features.flow.cfg_com;
 
 import org.junit.jupiter.api.Test;
 import org.noear.solon.SimpleSolonApp;
-import org.noear.solon.flow.Chain;
+import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 
@@ -19,7 +19,7 @@ public class ComJsonTest {
         SimpleSolonApp solonApp = new SimpleSolonApp(ComJsonTest.class);
         solonApp.start(null);
 
-        Chain chain = Chain.parseByUri("classpath:flow/com.chain.json");
+        Graph graph = Graph.parseByUri("classpath:flow/com.graph.json");
 
         FlowContext context = FlowContext.of();
         context.put("a", 2);
@@ -28,7 +28,7 @@ public class ComJsonTest {
 
         //完整执行
 
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         System.out.println("------------");
 
         context = FlowContext.of();
@@ -37,6 +37,6 @@ public class ComJsonTest {
         context.put("c", 14);
 
         //执行一层
-        flowEngine.eval(chain.getNode("n2"), 1, context);
+        flowEngine.eval(graph.getNode("n2"), 1, context);
     }
 }

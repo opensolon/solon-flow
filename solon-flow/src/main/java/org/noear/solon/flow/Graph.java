@@ -21,23 +21,24 @@ import org.noear.solon.lang.Preview;
 import java.util.*;
 
 /**
- * 链
+ * 图
  *
  * @author noear
  * @since 3.0
+ * @since 3.7
  * */
 @Preview("3.0")
-public class Chain {
-    private final ChainDecl decl;
+public class Graph {
+    private final GraphDecl decl;
     private Map<String, Node> nodes = new LinkedHashMap<>();
     private List<Link> links = new ArrayList<>();
     private Node start;
 
-    protected Chain(ChainDecl decl) {
+    protected Graph(GraphDecl decl) {
         this.decl = decl;
 
 
-        //倒排加入链
+        //倒排加入图
         for (Map.Entry<String, NodeDecl> kv : decl.nodes.entrySet()) {
             this.addNode(kv.getValue());
         }
@@ -144,7 +145,7 @@ public class Chain {
     private void check() {
         //如果没有配置 start 节点
         if (start == null) {
-            //找到没有流入链接的节点，作为开始节点
+            //找到没有流入连接的节点，作为开始节点
             for (Node node : nodes.values()) {
                 if (Utils.isEmpty(node.getPrevLinks())) {
                     start = node;
@@ -154,7 +155,7 @@ public class Chain {
         }
 
         if (start == null) {
-            throw new IllegalStateException("No start node found, chain: " + decl);
+            throw new IllegalStateException("No start node found, graph: " + decl);
         }
     }
 
@@ -163,8 +164,8 @@ public class Chain {
     /**
      * 解析配置文件
      */
-    public static Chain parseByUri(String uri) {
-        return parseByDecl(ChainDecl.parseByUri(uri));
+    public static Graph parseByUri(String uri) {
+        return parseByDecl(GraphDecl.parseByUri(uri));
     }
 
     /**
@@ -172,8 +173,8 @@ public class Chain {
      *
      * @param text 配置文本（支持 yml, json 格式）
      */
-    public static Chain parseByText(String text) {
-        return parseByDecl(ChainDecl.parseByText(text));
+    public static Graph parseByText(String text) {
+        return parseByDecl(GraphDecl.parseByText(text));
     }
 
     /**
@@ -181,8 +182,8 @@ public class Chain {
      *
      * @param decl 配置申明
      */
-    public static Chain parseByDecl(ChainDecl decl) {
-        return new Chain(decl);
+    public static Graph parseByDecl(GraphDecl decl) {
+        return new Graph(decl);
     }
 
     /**

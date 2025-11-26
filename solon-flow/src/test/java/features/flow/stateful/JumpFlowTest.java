@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class JumpFlowTest {
     static final Logger log = LoggerFactory.getLogger(JumpFlowTest.class);
 
-    final String chainId = "test2";
+    final String graphId = "test2";
     final String instanceId = Utils.uuid();
     final String actor = "role";
 
@@ -55,18 +55,18 @@ public class JumpFlowTest {
         FlowStatefulService statefulService = buildStatefulService();
         FlowContext context = FlowContext.of(instanceId, stateController).put(actor, "admin");
 
-        statefulService.postOperation(chainId, "n3", Operation.FORWARD_JUMP, context);
+        statefulService.postOperation(graphId, "n3", Operation.FORWARD_JUMP, context);
 
-        StatefulTask task = statefulService.getTask(chainId, context);
+        StatefulTask task = statefulService.getTask(graphId, context);
 
         log.debug(task.toString());
         assert task.getState() == StateType.WAITING;
         assert task.getNode().getId().equals("n4");
 
 
-        statefulService.postOperation(chainId, "n1", Operation.BACK_JUMP, context);
+        statefulService.postOperation(graphId, "n1", Operation.BACK_JUMP, context);
 
-        task = statefulService.getTask(chainId, context);
+        task = statefulService.getTask(graphId, context);
 
         log.debug(task.toString());
         assert task.getState() == StateType.WAITING;

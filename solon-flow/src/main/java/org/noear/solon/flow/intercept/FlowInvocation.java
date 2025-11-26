@@ -22,23 +22,24 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * 链调用者
+ * 流调用者
  *
  * @author noear
  * @since 3.1
  * @since 3.5
+ * @since 3.7
  */
-public class ChainInvocation {
+public class FlowInvocation {
     private final FlowDriver driver;
     private final FlowExchanger exchanger;
     private final Node startNode;
     private final int evalDepth;
 
-    private final List<RankEntity<ChainInterceptor>> interceptorList;
-    private final Consumer<ChainInvocation> lastHandler;
+    private final List<RankEntity<FlowInterceptor>> interceptorList;
+    private final Consumer<FlowInvocation> lastHandler;
     private int index;
 
-    public ChainInvocation(FlowDriver driver, FlowExchanger exchanger, Node startNode, int evalDepth, List<RankEntity<ChainInterceptor>> interceptorList, Consumer<ChainInvocation> lastHandler) {
+    public FlowInvocation(FlowDriver driver, FlowExchanger exchanger, Node startNode, int evalDepth, List<RankEntity<FlowInterceptor>> interceptorList, Consumer<FlowInvocation> lastHandler) {
         this.driver = driver;
         this.exchanger = exchanger;
         this.startNode = startNode;
@@ -65,7 +66,6 @@ public class ChainInvocation {
 
     /**
      * 上下文
-     *
      */
     public FlowContext getContext() {
         return exchanger.context();

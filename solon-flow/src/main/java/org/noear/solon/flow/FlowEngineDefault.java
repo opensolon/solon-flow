@@ -18,8 +18,8 @@ package org.noear.solon.flow;
 import org.noear.solon.Utils;
 import org.noear.solon.core.util.Assert;
 import org.noear.solon.core.util.RankEntity;
-import org.noear.solon.flow.intercept.ChainInterceptor;
-import org.noear.solon.flow.intercept.ChainInvocation;
+import org.noear.solon.flow.intercept.FlowInterceptor;
+import org.noear.solon.flow.intercept.FlowInvocation;
 import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.flow.stateful.FlowStatefulServiceDefault;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
@@ -41,9 +41,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class FlowEngineDefault implements FlowEngine {
     static final Logger log = LoggerFactory.getLogger(FlowEngineDefault.class);
 
-    protected final Map<String, Chain> chainMap = new ConcurrentHashMap<>();
+    protected final Map<String, Graph> graphMap = new ConcurrentHashMap<>();
     protected final Map<String, FlowDriver> driverMap = new ConcurrentHashMap<>();
-    protected final List<RankEntity<ChainInterceptor>> interceptorList = new ArrayList<>();
+    protected final List<RankEntity<FlowInterceptor>> interceptorList = new ArrayList<>();
 
     public FlowEngineDefault() {
         this(null);
@@ -59,25 +59,25 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     @Override
-    public FlowDriver getDriver(Chain chain) {
-        Assert.notNull(chain, "chain is null");
+    public FlowDriver getDriver(Graph graph) {
+        Assert.notNull(graph, "graph is null");
 
-        FlowDriver driver = driverMap.get(chain.getDriver());
+        FlowDriver driver = driverMap.get(graph.getDriver());
 
         if (driver == null) {
-            throw new IllegalArgumentException("No driver found for: '" + chain.getDriver() + "'");
+            throw new IllegalArgumentException("No driver found for: '" + graph.getDriver() + "'");
         }
 
         return driver;
     }
 
     @Override
-    public <T extends FlowDriver> T getDriverAs(Chain chain, Class<T> driverClass) {
-        FlowDriver driver = getDriver(chain);
+    public <T extends FlowDriver> T getDriverAs(Graph graph, Class<T> driverClass) {
+        FlowDriver driver = getDriver(graph);
         if (driverClass.isInstance(driver)) {
             return (T) driver;
         } else {
-            throw new IllegalArgumentException("No " + driverClass.getSimpleName() + " found for: '" + chain.getDriver() + "'");
+            throw new IllegalArgumentException("No " + driverClass.getSimpleName() + " found for: '" + graph.getDriver() + "'");
         }
     }
 
@@ -93,14 +93,14 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     @Override
-    public void addInterceptor(ChainInterceptor interceptor, int index) {
+    public void addInterceptor(FlowInterceptor interceptor, int index) {
         interceptorList.add(new RankEntity<>(interceptor, index));
         Collections.sort(interceptorList);
     }
 
     @Override
-    public void removeInterceptor(ChainInterceptor interceptor) {
-        for (RankEntity<ChainInterceptor> i : interceptorList) {
+    public void removeInterceptor(FlowInterceptor interceptor) {
+        for (RankEntity<FlowInterceptor> i : interceptorList) {
             if (i.target == interceptor) {
                 interceptorList.remove(i);
                 break;
@@ -123,43 +123,43 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     @Override
-    public void load(Chain chain) {
-        chainMap.put(chain.getId(), chain);
+    public void load(Graph graph) {
+        graphMap.put(graph.getId(), graph);
     }
 
     @Override
-    public void unload(String chainId) {
-        chainMap.remove(chainId);
+    public void unload(String graphId) {
+        graphMap.remove(graphId);
     }
 
     @Override
-    public Collection<Chain> getChains() {
-        return chainMap.values();
+    public Collection<Graph> getGraphs() {
+        return graphMap.values();
     }
 
     @Override
-    public Chain getChain(String chainId) {
-        return chainMap.get(chainId);
+    public Graph getGraph(String graphId) {
+        return graphMap.get(graphId);
     }
 
     /**
      * 评估
      *
-     * @param chainId   链
+     * @param graphId   图Id
      * @param exchanger 交换器
      */
     @Override
-    public void eval(String chainId, String startId, int depth, FlowExchanger exchanger) throws FlowException {
-        Chain chain = chainMap.get(chainId);
-        if (chain == null) {
-            throw new IllegalArgumentException("No chain found for id: " + chainId);
+    public void eval(String graphId, String startId, int depth, FlowExchanger exchanger) throws FlowException {
+        Graph graph = graphMap.get(graphId);
+        if (graph == null) {
+            throw new IllegalArgumentException("No graph found for id: " + graphId);
         }
 
         Node startNode;
         if (startId == null) {
-            startNode = chain.getStart();
+            startNode = graph.getStart();
         } else {
-            startNode = chain.getNode(startId);
+            startNode = graph.getNode(startId);
         }
 
         eval(startNode, depth, exchanger);
@@ -181,16 +181,16 @@ public class FlowEngineDefault implements FlowEngine {
         //准备工作
         prepare(exchanger);
 
-        FlowDriver driver = getDriver(startNode.getChain());
+        FlowDriver driver = getDriver(startNode.getGraph());
 
         //开始执行
-        FlowExchanger bak = exchanger.context().getAs(FlowExchanger.TAG); //跨链调用时，可能会有
+        FlowExchanger bak = exchanger.context().getAs(FlowExchanger.TAG); //跨图调用时，可能会有
         try {
             if (bak != exchanger) {
                 exchanger.context().put(FlowExchanger.TAG, exchanger);
             }
 
-            new ChainInvocation(driver, exchanger, startNode, depth, this.interceptorList, this::evalDo).invoke();
+            new FlowInvocation(driver, exchanger, startNode, depth, this.interceptorList, this::evalDo).invoke();
         } finally {
             if (bak != exchanger) {
                 if (bak == null) {
@@ -214,7 +214,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 执行评估
      */
-    protected void evalDo(ChainInvocation inv) throws FlowException {
+    protected void evalDo(FlowInvocation inv) throws FlowException {
         node_run(inv.getDriver(), inv.getExchanger(), inv.getStartNode(), inv.getEvalDepth());
     }
 
@@ -222,7 +222,7 @@ public class FlowEngineDefault implements FlowEngine {
      * 节点运行开始时
      */
     protected void onNodeStart(FlowDriver driver, FlowExchanger exchanger, Node node) {
-        for (RankEntity<ChainInterceptor> interceptor : interceptorList) {
+        for (RankEntity<FlowInterceptor> interceptor : interceptorList) {
             interceptor.target.onNodeStart(exchanger.context(), node);
         }
 
@@ -233,7 +233,7 @@ public class FlowEngineDefault implements FlowEngine {
      * 节点运行结束时
      */
     protected void onNodeEnd(FlowDriver driver, FlowExchanger exchanger, Node node) {
-        for (RankEntity<ChainInterceptor> interceptor : interceptorList) {
+        for (RankEntity<FlowInterceptor> interceptor : interceptorList) {
             interceptor.target.onNodeEnd(exchanger.context(), node);
         }
 
@@ -250,7 +250,7 @@ public class FlowEngineDefault implements FlowEngine {
             } catch (FlowException e) {
                 throw e;
             } catch (Throwable e) {
-                throw new FlowException("The test handle failed: " + condition.getChain().getId() + " / " + condition.getDescription(), e);
+                throw new FlowException("The test handle failed: " + condition.getGraph().getId() + " / " + condition.getDescription(), e);
             }
         } else {
             return def;
@@ -269,7 +269,7 @@ public class FlowEngineDefault implements FlowEngine {
             } catch (FlowException e) {
                 throw e;
             } catch (Throwable e) {
-                throw new FlowException("The task handle failed: " + node.getChain().getId() + " / " + node.getId(), e);
+                throw new FlowException("The task handle failed: " + node.getGraph().getId() + " / " + node.getId(), e);
             }
         }
 
@@ -436,13 +436,13 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     protected boolean inclusive_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
-        Stack<Integer> inclusive_stack = exchanger.temporary().stack(node.getChain(), "inclusive_run");
+        Stack<Integer> inclusive_stack = exchanger.temporary().stack(node.getGraph(), "inclusive_run");
 
         //::流入
-        if (node.getPrevLinks().size() > 1) { //如果是多个输入链接（尝试等待）
+        if (node.getPrevLinks().size() > 1) { //如果是多个输入连接（尝试等待）
             if (inclusive_stack.size() > 0) {
                 int start_size = inclusive_stack.peek();
-                int in_size = exchanger.temporary().countIncr(node.getChain(), node.getId());//运行次数累计
+                int in_size = exchanger.temporary().countIncr(node.getGraph(), node.getId());//运行次数累计
                 if (start_size > in_size) { //等待所有支线流入完成
                     return false;
                 }
@@ -457,7 +457,7 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     protected boolean inclusive_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
-        Stack<Integer> inclusive_stack = exchanger.temporary().stack(node.getChain(), "inclusive_run");
+        Stack<Integer> inclusive_stack = exchanger.temporary().stack(node.getGraph(), "inclusive_run");
 
         //::流出
         Link def_line = null;
@@ -544,7 +544,7 @@ public class FlowEngineDefault implements FlowEngine {
 
     protected boolean parallel_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
         //::流入
-        int count = exchanger.temporary().countIncr(node.getChain(), node.getId());//运行次数累计
+        int count = exchanger.temporary().countIncr(node.getGraph(), node.getId());//运行次数累计
         if (node.getPrevLinks().size() > count) { //等待所有支线计数完成
             return false;
         }
@@ -554,7 +554,7 @@ public class FlowEngineDefault implements FlowEngine {
 
     protected boolean parallel_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
         //恢复计数
-        exchanger.temporary().countSet(node.getChain(), node.getId(), 0);
+        exchanger.temporary().countSet(node.getGraph(), node.getId(), 0);
 
         //::流出
         if (exchanger.context().executor() == null || node.getNextNodes().size() < 2) { //没有2个，也没必要用线程池
@@ -628,7 +628,7 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     protected boolean loop_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) {
-        Stack<Iterator> loop_stack = exchanger.temporary().stack(node.getChain(), "loop_run");
+        Stack<Iterator> loop_stack = exchanger.temporary().stack(node.getGraph(), "loop_run");
 
         //::流入
         if (loop_stack.size() > 0) {
@@ -677,7 +677,7 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
 
-        Stack<Iterator> loop_stack = exchanger.temporary().stack(node.getChain(), "loop_run");
+        Stack<Iterator> loop_stack = exchanger.temporary().stack(node.getGraph(), "loop_run");
         loop_stack.push(inIter);
 
         //::流出

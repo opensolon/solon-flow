@@ -25,7 +25,7 @@ public class RedisStateRepositoryEx extends RedisStateRepository {
      */
     public void onPostOperation(FlowContext context, Node node, Operation operation) {
         String instanceId = context.getInstanceId();
-        String chainId = node.getChain().getId();
+        String graphId = node.getGraph().getId();
         String activityNodeId = node.getId();
         String actor = context.getAs("actor"); //需要什么通过 context 传递
         long created = System.currentTimeMillis();

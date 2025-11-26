@@ -33,7 +33,7 @@ public class Condition {
     }
 
     private final String description;
-    private final Chain chain;
+    private final Graph graph;
 
     /**
      * 附件（按需定制使用）
@@ -43,16 +43,16 @@ public class Condition {
     /**
      * @param description 条件描述
      */
-    public Condition(Chain chain, String description) {
-        this.chain = chain;
+    public Condition(Graph graph, String description) {
+        this.graph = graph;
         this.description = description;
     }
 
     /**
-     * 获取链
+     * 获取图
      */
-    public Chain getChain() {
-        return chain;
+    public Graph getGraph() {
+        return graph;
     }
 
     /**

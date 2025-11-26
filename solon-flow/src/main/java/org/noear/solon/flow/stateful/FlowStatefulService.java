@@ -36,34 +36,34 @@ public interface FlowStatefulService {
     /**
      * 单步前进
      *
-     * @param chainId 链id
+     * @param graphId 图id
      * @param context 流上下文
      */
-    StatefulTask stepForward(String chainId, FlowContext context);
+    StatefulTask stepForward(String graphId, FlowContext context);
 
     /**
      * 单步前进
      *
-     * @param chain   链
+     * @param graph   图
      * @param context 流上下文
      */
-    StatefulTask stepForward(Chain chain, FlowContext context);
+    StatefulTask stepForward(Graph graph, FlowContext context);
 
     /**
      * 单步后退
      *
-     * @param chainId 链id
+     * @param graphId 图id
      * @param context 流上下文
      */
-    StatefulTask stepBack(String chainId, FlowContext context);
+    StatefulTask stepBack(String graphId, FlowContext context);
 
     /**
      * 单步后退
      *
-     * @param chain   链
+     * @param graph   图
      * @param context 流上下文
      */
-    StatefulTask stepBack(Chain chain, FlowContext context);
+    StatefulTask stepBack(Graph graph, FlowContext context);
 
 
     /// ////////////////////////////////
@@ -71,12 +71,12 @@ public interface FlowStatefulService {
     /**
      * 提交操作（如果当前任务为等待介入）
      *
-     * @param chainId   链id
+     * @param graphId   图id
      * @param nodeId    节点id
      * @param operation 操作
      * @param context   流上下文
      */
-    boolean postOperationIfWaiting(String chainId, String nodeId, Operation operation, FlowContext context);
+    boolean postOperationIfWaiting(String graphId, String nodeId, Operation operation, FlowContext context);
 
     /**
      * 提交操作（如果当前任务为等待介入）
@@ -90,12 +90,12 @@ public interface FlowStatefulService {
     /**
      * 提交操作
      *
-     * @param chainId   链id
+     * @param graphId   图id
      * @param nodeId    节点id
      * @param operation 操作
      * @param context   流上下文
      */
-    void postOperation(String chainId, String nodeId, Operation operation, FlowContext context);
+    void postOperation(String graphId, String nodeId, Operation operation, FlowContext context);
 
     /**
      * 提交操作
@@ -112,50 +112,50 @@ public interface FlowStatefulService {
     /**
      * 获取多个任务
      *
-     * @param chainId 链id
+     * @param graphId 图id
      * @param context 流上下文（不需要有人员配置）
      */
-    Collection<StatefulTask> getTasks(String chainId, FlowContext context);
+    Collection<StatefulTask> getTasks(String graphId, FlowContext context);
 
     /**
      * 获取多个任务
      *
-     * @param chain   链
+     * @param graph   图
      * @param context 流上下文（不需要有人员配置）
      */
-    Collection<StatefulTask> getTasks(Chain chain, FlowContext context);
+    Collection<StatefulTask> getTasks(Graph graph, FlowContext context);
 
     /**
      * 获取当前任务
      *
-     * @param chainId 链id
+     * @param graphId 图id
      * @param context 流上下文（要有人员配置）
      */
-    StatefulTask getTask(String chainId, FlowContext context);
+    StatefulTask getTask(String graphId, FlowContext context);
 
     /**
      * 获取当前任务
      *
-     * @param chain   链
+     * @param graph   图
      * @param context 流上下文（要有人员配置）
      */
-    StatefulTask getTask(Chain chain, FlowContext context);
+    StatefulTask getTask(Graph graph, FlowContext context);
 
     /// ////////////////////////////////
 
     /**
      * 清空状态
      *
-     * @param chainId 链id
+     * @param graphId 图id
      * @param context 流上下文
      */
-    void clearState(String chainId, FlowContext context);
+    void clearState(String graphId, FlowContext context);
 
     /**
      * 清空状态
      *
-     * @param chain   链
+     * @param graph   图
      * @param context 流上下文
      */
-    void clearState(Chain chain, FlowContext context);
+    void clearState(Graph graph, FlowContext context);
 }

@@ -49,16 +49,16 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * 单步前进
      */
     @Override
-    public StatefulTask stepForward(String chainId, FlowContext context) {
-        return stepForward(flowEngine.getChain(chainId), context);
+    public StatefulTask stepForward(String graphId, FlowContext context) {
+        return stepForward(flowEngine.getGraph(graphId), context);
     }
 
     /**
      * 单步前进
      */
     @Override
-    public StatefulTask stepForward(Chain chain, FlowContext context) {
-        StatefulTask statefulTask = getTask(chain, context);
+    public StatefulTask stepForward(Graph graph, FlowContext context) {
+        StatefulTask statefulTask = getTask(graph, context);
 
         if (statefulTask != null) {
             postOperation(statefulTask.getNode(), Operation.FORWARD, context);
@@ -72,20 +72,20 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * 单步后退
      */
     @Override
-    public StatefulTask stepBack(String chainId, FlowContext context) {
-        return stepBack(flowEngine.getChain(chainId), context);
+    public StatefulTask stepBack(String graphId, FlowContext context) {
+        return stepBack(flowEngine.getGraph(graphId), context);
     }
 
     /**
      * 单步后退
      */
     @Override
-    public StatefulTask stepBack(Chain chain, FlowContext context) {
-        StatefulTask statefulTask = getTask(chain, context);
+    public StatefulTask stepBack(Graph graph, FlowContext context) {
+        StatefulTask statefulTask = getTask(graph, context);
 
         if (statefulTask != null) {
             postOperation(statefulTask.getNode(), Operation.BACK, context);
-            statefulTask = getTask(chain, context);
+            statefulTask = getTask(graph, context);
         }
 
         return statefulTask;
@@ -98,8 +98,8 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * 提交操作（如果当前节点为等待介入）
      */
     @Override
-    public boolean postOperationIfWaiting(String chainId, String nodeId, Operation operation, FlowContext context) {
-        Node node = flowEngine.getChain(chainId).getNode(nodeId);
+    public boolean postOperationIfWaiting(String graphId, String nodeId, Operation operation, FlowContext context) {
+        Node node = flowEngine.getGraph(graphId).getNode(nodeId);
         return postOperationIfWaiting(node, operation, context);
     }
 
@@ -108,7 +108,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public boolean postOperationIfWaiting(Node node, Operation operation, FlowContext context) {
-        StatefulTask statefulTask = getTask(node.getChain(), context);
+        StatefulTask statefulTask = getTask(node.getGraph(), context);
         if (statefulTask == null) {
             return false;
         }
@@ -130,8 +130,8 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * 提交操作
      */
     @Override
-    public void postOperation(String chainId, String nodeId, Operation operation, FlowContext context) {
-        Node node = flowEngine.getChain(chainId).getNode(nodeId);
+    public void postOperation(String graphId, String nodeId, Operation operation, FlowContext context) {
+        Node node = flowEngine.getGraph(graphId).getNode(nodeId);
         postOperation(node, operation, context);
     }
 
@@ -158,7 +158,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         }
 
         StateType newState = StateType.byOperation(operation);
-        FlowDriver driver = flowEngine.getDriverAs(node.getChain(), FlowDriver.class);
+        FlowDriver driver = flowEngine.getDriverAs(node.getGraph(), FlowDriver.class);
 
         //更新状态
         if (operation == Operation.BACK) {
@@ -167,7 +167,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         } else if (operation == Operation.BACK_JUMP) {
             //跳转后退
             while (true) {
-                StatefulTask statefulNode = getTask(node.getChain(), exchanger.context());
+                StatefulTask statefulNode = getTask(node.getGraph(), exchanger.context());
                 backHandle(driver, statefulNode.getNode(), exchanger);
 
                 //到目标节点了
@@ -184,7 +184,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         } else if (operation == Operation.FORWARD_JUMP) {
             //跳转前进
             while (true) {
-                StatefulTask task = getTask(node.getChain(), exchanger.context());
+                StatefulTask task = getTask(node.getGraph(), exchanger.context());
                 forwardHandle(driver, task.getNode(), exchanger, newState);
 
                 //到目标节点了
@@ -206,8 +206,8 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * @param context 流上下文（不需要有参与者配置）
      */
     @Override
-    public Collection<StatefulTask> getTasks(String chainId, FlowContext context) {
-        return getTasks(flowEngine.getChain(chainId), context);
+    public Collection<StatefulTask> getTasks(String graphId, FlowContext context) {
+        return getTasks(flowEngine.getGraph(graphId), context);
     }
 
     /**
@@ -216,12 +216,12 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * @param context 流上下文（不需要有参与者配置）
      */
     @Override
-    public Collection<StatefulTask> getTasks(Chain chain, FlowContext context) {
+    public Collection<StatefulTask> getTasks(Graph graph, FlowContext context) {
         FlowExchanger exchanger = new FlowExchanger(context);
 
         exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_LIST_GET, true);
 
-        flowEngine.eval(chain.getStart(), -1, exchanger);
+        flowEngine.eval(graph.getStart(), -1, exchanger);
         Collection<StatefulTask> tmp = (Collection<StatefulTask>) exchanger.temporary().vars().get(StatefulTask.KEY_ACTIVITY_LIST);
 
         if (tmp == null) {
@@ -237,8 +237,8 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * @param context 流上下文（要有参与者配置）
      */
     @Override
-    public StatefulTask getTask(String chainId, FlowContext context) {
-        return getTask(flowEngine.getChain(chainId), context);
+    public StatefulTask getTask(String graphId, FlowContext context) {
+        return getTask(flowEngine.getGraph(graphId), context);
     }
 
     /**
@@ -247,21 +247,21 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      * @param context 流上下文（要有参与者配置）
      */
     @Override
-    public StatefulTask getTask(Chain chain, FlowContext context) {
+    public StatefulTask getTask(Graph graph, FlowContext context) {
         FlowExchanger exchanger = new FlowExchanger(context);
 
-        flowEngine.eval(chain.getStart(), -1, exchanger);
+        flowEngine.eval(graph.getStart(), -1, exchanger);
         return (StatefulTask) exchanger.temporary().vars().get(StatefulTask.KEY_ACTIVITY_NODE);
     }
 
     @Override
-    public void clearState(String chainId, FlowContext context) {
-        this.clearState(flowEngine.getChain(chainId), context);
+    public void clearState(String graphId, FlowContext context) {
+        this.clearState(flowEngine.getGraph(graphId), context);
     }
 
 
     @Override
-    public void clearState(Chain chain, FlowContext context) {
+    public void clearState(Graph graph, FlowContext context) {
         context.statefulSupporter().stateClear();
     }
 
@@ -282,7 +282,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
             if (nextNode != null) {
                 if (nextNode.getType() == NodeType.INCLUSIVE || nextNode.getType() == NodeType.PARALLEL) {
                     //如果是流入网关，要通过引擎计算获取下个活动节点
-                    StatefulTask statefulNextNode = getTask(node.getChain(), exchanger.context());
+                    StatefulTask statefulNextNode = getTask(node.getGraph(), exchanger.context());
 
                     if (statefulNextNode != null) {
                         nextNode = statefulNextNode.getNode();
@@ -299,7 +299,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
                 }
             }
         } catch (Throwable e) {
-            throw new FlowException("Task handle failed: " + node.getChain().getId() + " / " + node.getId(), e);
+            throw new FlowException("Task handle failed: " + node.getGraph().getId() + " / " + node.getId(), e);
         }
     }
 

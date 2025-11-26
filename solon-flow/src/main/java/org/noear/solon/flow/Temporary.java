@@ -40,16 +40,16 @@ public class Temporary {
     /**
      * 栈获取
      */
-    public <T> Stack<T> stack(Chain chain, String key) {
-        return stacks.computeIfAbsent(chain.getId() + "/" + key, k -> new Stack<>());
+    public <T> Stack<T> stack(Graph graph, String key) {
+        return stacks.computeIfAbsent(graph.getId() + "/" + key, k -> new Stack<>());
     }
 
 
     /**
      * 计数获取
      */
-    public int count(Chain chain, String key) {
-        return counts.computeIfAbsent(chain.getId() + "/" + key, k -> new AtomicInteger(0))
+    public int count(Graph graph, String key) {
+        return counts.computeIfAbsent(graph.getId() + "/" + key, k -> new AtomicInteger(0))
                 .get();
     }
 
@@ -64,8 +64,8 @@ public class Temporary {
     /**
      * 计数设置
      */
-    public void countSet(Chain chain, String key, int value) {
-        counts.computeIfAbsent(chain.getId() + "/" + key, k -> new AtomicInteger(0))
+    public void countSet(Graph graph, String key, int value) {
+        counts.computeIfAbsent(graph.getId() + "/" + key, k -> new AtomicInteger(0))
                 .set(value);
     }
 
@@ -80,8 +80,8 @@ public class Temporary {
     /**
      * 计数增量
      */
-    public int countIncr(Chain chain, String key) {
-        return counts.computeIfAbsent(chain.getId() + "/" + key, k -> new AtomicInteger(0))
+    public int countIncr(Graph graph, String key) {
+        return counts.computeIfAbsent(graph.getId() + "/" + key, k -> new AtomicInteger(0))
                 .incrementAndGet();
     }
 

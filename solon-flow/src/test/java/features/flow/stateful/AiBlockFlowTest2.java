@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 public class AiBlockFlowTest2 {
     static final Logger log = LoggerFactory.getLogger(AiBlockFlowTest2.class);
 
-    final String chainId = "sf1";
+    final String graphId = "sf1";
     final String instanceId = "i2";
 
     ActorStateController stateController = new ActorStateController() {
@@ -56,19 +56,19 @@ public class AiBlockFlowTest2 {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         StatefulTask statefulNode;
 
-        statefulNode = statefulService.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step1".equals(statefulNode.getNode().getId());
 
-        statefulNode = statefulService.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
 
         /// ////////////////
 
-        statefulNode = statefulService.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step4_2".equals(statefulNode.getNode().getId());
@@ -76,7 +76,7 @@ public class AiBlockFlowTest2 {
 
         /// ////////////////
 
-        statefulNode = statefulService.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step4_1".equals(statefulNode.getNode().getId());
@@ -84,7 +84,7 @@ public class AiBlockFlowTest2 {
 
         /// ////////////////
 
-        statefulNode = statefulService.stepForward(chainId, context);
+        statefulNode = statefulService.stepForward(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode == null; //抄送节点
     }

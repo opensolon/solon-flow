@@ -1,7 +1,7 @@
 package features.flow.cfg_test;
 
 import org.junit.jupiter.api.Test;
-import org.noear.solon.flow.Chain;
+import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.container.MapContainer;
@@ -23,7 +23,7 @@ public class FlowTest {
 
         FlowEngine flow = FlowEngine.newInstance();
         flow.register(new SimpleFlowDriver(mapContainer));
-        flow.load(Chain.parseByUri("classpath:flow/flow_case8.chain.yml"));
+        flow.load(Graph.parseByUri("classpath:flow/flow_case8.graph.yml"));
 
         FlowContext context = FlowContext.of();
         context.put("log", new ArrayList<>());
@@ -52,7 +52,7 @@ public class FlowTest {
     @Test
     public void for_case1() throws Throwable {
         FlowEngine flow = FlowEngine.newInstance();
-        flow.load(Chain.parseByUri("classpath:flow/for_case1.chain.yml"));
+        flow.load(Graph.parseByUri("classpath:flow/for_case1.graph.yml"));
 
         FlowContext context = FlowContext.of();
 

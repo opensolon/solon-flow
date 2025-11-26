@@ -26,21 +26,21 @@ public class DemoController {
 
     //操作展示
     @Mapping("display")
-    public ModelAndView displayFlow(Context ctx, String instanceId, String chainId) throws Throwable {
+    public ModelAndView displayFlow(Context ctx, String instanceId, String graphId) throws Throwable {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", ctx.param("actor"));
 
         //获取展示节点及装态
-        StatefulTask task = flowEngine.forStateful().getTask(chainId, context);// if null: 界面显示只读; no null: 界面显示操作：同意，拒绝，撤回到上一节点，撤回到起始节点（给发起人）
+        StatefulTask task = flowEngine.forStateful().getTask(graphId, context);// if null: 界面显示只读; no null: 界面显示操作：同意，拒绝，撤回到上一节点，撤回到起始节点（给发起人）
         return null;
     }
 
     //操作提交
     @Mapping("post")
-    public void postFlow(Context ctx, String instanceId, String chainId, String nodeId, int operation) throws Throwable {
+    public void postFlow(Context ctx, String instanceId, String graphId, String nodeId, int operation) throws Throwable {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", ctx.param("actor"));
 
-        flowEngine.forStateful().postOperation(chainId, nodeId, Operation.codeOf(operation), context);
+        flowEngine.forStateful().postOperation(graphId, nodeId, Operation.codeOf(operation), context);
     }
 }

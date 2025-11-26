@@ -82,11 +82,11 @@ public class FlowExchanger {
         Assert.notNull(node, "node is null");
 
         try {
-            engine().getDriver(node.getChain()).handleTask(this, new Task(node, description));
+            engine().getDriver(node.getGraph()).handleTask(this, new Task(node, description));
         } catch (FlowException e) {
             throw e;
         } catch (Throwable e) {
-            throw new FlowException("The task handle failed: " + node.getChain().getId() + " / " + node.getId(), e);
+            throw new FlowException("The task handle failed: " + node.getGraph().getId() + " / " + node.getId(), e);
         }
     }
 

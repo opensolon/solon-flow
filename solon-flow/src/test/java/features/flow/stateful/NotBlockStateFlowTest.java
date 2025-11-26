@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
-import org.noear.solon.flow.intercept.ChainInterceptor;
-import org.noear.solon.flow.intercept.ChainInvocation;
+import org.noear.solon.flow.intercept.FlowInterceptor;
+import org.noear.solon.flow.intercept.FlowInvocation;
 import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.flow.stateful.StatefulTask;
@@ -15,7 +15,7 @@ import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 @Slf4j
 public class NotBlockStateFlowTest {
     final int amount = 900000;
-    final String chainId = "test1";
+    final String graphId = "test1";
 
     NotBlockStateController stateController = new NotBlockStateController();
     InMemoryStateRepository stateRepository = new InMemoryStateRepository() {
@@ -45,7 +45,7 @@ public class NotBlockStateFlowTest {
         StatefulTask task;
 
 
-        task = statefulService.getTask(chainId, context);
+        task = statefulService.getTask(graphId, context);
 
         Assertions.assertEquals("n5", task.getNode().getId());
         Assertions.assertEquals(StateType.COMPLETED, task.getState());
@@ -53,9 +53,9 @@ public class NotBlockStateFlowTest {
 
     @Test
     public void caseInterceptorBlock() {
-        ChainInterceptor interceptor = new ChainInterceptor() {
+        FlowInterceptor interceptor = new FlowInterceptor() {
             @Override
-            public void doIntercept(ChainInvocation invocation) throws FlowException {
+            public void doIntercept(FlowInvocation invocation) throws FlowException {
                 invocation.invoke();
             }
 
@@ -81,13 +81,13 @@ public class NotBlockStateFlowTest {
         StatefulTask task;
 
 
-        task = statefulService.getTask(chainId, context);
+        task = statefulService.getTask(graphId, context);
 
         Assertions.assertEquals("n0", task.getNode().getId());
         Assertions.assertEquals(StateType.COMPLETED, task.getState());
 
 
-        task = statefulService.getTask(chainId, context);
+        task = statefulService.getTask(graphId, context);
 
         Assertions.assertNull(task); //提前中断，没有节点可取了
 
@@ -95,13 +95,13 @@ public class NotBlockStateFlowTest {
 
         flowEngine.removeInterceptor(interceptor);
 
-        task = statefulService.getTask(chainId, context);
+        task = statefulService.getTask(graphId, context);
 
         Assertions.assertEquals("n5", task.getNode().getId());
         Assertions.assertEquals(StateType.COMPLETED, task.getState());
 
 
-        task = statefulService.getTask(chainId, context);
+        task = statefulService.getTask(graphId, context);
 
         Assertions.assertNull(task); //全部完成，没有节点可取了
     }

@@ -3,7 +3,7 @@ package features.flow.app;
 import demo.flow.rule.BookOrder;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.noear.solon.flow.Chain;
+import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.test.SolonTest;
@@ -17,7 +17,7 @@ public class RuleTest {
     @Test
     public void case1() throws Throwable {
         FlowEngine flowEngine = FlowEngine.newInstance();
-        flowEngine.load("classpath:flow/rule/bookDiscount.chain.yml");
+        flowEngine.load("classpath:flow/rule/bookDiscount.yml");
 
         BookOrder bookOrder = new BookOrder();
         bookOrder.setOriginalPrice(10);
@@ -34,7 +34,7 @@ public class RuleTest {
     @Test
     public void case2() throws Throwable {
         FlowEngine flowEngine = FlowEngine.newInstance();
-        flowEngine.load(Chain.parseByUri("classpath:flow/rule/bookDiscount.chain.yml"));
+        flowEngine.load(Graph.parseByUri("classpath:flow/rule/bookDiscount.yml"));
 
         BookOrder bookOrder = new BookOrder();
         bookOrder.setOriginalPrice(120);
@@ -51,7 +51,7 @@ public class RuleTest {
     @Test
     public void case4() throws Throwable {
         FlowEngine flowEngine = FlowEngine.newInstance();//支持无状态
-        flowEngine.load(Chain.parseByUri("classpath:flow/rule/bookDiscount.chain.yml"));
+        flowEngine.load(Graph.parseByUri("classpath:flow/rule/bookDiscount.yml"));
 
         BookOrder bookOrder = new BookOrder();
         bookOrder.setOriginalPrice(500);

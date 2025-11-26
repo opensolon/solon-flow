@@ -22,7 +22,7 @@ import org.noear.solon.annotation.Configuration;
 import org.noear.solon.core.AppContext;
 import org.noear.solon.flow.FlowDriver;
 import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.intercept.ChainInterceptor;
+import org.noear.solon.flow.intercept.FlowInterceptor;
 
 import java.util.List;
 
@@ -42,16 +42,16 @@ public class FlowConfigurate {
 
     @Bean
     public void flowEngineInit(FlowEngine flowEngine, AppContext context) {
-        List<String> chainList = context.cfg().getList("solon.flow");
+        List<String> flowList = context.cfg().getList("solon.flow");
 
-        if (Utils.isEmpty(chainList)) {
+        if (Utils.isEmpty(flowList)) {
             //默认
             flowEngine.load("classpath:flow/*.yml");
             flowEngine.load("classpath:flow/*.json");
         } else {
             //按配置加载
-            for (String chainUri : chainList) {
-                flowEngine.load(chainUri);
+            for (String uri : flowList) {
+                flowEngine.load(uri);
             }
         }
 
@@ -59,7 +59,7 @@ public class FlowConfigurate {
             flowEngine.register(bw.name(), bw.raw());
         });
 
-        context.subWrapsOfType(ChainInterceptor.class, bw -> {
+        context.subWrapsOfType(FlowInterceptor.class, bw -> {
             flowEngine.addInterceptor(bw.raw(), bw.index());
         });
     }

@@ -16,7 +16,7 @@
 package org.noear.solon.flow;
 
 import org.noear.solon.core.util.ResourceUtil;
-import org.noear.solon.flow.intercept.ChainInterceptor;
+import org.noear.solon.flow.intercept.FlowInterceptor;
 import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.lang.Preview;
 
@@ -47,12 +47,12 @@ public interface FlowEngine {
     /**
      * 获取驱动
      */
-    FlowDriver getDriver(Chain chain);
+    FlowDriver getDriver(Graph graph);
 
     /**
      * 获取驱动
      */
-    <T extends FlowDriver> T getDriverAs(Chain chain, Class<T> driverClass);
+    <T extends FlowDriver> T getDriverAs(Graph graph, Class<T> driverClass);
 
     /**
      * 为有状态场景
@@ -75,14 +75,14 @@ public interface FlowEngine {
      * @param index       顺序位
      * @param interceptor 拦截器
      */
-    void addInterceptor(ChainInterceptor interceptor, int index);
+    void addInterceptor(FlowInterceptor interceptor, int index);
 
     /**
      * 添加拦截器
      *
      * @param interceptor 拦截器
      */
-    default void addInterceptor(ChainInterceptor interceptor) {
+    default void addInterceptor(FlowInterceptor interceptor) {
         addInterceptor(interceptor, 0);
     }
 
@@ -90,11 +90,11 @@ public interface FlowEngine {
      * 移除拦截器
      *
      */
-    void removeInterceptor(ChainInterceptor interceptor);
+    void removeInterceptor(FlowInterceptor interceptor);
 
 
     /**
-     * 注册链驱动器
+     * 注册驱动器
      *
      * @param name   名字
      * @param driver 驱动器
@@ -102,7 +102,7 @@ public interface FlowEngine {
     void register(String name, FlowDriver driver);
 
     /**
-     * 注册默认链驱动器
+     * 注册默认驱动器
      *
      * @param driver 默认驱动器
      */
@@ -111,7 +111,7 @@ public interface FlowEngine {
     }
 
     /**
-     * 注销链驱动器
+     * 注销驱动器
      */
     void unregister(String name);
 
@@ -119,111 +119,111 @@ public interface FlowEngine {
     /**
      * 解析配置文件
      *
-     * @param chainUri 链资源地址
+     * @param graphUri 图资源地址
      */
-    default void load(String chainUri) {
-        if (chainUri.contains("*")) {
-            for (String u1 : ResourceUtil.scanResources(chainUri)) {
-                load(Chain.parseByUri(u1));
+    default void load(String graphUri) {
+        if (graphUri.contains("*")) {
+            for (String u1 : ResourceUtil.scanResources(graphUri)) {
+                load(Graph.parseByUri(u1));
             }
         } else {
-            load(Chain.parseByUri(chainUri));
+            load(Graph.parseByUri(graphUri));
         }
     }
 
     /**
-     * 加载链
+     * 加载图
      *
-     * @param chain 链
+     * @param graph 图
      */
-    void load(Chain chain);
+    void load(Graph graph);
 
     /**
-     * 卸载链
+     * 卸载图
      *
-     * @param chainId 链Id
+     * @param graphId 图Id
      */
-    void unload(String chainId);
+    void unload(String graphId);
 
     /**
-     * 获取所有链
+     * 获取所有图
      */
-    Collection<Chain> getChains();
+    Collection<Graph> getGraphs();
 
     /**
-     * 获取链
+     * 获取图
      */
-    Chain getChain(String chainId);
+    Graph getGraph(String graphId);
 
     /**
      * 运行
      *
-     * @param chainId 链Id
+     * @param graphId 图Id
      */
-    default void eval(String chainId) throws FlowException {
-        eval(chainId, FlowContext.of());
+    default void eval(String graphId) throws FlowException {
+        eval(graphId, FlowContext.of());
     }
 
     /**
      * 运行
      *
-     * @param chainId 链Id
+     * @param graphId 图Id
      * @param context 上下文
      */
-    default void eval(String chainId, FlowContext context) throws FlowException {
-        eval(chainId, null, -1, context);
+    default void eval(String graphId, FlowContext context) throws FlowException {
+        eval(graphId, null, -1, context);
     }
 
     /**
      * 运行
      *
-     * @param chainId 链Id
+     * @param graphId 图Id
      * @param startId 开始Id
      * @param context 上下文
      */
-    default void eval(String chainId, String startId, FlowContext context) throws FlowException {
-        eval(chainId, startId, -1, context);
+    default void eval(String graphId, String startId, FlowContext context) throws FlowException {
+        eval(graphId, startId, -1, context);
     }
 
     /**
      * 运行
      *
-     * @param chainId 链Id
+     * @param graphId 图Id
      * @param startId 开始Id
      * @param depth   执行深度
      * @param context 上下文
      */
-    default void eval(String chainId, String startId, int depth, FlowContext context) throws FlowException {
-        eval(chainId, startId, depth, new FlowExchanger(context));
+    default void eval(String graphId, String startId, int depth, FlowContext context) throws FlowException {
+        eval(graphId, startId, depth, new FlowExchanger(context));
     }
 
     /**
      * 运行
      *
-     * @param chainId   链Id
+     * @param graphId   图Id
      * @param startId   开始Id
      * @param depth     执行深度
      * @param exchanger 交换器
      */
-    void eval(String chainId, String startId, int depth, FlowExchanger exchanger) throws FlowException;
+    void eval(String graphId, String startId, int depth, FlowExchanger exchanger) throws FlowException;
 
     /**
      * 运行
      *
-     * @param chain 链
+     * @param graph 图
      */
-    default void eval(Chain chain) throws FlowException {
-        eval(chain, FlowContext.of());
+    default void eval(Graph graph) throws FlowException {
+        eval(graph, FlowContext.of());
     }
 
     /**
      * 运行
      *
-     * @param chain   链
+     * @param graph   图
      * @param context 上下文
      */
-    default void eval(Chain chain, FlowContext context) throws FlowException {
-        eval(chain.getStart(), -1, context);
+    default void eval(Graph graph, FlowContext context) throws FlowException {
+        eval(graph.getStart(), -1, context);
     }
 
     /**

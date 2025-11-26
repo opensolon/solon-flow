@@ -13,7 +13,7 @@ public class ScriptJavaTest {
 
     @Test
     public void case1() throws Throwable {
-        Chain chain = new ChainDecl("c1").create(decl -> {
+        Graph graph = new GraphDecl("c1").create(decl -> {
             decl.addNode(NodeDecl.startOf("n1").linkAdd("n2"));
             decl.addNode(NodeDecl.activityOf("n2").task("context.put(\"result\", 111 + a);").linkAdd("n3"));
             decl.addNode(NodeDecl.endOf("n2"));
@@ -24,6 +24,6 @@ public class ScriptJavaTest {
         context.put("b", 3);
         context.put("c", 4);
 
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
     }
 }

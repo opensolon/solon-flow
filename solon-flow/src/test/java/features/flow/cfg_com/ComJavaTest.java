@@ -35,7 +35,7 @@ public class ComJavaTest {
 
         flowEngine.register(driver);
 
-        Chain chain = new ChainDecl("c1", "c1").create(decl -> {
+        Graph graph = new GraphDecl("c1", "c1").create(decl -> {
             decl.addNode(NodeDecl.startOf("n1").linkAdd("n2"));
             decl.addNode(NodeDecl.activityOf("n2").task("@a").linkAdd("n3"));
             decl.addNode(NodeDecl.activityOf("n3").task("@b").linkAdd("n4"));
@@ -51,7 +51,7 @@ public class ComJavaTest {
 
         //完整执行
 
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
 
         assert "n3".equals(context.getAs("result"));
 
@@ -63,7 +63,7 @@ public class ComJavaTest {
         context.put("c", 14);
 
         //执行一层
-        flowEngine.eval(chain.getNode("n2"), 1, context);
+        flowEngine.eval(graph.getNode("n2"), 1, context);
 
 
         assert "n2".equals(context.getAs("result"));

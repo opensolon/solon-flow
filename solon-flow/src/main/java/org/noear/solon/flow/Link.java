@@ -26,24 +26,24 @@ import java.util.Map;
  * @since 3.0
  */
 public class Link implements Comparable<Link> {
-    private final Chain chain;
+    private final Graph graph;
     private final String prevId;
     private final LinkDecl decl;
 
     private Node prevNode, nextNode;
     private Condition when;
 
-    public Link(Chain chain, String prevId, LinkDecl decl) {
-        this.chain = chain;
+    public Link(Graph graph, String prevId, LinkDecl decl) {
+        this.graph = graph;
         this.prevId = prevId;
         this.decl = decl;
     }
 
     /**
-     * 获取所属链
+     * 获取所属图
      */
-    public Chain getChain() {
-        return chain;
+    public Graph getGraph() {
+        return graph;
     }
 
     /**
@@ -79,7 +79,7 @@ public class Link implements Comparable<Link> {
      */
     public Condition getWhen() {
         if (when == null) {
-            when = new Condition(chain, decl.when);
+            when = new Condition(graph, decl.when);
         }
 
         return when;
@@ -114,7 +114,7 @@ public class Link implements Comparable<Link> {
      */
     public Node getPrevNode() {
         if (prevNode == null) {
-            prevNode = chain.getNode(getPrevId()); //by id query
+            prevNode = graph.getNode(getPrevId()); //by id query
         }
 
         return prevNode;
@@ -125,7 +125,7 @@ public class Link implements Comparable<Link> {
      */
     public Node getNextNode() {
         if (nextNode == null) {
-            nextNode = chain.getNode(getNextId()); //by id query
+            nextNode = graph.getNode(getNextId()); //by id query
         }
 
         return nextNode;

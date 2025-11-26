@@ -29,7 +29,7 @@ import java.util.*;
 public class Node {
     public static final String TAG = "node";
 
-    private final transient Chain chain;
+    private final transient Graph graph;
 
     private final NodeDecl decl;
     private final List<Link> nextLinks = new ArrayList<>(); //as nextLinks
@@ -46,8 +46,8 @@ public class Node {
      */
     public Object attachment;//如果做扩展解析，用作存储位；
 
-    protected Node(Chain chain, NodeDecl decl, List<Link> links) {
-        this.chain = chain;
+    protected Node(Graph graph, NodeDecl decl, List<Link> links) {
+        this.graph = graph;
         this.decl = decl;
 
         if (links != null) {
@@ -90,10 +90,10 @@ public class Node {
     }
 
     /**
-     * 获取所属链
+     * 获取所属图
      */
-    public Chain getChain() {
-        return chain;
+    public Graph getGraph() {
+        return graph;
     }
 
     /**
@@ -201,7 +201,7 @@ public class Node {
             List<Link> tmp = new ArrayList<>();
 
             if (getType() != NodeType.START) {
-                for (Link l : chain.getLinks()) {
+                for (Link l : graph.getLinks()) {
                     if (getId().equals(l.getNextId())) { //by nextID
                         tmp.add(l);
                     }
@@ -232,9 +232,9 @@ public class Node {
             List<Node> tmp = new ArrayList<>();
 
             if (getType() != NodeType.START) {
-                for (Link l : chain.getLinks()) { //要从链处找
+                for (Link l : graph.getLinks()) { //要从图处找
                     if (getId().equals(l.getNextId())) {
-                        tmp.add(chain.getNode(l.getPrevId()));
+                        tmp.add(graph.getNode(l.getPrevId()));
                     }
                 }
             }
@@ -253,7 +253,7 @@ public class Node {
 
             if (getType() != NodeType.END) {
                 for (Link l : this.getNextLinks()) { //从自由处找
-                    tmp.add(chain.getNode(l.getNextId()));
+                    tmp.add(graph.getNode(l.getNextId()));
                 }
             }
             nextNodes = Collections.unmodifiableList(tmp);
@@ -278,7 +278,7 @@ public class Node {
      */
     public Condition getWhen() {
         if (when == null) {
-            when = new Condition(chain, decl.when);
+            when = new Condition(graph, decl.when);
         }
 
         return when;

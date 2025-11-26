@@ -1,7 +1,7 @@
 package benchmark.flow;
 
 import org.junit.jupiter.api.Test;
-import org.noear.solon.flow.Chain;
+import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 
@@ -13,14 +13,14 @@ public class HelloTest {
     public void parse1() {
         //预热
         for (int i = 0; i < 10; i++) {
-            Chain.parseByText(case1_yml);
+            Graph.parseByText(case1_yml);
         }
 
         //测试
         int count = 10_000; //flow(on macbook): 1.2s 跑完
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
-            Chain.parseByText(case1_yml);
+            Graph.parseByText(case1_yml);
         }
         long time1 = System.currentTimeMillis() - start;
         System.out.println("parse1:" + time1);
@@ -30,7 +30,7 @@ public class HelloTest {
     @Test
     public void case1() {
         FlowEngine flowEngine = FlowEngine.newInstance();
-        flowEngine.load(Chain.parseByText(case1_yml));
+        flowEngine.load(Graph.parseByText(case1_yml));
 
         FlowContext context = FlowContext.of();
         context.put("a", 3);
@@ -73,7 +73,7 @@ public class HelloTest {
     @Test
     public void case2() {
         FlowEngine flowEngine = FlowEngine.newInstance();
-        flowEngine.load(Chain.parseByText(case2_yml));
+        flowEngine.load(Graph.parseByText(case2_yml));
 
         //预热
         for (int i = 0; i < 10; i++) {

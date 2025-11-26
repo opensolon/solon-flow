@@ -31,8 +31,6 @@ import java.util.Map;
  * @since 3.1
  */
 public abstract class AbstractFlowDriver implements FlowDriver {
-    static final Logger log = LoggerFactory.getLogger(AbstractFlowDriver.class);
-
     private final Evaluation evaluation;
     private final Container container;
 
@@ -60,9 +58,9 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     }
 
     /**
-     * 是否为组件
+     * 是否为图
      */
-    protected boolean isChain(String description) {
+    protected boolean isGraph(String description) {
         return description.startsWith("#");
     }
 
@@ -133,9 +131,9 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     }
 
     protected void handleTaskDo(FlowExchanger exchanger, Task task, String description) throws Throwable {
-        if (isChain(description)) {
-            //如果跨链调用
-            tryAsChainTask(exchanger, task, description);
+        if (isGraph(description)) {
+            //如果跨图调用
+            tryAsGraphTask(exchanger, task, description);
             return;
         }
 
@@ -150,12 +148,12 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     }
 
     /**
-     * 尝试作为子链任务运行
+     * 尝试作为子图任务运行
      */
-    protected void tryAsChainTask(FlowExchanger exchanger, Task task, String description) throws Throwable {
-        //调用其它链
-        String chainId = description.substring(1);
-        exchanger.engine().eval(chainId, null, -1, exchanger);
+    protected void tryAsGraphTask(FlowExchanger exchanger, Task task, String description) throws Throwable {
+        //调用其它图
+        String graphId = description.substring(1);
+        exchanger.engine().eval(graphId, null, -1, exchanger);
     }
 
     /**
@@ -182,10 +180,10 @@ public abstract class AbstractFlowDriver implements FlowDriver {
         //按脚本运行
         if (description.startsWith("$")) {
             String metaName = description.substring(1);
-            description = (String) getDepthMeta(task.getNode().getChain().getMetas(), metaName);
+            description = (String) getDepthMeta(task.getNode().getGraph().getMetas(), metaName);
 
             if (Utils.isEmpty(description)) {
-                throw new FlowException("Chain meta not found: " + metaName);
+                throw new FlowException("Graph meta not found: " + metaName);
             }
         }
 

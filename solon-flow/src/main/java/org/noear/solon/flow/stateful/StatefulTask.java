@@ -50,11 +50,11 @@ public class StatefulTask {
         Assert.notNull(node, "node is null");
 
         try {
-            flowEngine.getDriver(node.getChain()).handleTask(new FlowExchanger(context), node.getTask());
+            flowEngine.getDriver(node.getGraph()).handleTask(new FlowExchanger(context), node.getTask());
         } catch (FlowException e) {
             throw e;
         } catch (Throwable e) {
-            throw new FlowException("The task handle failed: " + node.getChain().getId() + " / " + node.getId(), e);
+            throw new FlowException("The task handle failed: " + node.getGraph().getId() + " / " + node.getId(), e);
         }
     }
 

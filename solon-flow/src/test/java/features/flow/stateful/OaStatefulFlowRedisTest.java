@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 public class OaStatefulFlowRedisTest {
     static final Logger log = LoggerFactory.getLogger(OaStatefulFlowRedisTest.class);
 
-    final String chainId = "sf1";
+    final String graphId = "sf1";
     final String instanceId = Utils.uuid();
 
     ActorStateController stateController;
@@ -64,7 +64,7 @@ public class OaStatefulFlowRedisTest {
         StatefulTask statefulNode;
 
         context = getContext("刘涛");
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step1".equals(statefulNode.getNode().getId());
@@ -76,7 +76,7 @@ public class OaStatefulFlowRedisTest {
 
 
         context = getContext("陈鑫");
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -84,7 +84,7 @@ public class OaStatefulFlowRedisTest {
 
         //二次测试
         context = getContext("陈鑫");
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
@@ -97,7 +97,7 @@ public class OaStatefulFlowRedisTest {
 
 
         context = getContext("陈鑫");
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4");
@@ -105,7 +105,7 @@ public class OaStatefulFlowRedisTest {
 
 
         context = getContext("陈宇");
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_1");
@@ -117,7 +117,7 @@ public class OaStatefulFlowRedisTest {
 
 
         context = getContext("吕方");
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4_2");
@@ -129,11 +129,11 @@ public class OaStatefulFlowRedisTest {
 
 
         context = getContext("吕方");
-        statefulNode = statefulService.getTask(chainId, context);
+        statefulNode = statefulService.getTask(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode == null; //抄送节点
 
-        statefulService.clearState(chainId, context);
+        statefulService.clearState(graphId, context);
     }
 
     private FlowContext getContext(String actor) throws Throwable {
@@ -151,7 +151,7 @@ public class OaStatefulFlowRedisTest {
         FlowStatefulService statefulService = buildStatefulService();
 
 
-        statefulTask = statefulService.getTask(chainId, context);
+        statefulTask = statefulService.getTask(graphId, context);
 
         assert "step2".equals(statefulTask.getNode().getId());
         assert StateType.UNKNOWN == statefulTask.getState(); //没有权限启动任务（因为没有配置操作员）
@@ -160,7 +160,7 @@ public class OaStatefulFlowRedisTest {
         //提交操作
         statefulService.postOperation(statefulTask.getNode(), Operation.FORWARD, context);
 
-        statefulTask = statefulService.getTask(chainId, context);
+        statefulTask = statefulService.getTask(graphId, context);
 
         assert "step3".equals(statefulTask.getNode().getId());
         assert StateType.WAITING == statefulTask.getState(); //等待当前用户处理（有权限操作）

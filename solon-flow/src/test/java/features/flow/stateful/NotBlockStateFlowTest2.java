@@ -29,30 +29,30 @@ public class NotBlockStateFlowTest2 {
         //计算后，不能获取最新状态
 
         FlowEngine flowEngine = FlowEngine.newInstance();
-        Chain chain = getChain();
+        Graph graph = getGraph();
 
         FlowContext context = FlowContext.of("5", stateController, stateRepository)
                 .put("tag", "");
 
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         System.out.println("--------------------");
 
         context = FlowContext.of("6", stateController, stateRepository)
                 .put("tag", "n1");
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         System.out.println("--------------------");
 
         //再跑（仍在原位、原状态）
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         System.out.println("--------------------");
 
 
         context.put("tag", "n2");
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         System.out.println("--------------------");
 
         context.put("tag", "");
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         System.out.println("--------------------");
     }
 
@@ -62,12 +62,12 @@ public class NotBlockStateFlowTest2 {
 
         FlowEngine flowEngine = FlowEngine.newInstance();
         FlowStatefulService statefulService = flowEngine.forStateful();
-        Chain chain = getChain();
+        Graph graph = getGraph();
 
         FlowContext context = FlowContext.of("3", stateController, stateRepository)
                 .put("tag", "");
 
-        StatefulTask task = statefulService.getTask(chain, context);
+        StatefulTask task = statefulService.getTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n3", task.getNode().getId());
@@ -76,14 +76,14 @@ public class NotBlockStateFlowTest2 {
         context = FlowContext.of("4", stateController, stateRepository)
                 .put("tag", "n1");
 
-        task = statefulService.getTask(chain, context);
+        task = statefulService.getTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n1", task.getNode().getId());
         Assertions.assertEquals(StateType.WAITING, task.getState());
 
         //再跑（仍在原位、原状态）
-        task = statefulService.getTask(chain, context);
+        task = statefulService.getTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n1", task.getNode().getId());
@@ -92,7 +92,7 @@ public class NotBlockStateFlowTest2 {
 
         context.put("tag", "n2");
 
-        task = statefulService.getTask(chain, context);
+        task = statefulService.getTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n2", task.getNode().getId());
@@ -100,15 +100,15 @@ public class NotBlockStateFlowTest2 {
 
         context.put("tag", "");
 
-        task = statefulService.getTask(chain, context);
+        task = statefulService.getTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n3", task.getNode().getId());
         Assertions.assertEquals(StateType.COMPLETED, task.getState());
     }
 
-    private Chain getChain() {
-        Chain chain = new ChainDecl("tmp-" + System.currentTimeMillis()).create(decl -> {
+    private Graph getGraph() {
+        Graph graph = new GraphDecl("tmp-" + System.currentTimeMillis()).create(decl -> {
             String task = "if(tag.equals(node.getId())){exchanger.interrupt();}";
 
             decl.addNode(NodeDecl.startOf("s").linkAdd("n0"));
@@ -119,6 +119,6 @@ public class NotBlockStateFlowTest2 {
             decl.addNode(NodeDecl.endOf("e"));
         });
 
-        return chain;
+        return graph;
     }
 }

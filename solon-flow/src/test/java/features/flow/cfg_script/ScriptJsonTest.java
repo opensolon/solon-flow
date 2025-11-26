@@ -2,7 +2,7 @@ package features.flow.cfg_script;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.noear.solon.flow.Chain;
+import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 
@@ -23,14 +23,14 @@ public class ScriptJsonTest {
 
     @Test
     public void case1_demo() throws Throwable {
-        Chain chain = Chain.parseByUri("classpath:flow/script_case1.chain.json");
+        Graph graph = Graph.parseByUri("classpath:flow/script_case1.graph.json");
 
-        flowEngine.eval(chain);
+        flowEngine.eval(graph);
     }
 
     @Test
     public void case2_interrupt() throws Throwable {
-        Chain chain = Chain.parseByUri("classpath:flow/script_case2.chain.json");
+        Graph graph = Graph.parseByUri("classpath:flow/script_case2.graph.json");
 
         FlowContext context = FlowContext.of();
         context.put("a", 2);
@@ -39,13 +39,13 @@ public class ScriptJsonTest {
 
         //完整执行
 
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         assert "n-3".equals(context.getAs("result"));
     }
 
     @Test
     public void case2_interrupt2() throws Throwable {
-        Chain chain = Chain.parseByUri("classpath:flow/script_case2.chain.json");
+        Graph graph = Graph.parseByUri("classpath:flow/script_case2.graph.json");
 
         FlowContext context = FlowContext.of();
         context.put("a", 12);
@@ -53,82 +53,82 @@ public class ScriptJsonTest {
         context.put("c", 14);
 
         //执行一层
-        flowEngine.eval(chain.getNode("n-2"), 1, context);
+        flowEngine.eval(graph.getNode("n-2"), 1, context);
         assert context.getAs("result").equals(123);
     }
 
     @Test
     public void case3_exclusive() throws Throwable {
-        Chain chain = Chain.parseByUri("classpath:flow/script_case3.chain.json");
+        Graph graph = Graph.parseByUri("classpath:flow/script_case3.graph.json");
 
         FlowContext context = FlowContext.of();
         context.put("day", 1);
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         assert null == context.getAs("result");
 
         context = FlowContext.of();
         context.put("day", 3);
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         assert context.getAs("result").equals(3);
 
         context = FlowContext.of();
         context.put("day", 7);
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         assert context.getAs("result").equals(7);
     }
 
     @Test
     public void case4_inclusive() throws Throwable {
-        Chain chain = Chain.parseByUri("classpath:flow/script_case4.chain.json");
+        Graph graph = Graph.parseByUri("classpath:flow/script_case4.graph.json");
 
         FlowContext context = FlowContext.of();
         context.put("day", 1);
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         assert context.getAs("result").equals(0);
 
         context = FlowContext.of();
         context.put("day", 3);
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         assert context.getAs("result").equals(3);
     }
 
     @Test
     public void case4_inclusive2() throws Throwable {
-        Chain chain = Chain.parseByUri("classpath:flow/script_case4.chain.json");
+        Graph graph = Graph.parseByUri("classpath:flow/script_case4.graph.json");
 
         FlowContext context = FlowContext.of();
         context.put("day", 7);
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         assert context.getAs("result").equals(10);
     }
 
     @Test
     public void case5_parallel() throws Throwable {
-        Chain chain = Chain.parseByUri("classpath:flow/script_case5.chain.yml");
+        Graph graph = Graph.parseByUri("classpath:flow/script_case5.graph.yml");
 
         FlowContext context = FlowContext.of();
         context.put("day", 7);
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         assert context.getAs("result").equals(10);
     }
 
     @Test
     public void case8() throws Throwable {
-        Chain chain = Chain.parseByUri("classpath:flow/script_case8.chain.yml");
+        Graph graph = Graph.parseByUri("classpath:flow/script_case8.graph.yml");
 
         FlowContext context = FlowContext.of();
         context.put("result", 1);
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
         assert context.getAs("result").equals(3);
     }
 
     @Test
     public void case9_parallel_async() throws Throwable {
-        Chain chain = Chain.parseByUri("classpath:flow/script_case9.chain.yml");
+        Graph graph = Graph.parseByUri("classpath:flow/script_case9.graph.yml");
 
         FlowContext context = FlowContext.of();
         context.executor(Executors.newFixedThreadPool(4));
 
-        flowEngine.eval(chain, context);
+        flowEngine.eval(graph, context);
     }
 }
