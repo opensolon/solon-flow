@@ -42,12 +42,13 @@ public class DemoBuilder {
     }
 
     public Graph create_simple_workflow() {
-        GraphDecl workflow = new GraphDecl("demo1");
-        workflow.addNode(NodeDecl.activityOf("node_a").task("@node_a").linkAdd("node_b"));
-        workflow.addNode(NodeDecl.activityOf("node_b").task("@node_b").linkAdd("end"));
-        workflow.addNode(NodeDecl.endOf("end"));
+        Graph workflow = new GraphDecl("demo1").create(decl->{
+            decl.addNode(NodeDecl.activityOf("node_a").task("@node_a").linkAdd("node_b"));
+            decl.addNode(NodeDecl.activityOf("node_b").task("@node_b").linkAdd("end"));
+            decl.addNode(NodeDecl.endOf("end"));
+        });
 
-        return workflow.create();
+        return workflow;
     }
 
     @Init
