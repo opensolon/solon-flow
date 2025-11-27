@@ -1,0 +1,17 @@
+id: demo1
+layout:
+  - id: "node_a"
+    task: |
+      String user_input = context.getAs("input");
+      List<String> current_messages = context.getAs("messages");
+
+      context.put("output", "节点A处理: " + user_input.toUpperCase());
+      current_messages.add("经过节点A: " + user_input);
+    link: "node_b"
+  - id: "node_b"
+    task: |
+      String current_output = context.getAs("output");
+      List<String> current_messages = context.getAs("messages");
+
+      context.put("output", current_output + "-> 节点B处理");
+      current_messages.add("经过节点B");

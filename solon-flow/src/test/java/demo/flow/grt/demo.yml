@@ -1,0 +1,7 @@
+id: demo1
+layout:
+  - id: "node_a"
+    task: "@node_a"
+    link: "node_b"
+  - id: "node_b"
+    task: "@node_b"
