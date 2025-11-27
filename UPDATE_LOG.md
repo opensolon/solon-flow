@@ -6,6 +6,7 @@
 
 ### 3.7.3
 
+* 调整 `solon-flow` “链”概念改为“图”（更符合实际结构）
 * 调整 `solon-flow` Chain 更名为 Graph，ChainDecl 更名为 GraphDecl
 * 调整 `solon-flow` ChainInterceptor 更名为 FlowInterceptor
 
