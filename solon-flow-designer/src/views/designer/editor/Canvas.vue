@@ -383,14 +383,14 @@ function clear(isInitStartNode = true) { // 清空画布内容，可选是否重
         initStartNode()
     }
     currentEditGraph = {
-        id: "_" + utils.uuid2()
+        id: "graph_" + utils.uuid2()
     }
     closeAllFormDialog()
 }
 
 function setGraph(graphData) { // 导入 JSON 格式的字符串，用于加载或分享的内容
     currentEditGraph = graphData || {
-        id: "_" + utils.uuid2()
+        id: "graph_" + utils.uuid2()
     }
 }
 
