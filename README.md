@@ -54,7 +54,7 @@ Solon-Flow
 
 ## 简介
 
-面向全场景的 Java 流程编排框架。是 Solon 项目的一部分。也可嵌入到 SpringBoot2、jFinal、Vert.x 等框架中使用。
+面向全场景的 Java 流程编排框架。是 Solon 项目的一部分。也可嵌入到 SpringBoot、jFinal、Vert.x 等框架中使用。
 
 支持已知流程编排的各种场景:
 
@@ -191,13 +191,13 @@ StateRepository stateRepository = new InMemoryStateRepository();
 var context = FlowContext.of("i1", stateController, stateRepository).put("actor", "陈鑫");
 
 //获取上下文用户的活动节点
-var task = flowEngine.statefulService().getTask("f1", context);
+var task = flowEngine.forStateful().getTask("f1", context);
 
 assert "step2".equals(task.getNode().getId());
 assert StateType.UNKNOWN == task.getState(); //没有权限启动任务（因为没有配置操作员）
 
 //提交操作
-flowEngine.statefulService().postOperation(context, "f1", task.getNode().getId(), Operation.FORWARD);
+flowEngine.forStateful().postOperation(context, "f1", task.getNode().getId(), Operation.FORWARD);
 ```
 
 流程配置样例：
