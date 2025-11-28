@@ -436,14 +436,21 @@ function autoLayout(dir = "TB") { // 自动布局
         }
     })
 
+    // 记录已处理过的节点
+    let hasIndentNodes = []
     // 对循环网关进行特殊处理，使得网关中间的节点有缩进效果
     graph.getRootNodes().forEach((node) => {
-        indentNodes(node, 0)
+        indentNodes(hasIndentNodes,node, 0)
     })
 }
 
 // 节点缩进。参数:当前节点，缩进深度
-function indentNodes(node, indentDepth) {
+function indentNodes(hasIndentNodes,node, indentDepth) {
+    if(hasIndentNodes.includes(node.id)){
+        return
+    }
+    hasIndentNodes.push(node.id)
+
     const x = node.position().x
     
     node.position(x + 100 * indentDepth, node.position().y)
@@ -461,10 +468,8 @@ function indentNodes(node, indentDepth) {
     const edges = graph.getOutgoingEdges(node)
     if(edges && edges.length>0){
         edges.forEach((edge) => {
-            console.log(edge)
             const target = graph.getCellById(edge.getTarget().cell)
-            console.log(target)
-            indentNodes(target, myIndentDepth)
+            indentNodes(hasIndentNodes,target, myIndentDepth)
         })
     }
 }
