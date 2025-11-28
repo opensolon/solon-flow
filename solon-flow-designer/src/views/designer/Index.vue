@@ -1,7 +1,10 @@
 <template>
   <div class="editor">
     <div class="editor-header">
-      <Header @editChainConfig="onEditChainConfig" @toExport="toExport" @toImport="toImport" @toClear="toClear">
+      <Header @editGraphConfig="onEditGraphConfig"
+              @toExport="toExport"
+              @toImport="toImport"
+              @toClear="toClear">
       </Header>
     </div>
     <div class="editor-content">
@@ -53,8 +56,8 @@ const state = reactive({
 const onStartDrag = ({ e, nodeType }) => {
   flowCanvasRef.value.onSiderStartDrag(e, nodeType); // 调用画布容器的方法
 }
-const onEditChainConfig = () => {
-  flowCanvasRef.value.onEditChainConfig();
+const onEditGraphConfig = () => {
+  flowCanvasRef.value.onEditGraphConfig();
 }
 
 const toExport = (type) => {
@@ -64,7 +67,7 @@ const toExport = (type) => {
   const nodes = [];
   let nodeEnd = null;
 
-  data.graphData.cells.forEach(cell => {
+  data.graphViewData.cells.forEach(cell => {
     if (cell.shape == 'flow-edge') {
       const edgeData = cell.data || {}
       const edge = {
@@ -133,14 +136,14 @@ const toExport = (type) => {
     }
   });
 
-  const chainData = data.chain; // 构建最终的 JSON 数据
-  chainData.layout = nodes
+  const graphData = data.graphData; // 构建最终的 JSON 数据
+  graphData.layout = nodes
 
-  console.log('chainData', chainData)
+  console.log('graphData', graphData)
   if ('json' == type) {
-    state.exportData = JSON.stringify(chainData, null, 4); // 格式化输出 JSON 数据
+    state.exportData = JSON.stringify(graphData, null, 4); // 格式化输出 JSON 数据
   } else {
-    state.exportData = yamlUtils.dump(chainData); // 格式化输出 YAML 数据
+    state.exportData = yamlUtils.dump(graphData); // 格式化输出 YAML 数据
   }
 
   state.isExportDialogOpen = true; // 打开导出对话框
@@ -167,12 +170,12 @@ function handleImport() {
   }
 
   flowCanvasRef.value.clear(false); // 清空画布容器中的内容
-  flowCanvasRef.value.setChain(data); // 
+  flowCanvasRef.value.setGraph(data); //
   // 组织数据，将solon-flow格式转换为antv-x6格式
 
   let layoutNodes = data.layout || data.nodes; //早期有配置是 nodes
   if (layoutNodes) {
-    const graphData = {
+    const graphViewData = {
       cells: [], // 存储节点和边的数组
     };
 
@@ -234,7 +237,7 @@ function handleImport() {
         temp_y += 100;
       }
 
-      graphData.cells.push(nodeData); // 将节点数据添加到数组中
+      graphViewData.cells.push(nodeData); // 将节点数据添加到数组中
 
       if (node.link) {
         if (Array.isArray(node.link)) {
@@ -268,10 +271,10 @@ function handleImport() {
               } else if (link.condition) {
                 edgeData.labels = [link.condition]
               }
-              graphData.cells.push(edgeData); // 将边数据添加到数组中
+              graphViewData.cells.push(edgeData); // 将边数据添加到数组中
             } else {// string的情况
               const edgeData = buildEdgeForStringType(node.id, link, portPosDef) // 构建边数据的函数
-              graphData.cells.push(edgeData); // 将边数据添加到数组中
+              graphViewData.cells.push(edgeData); // 将边数据添加到数组中
             }
 
 
@@ -279,7 +282,7 @@ function handleImport() {
         } else {
           // string的情况
           const edgeData = buildEdgeForStringType(node.id, node.link, portPosDef) // 构建边数据的函数
-          graphData.cells.push(edgeData); // 将边数据添加到数组中
+          graphViewData.cells.push(edgeData); // 将边数据添加到数组中
         }
       }
 
@@ -294,14 +297,14 @@ function handleImport() {
             return;
         }
         const edgeData = buildEdgeForStringType(cell.id, nextCell.id, portPosDef) // 构建边数据的函数
-        graphData.cells.push(edgeData);
+        graphViewData.cells.push(edgeData);
       }
 
       preNode = node;
     })
 
-    console.log('graphData', graphData)
-    flowCanvasRef.value.setData(graphData); // 将节点和边数据设置到画布容器中
+    console.log('graphViewData', graphViewData)
+    flowCanvasRef.value.setData(graphViewData); // 将节点和边数据设置到画布容器中
     if (isAutoLayout) {
       flowCanvasRef.value.autoLayout(dirType); // 自动缩放画布容器以适应所有节点和边
     }

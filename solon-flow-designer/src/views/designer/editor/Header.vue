@@ -35,17 +35,17 @@
 
         <a-button type="primary" @click="toClear">清空</a-button>
         <a-divider type="vertical" style="background-color: #afafaf"/>
-        <a-button type="primary" @click="editChainConfig">Chain 配置</a-button>
+        <a-button type="primary" @click="editGraphConfig">流程图配置</a-button>
     </a-space>
 </template>
 <script setup>
 import { ref } from 'vue'
 
-const emit = defineEmits(['editChainConfig','toExport','toImport','toClear'])
+const emit = defineEmits(['editGraphConfig','toExport','toImport','toClear'])
 
-function editChainConfig() { 
-    emit('editChainConfig')
-} // 打开编辑 Chain 配置的对话框
+function editGraphConfig() {
+    emit('editGraphConfig')
+} // 打开编辑流图配置的对话框
 
 function toExport(e) { // 导出当前画布的内容为 JSON 格式的字符串，用于保存或分享
     emit('toExport', e.key)

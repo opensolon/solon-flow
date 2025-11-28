@@ -4,7 +4,7 @@
         <TeleportContainer></TeleportContainer>
         <NodeFormDialog ref="nodeFormDialogRef"></NodeFormDialog>
         <EdgeFormDialog ref="edgeFormDialogRef"></EdgeFormDialog>
-        <ChainFormDialog ref="chainFormDialogRef"></ChainFormDialog>
+        <GraphFormDialog ref="graphFormDialogRef"></GraphFormDialog>
         <div id="minimap" style="bottom: 20px;right: 20px;position: absolute;"></div>
     </div>
 </template>
@@ -21,7 +21,7 @@ import * as utils from '@/utils/index.js'
 import BaseNode from './BaseNode.vue'
 import NodeFormDialog from './NodeFormDialog.vue';
 import EdgeFormDialog from './EdgeFormDialog.vue';
-import ChainFormDialog from './ChainFormDialog.vue';
+import GraphFormDialog from './GraphFormDialog.vue';
 import dagre from '@dagrejs/dagre';
 
 const props = defineProps({
@@ -34,12 +34,12 @@ const TeleportContainer = defineComponent(getTeleport());
 const flowContainerRef = ref(null); // 画布容器的引用
 const nodeFormDialogRef = ref(null); // 节点表单对话框的引用
 const edgeFormDialogRef = ref(null); // 边表单对话框的引用
-const chainFormDialogRef = ref(null); // chain表单对话框的引用
+const graphFormDialogRef = ref(null); // 流图表单对话框的引用
 let graph = null
 let dnd = null
 let currentEditEdge = null // 当前编辑的边
 let currentEditNode = null // 当前编辑的节点
-let currentEditChain = {} // 当前编辑的chain
+let currentEditGraph = {} // 当前编辑的流图
 
 onMounted(() => {
     nextTick(() => {
@@ -314,7 +314,7 @@ function initGraph() {
 function closeAllFormDialog() {
     nodeFormDialogRef.value.toClose()
     edgeFormDialogRef.value.toClose()
-    chainFormDialogRef.value.toClose()
+    graphFormDialogRef.value.toClose()
 }
 
 function showPorts(show) {
@@ -365,15 +365,15 @@ function onSiderStartDrag(e, nodeType) {
     dnd.start(node, e)
 }
 
-function onEditChainConfig() {
+function onEditGraphConfig() {
     closeAllFormDialog()
-    chainFormDialogRef.value.show(graph, currentEditChain)
+    graphFormDialogRef.value.show(graph, currentEditGraph)
 }
 
 function getData() { // 导出当前画布的内容为 JSON 格式的字符串，用于保存或分享
     return {
-        chain: currentEditChain,
-        graphData: graph.toJSON()
+        graphData: currentEditGraph,
+        graphViewData: graph.toJSON()
     }
 }
 
@@ -382,15 +382,15 @@ function clear(isInitStartNode = true) { // 清空画布内容，可选是否重
     if (isInitStartNode) {
         initStartNode()
     }
-    currentEditChain = {
-        id: "chain_" + utils.uuid2()
+    currentEditGraph = {
+        id: "_" + utils.uuid2()
     }
     closeAllFormDialog()
 }
 
-function setChain(chainData) { // 导入 JSON 格式的字符串，用于加载或分享的内容
-    currentEditChain = chainData || {
-        id: "chain_" + utils.uuid2()
+function setGraph(graphData) { // 导入 JSON 格式的字符串，用于加载或分享的内容
+    currentEditGraph = graphData || {
+        id: "_" + utils.uuid2()
     }
 }
 
@@ -471,11 +471,11 @@ function indentNodes(node, indentDepth) {
 
 defineExpose({
     onSiderStartDrag,
-    onEditChainConfig,
+    onEditGraphConfig,
     getData,
     setData,
     clear,
-    setChain,
+    setGraph,
     autoLayout
 })
 </script>
