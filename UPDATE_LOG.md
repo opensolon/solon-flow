@@ -11,6 +11,11 @@
 * 调整 `solon-flow` ChainInterceptor 更名为 FlowInterceptor
 
 
+
+```
+现有应用如果没有用 ChainDecl 动态构建，不会受影响。。。如果有？需要换个类名。
+```
+
 ### 3.7.2
 
 * dami2 升为 2.0.4

@@ -10,14 +10,14 @@ Solon flow designer 是 vue3 + vite + antd + x6 开发的流程设计器。
 
 
 # 依赖组件
-|组件|版本|说明|网站|
-|-|-|-|-|
-|vue|3.5|前端基础框架|https://cn.vuejs.org/|
-|vue-router|4.5|前端路由|https://router.vuejs.org/|
-|fortawesome||图标库|https://fontawesome.com/|
-|codemirror|6.8|代码脚本编辑工具|https://codemirror.net/|
-|ant x6|2.18|流程图框架|http://x6.antv.antgroup.com|
-|vite|6.3|前端工具链|https://cn.vitejs.dev/|
+| 组件          | 版本   | 说明        | 网站                          |
+|-------------|------|-----------|-----------------------------|
+| vue         | 3.5  | 前端基础框架    | https://cn.vuejs.org/       |
+| vue-router  | 4.5  | 前端路由      | https://router.vuejs.org/   |
+| fortawesome |      | 图标库       | https://fontawesome.com/    |
+| codemirror  | 6.8  | 代码脚本编辑工具  | https://codemirror.net/     |
+| ant x6      | 2.18 | 流程图框架     | http://x6.antv.antgroup.com |
+| vite        | 6.3  | 前端工具集     | https://cn.vitejs.dev/      |
 
 # 安装和运行
 
