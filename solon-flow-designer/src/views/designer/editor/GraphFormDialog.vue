@@ -1,14 +1,14 @@
 <template>
     <div class="formDialog" :style="{ 'display': state.isOpen? 'block' : 'none' }" >
         <div class="header">
-            <div class="title">流程图：{{ formData.title || "" }}</div>
+            <div class="title">流图：{{ formData.title || "" }}</div>
             <div class="closeBtn" @click="toClose">
                 <font-awesome-icon icon="fa-solid fa-xmark" />
             </div>
         </div>
         <div class="content">
             <a-form ref="formRef" :model="formData" layout="vertical">
-                <a-form-item label="图ID">
+                <a-form-item label="流图ID">
                     {{ formData.id }}
                 </a-form-item>
                 <a-form-item label="标题">

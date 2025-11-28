@@ -35,7 +35,7 @@
 
         <a-button type="primary" @click="toClear">清空</a-button>
         <a-divider type="vertical" style="background-color: #afafaf"/>
-        <a-button type="primary" @click="editGraphConfig">流程图配置</a-button>
+        <a-button type="primary" @click="editGraphConfig">流图配置</a-button>
     </a-space>
 </template>
 <script setup>
