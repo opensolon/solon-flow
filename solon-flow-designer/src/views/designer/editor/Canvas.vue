@@ -406,6 +406,7 @@ function autoLayout(dir = "TB") { // 自动布局
     const nodes = graph.getNodes()
     const edges = graph.getEdges()
     const g = new dagre.graphlib.Graph()
+
     if (dir == "TB") {
         g.setGraph({ rankdir: dir, nodesep: 300, ranksep: 100, edgesep: 200,align:'DL' }) // 上下
     } else if (dir == "LR") {
@@ -434,6 +435,38 @@ function autoLayout(dir = "TB") { // 自动布局
             node.position(pos.x, pos.y)
         }
     })
+
+    // 对循环网关进行特殊处理，使得网关中间的节点有缩进效果
+    graph.getRootNodes().forEach((node) => {
+        indentNodes(node, 0)
+    })
+}
+
+// 节点缩进。参数:当前节点，缩进深度
+function indentNodes(node, indentDepth) {
+    const x = node.position().x
+    
+    node.position(x + 100 * indentDepth, node.position().y)
+
+    let myIndentDepth = indentDepth
+    if(node.data.type === 'iterator') {
+        if(node.data.meta && node.data.meta.$for){
+            myIndentDepth = indentDepth + 1
+        }else{
+            myIndentDepth = indentDepth - 1
+            node.position(x + 100 * myIndentDepth, node.position().y)
+        }
+    }
+
+    const edges = graph.getOutgoingEdges(node)
+    if(edges && edges.length>0){
+        edges.forEach((edge) => {
+            console.log(edge)
+            const target = graph.getCellById(edge.getTarget().cell)
+            console.log(target)
+            indentNodes(target, myIndentDepth)
+        })
+    }
 }
 
 defineExpose({
