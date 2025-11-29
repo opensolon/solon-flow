@@ -84,7 +84,7 @@ public class LinkDecl {
     /**
      * 配置分支流出条件（用于硬编码）
      *
-     * @deprecated 3.7
+     * @since 3.7
      */
     public LinkDecl when(ConditionComponent conditionComponent) {
         this.whenComponent = conditionComponent;

@@ -278,7 +278,7 @@ public class Node {
      */
     public Condition getWhen() {
         if (when == null) {
-            when = new Condition(graph, decl.when);
+            when = new Condition(graph, decl.when, decl.whenComponent);
         }
 
         return when;

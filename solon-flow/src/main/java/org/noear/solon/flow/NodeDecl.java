@@ -33,6 +33,7 @@ public class NodeDecl {
     protected final Map<String, Object> meta = new LinkedHashMap<>(); //元数据
     protected List<LinkDecl> links = new ArrayList<>();
     protected String when;
+    protected ConditionComponent whenComponent;
     protected String task;
     protected TaskComponent taskComponent;
 
@@ -110,6 +111,16 @@ public class NodeDecl {
     }
 
     /**
+     * 配置任务条件（用于硬编码）
+     *
+     * @since  3.7
+     */
+    public NodeDecl when(ConditionComponent whenComponent) {
+        this.whenComponent = whenComponent;
+        return this;
+    }
+
+    /**
      * 配置任务描述（适合配置）
      */
     public NodeDecl task(String task) {
@@ -120,7 +131,7 @@ public class NodeDecl {
     /**
      * 配置任务组件（适合硬编码）
      *
-     * @deprecated 3.7
+     * @since 3.7
      */
     public NodeDecl task(TaskComponent taskComponent) {
         this.taskComponent = taskComponent;
@@ -150,6 +161,10 @@ public class NodeDecl {
 
         if (Utils.isNotEmpty(when)) {
             buf.append(", when='").append(when).append('\'');
+        }
+
+        if (whenComponent != null) {
+            buf.append(", whenComponent=").append(whenComponent);
         }
 
         if (Utils.isNotEmpty(task)) {
@@ -247,6 +262,10 @@ public class NodeDecl {
 
     public String getWhen() {
         return when;
+    }
+
+    public ConditionComponent getWhenComponent() {
+        return whenComponent;
     }
 
     public String getTask() {
