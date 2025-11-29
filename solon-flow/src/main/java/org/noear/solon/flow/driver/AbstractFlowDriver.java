@@ -133,6 +133,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     protected void handleTaskDo(FlowExchanger exchanger, Task task) throws Throwable {
         if (task.getComponent() != null) {
             task.getComponent().run(exchanger.context(), task.getNode());
+            return;
         }
 
         if (isGraph(task.getDescription())) {
