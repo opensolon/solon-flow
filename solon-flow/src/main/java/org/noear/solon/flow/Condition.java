@@ -32,8 +32,9 @@ public class Condition {
         return c != null && c.isEmpty() == false;
     }
 
-    private final String description;
     private final Graph graph;
+    private final String description;
+    private final ConditionComponent component;
 
     /**
      * 附件（按需定制使用）
@@ -46,6 +47,16 @@ public class Condition {
     public Condition(Graph graph, String description) {
         this.graph = graph;
         this.description = description;
+        this.component = null;
+    }
+
+    /**
+     * @param description 条件描述
+     */
+    public Condition(Graph graph, String description, ConditionComponent component) {
+        this.graph = graph;
+        this.description = description;
+        this.component = component;
     }
 
     /**
@@ -56,17 +67,24 @@ public class Condition {
     }
 
     /**
-     * 描述（示例："(a,>,12) and (b,=,1)" 或 "a=12 && b=1" 或 "[{l:'a',p:'>',r:'12'}...]"）
+     * 条件描述（用于配置。示例："(a,>,12) and (b,=,1)" 或 "a=12 && b=1" 或 "[{l:'a',p:'>',r:'12'}...]"）
      */
     public String getDescription() {
         return description;
     }
 
     /**
+     * 条件组件（用于硬编码）
+     */
+    public ConditionComponent getComponent() {
+        return component;
+    }
+
+    /**
      * 是否为空
      */
     public boolean isEmpty() {
-        return Utils.isEmpty(description);
+        return Utils.isEmpty(description) && component == null;
     }
 
     @Override

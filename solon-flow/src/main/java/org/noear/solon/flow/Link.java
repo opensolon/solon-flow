@@ -79,7 +79,7 @@ public class Link implements Comparable<Link> {
      */
     public Condition getWhen() {
         if (when == null) {
-            when = new Condition(graph, decl.when);
+            when = new Condition(graph, decl.when, decl.whenComponent);
         }
 
         return when;

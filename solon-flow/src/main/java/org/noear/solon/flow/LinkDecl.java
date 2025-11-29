@@ -32,6 +32,7 @@ public class LinkDecl {
     protected String title;
     protected Map<String, Object> meta;
     protected String when;
+    protected ConditionComponent whenComponent;
     /**
      * 优先级（越大越高）
      */
@@ -73,10 +74,20 @@ public class LinkDecl {
     }
 
     /**
-     * 配置分支流出条件
+     * 配置分支流出条件（用于配置）
      */
     public LinkDecl when(String condition) {
         this.when = condition;
+        return this;
+    }
+
+    /**
+     * 配置分支流出条件（用于硬编码）
+     *
+     * @deprecated 3.7
+     */
+    public LinkDecl when(ConditionComponent conditionComponent) {
+        this.whenComponent = conditionComponent;
         return this;
     }
 
@@ -136,6 +147,10 @@ public class LinkDecl {
 
     public String getWhen() {
         return when;
+    }
+
+    public ConditionComponent getWhenComponent() {
+        return whenComponent;
     }
 
     public int getPriority() {

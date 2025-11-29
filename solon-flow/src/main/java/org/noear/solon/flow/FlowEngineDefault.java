@@ -244,16 +244,16 @@ public class FlowEngineDefault implements FlowEngine {
      * 条件检测
      */
     protected boolean condition_test(FlowDriver driver, FlowExchanger exchanger, Condition condition, boolean def) throws FlowException {
-        if (Utils.isNotEmpty(condition.getDescription())) {
-            try {
-                return driver.handleCondition(exchanger, condition);
-            } catch (FlowException e) {
-                throw e;
-            } catch (Throwable e) {
-                throw new FlowException("The test handle failed: " + condition.getGraph().getId() + " / " + condition.getDescription(), e);
-            }
-        } else {
+        if (condition.isEmpty()) {
             return def;
+        }
+
+        try {
+            return driver.handleCondition(exchanger, condition);
+        } catch (FlowException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new FlowException("The test handle failed: " + condition.getGraph().getId() + " / " + condition.getDescription(), e);
         }
     }
 

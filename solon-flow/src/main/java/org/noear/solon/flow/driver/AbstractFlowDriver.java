@@ -104,7 +104,32 @@ public abstract class AbstractFlowDriver implements FlowDriver {
 
     protected boolean handleConditionDo(FlowExchanger exchanger, Condition condition, String description) throws Throwable {
         //按脚本运行
-        return tryAsScriptCondition(exchanger, condition, description);
+        if (condition.getComponent() != null) {
+            return condition.getComponent().test(exchanger.context());
+        }
+
+        if (isComponent(condition.getDescription())) {
+            return tryAsComponentCondition(exchanger, condition, description);
+        } else {
+            return tryAsScriptCondition(exchanger, condition, description);
+        }
+    }
+
+    /**
+     * 尝试作为组件条件运行
+     */
+    protected boolean tryAsComponentCondition(FlowExchanger exchanger, Condition condition, String description) throws Throwable {
+        //按组件运行
+        String beanName = description.substring(1);
+        Object component = getContainer().getComponent(beanName);
+
+        if (component == null) {
+            throw new IllegalStateException("The condition component '" + beanName + "' not exist");
+        } else if (component instanceof ConditionComponent == false) {
+            throw new IllegalStateException("The component '" + beanName + "' is not ConditionComponent");
+        } else {
+            return ((ConditionComponent) component).test(exchanger.context());
+        }
     }
 
     /**

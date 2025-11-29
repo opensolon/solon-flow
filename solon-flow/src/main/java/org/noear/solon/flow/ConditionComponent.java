@@ -18,18 +18,17 @@ package org.noear.solon.flow;
 import org.noear.solon.lang.Preview;
 
 /**
- * 任务组件
+ * 条件组件
  *
  * @author noear
- * @since 3.0
+ * @since 3.7
  */
-@Preview("3.0")
-public interface TaskComponent {
+@Preview("3.7")
+public interface ConditionComponent {
     /**
-     * 运行
+     * 检测
      *
      * @param context 流上下文
-     * @param node    当前节点
      */
-    void run(FlowContext context, Node node) throws Throwable;
+    boolean test(FlowContext context) throws Throwable;
 }

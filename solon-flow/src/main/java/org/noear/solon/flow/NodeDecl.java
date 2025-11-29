@@ -119,6 +119,8 @@ public class NodeDecl {
 
     /**
      * 配置任务组件（适合硬编码）
+     *
+     * @deprecated 3.7
      */
     public NodeDecl task(TaskComponent taskComponent) {
         this.taskComponent = taskComponent;
