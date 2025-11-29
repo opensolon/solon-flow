@@ -34,6 +34,7 @@ public class NodeDecl {
     protected List<LinkDecl> links = new ArrayList<>();
     protected String when;
     protected String task;
+    protected TaskComponent taskComponent;
 
 
     /// //////////////
@@ -109,10 +110,18 @@ public class NodeDecl {
     }
 
     /**
-     * 配置任务
+     * 配置任务描述（适合配置）
      */
     public NodeDecl task(String task) {
         this.task = task;
+        return this;
+    }
+
+    /**
+     * 配置任务组件（适合硬编码）
+     */
+    public NodeDecl task(TaskComponent taskComponent) {
+        this.taskComponent = taskComponent;
         return this;
     }
 
@@ -143,6 +152,10 @@ public class NodeDecl {
 
         if (Utils.isNotEmpty(task)) {
             buf.append(", task='").append(task).append('\'');
+        }
+
+        if (taskComponent != null) {
+            buf.append(", taskComponent=").append(taskComponent);
         }
 
         buf.append('}');
@@ -236,5 +249,9 @@ public class NodeDecl {
 
     public String getTask() {
         return task;
+    }
+
+    public TaskComponent getTaskComponent() {
+        return taskComponent;
     }
 }

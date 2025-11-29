@@ -32,7 +32,10 @@ public class Task {
     }
 
     private final Node node;
+    //任务描述（用于配置）
     private final String description;
+    //任务组件（用于硬编码）
+    private final TaskComponent component;
 
     /**
      * 附件（按需定制使用）
@@ -46,6 +49,16 @@ public class Task {
     public Task(Node node, String description) {
         this.node = node;
         this.description = description;
+        this.component = null;
+    }
+
+    /**
+     * @param description 任务描述
+     */
+    public Task(Node node, String description, TaskComponent component) {
+        this.node = node;
+        this.description = description;
+        this.component = component;
     }
 
     /**
@@ -56,17 +69,24 @@ public class Task {
     }
 
     /**
-     * 表达式（示例："F:tag/fun1;R:tag/rule1" 或 "fun1()" 或 "[{t:'F',c:'tag/fun1'}]"）
+     * 任务描述（用于配置。示例："F:tag/fun1;R:tag/rule1" 或 "fun1()" 或 "[{t:'F',c:'tag/fun1'}]"）
      */
     public String getDescription() {
         return description;
     }
 
     /**
+     * 任务组件（用于硬编码）
+     */
+    public TaskComponent getComponent() {
+        return component;
+    }
+
+    /**
      * 是否为空
      */
     public boolean isEmpty() {
-        return Utils.isEmpty(description);
+        return Utils.isEmpty(description) && component == null;
     }
 
     @Override

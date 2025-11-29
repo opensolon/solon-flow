@@ -6,10 +6,10 @@
 
 ### 3.7.3
 
+* 添加 `solon-flow` Node:task 硬编码能力（直接设置 TaskComponent），支持多租全动态场景
 * 调整 `solon-flow` “链”概念改为“图”（更符合实际结构）
 * 调整 `solon-flow` Chain 更名为 Graph，ChainDecl 更名为 GraphDecl
 * 调整 `solon-flow` ChainInterceptor 更名为 FlowInterceptor
-
 
 
 ```

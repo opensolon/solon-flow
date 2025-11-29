@@ -122,29 +122,33 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     @Override
     public void postHandleTask(FlowExchanger exchanger, Task task) throws Throwable {
         //默认过滤空任务（活动节点可能没有配置任务）
-        if (Utils.isEmpty(task.getDescription())) {
+        if (task.isEmpty()) {
             return;
         }
 
         //如果 task.description 有加密，可以转码后传入
-        handleTaskDo(exchanger, task, task.getDescription());
+        handleTaskDo(exchanger, task);
     }
 
-    protected void handleTaskDo(FlowExchanger exchanger, Task task, String description) throws Throwable {
-        if (isGraph(description)) {
+    protected void handleTaskDo(FlowExchanger exchanger, Task task) throws Throwable {
+        if (task.getComponent() != null) {
+            task.getComponent().run(exchanger.context(), task.getNode());
+        }
+
+        if (isGraph(task.getDescription())) {
             //如果跨图调用
-            tryAsGraphTask(exchanger, task, description);
+            tryAsGraphTask(exchanger, task, task.getDescription());
             return;
         }
 
-        if (isComponent(description)) {
+        if (isComponent(task.getDescription())) {
             //如果用组件运行
-            tryAsComponentTask(exchanger, task, description);
+            tryAsComponentTask(exchanger, task, task.getDescription());
             return;
         }
 
         //默认按脚本运行
-        tryAsScriptTask(exchanger, task, description);
+        tryAsScriptTask(exchanger, task, task.getDescription());
     }
 
     /**

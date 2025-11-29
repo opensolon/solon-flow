@@ -289,7 +289,7 @@ public class Node {
      */
     public Task getTask() {
         if (task == null) {
-            task = new Task(this, decl.task);
+            task = new Task(this, decl.task, decl.taskComponent);
         }
 
         return task;
