@@ -85,6 +85,32 @@ public interface FlowContext {
     }
 
     /**
+     * 中断（仅对当前分支有效）
+     *
+     * @since 3.7
+     */
+    @Preview("3.7")
+    default void interrupt() {
+        FlowExchanger exchanger = exchanger();
+        if (exchanger != null) {
+            exchanger.interrupt();
+        }
+    }
+
+    /**
+     * 停止（即结束运行）
+     *
+     * @since 3.7
+     */
+    @Preview("3.7")
+    default void stop() {
+        FlowExchanger exchanger = exchanger();
+        if (exchanger != null) {
+            exchanger.stop();
+        }
+    }
+
+    /**
      * 数据模型
      */
     Map<String, Object> model();
