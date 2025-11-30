@@ -199,6 +199,20 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
     }
 
     /// ////////////////////////
+    @Override
+    public StatefulTask eval(Graph graph, FlowContext context) {
+        FlowExchanger exchanger = new FlowExchanger(context);
+
+        flowEngine.eval(graph.getStart(), -1, exchanger);
+        return (StatefulTask) exchanger.temporary().vars().get(StatefulTask.KEY_ACTIVITY_NODE);
+    }
+
+    @Override
+    public StatefulTask eval(String graphId, FlowContext context) {
+        return eval(flowEngine.getGraph(graphId), context);
+    }
+
+    /// ////////////////////////
 
     /**
      * 获取多个活动节点
@@ -238,7 +252,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public StatefulTask getTask(String graphId, FlowContext context) {
-        return getTask(flowEngine.getGraph(graphId), context);
+        return eval(graphId, context);
     }
 
     /**
@@ -248,10 +262,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public StatefulTask getTask(Graph graph, FlowContext context) {
-        FlowExchanger exchanger = new FlowExchanger(context);
-
-        flowEngine.eval(graph.getStart(), -1, exchanger);
-        return (StatefulTask) exchanger.temporary().vars().get(StatefulTask.KEY_ACTIVITY_NODE);
+       return eval(graph, context);
     }
 
     @Override

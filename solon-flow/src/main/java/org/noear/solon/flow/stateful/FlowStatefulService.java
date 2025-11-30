@@ -110,6 +110,24 @@ public interface FlowStatefulService {
     /// ////////////////////////////////
 
     /**
+     * 运行
+     *
+     * @param graphId 图id
+     * @param context 流上下文（要有人员配置）
+     */
+    StatefulTask eval(String graphId, FlowContext context);
+
+    /**
+     * 运行
+     *
+     * @param graph   图
+     * @param context 流上下文（要有人员配置）
+     */
+    StatefulTask eval(Graph graph, FlowContext context);
+
+    /// ////////////////////////////////
+
+    /**
      * 获取多个任务
      *
      * @param graphId 图id

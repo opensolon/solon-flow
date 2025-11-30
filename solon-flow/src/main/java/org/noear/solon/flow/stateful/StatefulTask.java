@@ -41,7 +41,7 @@ public class StatefulTask {
     }
 
     /**
-     * 运行任务
+     * 运行当前节点任务（如果有？）
      *
      * @param context 上下文
      */
