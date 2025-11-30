@@ -200,15 +200,15 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
 
     /// ////////////////////////
     @Override
-    public StatefulTask eval(Graph graph, FlowContext context) {
+    public StateResult eval(Graph graph, FlowContext context) {
         FlowExchanger exchanger = new FlowExchanger(context);
 
         flowEngine.eval(graph.getStart(), -1, exchanger);
-        return (StatefulTask) exchanger.temporary().vars().get(StatefulTask.KEY_ACTIVITY_NODE);
+        return (StateResult) exchanger.temporary().vars().get(StateResult.KEY_ACTIVITY_NODE);
     }
 
     @Override
-    public StatefulTask eval(String graphId, FlowContext context) {
+    public StateResult eval(String graphId, FlowContext context) {
         return eval(flowEngine.getGraph(graphId), context);
     }
 
@@ -233,10 +233,10 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
     public Collection<StatefulTask> getTasks(Graph graph, FlowContext context) {
         FlowExchanger exchanger = new FlowExchanger(context);
 
-        exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_LIST_GET, true);
+        exchanger.temporary().vars().put(StateResult.KEY_ACTIVITY_LIST_GET, true);
 
         flowEngine.eval(graph.getStart(), -1, exchanger);
-        Collection<StatefulTask> tmp = (Collection<StatefulTask>) exchanger.temporary().vars().get(StatefulTask.KEY_ACTIVITY_LIST);
+        Collection<StatefulTask> tmp = (Collection<StatefulTask>) exchanger.temporary().vars().get(StateResult.KEY_ACTIVITY_LIST);
 
         if (tmp == null) {
             return Collections.emptyList();
@@ -252,7 +252,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public StatefulTask getTask(String graphId, FlowContext context) {
-        return eval(graphId, context);
+        return (StatefulTask) eval(graphId, context);
     }
 
     /**
@@ -262,7 +262,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public StatefulTask getTask(Graph graph, FlowContext context) {
-       return eval(graph, context);
+        return (StatefulTask) eval(graph, context);
     }
 
     @Override

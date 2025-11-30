@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
 import org.noear.solon.flow.stateful.StateType;
-import org.noear.solon.flow.stateful.StatefulTask;
+import org.noear.solon.flow.stateful.StateResult;
 import org.noear.solon.flow.stateful.controller.NotBlockStateController;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 
@@ -36,7 +36,7 @@ public class NotBlockStateFlowTest3 {
 
         if (!state.isApproved()) {
             System.out.println("Node 2: [人工审核] 订单草稿需要人工确认。");
-            throw new FlowException("需要人工审核订单 " + state.getOrderId());
+            ctx.exchanger().stop();
         } else {
             System.out.println("Node 2: [人工审核] 已通过外部系统确认，继续流程。");
         }
@@ -68,35 +68,17 @@ public class NotBlockStateFlowTest3 {
         FlowContext context = FlowContext.of(initialState.orderId, stateController, stateRepository)
                 .put("state", initialState);
 
-        StatefulTask task = null;
-        Throwable error = null;
+        StateResult result = null;
+        result = flowEngine.forStateful().eval(graph, context);
 
-        try {
-            task = flowEngine.forStateful().eval(graph, context);
-        } catch (Exception ex) {
-            error = ex;
-            ex.printStackTrace();
-        }
-
-        Assertions.assertNotNull(error);
-        Assertions.assertTrue(error instanceof RuntimeException);
-        Assertions.assertTrue(error.getMessage().contains("需要人工审核订单"));
+        assert result.getState() == StateType.WAITING;
+        Assertions.assertEquals("n2", result.getNode().getId());
 
         //模拟人工审核后
         initialState.setApproved(true);
+        result = flowEngine.forStateful().eval(graph, context);
 
-        try {
-            //再次执行
-            error = null;
-            task = flowEngine.forStateful().eval(graph, context);
-        } catch (Exception ex) {
-            error = ex;
-            ex.printStackTrace();
-        }
-
-        Assertions.assertNull(error);
-
-        assert task.getState() == StateType.COMPLETED;
-        Assertions.assertEquals("n3", task.getNode().getId());
+        assert result.getState() == StateType.COMPLETED;
+        Assertions.assertEquals("n3", result.getNode().getId());
     }
 }
