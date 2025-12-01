@@ -177,7 +177,7 @@ public class Graph {
      * 解析配置文件
      */
     public static Graph parseByUri(String uri) {
-        return parseByDecl(GraphDecl.parseByUri(uri));
+        return GraphDecl.parseByUri(uri).create();
     }
 
     /**
@@ -186,16 +186,7 @@ public class Graph {
      * @param text 配置文本（支持 yml, json 格式）
      */
     public static Graph parseByText(String text) {
-        return parseByDecl(GraphDecl.parseByText(text));
-    }
-
-    /**
-     * 解析配置文档模型
-     *
-     * @param decl 配置申明
-     */
-    public static Graph parseByDecl(GraphDecl decl) {
-        return new Graph(decl);
+        return GraphDecl.parseByText(text).create();
     }
 
     /**
