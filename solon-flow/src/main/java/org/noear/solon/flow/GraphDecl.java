@@ -331,4 +331,69 @@ public class GraphDecl {
     public Map<String, NodeDecl> getNodes() {
         return Collections.unmodifiableMap(nodes);
     }
+
+    /// /////////////
+
+    /**
+     * 构建开始节点
+     */
+    public NodeDecl addStart(String id) {
+        NodeDecl decl = new NodeDecl(id, NodeType.START);
+        addNode(decl);
+        return decl;
+    }
+
+    /**
+     * 构建结束节点
+     */
+    public NodeDecl addEnd(String id) {
+        NodeDecl decl = new NodeDecl(id, NodeType.END);
+        addNode(decl);
+        return decl;
+    }
+
+    /**
+     * 构建活动节点
+     */
+    public NodeDecl addActivity(String id) {
+        NodeDecl decl = new NodeDecl(id, NodeType.ACTIVITY);
+        addNode(decl);
+        return decl;
+    }
+
+    /**
+     * 构建包容网关节点
+     */
+    public NodeDecl addInclusive(String id) {
+        NodeDecl decl = new NodeDecl(id, NodeType.INCLUSIVE);
+        addNode(decl);
+        return decl;
+    }
+
+    /**
+     * 构建排他网关节点
+     */
+    public NodeDecl addExclusive(String id) {
+        NodeDecl decl = new NodeDecl(id, NodeType.EXCLUSIVE);
+        addNode(decl);
+        return decl;
+    }
+
+    /**
+     * 构建并行网关节点
+     */
+    public NodeDecl addParallel(String id) {
+        NodeDecl decl = new NodeDecl(id, NodeType.PARALLEL);
+        addNode(decl);
+        return decl;
+    }
+
+    /**
+     * 构建循环网关节点
+     */
+    public NodeDecl addLooping(String id) {
+        NodeDecl decl = new NodeDecl(id, NodeType.LOOP);
+        addNode(decl);
+        return decl;
+    }
 }

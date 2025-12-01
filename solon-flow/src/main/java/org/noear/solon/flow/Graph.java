@@ -19,6 +19,7 @@ import org.noear.solon.Utils;
 import org.noear.solon.lang.Preview;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * 图
@@ -160,6 +161,15 @@ public class Graph {
     }
 
     /// ////////
+
+    /**
+     * 创建
+     */
+    public static Graph create(String id, Consumer<GraphDecl> consumer) {
+        GraphDecl decl = new GraphDecl(id);
+        consumer.accept(decl);
+        return decl.create();
+    }
 
     /**
      * 解析配置文件
