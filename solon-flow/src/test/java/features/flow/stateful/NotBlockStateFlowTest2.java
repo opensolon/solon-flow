@@ -108,15 +108,15 @@ public class NotBlockStateFlowTest2 {
     }
 
     private Graph getGraph() {
-        Graph graph = new GraphDecl("tmp-" + System.currentTimeMillis()).create(decl -> {
+        Graph graph = Graph.create("tmp-" + System.currentTimeMillis(),decl -> {
             String task = "if(tag.equals(node.getId())){exchanger.interrupt();}";
 
-            decl.addNode(NodeDecl.startOf("s").linkAdd("n0"));
-            decl.addNode(NodeDecl.activityOf("n0").task(task).linkAdd("n1"));
-            decl.addNode(NodeDecl.activityOf("n1").task(task).linkAdd("n2"));
-            decl.addNode(NodeDecl.activityOf("n2").task(task).linkAdd("n3"));
-            decl.addNode(NodeDecl.activityOf("n3").task(task).linkAdd("e"));
-            decl.addNode(NodeDecl.endOf("e"));
+            decl.addStart("s").linkAdd("n0");
+            decl.addActivity("n0").task(task).linkAdd("n1");
+            decl.addActivity("n1").task(task).linkAdd("n2");
+            decl.addActivity("n2").task(task).linkAdd("n3");
+            decl.addActivity("n3").task(task).linkAdd("e");
+            decl.addEnd("e");
         });
 
         return graph;
