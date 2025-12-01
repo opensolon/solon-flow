@@ -336,6 +336,8 @@ public class GraphDecl {
 
     /**
      * 构建开始节点
+     *
+     * @since 3.7
      */
     public NodeDecl addStart(String id) {
         NodeDecl decl = new NodeDecl(id, NodeType.START);
@@ -345,6 +347,8 @@ public class GraphDecl {
 
     /**
      * 构建结束节点
+     *
+     * @since 3.7
      */
     public NodeDecl addEnd(String id) {
         NodeDecl decl = new NodeDecl(id, NodeType.END);
@@ -354,6 +358,8 @@ public class GraphDecl {
 
     /**
      * 构建活动节点
+     *
+     * @since 3.7
      */
     public NodeDecl addActivity(String id) {
         NodeDecl decl = new NodeDecl(id, NodeType.ACTIVITY);
@@ -363,6 +369,8 @@ public class GraphDecl {
 
     /**
      * 构建包容网关节点
+     *
+     * @since 3.7
      */
     public NodeDecl addInclusive(String id) {
         NodeDecl decl = new NodeDecl(id, NodeType.INCLUSIVE);
@@ -372,6 +380,8 @@ public class GraphDecl {
 
     /**
      * 构建排他网关节点
+     *
+     * @since 3.7
      */
     public NodeDecl addExclusive(String id) {
         NodeDecl decl = new NodeDecl(id, NodeType.EXCLUSIVE);
@@ -381,6 +391,8 @@ public class GraphDecl {
 
     /**
      * 构建并行网关节点
+     *
+     * @since 3.7
      */
     public NodeDecl addParallel(String id) {
         NodeDecl decl = new NodeDecl(id, NodeType.PARALLEL);
@@ -390,6 +402,8 @@ public class GraphDecl {
 
     /**
      * 构建循环网关节点
+     *
+     * @since 3.7
      */
     public NodeDecl addLooping(String id) {
         NodeDecl decl = new NodeDecl(id, NodeType.LOOP);

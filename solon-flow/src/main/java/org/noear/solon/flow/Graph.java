@@ -164,6 +164,8 @@ public class Graph {
 
     /**
      * 创建
+     *
+     * @since 3.7
      */
     public static Graph create(String id, Consumer<GraphDecl> consumer) {
         GraphDecl decl = new GraphDecl(id);
