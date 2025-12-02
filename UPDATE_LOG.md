@@ -18,9 +18,20 @@
 * 调整 `solon-flow` Chain 更名为 Graph，ChainDecl 更名为 GraphDecl
 * 调整 `solon-flow` ChainInterceptor,ChainInvocation 更名为 FlowInterceptor,FlowInvocation
 
+solon-flow 兼容说明：
 
 ```
 现有应用如果没有用 ChainDecl 动态构建，不会受影响。。。如果有？需要换个类名。
+```
+
+solon-flow 硬编码更简便：
+
+```java
+Graph graph = Graph.create("demo1", decl -> {
+    decl.addActivity("n1").task(new Draft()).linkAdd("n2");
+    decl.addActivity("n2").task(new Review()).linkAdd("n3");
+    decl.addActivity("n3").task(new Confirm());
+});
 ```
 
 ### 3.7.2
