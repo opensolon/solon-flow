@@ -435,6 +435,7 @@ public class FlowEngineDefault implements FlowEngine {
         return inclusive_run_out(driver, exchanger, node, depth);
     }
 
+    //包容网关
     protected boolean inclusive_run_in(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
         Stack<Integer> inclusive_stack = exchanger.temporary().stack(node.getGraph(), "inclusive_run");
 
@@ -456,20 +457,16 @@ public class FlowEngineDefault implements FlowEngine {
         return true;
     }
 
+    //包容网关
     protected boolean inclusive_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, int depth) throws FlowException {
         Stack<Integer> inclusive_stack = exchanger.temporary().stack(node.getGraph(), "inclusive_run");
 
         //::流出
-        Link def_line = null;
         List<Link> matched_lines = new ArrayList<>();
 
         for (Link l : node.getNextLinks()) {
-            if (l.getWhen().isEmpty()) {
-                def_line = l;
-            } else {
-                if (condition_test(driver, exchanger, l.getWhen(), false)) {
-                    matched_lines.add(l);
-                }
+            if (condition_test(driver, exchanger, l.getWhen(), true)) {
+                matched_lines.add(l);
             }
         }
 
@@ -481,10 +478,6 @@ public class FlowEngineDefault implements FlowEngine {
             for (Link l : matched_lines) {
                 node_run(driver, exchanger, l.getNextNode(), depth);
             }
-        } else if (def_line != null) {
-            //不需要，记录流出数量
-            //如果有默认
-            node_run(driver, exchanger, def_line.getNextNode(), depth);
         }
 
         return true;

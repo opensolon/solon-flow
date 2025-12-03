@@ -17,6 +17,7 @@
 * 调整 `solon-flow` “链”概念改为“图”（更符合实际结构）
 * 调整 `solon-flow` Chain 更名为 Graph，ChainDecl 更名为 GraphDecl
 * 调整 `solon-flow` ChainInterceptor,ChainInvocation 更名为 FlowInterceptor,FlowInvocation
+* 调整 `solon-flow` 包容网关逻辑，分支空条件为 true，且取消默认概念（之前为：空条件为 false ，且为默认）
 
 solon-flow 兼容说明：
 
