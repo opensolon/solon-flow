@@ -4,6 +4,10 @@
 * 优化 solon-flow iterator 网关，支持多线程并发（要解决 item 变量的传递问题）???
 
 
+### 3.7.4
+
+* 添加 `solon-flow` Graph:create(id,title,consumer) 方法
+
 ### 3.7.3
 
 * 插件 `solon-flow` 第五次预览

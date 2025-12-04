@@ -174,6 +174,17 @@ public class Graph {
     }
 
     /**
+     * 创建
+     *
+     * @since 3.7
+     */
+    public static Graph create(String id, String title, Consumer<GraphDecl> consumer) {
+        GraphDecl decl = new GraphDecl(id, title);
+        consumer.accept(decl);
+        return decl.create();
+    }
+
+    /**
      * 解析配置文件
      */
     public static Graph parseByUri(String uri) {
