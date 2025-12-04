@@ -11,9 +11,9 @@
 ### 3.7.3
 
 * 插件 `solon-flow` 第五次预览
-* 添加 `solon-flow` Node:task 硬编码能力（直接设置 TaskComponent），支持多租全动态场景
-* 添加 `solon-flow` Node:when 硬编码能力（直接设置 ConditionComponent），支持多租全动态场景
-* 添加 `solon-flow` Link:when 硬编码能力（直接设置 ConditionComponent），支持多租全动态场景
+* 添加 `solon-flow` Node:task 硬编码能力（直接设置 TaskComponent），方便全动态场景
+* 添加 `solon-flow` Node:when 硬编码能力（直接设置 ConditionComponent），方便全动态场景
+* 添加 `solon-flow` Link:when 硬编码能力（直接设置 ConditionComponent），方便全动态场景
 * 添加 `solon-flow` StateResult ，在计算方面比 StatefulTask 更适合语义
 * 添加 `solon-flow` FlowContext:stop(),interrupt() 方法
 * 添加 `solon-flow` Graph 快捷创建方法
