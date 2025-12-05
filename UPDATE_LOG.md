@@ -45,6 +45,9 @@ Graph graph = Graph.create("demo1", decl -> {
 
 * dami2 升为 2.0.4
 
+### 3.6.5
+
+* dami2 升为 2.0.4
 
 ### 3.6.1
 
