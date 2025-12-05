@@ -52,7 +52,7 @@ Solon-Flow
 
 ## 简介
 
-面向全场景的 Java 流程编排框架。是 Solon 项目的一部分。也可嵌入到 SpringBoot、jFinal、Vert.x 等框架中使用。
+面向全场景的 Java 流程编排框架。是 Solon 项目的一部分。也可嵌入到 SpringBoot、jFinal、Vert.X、Quarkus、Micronaut 等框架中使用。
 
 支持已知流程编排的各种场景:
 
