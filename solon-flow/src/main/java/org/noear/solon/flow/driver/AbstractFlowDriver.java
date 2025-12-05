@@ -19,8 +19,6 @@ import org.noear.solon.Utils;
 import org.noear.solon.flow.*;
 import org.noear.solon.flow.container.SolonContainer;
 import org.noear.solon.flow.evaluation.LiquorEvaluation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -136,7 +134,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
      * 尝试作为脚本条件运行
      */
     protected boolean tryAsScriptCondition(FlowExchanger exchanger, Condition condition, String description) throws Throwable {
-        return getEvaluation().runTest(exchanger.context(), description);
+        return getEvaluation().runCondition(exchanger.context(), description);
     }
 
     /// //////////////

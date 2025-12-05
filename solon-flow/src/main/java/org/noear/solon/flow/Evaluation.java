@@ -27,12 +27,24 @@ import org.noear.solon.lang.Preview;
 @Preview("3.1")
 public interface Evaluation {
     /**
-     * 运行检测
+     * 运行条件
      *
      * @param context 流上下文
      * @param code    条件代码
      */
-    boolean runTest(FlowContext context, String code) throws Throwable;
+    boolean runCondition(FlowContext context, String code) throws Throwable;
+
+    /**
+     * 运行条件
+     *
+     * @param context 流上下文
+     * @param code    条件代码
+     * @deprecated 3.7.4
+     */
+    @Deprecated
+    default boolean runTest(FlowContext context, String code) throws Throwable {
+        return runCondition(context, code);
+    }
 
     /**
      * 运行任务

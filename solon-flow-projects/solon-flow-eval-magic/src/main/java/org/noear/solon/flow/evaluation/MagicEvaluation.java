@@ -30,7 +30,7 @@ import java.util.Map;
  */
 public class MagicEvaluation implements Evaluation {
     @Override
-    public boolean runTest(FlowContext context, String code) {
+    public boolean runCondition(FlowContext context, String code) {
         MagicScriptContext scriptContext = new MagicScriptContext();
         for (Map.Entry<String, Object> entry : context.model().entrySet()) {
             scriptContext.set(entry.getKey(), entry.getValue());

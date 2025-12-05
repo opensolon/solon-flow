@@ -28,7 +28,7 @@ import org.noear.solon.flow.FlowContext;
  */
 public class LiquorEvaluation implements Evaluation {
     @Override
-    public boolean runTest(FlowContext context, String code) {
+    public boolean runCondition(FlowContext context, String code) {
         return (boolean) Exprs.eval(code, context.model());
     }
 
