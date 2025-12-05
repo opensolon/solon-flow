@@ -25,7 +25,8 @@ public class HelloTest {
         Graph graph = Graph.create("c1", decl -> {
             decl.addStart("n1").linkAdd("n2");
             decl.addActivity("n2").task("System.out.println(\"hello world!\");").linkAdd("n3");
-            decl.addEnd("n3");
+            decl.addExclusive("n3").linkAdd("n4");
+            decl.addEnd("n4");
         });
 
         StateResult result = engine.forStateful()
