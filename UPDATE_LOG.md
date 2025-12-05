@@ -7,6 +7,7 @@
 ### 3.7.4
 
 * 添加 `solon-flow` Graph:create(id,title,consumer) 方法
+* 添加 `solon-flow` GraphDecl:addLoop 替代 addLooping（后者标为弃用）
 
 ### 3.7.3
 

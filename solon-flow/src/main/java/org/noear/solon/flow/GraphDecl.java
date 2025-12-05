@@ -404,8 +404,19 @@ public class GraphDecl {
      * 构建循环网关节点
      *
      * @since 3.7
+     * @deprecated 3.7 {{@link #addLoop(String)}}
      */
+    @Deprecated
     public NodeDecl addLooping(String id) {
+        return addLoop(id);
+    }
+
+    /**
+     * 构建循环网关节点
+     *
+     * @since 3.7
+     */
+    public NodeDecl addLoop(String id) {
         NodeDecl decl = new NodeDecl(id, NodeType.LOOP);
         addNode(decl);
         return decl;
