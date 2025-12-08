@@ -50,7 +50,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public StatefulTask stepForward(String graphId, FlowContext context) {
-        return stepForward(flowEngine.getGraph(graphId), context);
+        return stepForward(flowEngine.getGraphOrThrow(graphId), context);
     }
 
     /**
@@ -73,7 +73,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public StatefulTask stepBack(String graphId, FlowContext context) {
-        return stepBack(flowEngine.getGraph(graphId), context);
+        return stepBack(flowEngine.getGraphOrThrow(graphId), context);
     }
 
     /**
@@ -99,7 +99,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public boolean postOperationIfWaiting(String graphId, String nodeId, Operation operation, FlowContext context) {
-        Node node = flowEngine.getGraph(graphId).getNode(nodeId);
+        Node node = flowEngine.getGraphOrThrow(graphId).getNode(nodeId);
         return postOperationIfWaiting(node, operation, context);
     }
 
@@ -131,7 +131,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public void postOperation(String graphId, String nodeId, Operation operation, FlowContext context) {
-        Node node = flowEngine.getGraph(graphId).getNode(nodeId);
+        Node node = flowEngine.getGraphOrThrow(graphId).getNode(nodeId);
         postOperation(node, operation, context);
     }
 
@@ -209,7 +209,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
 
     @Override
     public StateResult eval(String graphId, FlowContext context) {
-        return eval(flowEngine.getGraph(graphId), context);
+        return eval(flowEngine.getGraphOrThrow(graphId), context);
     }
 
     /// ////////////////////////
@@ -221,7 +221,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public Collection<StatefulTask> getTasks(String graphId, FlowContext context) {
-        return getTasks(flowEngine.getGraph(graphId), context);
+        return getTasks(flowEngine.getGraphOrThrow(graphId), context);
     }
 
     /**
@@ -267,7 +267,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
 
     @Override
     public void clearState(String graphId, FlowContext context) {
-        this.clearState(flowEngine.getGraph(graphId), context);
+        this.clearState(flowEngine.getGraphOrThrow(graphId), context);
     }
 
 

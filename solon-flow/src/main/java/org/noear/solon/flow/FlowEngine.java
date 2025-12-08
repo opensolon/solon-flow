@@ -65,7 +65,7 @@ public interface FlowEngine {
      * @deprecated 3.6 {@link #forStateful()}
      */
     @Deprecated
-    default FlowStatefulService statefulService(){
+    default FlowStatefulService statefulService() {
         return forStateful();
     }
 
@@ -154,6 +154,17 @@ public interface FlowEngine {
      * 获取图
      */
     Graph getGraph(String graphId);
+
+    /**
+     * 获取图
+     */
+    default Graph getGraphOrThrow(String graphId) {
+        Graph graph = getGraph(graphId);
+        if (graph == null) {
+            throw new FlowException("Flow graph not found: " + graphId);
+        }
+        return graph;
+    }
 
     /**
      * 运行
