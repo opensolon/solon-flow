@@ -292,7 +292,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
             Node nextNode = node.getNextNode();
             if (nextNode != null) {
                 if (nextNode.getType() == NodeType.INCLUSIVE || nextNode.getType() == NodeType.PARALLEL) {
-                    //如果是流入网关，要通过引擎计算获取下个活动节点
+                    //如果是流入网关，要通过引擎计算获取下个活动节点（且以图做为参数，可能自动流转到网关外）
                     StatefulTask statefulNextNode = getTask(node.getGraph(), exchanger.context());
 
                     if (statefulNextNode != null) {
