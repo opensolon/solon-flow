@@ -114,7 +114,9 @@ public interface FlowStatefulService {
      *
      * @param graphId 图id
      * @param context 流上下文（要有人员配置）
+     * @deprecated 3.7.4
      */
+    @Deprecated
     default StateResult eval(String graphId, FlowContext context) {
         return eval(engine().getGraphOrThrow(graphId), context);
     }
@@ -124,7 +126,9 @@ public interface FlowStatefulService {
      *
      * @param graph   图
      * @param context 流上下文（要有人员配置）
+     * @deprecated 3.7.4
      */
+    @Deprecated
     default StateResult eval(Graph graph, FlowContext context) {
         return eval(graph, graph.getStart(), context);
     }
@@ -134,7 +138,9 @@ public interface FlowStatefulService {
      *
      * @param graphId 图id
      * @param context 流上下文（要有人员配置）
+     * @deprecated 3.7.4
      */
+    @Deprecated
     default StateResult eval(String graphId, String startId, FlowContext context) {
         return eval(engine().getGraphOrThrow(graphId), startId, context);
     }
@@ -144,7 +150,9 @@ public interface FlowStatefulService {
      *
      * @param graphId 图id
      * @param context 流上下文（要有人员配置）
+     * @deprecated 3.7.4
      */
+    @Deprecated
     default StateResult eval(String graphId, Node startNode, FlowContext context) {
         return eval(engine().getGraphOrThrow(graphId), startNode, context);
     }
@@ -154,7 +162,9 @@ public interface FlowStatefulService {
      *
      * @param graph   图
      * @param context 流上下文（要有人员配置）
+     * @deprecated 3.7.4
      */
+    @Deprecated
     default StateResult eval(Graph graph, String startId, FlowContext context) {
         return eval(graph, graph.getNodeOrThrow(startId), context);
     }
@@ -164,7 +174,9 @@ public interface FlowStatefulService {
      *
      * @param graph   图
      * @param context 流上下文（要有人员配置）
+     * @deprecated 3.7.4
      */
+    @Deprecated
     StateResult eval(Graph graph, Node startNode, FlowContext context);
 
 

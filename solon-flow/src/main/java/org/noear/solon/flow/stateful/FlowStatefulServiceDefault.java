@@ -248,7 +248,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public StatefulTask getTask(String graphId, FlowContext context) {
-        return (StatefulTask) eval(graphId, context);
+        return getTask(flowEngine.getGraphOrThrow(graphId), context);
     }
 
     /**
@@ -258,7 +258,10 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public StatefulTask getTask(Graph graph, FlowContext context) {
-        return (StatefulTask) eval(graph, context);
+        FlowExchanger exchanger = new FlowExchanger(context);
+
+        flowEngine.eval(graph, graph.getStart(), -1, exchanger);
+        return (StatefulTask) exchanger.temporary().vars().get(StateResult.KEY_ACTIVITY_NODE);
     }
 
     @Override
