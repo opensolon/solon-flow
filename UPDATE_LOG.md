@@ -11,6 +11,7 @@
 * 添加 `solon-flow` Evaluation:runCondition 方法替代 runTest（后者标为弃用）
 * 添加 `solon-flow` FlowContext:lastNode 方法（最后一个运行的节点）
 * 添加 `solon-flow` Graph:copy 方法
+* 添加 `solon-flow` GraphDecl:getNode 方法
 * 优化 `solon-flow` eval(Node startNode) 处理，改为从 root 开始恢复到 start 再开始执行（恢复过程中，不会执行任务）
 * 优化 `solon-flow` stateful 允许 stateController 独立使用（即可以没有 stateRepository）
 * 调整 `solon-flow` FlowStatefulService:evel 标为弃用
