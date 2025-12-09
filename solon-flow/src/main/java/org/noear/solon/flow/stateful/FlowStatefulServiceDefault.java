@@ -38,57 +38,11 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         this.flowEngine = flowEngine;
     }
 
-    /// //////////////
+    /// ////////////////////////////////
 
     @Override
     public FlowEngine engine() {
         return flowEngine;
-    }
-
-    /**
-     * 单步前进
-     */
-    @Override
-    public StatefulTask stepForward(String graphId, FlowContext context) {
-        return stepForward(flowEngine.getGraphOrThrow(graphId), context);
-    }
-
-    /**
-     * 单步前进
-     */
-    @Override
-    public StatefulTask stepForward(Graph graph, FlowContext context) {
-        StatefulTask statefulTask = getTask(graph, context);
-
-        if (statefulTask != null) {
-            postOperation(statefulTask.getNode(), Operation.FORWARD, context);
-            statefulTask = new StatefulTask(engine(), statefulTask.getNode(), StateType.COMPLETED);
-        }
-
-        return statefulTask;
-    }
-
-    /**
-     * 单步后退
-     */
-    @Override
-    public StatefulTask stepBack(String graphId, FlowContext context) {
-        return stepBack(flowEngine.getGraphOrThrow(graphId), context);
-    }
-
-    /**
-     * 单步后退
-     */
-    @Override
-    public StatefulTask stepBack(Graph graph, FlowContext context) {
-        StatefulTask statefulTask = getTask(graph, context);
-
-        if (statefulTask != null) {
-            postOperation(statefulTask.getNode(), Operation.BACK, context);
-            statefulTask = getTask(graph, context);
-        }
-
-        return statefulTask;
     }
 
 
@@ -198,15 +152,6 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         }
     }
 
-    /// ////////////////////////
-
-    @Override
-    public StateResult eval(Graph graph, Node startNode, FlowContext context) {
-        FlowExchanger exchanger = new FlowExchanger(context);
-
-        flowEngine.eval(graph, startNode, -1, exchanger);
-        return (StateResult) exchanger.temporary().vars().get(StateResult.KEY_ACTIVITY_NODE);
-    }
 
     /// ////////////////////////
 
@@ -336,5 +281,65 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
                 backHandle(driver, n1, exchanger);
             }
         }
+    }
+
+
+    /// ////////////////////////////////
+
+    /**
+     * 单步前进
+     */
+    @Override
+    public StatefulTask stepForward(String graphId, FlowContext context) {
+        return stepForward(flowEngine.getGraphOrThrow(graphId), context);
+    }
+
+    /**
+     * 单步前进
+     */
+    @Override
+    public StatefulTask stepForward(Graph graph, FlowContext context) {
+        StatefulTask statefulTask = getTask(graph, context);
+
+        if (statefulTask != null) {
+            postOperation(statefulTask.getNode(), Operation.FORWARD, context);
+            statefulTask = new StatefulTask(engine(), statefulTask.getNode(), StateType.COMPLETED);
+        }
+
+        return statefulTask;
+    }
+
+    /**
+     * 单步后退
+     */
+    @Override
+    public StatefulTask stepBack(String graphId, FlowContext context) {
+        return stepBack(flowEngine.getGraphOrThrow(graphId), context);
+    }
+
+    /**
+     * 单步后退
+     */
+    @Override
+    public StatefulTask stepBack(Graph graph, FlowContext context) {
+        StatefulTask statefulTask = getTask(graph, context);
+
+        if (statefulTask != null) {
+            postOperation(statefulTask.getNode(), Operation.BACK, context);
+            statefulTask = getTask(graph, context);
+        }
+
+        return statefulTask;
+    }
+
+
+    /// ////////////////////////////////
+
+    @Override
+    public StateResult eval(Graph graph, Node startNode, FlowContext context) {
+        FlowExchanger exchanger = new FlowExchanger(context);
+
+        flowEngine.eval(graph, startNode, -1, exchanger);
+        return (StateResult) exchanger.temporary().vars().get(StateResult.KEY_ACTIVITY_NODE);
     }
 }

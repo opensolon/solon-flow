@@ -33,38 +33,6 @@ public interface FlowStatefulService {
      */
     FlowEngine engine();
 
-    /**
-     * 单步前进
-     *
-     * @param graphId 图id
-     * @param context 流上下文
-     */
-    StatefulTask stepForward(String graphId, FlowContext context);
-
-    /**
-     * 单步前进
-     *
-     * @param graph   图
-     * @param context 流上下文
-     */
-    StatefulTask stepForward(Graph graph, FlowContext context);
-
-    /**
-     * 单步后退
-     *
-     * @param graphId 图id
-     * @param context 流上下文
-     */
-    StatefulTask stepBack(String graphId, FlowContext context);
-
-    /**
-     * 单步后退
-     *
-     * @param graph   图
-     * @param context 流上下文
-     */
-    StatefulTask stepBack(Graph graph, FlowContext context);
-
 
     /// ////////////////////////////////
 
@@ -106,6 +74,100 @@ public interface FlowStatefulService {
      */
     void postOperation(Node node, Operation operation, FlowContext context);
 
+
+    /// ////////////////////////////////
+
+    /**
+     * 获取多个任务
+     *
+     * @param graphId 图id
+     * @param context 流上下文（不需要有人员配置）
+     */
+    Collection<StatefulTask> getTasks(String graphId, FlowContext context);
+
+    /**
+     * 获取多个任务
+     *
+     * @param graph   图
+     * @param context 流上下文（不需要有人员配置）
+     */
+    Collection<StatefulTask> getTasks(Graph graph, FlowContext context);
+
+    /**
+     * 获取当前任务
+     *
+     * @param graphId 图id
+     * @param context 流上下文（要有人员配置）
+     */
+    StatefulTask getTask(String graphId, FlowContext context);
+
+    /**
+     * 获取当前任务
+     *
+     * @param graph   图
+     * @param context 流上下文（要有人员配置）
+     */
+    StatefulTask getTask(Graph graph, FlowContext context);
+
+    /// ////////////////////////////////
+
+    /**
+     * 清空状态
+     *
+     * @param graphId 图id
+     * @param context 流上下文
+     */
+    void clearState(String graphId, FlowContext context);
+
+    /**
+     * 清空状态
+     *
+     * @param graph   图
+     * @param context 流上下文
+     */
+    void clearState(Graph graph, FlowContext context);
+
+    /// ////////////////////////////////
+
+    /**
+     * 单步前进
+     *
+     * @param graphId 图id
+     * @param context 流上下文
+     * @deprecated 3.7.4
+     */
+    @Deprecated
+    StatefulTask stepForward(String graphId, FlowContext context);
+
+    /**
+     * 单步前进
+     *
+     * @param graph   图
+     * @param context 流上下文
+     * @deprecated 3.7.4
+     */
+    @Deprecated
+    StatefulTask stepForward(Graph graph, FlowContext context);
+
+    /**
+     * 单步后退
+     *
+     * @param graphId 图id
+     * @param context 流上下文
+     * @deprecated 3.7.4
+     */
+    @Deprecated
+    StatefulTask stepBack(String graphId, FlowContext context);
+
+    /**
+     * 单步后退
+     *
+     * @param graph   图
+     * @param context 流上下文
+     * @deprecated 3.7.4
+     */
+    @Deprecated
+    StatefulTask stepBack(Graph graph, FlowContext context);
 
     /// ////////////////////////////////
 
@@ -178,57 +240,4 @@ public interface FlowStatefulService {
      */
     @Deprecated
     StateResult eval(Graph graph, Node startNode, FlowContext context);
-
-
-    /// ////////////////////////////////
-
-    /**
-     * 获取多个任务
-     *
-     * @param graphId 图id
-     * @param context 流上下文（不需要有人员配置）
-     */
-    Collection<StatefulTask> getTasks(String graphId, FlowContext context);
-
-    /**
-     * 获取多个任务
-     *
-     * @param graph   图
-     * @param context 流上下文（不需要有人员配置）
-     */
-    Collection<StatefulTask> getTasks(Graph graph, FlowContext context);
-
-    /**
-     * 获取当前任务
-     *
-     * @param graphId 图id
-     * @param context 流上下文（要有人员配置）
-     */
-    StatefulTask getTask(String graphId, FlowContext context);
-
-    /**
-     * 获取当前任务
-     *
-     * @param graph   图
-     * @param context 流上下文（要有人员配置）
-     */
-    StatefulTask getTask(Graph graph, FlowContext context);
-
-    /// ////////////////////////////////
-
-    /**
-     * 清空状态
-     *
-     * @param graphId 图id
-     * @param context 流上下文
-     */
-    void clearState(String graphId, FlowContext context);
-
-    /**
-     * 清空状态
-     *
-     * @param graph   图
-     * @param context 流上下文
-     */
-    void clearState(Graph graph, FlowContext context);
 }
