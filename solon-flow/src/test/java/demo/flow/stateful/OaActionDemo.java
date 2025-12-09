@@ -136,8 +136,8 @@ public class OaActionDemo {
         Graph graph = Graph.copy(flowEngine.getGraph(graphId), decl->{
             //添加节点
             decl.addActivity("a3").linkAdd("b2");
-            //graph（加上 a3 节点）
-            decl.addParallel(gatewayId).linkAdd("a1").linkAdd("a2").linkAdd("a3");
+            //添加连接（加上 a3 节点）
+            decl.getNode(gatewayId).linkAdd("a3");
         }); //复制
 
         //把新的图配置，做为实例对应的流配置

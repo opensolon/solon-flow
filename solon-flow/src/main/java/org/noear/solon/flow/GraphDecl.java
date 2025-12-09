@@ -71,10 +71,17 @@ public class GraphDecl {
     }
 
     /**
-     * 添加节点
+     * 添加节点（或替换）
      */
     public void addNode(NodeDecl nodeDecl) {
         nodes.put(nodeDecl.id, nodeDecl);
+    }
+
+    /**
+     * 获取节点（一般用于修改）
+     */
+    public NodeDecl getNode(String id) {
+        return nodes.get(id);
     }
 
 
