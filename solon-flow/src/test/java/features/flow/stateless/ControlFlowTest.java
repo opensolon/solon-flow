@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
 
 @Slf4j
-public class NotBlockStateFlowTest3 {
+public class ControlFlowTest {
 
     @Data
     @AllArgsConstructor
