@@ -17,7 +17,7 @@ public class OaActionDemo {
     ActorStateController stateController = new ActorStateController();
     InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
-    String instanceId = "guid1";
+    String instanceId = "i1";
     String graphId = "f1";
 
     //审批
@@ -48,34 +48,18 @@ public class OaActionDemo {
 
         String nodeId = "demo1";
 
-        while (true) {
-            StatefulTask task = statefulService.getTask(graphId, context);
-            context.put("op", "任意转跳");//作为状态的一部分
-            statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
-
-            //到目标节点了
-            if (task.getNode().getId().equals(nodeId)) {
-                break;
-            }
-        }
+        statefulService.postOperation(graphId, nodeId, Operation.FORWARD_JUMP, context);
+        StatefulTask task = statefulService.getTask(graphId, context);
     }
 
     //任意跳转（退回）
     public void case3_2() throws Exception {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
 
-        String nodeId = "demo1"; //实际可能需要遍历节点树，并检查各节点状态；再回退
+        String nodeId = "demo1";
 
-        while (true) {
-            StatefulTask statefulNode = statefulService.getTask(graphId, context);
-            context.put("op", "任意转跳");//作为状态的一部分
-            statefulService.postOperation(statefulNode.getNode(), Operation.BACK, context);
-
-            //到目标节点了
-            if (statefulNode.getNode().getId().equals(nodeId)) {
-                break;
-            }
-        }
+        statefulService.postOperation(graphId, nodeId, Operation.BACK_JUMP, context);
+        StatefulTask task = statefulService.getTask(graphId, context);
     }
 
     //委派
@@ -105,7 +89,7 @@ public class OaActionDemo {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         StatefulTask task = statefulService.getTask(graphId, context);
 
-        String actor = task.getNode().getMetaAsString("actor");
+        String actor = task.getNode().getMeta("actor");
         //发邮件（或通知）
     }
 
@@ -140,34 +124,33 @@ public class OaActionDemo {
     //抄送
     public void case10() throws Exception {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
-        StatefulTask node = statefulService.getTask(graphId, context);
+        StatefulTask task = statefulService.getTask(graphId, context);
 
-        statefulService.postOperation(node.getNode(), Operation.FORWARD, context);
+        statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
         //提交后，会自动触发任务（如果有抄送配置，自动执行）
     }
 
     //加签
     public void case11() throws Exception {
         String gatewayId = "g1";
-
-        //复制并个修改
-        Graph graph = GraphDecl.copy(flowEngine.getGraph(graphId)).create(decl -> {
+        Graph graph = Graph.copy(flowEngine.getGraph(graphId), decl->{
             //添加节点
-            decl.addNode(NodeDecl.activityOf("a3").linkAdd("b2"));
-            //替代旧的网关（加上 a3 节点）
-            decl.addNode(NodeDecl.parallelOf(gatewayId).linkAdd("a1").linkAdd("a2").linkAdd("a3"));
-        });
+            decl.addActivity("a3").linkAdd("b2");
+            //graph（加上 a3 节点）
+            decl.addParallel(gatewayId).linkAdd("a1").linkAdd("a2").linkAdd("a3");
+        }); //复制
 
         //把新的图配置，做为实例对应的流配置
+        String graphJson = graph.toJson();
     }
 
     //减签
     public void case12() throws Exception {
         //通过状态操作员和驱动定制，让某个节点不需要处理
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
-        StatefulTask node = statefulService.getTask(graphId, context);
+        StatefulTask task = statefulService.getTask(graphId, context);
 
-        statefulService.postOperation(node.getNode(), Operation.FORWARD, context);
+        statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
     }
 
     //会签

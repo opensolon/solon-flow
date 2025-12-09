@@ -197,6 +197,17 @@ public class Graph {
     }
 
     /**
+     * 复制
+     *
+     * @since 3.7.4
+     */
+    public static Graph copy(Graph graph, Consumer<GraphDecl> consumer) {
+        GraphDecl decl = GraphDecl.copy(graph);
+        consumer.accept(decl);
+        return decl.create();
+    }
+
+    /**
      * 解析配置文件
      */
     public static Graph parseByUri(String uri) {
