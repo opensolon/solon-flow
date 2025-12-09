@@ -54,8 +54,6 @@ public class ControlFlowTest {
         }
     }
 
-    FlowEngine flowEngine = FlowEngine.newInstance();
-
     @Test
     public void case1() {
         //硬编码构建流图，方便测试
@@ -66,6 +64,7 @@ public class ControlFlowTest {
         });
 
         /// ////////////
+        FlowEngine flowEngine = FlowEngine.newInstance();
         OrderState initialState = new OrderState("o-1", null, false, null);
 
         FlowContext context = FlowContext.of(initialState.orderId).put("state", initialState);

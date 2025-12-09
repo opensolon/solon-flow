@@ -6,7 +6,6 @@ layout:
     link:
       - nextId: node_ot8buxm6ac
   - id: node_ot8buxm6ac
-    type: activity
     title: 活动节点1
     link:
       - nextId: node_v1uc2rbtq
@@ -20,12 +19,10 @@ layout:
         title: ''
         condition: a > 3
   - id: node_focvfre5rq
-    type: activity
     title: 活动节点2
     link:
       - nextId: node_taosvt7gh
   - id: node_pzf5u4xbv8
-    type: activity
     title: 活动节点3
     link:
       - nextId: node_xdntd2nsfe
@@ -34,7 +31,6 @@ layout:
     title: 排他网关2
     link:
       - nextId: node_ot8buxm6ac
-        title: ''
         condition: b > 5
       - nextId: node_taosvt7gh
   - id: node_taosvt7gh
