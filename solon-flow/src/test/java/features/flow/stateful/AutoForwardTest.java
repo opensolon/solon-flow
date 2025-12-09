@@ -3,9 +3,11 @@ package features.flow.stateful;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
 import org.noear.solon.flow.stateful.FlowStatefulService;
+import org.noear.solon.flow.stateful.StateRepository;
 import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.controller.BlockStateController;
+import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.test.SolonTest;
 
 import java.util.Date;
@@ -13,6 +15,7 @@ import java.util.Date;
 @SolonTest
 public class AutoForwardTest {
 
+    StateRepository stateRepository = new InMemoryStateRepository();
     BlockStateController stateController = new BlockStateController() {
         @Override
         public boolean isAutoForward(FlowContext context, Node node) {
@@ -29,7 +32,7 @@ public class AutoForwardTest {
         Graph graph = buildGraph();
 
         String graphId = "Test" + new Date().getTime();
-        FlowContext context = FlowContext.of(graphId, stateController);
+        FlowContext context = FlowContext.of(graphId, stateController, stateRepository);
 
         context.put("all_auto", true);
         StatefulTask statefulNode = statefulService.stepForward(graph, context);

@@ -58,21 +58,31 @@ public class StatefulFlowContext extends AbstractFlowContext  implements Statefu
 
     @Override
     public StateType stateGet(Node node) {
-        return stateRepository.stateGet(this, node);
+        if (stateRepository != null) {
+            return stateRepository.stateGet(this, node);
+        } else {
+            return StateType.UNKNOWN;
+        }
     }
 
     @Override
     public void statePut(Node node, StateType state) {
-        stateRepository.statePut(this, node, state);
+        if (stateRepository != null) {
+            stateRepository.statePut(this, node, state);
+        }
     }
 
     @Override
     public void stateRemove(Node node) {
-        stateRepository.stateRemove(this, node);
+        if (stateRepository != null) {
+            stateRepository.stateRemove(this, node);
+        }
     }
 
     @Override
     public void stateClear() {
-        stateRepository.stateClear(this);
+        if (stateRepository != null) {
+            stateRepository.stateClear(this);
+        }
     }
 }

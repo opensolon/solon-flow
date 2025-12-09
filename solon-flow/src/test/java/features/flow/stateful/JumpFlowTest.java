@@ -6,12 +6,10 @@ import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.container.MapContainer;
-import org.noear.solon.flow.stateful.FlowStatefulService;
-import org.noear.solon.flow.stateful.Operation;
-import org.noear.solon.flow.stateful.StateType;
-import org.noear.solon.flow.stateful.StatefulTask;
+import org.noear.solon.flow.stateful.*;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
+import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.test.SolonTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +25,7 @@ public class JumpFlowTest {
     final String instanceId = Utils.uuid();
     final String actor = "role";
 
+    StateRepository stateRepository = new InMemoryStateRepository();
     ActorStateController stateController = new ActorStateController(actor) {
         @Override
         public boolean isOperatable(FlowContext context, Node node) {
@@ -53,7 +52,7 @@ public class JumpFlowTest {
     @Test
     public void case1() {
         FlowStatefulService statefulService = buildStatefulService();
-        FlowContext context = FlowContext.of(instanceId, stateController).put(actor, "admin");
+        FlowContext context = FlowContext.of(instanceId, stateController, stateRepository).put(actor, "admin");
 
         statefulService.postOperation(graphId, "n3", Operation.FORWARD_JUMP, context);
 

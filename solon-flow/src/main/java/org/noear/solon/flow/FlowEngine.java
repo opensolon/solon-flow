@@ -183,7 +183,8 @@ public interface FlowEngine {
      * @param context 上下文
      */
     default void eval(String graphId, FlowContext context) throws FlowException {
-        eval(graphId, null, -1, context);
+        Graph graph = getGraphOrThrow(graphId);
+        eval(graph, graph.getStart(), -1, context);
     }
 
     /**
@@ -200,28 +201,43 @@ public interface FlowEngine {
     /**
      * 运行
      *
+     * @param graphId   图Id
+     * @param startNode 开始节点
+     * @param context   上下文
+     */
+    default void eval(String graphId, Node startNode, FlowContext context) throws FlowException {
+        eval(graphId, startNode, -1, context);
+    }
+
+
+    /**
+     * 运行
+     *
      * @param graphId 图Id
      * @param startId 开始节点Id
      * @param depth   执行深度
      * @param context 上下文
      */
     default void eval(String graphId, String startId, int depth, FlowContext context) throws FlowException {
-        eval(graphId, startId, depth, new FlowExchanger(context));
+        Graph graph = getGraphOrThrow(graphId);
+        Node startNode = (startId == null ? graph.getStart() : graph.getNodeOrThrow(startId));
+        eval(graph, startNode, depth, context);
     }
+
 
     /**
      * 运行
      *
      * @param graphId   图Id
-     * @param startId   开始节点Id
+     * @param startNode 开始节点
      * @param depth     执行深度
-     * @param exchanger 交换器
+     * @param context   上下文
      */
-    default void eval(String graphId, String startId, int depth, FlowExchanger exchanger) throws FlowException {
+    default void eval(String graphId, Node startNode, int depth, FlowContext context) throws FlowException {
         Graph graph = getGraphOrThrow(graphId);
-        Node startNode = (startId == null ? graph.getStart() : graph.getNodeOrThrow(startId));
-        eval(graph, startNode, depth, exchanger);
+        eval(graph, startNode, depth, context);
     }
+
 
     /**
      * 运行
@@ -320,7 +336,7 @@ public interface FlowEngine {
     void eval(Graph graph, Node startNode, int depth, FlowExchanger exchanger) throws FlowException;
 
 
-    /// ////////////////
+    /// ///////////////////////////////////////////////////////////////////////////////
 
     /**
      * 运行

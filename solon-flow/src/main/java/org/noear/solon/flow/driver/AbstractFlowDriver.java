@@ -181,7 +181,8 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     protected void tryAsGraphTask(FlowExchanger exchanger, Task task, String description) throws Throwable {
         //调用其它图
         String graphId = description.substring(1);
-        exchanger.engine().eval(graphId, null, -1, exchanger);
+        Graph graph = exchanger.engine().getGraphOrThrow(graphId);
+        exchanger.engine().eval(graph, graph.getStart(), -1, exchanger);
     }
 
     /**

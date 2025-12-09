@@ -115,7 +115,9 @@ public interface FlowStatefulService {
      * @param graphId 图id
      * @param context 流上下文（要有人员配置）
      */
-    StateResult eval(String graphId, FlowContext context);
+    default StateResult eval(String graphId, FlowContext context) {
+        return eval(engine().getGraphOrThrow(graphId), context);
+    }
 
     /**
      * 运行
@@ -123,7 +125,48 @@ public interface FlowStatefulService {
      * @param graph   图
      * @param context 流上下文（要有人员配置）
      */
-    StateResult eval(Graph graph, FlowContext context);
+    default StateResult eval(Graph graph, FlowContext context) {
+        return eval(graph, graph.getStart(), context);
+    }
+
+    /**
+     * 运行
+     *
+     * @param graphId 图id
+     * @param context 流上下文（要有人员配置）
+     */
+    default StateResult eval(String graphId, String startId, FlowContext context) {
+        return eval(engine().getGraphOrThrow(graphId), startId, context);
+    }
+
+    /**
+     * 运行
+     *
+     * @param graphId 图id
+     * @param context 流上下文（要有人员配置）
+     */
+    default StateResult eval(String graphId, Node startNode, FlowContext context) {
+        return eval(engine().getGraphOrThrow(graphId), startNode, context);
+    }
+
+    /**
+     * 运行
+     *
+     * @param graph   图
+     * @param context 流上下文（要有人员配置）
+     */
+    default StateResult eval(Graph graph, String startId, FlowContext context) {
+        return eval(graph, graph.getNodeOrThrow(startId), context);
+    }
+
+    /**
+     * 运行
+     *
+     * @param graph   图
+     * @param context 流上下文（要有人员配置）
+     */
+    StateResult eval(Graph graph, Node startNode, FlowContext context);
+
 
     /// ////////////////////////////////
 

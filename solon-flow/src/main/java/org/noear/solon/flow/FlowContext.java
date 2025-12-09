@@ -51,13 +51,13 @@ public interface FlowContext {
     }
 
     static FlowContext of(String instanceId, StateController stateController, StateRepository stateRepository) {
-        //有状态
+        //有状态（有控制，有状态）
         return new StatefulFlowContext(instanceId, stateController, stateRepository);
     }
 
     static FlowContext of(String instanceId, StateController stateController) {
-        //有状态（用于一次性场景）
-        return new StatefulFlowContext(instanceId, stateController, new InMemoryStateRepository());
+        //有状态（只有控制，没有状态）
+        return new StatefulFlowContext(instanceId, stateController, null);
     }
 
     /**

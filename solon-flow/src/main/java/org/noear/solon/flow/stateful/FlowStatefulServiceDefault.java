@@ -199,17 +199,13 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
     }
 
     /// ////////////////////////
+
     @Override
-    public StateResult eval(Graph graph, FlowContext context) {
+    public StateResult eval(Graph graph, Node startNode, FlowContext context) {
         FlowExchanger exchanger = new FlowExchanger(context);
 
-        flowEngine.eval(graph, graph.getStart(), -1, exchanger);
+        flowEngine.eval(graph, startNode, -1, exchanger);
         return (StateResult) exchanger.temporary().vars().get(StateResult.KEY_ACTIVITY_NODE);
-    }
-
-    @Override
-    public StateResult eval(String graphId, FlowContext context) {
-        return eval(flowEngine.getGraphOrThrow(graphId), context);
     }
 
     /// ////////////////////////

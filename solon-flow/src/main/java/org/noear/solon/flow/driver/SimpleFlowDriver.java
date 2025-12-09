@@ -69,7 +69,7 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
                     //确保任务只被执行一次
                     postHandleTask(exchanger, task);
 
-                    if((exchanger.isStopped() || exchanger.isInterrupted())) {
+                    if ((exchanger.isStopped() || exchanger.isInterrupted())) {
                         //中断或停止，表示处理中
 
                         //记录当前流程节点（用于展示）
@@ -95,7 +95,7 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
 
                     //终止
                     exchanger.stop();
-                } else if(state == StateType.COMPLETED) {
+                } else if (state == StateType.COMPLETED) {
                     //完成
                     //StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.COMPLETED);
                     //exchanger.temporary().vars().put(StateResult.KEY_ACTIVITY_NODE, statefulNode);
@@ -138,7 +138,7 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
                     } else {
                         exchanger.stop();
                     }
-                } else if(state == StateType.COMPLETED) {
+                } else if (state == StateType.COMPLETED) {
                     //完成
                     //StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.COMPLETED);
                     //exchanger.temporary().vars().put(StateResult.KEY_ACTIVITY_NODE, statefulNode);
