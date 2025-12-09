@@ -30,22 +30,47 @@ import java.util.function.Consumer;
  * */
 @Preview("3.0")
 public class Graph {
-    private final GraphDecl decl;
-    private Map<String, Node> nodes = new LinkedHashMap<>();
-    private List<Link> links = new ArrayList<>();
-    private Node start;
+    private transient final GraphDecl decl;
+    private transient final Map<String, Object> metas;
+
+    private transient final Map<String, Node> nodes;
+    private transient final List<Link> links;
+    private transient Node start;
 
     protected Graph(GraphDecl decl) {
         this.decl = decl;
 
+        Map<String, Node> nodeMap = new LinkedHashMap<>(decl.nodes.size());
+        List<Link> linkAry = new ArrayList<>(decl.nodes.size());
 
         //倒排加入图
         for (Map.Entry<String, NodeDecl> kv : decl.nodes.entrySet()) {
-            this.addNode(kv.getValue());
+            doAddNode(kv.getValue(), nodeMap, linkAry);
+        }
+
+        //正排加入图
+        this.nodes = Collections.unmodifiableMap(nodeMap);
+        this.links = Collections.unmodifiableList(linkAry);
+        if (decl.meta == null) {
+            this.metas = Collections.emptyMap();
+        } else {
+            this.metas = Collections.unmodifiableMap(decl.meta);
         }
 
         //校验结构
-        this.check();
+        if (start == null) {
+            //找到没有流入连接的节点，作为开始节点
+            for (Node node : nodes.values()) {
+                if (Utils.isEmpty(node.getPrevLinks())) {
+                    start = node;
+                    break;
+                }
+            }
+        }
+
+        if (start == null) {
+            throw new IllegalStateException("No start node found, graph: " + decl);
+        }
     }
 
     /**
@@ -73,21 +98,21 @@ public class Graph {
      * 获取元数据
      */
     public Map<String, Object> getMetas() {
-        return decl.meta;
+        return metas;
     }
 
     /**
      * 获取元数据
      */
     public Object getMeta(String key) {
-        return decl.meta.get(key);
+        return metas.get(key);
     }
 
     /**
      * 获取元数据或默认
      */
     public Object getMetaOrDefault(String key, Object def) {
-        return decl.meta.getOrDefault(key, def);
+        return metas.getOrDefault(key, def);
     }
 
     /**
@@ -101,14 +126,14 @@ public class Graph {
      * 获取所有节点
      */
     public Map<String, Node> getNodes() {
-        return Collections.unmodifiableMap(nodes);
+        return nodes;
     }
 
     /**
      * 获取所有连接
      */
     public List<Link> getLinks() {
-        return Collections.unmodifiableList(links);
+        return links;
     }
 
 
@@ -136,39 +161,18 @@ public class Graph {
     /**
      * 添加节点
      */
-    private void addNode(NodeDecl nodeDecl) {
-        List<Link> linkAry = new ArrayList<>();
-
+    private void doAddNode(NodeDecl nodeDecl, Map<String, Node> nodeMap, List<Link> linkAry) {
+        List<Link> tmp = new ArrayList<>(nodeDecl.links.size());
         for (LinkDecl linkSpec : nodeDecl.links) {
-            linkAry.add(new Link(this, nodeDecl.id, linkSpec));
+            tmp.add(new Link(this, nodeDecl.id, linkSpec));
         }
 
-        links.addAll(linkAry);
+        linkAry.addAll(tmp);
 
-        Node node = new Node(this, nodeDecl, linkAry);
-        nodes.put(node.getId(), node);
+        Node node = new Node(this, nodeDecl, tmp);
+        nodeMap.put(node.getId(), node);
         if (nodeDecl.type == NodeType.START) {
             start = node;
-        }
-    }
-
-    /**
-     * 校验
-     */
-    private void check() {
-        //如果没有配置 start 节点
-        if (start == null) {
-            //找到没有流入连接的节点，作为开始节点
-            for (Node node : nodes.values()) {
-                if (Utils.isEmpty(node.getPrevLinks())) {
-                    start = node;
-                    break;
-                }
-            }
-        }
-
-        if (start == null) {
-            throw new IllegalStateException("No start node found, graph: " + decl);
         }
     }
 

@@ -29,17 +29,18 @@ import java.util.*;
 public class Node {
     public static final String TAG = "node";
 
-    private final transient Graph graph;
+    private transient final Graph graph;
+    private transient final NodeDecl decl;
+    private transient final Map<String, Object> metas;
 
-    private final NodeDecl decl;
-    private final List<Link> nextLinks = new ArrayList<>(); //as nextLinks
+    private transient final List<Link> nextLinks = new ArrayList<>(); //as nextLinks
 
-    private List<Node> prevNodes, nextNodes;
-    private List<Link> prevLinks;
-    private Condition when;
-    private Task task;
-    private NodeType imode = NodeType.UNKNOWN;
-    private NodeType omode = NodeType.UNKNOWN;
+    private transient List<Node> prevNodes, nextNodes;
+    private transient List<Link> prevLinks;
+    private transient Condition when;
+    private transient Task task;
+    private transient NodeType imode = NodeType.UNKNOWN;
+    private transient NodeType omode = NodeType.UNKNOWN;
 
     /**
      * 附件（按需定制使用）
@@ -49,6 +50,11 @@ public class Node {
     protected Node(Graph graph, NodeDecl decl, List<Link> links) {
         this.graph = graph;
         this.decl = decl;
+        if (decl.meta == null) {
+            this.metas = Collections.emptyMap();
+        } else {
+            this.metas = Collections.unmodifiableMap(decl.meta);
+        }
 
         if (links != null) {
             this.nextLinks.addAll(links);
@@ -121,7 +127,7 @@ public class Node {
      * 获取所有元数据
      */
     public Map<String, Object> getMetas() {
-        return Collections.unmodifiableMap(decl.meta);
+        return metas;
     }
 
     /**

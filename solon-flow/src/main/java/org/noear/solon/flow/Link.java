@@ -17,6 +17,7 @@ package org.noear.solon.flow;
 
 import org.noear.solon.Utils;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -26,17 +27,23 @@ import java.util.Map;
  * @since 3.0
  */
 public class Link implements Comparable<Link> {
-    private final Graph graph;
-    private final String prevId;
-    private final LinkDecl decl;
+    private transient final Graph graph;
+    private transient final LinkDecl decl;
+    private transient final Map<String, Object> metas;
 
-    private Node prevNode, nextNode;
-    private Condition when;
+    private transient final String prevId;
+    private transient Node prevNode, nextNode;
+    private transient Condition when;
 
     public Link(Graph graph, String prevId, LinkDecl decl) {
         this.graph = graph;
         this.prevId = prevId;
         this.decl = decl;
+        if (decl.meta == null) {
+            this.metas = Collections.emptyMap();
+        } else {
+            this.metas = Collections.unmodifiableMap(decl.meta);
+        }
     }
 
     /**
@@ -57,7 +64,7 @@ public class Link implements Comparable<Link> {
      * 获取所有元数据
      */
     public Map<String, Object> getMetas() {
-        return decl.meta;
+        return metas;
     }
 
     /**
