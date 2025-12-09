@@ -88,7 +88,6 @@ public interface FlowEngine {
 
     /**
      * 移除拦截器
-     *
      */
     void removeInterceptor(FlowInterceptor interceptor);
 
@@ -166,6 +165,8 @@ public interface FlowEngine {
         return graph;
     }
 
+    /// ////////////////////
+
     /**
      * 运行
      *
@@ -189,7 +190,7 @@ public interface FlowEngine {
      * 运行
      *
      * @param graphId 图Id
-     * @param startId 开始Id
+     * @param startId 开始节点Id
      * @param context 上下文
      */
     default void eval(String graphId, String startId, FlowContext context) throws FlowException {
@@ -200,7 +201,7 @@ public interface FlowEngine {
      * 运行
      *
      * @param graphId 图Id
-     * @param startId 开始Id
+     * @param startId 开始节点Id
      * @param depth   执行深度
      * @param context 上下文
      */
@@ -212,11 +213,15 @@ public interface FlowEngine {
      * 运行
      *
      * @param graphId   图Id
-     * @param startId   开始Id
+     * @param startId   开始节点Id
      * @param depth     执行深度
      * @param exchanger 交换器
      */
-    void eval(String graphId, String startId, int depth, FlowExchanger exchanger) throws FlowException;
+    default void eval(String graphId, String startId, int depth, FlowExchanger exchanger) throws FlowException {
+        Graph graph = getGraphOrThrow(graphId);
+        Node startNode = (startId == null ? graph.getStart() : graph.getNodeOrThrow(startId));
+        eval(graph, startNode, depth, exchanger);
+    }
 
     /**
      * 运行
@@ -227,6 +232,7 @@ public interface FlowEngine {
         eval(graph, FlowContext.of());
     }
 
+
     /**
      * 运行
      *
@@ -234,14 +240,95 @@ public interface FlowEngine {
      * @param context 上下文
      */
     default void eval(Graph graph, FlowContext context) throws FlowException {
-        eval(graph.getStart(), -1, context);
+        eval(graph, graph.getStart(), -1, context);
     }
 
     /**
      * 运行
      *
+     * @param graph   图
+     * @param startId 开始节点Id
+     */
+    default void eval(Graph graph, String startId) throws FlowException {
+        eval(graph, startId, FlowContext.of());
+    }
+
+    /**
+     * 运行
+     *
+     * @param graph   图
+     * @param startId 开始节点Id
+     * @param context 上下文
+     */
+    default void eval(Graph graph, String startId, FlowContext context) throws FlowException {
+        eval(graph, startId, -1, context);
+    }
+
+    /**
+     * 运行
+     *
+     * @param graph   图
+     * @param startId 开始节点Id
+     * @param context 上下文
+     */
+    default void eval(Graph graph, String startId, int depth, FlowContext context) throws FlowException {
+        Node startNode = (startId == null ? graph.getStart() : graph.getNodeOrThrow(startId));
+        eval(graph, startNode, depth, context);
+    }
+
+    /**
+     * 运行
+     *
+     * @param graph     图
      * @param startNode 开始节点
      */
+    default void eval(Graph graph, Node startNode) throws FlowException {
+        eval(graph, startNode, -1, FlowContext.of());
+    }
+
+    /**
+     * 运行
+     *
+     * @param graph     图
+     * @param startNode 开始节点
+     * @param context   上下文
+     */
+    default void eval(Graph graph, Node startNode, FlowContext context) throws FlowException {
+        eval(graph, startNode, -1, context);
+    }
+
+    /**
+     * 运行
+     *
+     * @param graph     图
+     * @param startNode 开始节点
+     * @param depth     深度
+     * @param context   上下文
+     */
+    default void eval(Graph graph, Node startNode, int depth, FlowContext context) throws FlowException {
+        eval(graph, startNode, depth, new FlowExchanger(context));
+    }
+
+    /**
+     * 运行
+     *
+     * @param graph     图
+     * @param startNode 开始节点
+     * @param depth     深度
+     * @param exchanger 交换器
+     */
+    void eval(Graph graph, Node startNode, int depth, FlowExchanger exchanger) throws FlowException;
+
+
+    /// ////////////////
+
+    /**
+     * 运行
+     *
+     * @param startNode 开始节点
+     * @deprecated 3.7.4 {@link #eval(Graph, Node, FlowContext)}
+     */
+    @Deprecated
     default void eval(Node startNode) throws FlowException {
         eval(startNode, -1, FlowContext.of());
     }
@@ -251,7 +338,9 @@ public interface FlowEngine {
      *
      * @param startNode 开始节点
      * @param context   上下文
+     * @deprecated 3.7.4 {@link #eval(Graph, Node, FlowContext)}
      */
+    @Deprecated
     default void eval(Node startNode, FlowContext context) throws FlowException {
         eval(startNode, -1, context);
     }
@@ -262,7 +351,9 @@ public interface FlowEngine {
      * @param startNode 开始节点
      * @param depth     执行深度
      * @param context   上下文
+     * @deprecated 3.7.4 {@link #eval(Graph, Node, int, FlowContext)}
      */
+    @Deprecated
     default void eval(Node startNode, int depth, FlowContext context) throws FlowException {
         eval(startNode, depth, new FlowExchanger(context));
     }
@@ -273,6 +364,10 @@ public interface FlowEngine {
      * @param startNode 开始节点
      * @param depth     执行深度
      * @param exchanger 交换器
+     * @deprecated 3.7.4 {@link #eval(Graph, Node, int, FlowExchanger)}
      */
-    void eval(Node startNode, int depth, FlowExchanger exchanger) throws FlowException;
+    @Deprecated
+    default void eval(Node startNode, int depth, FlowExchanger exchanger) throws FlowException {
+        eval(startNode.getGraph(), startNode, depth, exchanger);
+    }
 }

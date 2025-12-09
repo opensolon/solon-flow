@@ -73,6 +73,14 @@ public interface FlowContext {
     @Preview("3.3")
     FlowContext executor(ExecutorService executor);
 
+
+    /**
+     * 最后运行的节点
+     */
+    @Preview("3.7.4")
+    @Nullable
+    Node lastNode();
+
     /**
      * 交换器（只在任务执行时可获取）
      *

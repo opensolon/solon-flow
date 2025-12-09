@@ -37,7 +37,9 @@ public abstract class AbstractFlowContext implements FlowContext {
     //存放数据模型
     private transient final Map<String, Object> model = new ConcurrentHashMap<>();
     //异步执行器
-    private transient ExecutorService executor;
+    private transient volatile ExecutorService executor;
+    //最后执行节点
+    private transient volatile Node lastNode;
 
     public AbstractFlowContext() {
         this(null);
@@ -64,6 +66,19 @@ public abstract class AbstractFlowContext implements FlowContext {
     public AbstractFlowContext executor(ExecutorService executor) {
         this.executor = executor;
         return this;
+    }
+
+    /**
+     * 最后运行的节点
+     */
+    @Preview("3.7")
+    @Override
+    public @Nullable Node lastNode() {
+        return lastNode;
+    }
+
+    public void lastNode(Node node) {
+        this.lastNode = node;
     }
 
     /**

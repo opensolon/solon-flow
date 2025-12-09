@@ -119,6 +119,18 @@ public class Graph {
         return nodes.get(id);
     }
 
+    /**
+     * 获取节点（如果没有则异常）
+     */
+    public Node getNodeOrThrow(String id) {
+        Node node = getNode(id);
+        if (node == null) {
+            throw new IllegalArgumentException("Node not found, id: " + id);
+        }
+
+        return node;
+    }
+
     /// ////////
 
     /**

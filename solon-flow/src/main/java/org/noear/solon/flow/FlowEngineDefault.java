@@ -145,37 +145,14 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 评估
      *
-     * @param graphId   图Id
-     * @param exchanger 交换器
-     */
-    @Override
-    public void eval(String graphId, String startId, int depth, FlowExchanger exchanger) throws FlowException {
-        Graph graph = graphMap.get(graphId);
-        if (graph == null) {
-            throw new IllegalArgumentException("No graph found for id: " + graphId);
-        }
-
-        Node startNode;
-        if (startId == null) {
-            startNode = graph.getStart();
-        } else {
-            startNode = graph.getNode(startId);
-        }
-
-        eval(startNode, depth, exchanger);
-    }
-
-    /**
-     * 评估
-     *
      * @param startNode 开始节点
      * @param depth     执行深度
      * @param exchanger 交换器
      */
     @Override
-    public void eval(Node startNode, int depth, FlowExchanger exchanger) throws FlowException {
+    public void eval(Graph graph, Node startNode, int depth, FlowExchanger exchanger) throws FlowException {
         if (startNode == null) {
-            throw new IllegalArgumentException("The start node was not found.");
+            startNode = graph.getStart();
         }
 
         //准备工作
@@ -222,11 +199,14 @@ public class FlowEngineDefault implements FlowEngine {
      * 节点运行开始时
      */
     protected void onNodeStart(FlowDriver driver, FlowExchanger exchanger, Node node) {
-        for (RankEntity<FlowInterceptor> interceptor : interceptorList) {
-            interceptor.target.onNodeStart(exchanger.context(), node);
-        }
+        if (exchanger.isReverting() == false) {
+            //恢复完成，才执行拦截
+            for (RankEntity<FlowInterceptor> interceptor : interceptorList) {
+                interceptor.target.onNodeStart(exchanger.context(), node);
+            }
 
-        driver.onNodeStart(exchanger, node);
+            driver.onNodeStart(exchanger, node);
+        }
     }
 
     /**
@@ -316,9 +296,13 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
         //检测恢复情况
-        if (node.getId().equals(startNode.getId())) {
-            //恢复完成
-            exchanger.reverting(false);
+        if (exchanger.isReverting()) {
+            if (node.getId().equals(startNode.getId())) {
+                //恢复完成（相对之前的 startNode 方案，新方案能还原上层状态）
+                exchanger.reverting(false);
+            }
+        } else {
+            ((AbstractFlowContext) exchanger.context()).lastNode(node);
         }
 
         //执行深度控制

@@ -203,7 +203,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
     public StateResult eval(Graph graph, FlowContext context) {
         FlowExchanger exchanger = new FlowExchanger(context);
 
-        flowEngine.eval(graph.getStart(), -1, exchanger);
+        flowEngine.eval(graph, graph.getStart(), -1, exchanger);
         return (StateResult) exchanger.temporary().vars().get(StateResult.KEY_ACTIVITY_NODE);
     }
 
@@ -235,7 +235,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
 
         exchanger.temporary().vars().put(StateResult.KEY_ACTIVITY_LIST_GET, true);
 
-        flowEngine.eval(graph.getStart(), -1, exchanger);
+        flowEngine.eval(graph, graph.getStart(), -1, exchanger);
         Collection<StatefulTask> tmp = (Collection<StatefulTask>) exchanger.temporary().vars().get(StateResult.KEY_ACTIVITY_LIST);
 
         if (tmp == null) {
@@ -305,7 +305,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
                 if (nextNode != null) {
                     if (exchanger.context().statefulSupporter().isAutoForward(nextNode)) {
                         //如果要自动前进
-                        flowEngine.eval(nextNode, exchanger.context());
+                        flowEngine.eval(nextNode.getGraph(), nextNode, exchanger.context());
                     }
                 }
             }

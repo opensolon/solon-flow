@@ -1,4 +1,4 @@
-package features.flow.stateful;
+package features.flow.stateless;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,10 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
-import org.noear.solon.flow.stateful.StateType;
-import org.noear.solon.flow.stateful.StateResult;
-import org.noear.solon.flow.stateful.controller.NotBlockStateController;
-import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 
 @Slf4j
 public class NotBlockStateFlowTest3 {
@@ -23,7 +19,7 @@ public class NotBlockStateFlowTest3 {
         String finalMessage;
     }
 
-    public static class Draft implements TaskComponent{
+    public static class Draft implements TaskComponent {
         @Override
         public void run(FlowContext ctx, Node n) throws Throwable {
             OrderState state = ctx.getAs("state");
@@ -34,7 +30,7 @@ public class NotBlockStateFlowTest3 {
         }
     }
 
-    public static class Review implements TaskComponent{
+    public static class Review implements TaskComponent {
         @Override
         public void run(FlowContext ctx, Node n) throws Throwable {
             OrderState state = ctx.getAs("state");
@@ -48,7 +44,7 @@ public class NotBlockStateFlowTest3 {
         }
     }
 
-    public static  class Confirm implements TaskComponent{
+    public static class Confirm implements TaskComponent {
         @Override
         public void run(FlowContext ctx, Node n) throws Throwable {
             OrderState state = ctx.getAs("state");
@@ -59,8 +55,6 @@ public class NotBlockStateFlowTest3 {
     }
 
     FlowEngine flowEngine = FlowEngine.newInstance();
-    NotBlockStateController stateController = new NotBlockStateController();
-    InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
     @Test
     public void case1() {
@@ -74,20 +68,13 @@ public class NotBlockStateFlowTest3 {
         /// ////////////
         OrderState initialState = new OrderState("o-1", null, false, null);
 
-        FlowContext context = FlowContext.of(initialState.orderId, stateController, stateRepository)
-                .put("state", initialState);
-
-        StateResult result = null;
-        result = flowEngine.forStateful().eval(graph, context);
-
-        assert result.getState() == StateType.WAITING;
-        Assertions.assertEquals("n2", result.getNode().getId());
+        FlowContext context = FlowContext.of(initialState.orderId).put("state", initialState);
+        flowEngine.eval(graph, context.lastNode(), context);
+        Assertions.assertEquals("n2", context.lastNode().getId());
 
         //模拟人工审核后
         initialState.setApproved(true);
-        result = flowEngine.forStateful().eval(graph, context);
-
-        assert result.getState() == StateType.COMPLETED;
-        Assertions.assertEquals("n3", result.getNode().getId());
+        flowEngine.eval(graph, context.lastNode(), context);
+        Assertions.assertEquals("n3", context.lastNode().getId());
     }
 }

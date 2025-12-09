@@ -50,6 +50,6 @@ public class LinkTest {
             decl.addNode(NodeDecl.activityOf("n1").task("@DemoCom"));
         });
 
-        engine.eval(graph.getNode("n1"));
+        engine.eval(graph, "n1");
     }
 }
