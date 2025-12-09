@@ -41,6 +41,8 @@ public class FlowExchanger {
     private transient volatile boolean interrupted = false;
     //执行时流程停止（可选）
     private transient volatile boolean stopped = false;
+    //执行恢复中
+    private transient volatile boolean reverting = true;
 
     public FlowExchanger(FlowContext context) {
         Assert.notNull(context, "The context is null");
@@ -136,5 +138,19 @@ public class FlowExchanger {
      */
     public void interrupt(boolean interrupted) {
         this.interrupted = interrupted;
+    }
+
+    /**
+     * 是否恢复中（恢复到起始节点）
+     */
+    public boolean isReverting() {
+        return reverting;
+    }
+
+    /**
+     * 恢复状态重置
+     */
+    public void reverting(boolean reverting) {
+        this.reverting = reverting;
     }
 }
