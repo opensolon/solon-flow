@@ -335,12 +335,13 @@ public class Graph {
         }
 
         if (context != null && context.isStateful()) {
+            //输出节点状态（方便前图标注进度）
             Map<String, String> domStateful = new LinkedHashMap<>();
             domRoot.put("stateful", domStateful);
 
             for (Map.Entry<String, Node> entry : nodes.entrySet()) {
                 StateType type = context.statefulSupporter().stateGet(entry.getValue());
-                if (type != null) {
+                if (type != null && type != StateType.UNKNOWN) {
                     domStateful.put(entry.getKey(), type.toString());
                 }
             }

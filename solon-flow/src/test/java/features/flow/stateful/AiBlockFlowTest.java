@@ -73,6 +73,14 @@ public class AiBlockFlowTest {
         assert statefulNode != null;
         assert "step3".equals(statefulNode.getNode().getId());
 
+        /// ////////////////
+
+        String yaml = statefulService.engine().getGraph(graphId).toYaml(context);
+        System.out.println("------------");
+        System.out.println(yaml);
+        System.out.println("------------");
+
+
 
         /// ////////////////
 
@@ -97,5 +105,13 @@ public class AiBlockFlowTest {
         statefulNode = statefulService.stepForward(graphId, context);
         log.warn("{}", statefulNode);
         assert statefulNode == null; //抄送节点
+
+        /// ////////////////
+
+        yaml = statefulService.engine().getGraph(graphId).toYaml(context);
+        System.out.println("------------");
+        System.out.println(yaml);
+        System.out.println("------------");
+
     }
 }
