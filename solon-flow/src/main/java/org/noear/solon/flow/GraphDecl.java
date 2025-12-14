@@ -232,93 +232,6 @@ public class GraphDecl {
                 .when(whenStr));
     }
 
-    /**
-     * 转为 yaml
-     */
-    public String toYaml() {
-        return new Yaml().dump(buildDom());
-    }
-
-    /**
-     * 转为 json
-     */
-    public String toJson() {
-        return ONode.serialize(buildDom());
-    }
-
-    protected Map<String, Object> buildDom() {
-        Map<String, Object> domRoot = new LinkedHashMap<>();
-        domRoot.put("id", id);
-
-        if (Utils.isNotEmpty(title)) {
-            domRoot.put("title", title);
-        }
-
-        if (Utils.isNotEmpty(driver)) {
-            domRoot.put("driver", driver);
-        }
-
-        if (Utils.isNotEmpty(meta)) {
-            domRoot.put("meta", meta);
-        }
-
-        List<Map<String, Object>> domNodes = new ArrayList<>();
-        domRoot.put("layout", domNodes);
-
-        for (Map.Entry<String, NodeDecl> kv : nodes.entrySet()) {
-            NodeDecl node = kv.getValue();
-
-            Map<String, Object> domNode = new LinkedHashMap<>();
-            domNodes.add(domNode);
-
-            domNode.put("id", node.id);
-            domNode.put("type", node.type.toString().toLowerCase());
-
-            if (Utils.isNotEmpty(node.title)) {
-                domNode.put("title", node.title);
-            }
-
-            if (Utils.isNotEmpty(node.meta)) {
-                domNode.put("meta", node.meta);
-            }
-
-            if (Utils.isNotEmpty(node.when)) {
-                domNode.put("when", node.when);
-            }
-
-            if (Utils.isNotEmpty(node.task)) {
-                domNode.put("task", node.task);
-            }
-
-            if (Utils.isNotEmpty(node.links)) {
-                List<Map<String, Object>> domLinks = new ArrayList<>();
-                domNode.put("link", domLinks);
-
-                for (LinkDecl link : node.links) {
-                    Map<String, Object> domLink = new LinkedHashMap<>();
-                    domLinks.add(domLink);
-
-                    domLink.put("nextId", link.nextId);
-
-                    if (Utils.isNotEmpty(link.title)) {
-                        domLink.put("title", link.title);
-                    }
-
-                    if (Utils.isNotEmpty(link.meta)) {
-                        domLink.put("meta", link.meta);
-                    }
-
-                    if (Utils.isNotEmpty(link.when)) {
-                        domLink.put("when", link.when);
-                    }
-                }
-
-            }
-        }
-
-        return domRoot;
-    }
-
     public String getId() {
         return id;
     }
@@ -427,5 +340,95 @@ public class GraphDecl {
         NodeDecl decl = new NodeDecl(id, NodeType.LOOP);
         addNode(decl);
         return decl;
+    }
+
+    /// //////////////////////////////
+
+
+    /**
+     * 转为 yaml
+     */
+    public String toYaml() {
+        return new Yaml().dump(buildDom());
+    }
+
+    /**
+     * 转为 json
+     */
+    public String toJson() {
+        return ONode.serialize(buildDom());
+    }
+
+    protected Map<String, Object> buildDom() {
+        Map<String, Object> domRoot = new LinkedHashMap<>();
+        domRoot.put("id", id);
+
+        if (Utils.isNotEmpty(title)) {
+            domRoot.put("title", title);
+        }
+
+        if (Utils.isNotEmpty(driver)) {
+            domRoot.put("driver", driver);
+        }
+
+        if (Utils.isNotEmpty(meta)) {
+            domRoot.put("meta", meta);
+        }
+
+        List<Map<String, Object>> domNodes = new ArrayList<>();
+        domRoot.put("layout", domNodes);
+
+        for (Map.Entry<String, NodeDecl> kv : nodes.entrySet()) {
+            NodeDecl node = kv.getValue();
+
+            Map<String, Object> domNode = new LinkedHashMap<>();
+            domNodes.add(domNode);
+
+            domNode.put("id", node.id);
+            domNode.put("type", node.type.toString().toLowerCase());
+
+            if (Utils.isNotEmpty(node.title)) {
+                domNode.put("title", node.title);
+            }
+
+            if (Utils.isNotEmpty(node.meta)) {
+                domNode.put("meta", node.meta);
+            }
+
+            if (Utils.isNotEmpty(node.when)) {
+                domNode.put("when", node.when);
+            }
+
+            if (Utils.isNotEmpty(node.task)) {
+                domNode.put("task", node.task);
+            }
+
+            if (Utils.isNotEmpty(node.links)) {
+                List<Map<String, Object>> domLinks = new ArrayList<>();
+                domNode.put("link", domLinks);
+
+                for (LinkDecl link : node.links) {
+                    Map<String, Object> domLink = new LinkedHashMap<>();
+                    domLinks.add(domLink);
+
+                    domLink.put("nextId", link.nextId);
+
+                    if (Utils.isNotEmpty(link.title)) {
+                        domLink.put("title", link.title);
+                    }
+
+                    if (Utils.isNotEmpty(link.meta)) {
+                        domLink.put("meta", link.meta);
+                    }
+
+                    if (Utils.isNotEmpty(link.when)) {
+                        domLink.put("when", link.when);
+                    }
+                }
+
+            }
+        }
+
+        return domRoot;
     }
 }

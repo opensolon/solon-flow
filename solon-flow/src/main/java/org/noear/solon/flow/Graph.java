@@ -15,8 +15,11 @@
  */
 package org.noear.solon.flow;
 
+import org.noear.snack4.ONode;
 import org.noear.solon.Utils;
+import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.lang.Preview;
+import org.yaml.snakeyaml.Yaml;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -30,7 +33,9 @@ import java.util.function.Consumer;
  * */
 @Preview("3.0")
 public class Graph {
-    private transient final GraphDecl decl;
+    private transient final String id;
+    private transient final String title;
+    private transient final String driver;
     private transient final Map<String, Object> metas;
 
     private transient final Map<String, Node> nodes;
@@ -38,7 +43,9 @@ public class Graph {
     private transient Node start;
 
     protected Graph(GraphDecl decl) {
-        this.decl = decl;
+        this.id = decl.id;
+        this.title = decl.title;
+        this.driver = decl.driver;
 
         Map<String, Node> nodeMap = new LinkedHashMap<>(decl.nodes.size());
         List<Link> linkAry = new ArrayList<>(decl.nodes.size());
@@ -77,21 +84,21 @@ public class Graph {
      * 获取标识
      */
     public String getId() {
-        return decl.id;
+        return id;
     }
 
     /**
      * 获取显示标题
      */
     public String getTitle() {
-        return decl.title;
+        return title;
     }
 
     /**
      * 获取驱动器
      */
     public String getDriver() {
-        return decl.driver;
+        return driver;
     }
 
     /**
@@ -227,17 +234,118 @@ public class Graph {
         return GraphDecl.parseByText(text).create();
     }
 
+    /// /////////////
+
     /**
      * 转为 yaml
      */
     public String toYaml() {
-        return decl.toYaml();
+        return new Yaml().dump(buildDom(null));
+    }
+
+    /**
+     * 转为 yaml
+     */
+    public String toYaml(FlowContext context) {
+        return new Yaml().dump(buildDom(context));
     }
 
     /**
      * 转为 json
      */
     public String toJson() {
-        return decl.toJson();
+        return ONode.serialize(buildDom(null));
+    }
+
+    /**
+     * 转为 json
+     */
+    public String toJson(FlowContext context) {
+        return ONode.serialize(buildDom(context));
+    }
+
+    protected Map<String, Object> buildDom(FlowContext context) {
+        Map<String, Object> domRoot = new LinkedHashMap<>();
+        domRoot.put("id", id);
+
+        if (Utils.isNotEmpty(title)) {
+            domRoot.put("title", title);
+        }
+
+        if (Utils.isNotEmpty(driver)) {
+            domRoot.put("driver", driver);
+        }
+
+        if (Utils.isNotEmpty(metas)) {
+            domRoot.put("meta", metas);
+        }
+
+        List<Map<String, Object>> domNodes = new ArrayList<>();
+        domRoot.put("layout", domNodes);
+
+        for (Map.Entry<String, Node> kv : nodes.entrySet()) {
+            Node node = kv.getValue();
+
+            Map<String, Object> domNode = new LinkedHashMap<>();
+            domNodes.add(domNode);
+
+            domNode.put("id", node.getId());
+            domNode.put("type", node.getType().toString().toLowerCase());
+
+            if (Utils.isNotEmpty(node.getTitle())) {
+                domNode.put("title", node.getTitle());
+            }
+
+            if (Utils.isNotEmpty(node.getMetas())) {
+                domNode.put("meta", node.getMetas());
+            }
+
+            if (Utils.isNotEmpty(node.getWhen().getDescription())) {
+                domNode.put("when", node.getWhen().getDescription());
+            }
+
+            if (Utils.isNotEmpty(node.getTask().getDescription())) {
+                domNode.put("task", node.getTask().getDescription());
+            }
+
+            if (Utils.isNotEmpty(node.getNextLinks())) {
+                List<Map<String, Object>> domLinks = new ArrayList<>();
+                domNode.put("link", domLinks);
+
+                for (Link link : node.getNextLinks()) {
+                    Map<String, Object> domLink = new LinkedHashMap<>();
+                    domLinks.add(domLink);
+
+                    domLink.put("nextId", link.getNextId());
+
+                    if (Utils.isNotEmpty(link.getTitle())) {
+                        domLink.put("title", link.getTitle());
+                    }
+
+                    if (Utils.isNotEmpty(link.getMetas())) {
+                        domLink.put("meta", link.getMetas());
+                    }
+
+                    if (Utils.isNotEmpty(link.getWhen().getDescription())) {
+                        domLink.put("when", link.getWhen().getDescription());
+                    }
+                }
+
+            }
+        }
+
+        if (context != null && context.isStateful()) {
+            Map<String, String> domStateful = new LinkedHashMap<>();
+            domRoot.put("stateful", domStateful);
+
+            for (Map.Entry<String, Node> entry : nodes.entrySet()) {
+                StateType type = context.statefulSupporter().stateGet(entry.getValue());
+                if (type != null) {
+                    domStateful.put(entry.getKey(), type.toString());
+                }
+            }
+        }
+
+        return domRoot;
     }
 }
