@@ -45,23 +45,11 @@ public class AutoForwardTest {
     }
 
     private Graph buildGraph() {
-        Graph graph = new GraphDecl("test_case11", "test_case11").create(decl -> {
-            NodeDecl nodeDecl = null;
-
-            nodeDecl = new NodeDecl("start", NodeType.START).title("开始").linkAdd("01");
-            decl.addNode(nodeDecl);
-
-
-            nodeDecl = new NodeDecl("01", NodeType.ACTIVITY).title("01").linkAdd("end")
-            //.metaPut("auto", true)
-            ;
-            nodeDecl.task("@oaMetaProcessCom");
-            decl.addNode(nodeDecl);
-
-            nodeDecl = new NodeDecl("end", NodeType.END).title("结束");
-            decl.addNode(nodeDecl);
+        Graph graph = Graph.create("test_case11", "test_case11", decl -> {
+            decl.addStart("start").title("开始").linkAdd("01");
+            decl.addActivity("01").title("01").task("@oaMetaProcessCom").linkAdd("end");
+            decl.addEnd("end").title("结束");
         });
-
 
         return graph;
     }

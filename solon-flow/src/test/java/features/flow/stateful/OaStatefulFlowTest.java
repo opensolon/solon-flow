@@ -80,6 +80,15 @@ public class OaStatefulFlowTest {
         assert StateType.WAITING == statefulNode.getState(); //等待当前用户处理
 
 
+
+        /// ////////////////
+
+        String yaml = statefulService.engine().getGraph(graphId).toYaml(context);
+        System.out.println("------------");
+        System.out.println(yaml);
+        System.out.println("------------");
+
+
         /// ////////////////
         //提交状态
         statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
@@ -102,6 +111,14 @@ public class OaStatefulFlowTest {
         assert statefulNode != null;
         assert statefulNode.getNode().getId().startsWith("step4");
         assert StateType.UNKNOWN == statefulNode.getState(); //没有权限
+
+
+        /// ////////////////
+
+        yaml = statefulService.engine().getGraph(graphId).toYaml(context);
+        System.out.println("------------");
+        System.out.println(yaml);
+        System.out.println("------------");
 
 
         context = getContext("陈宇");

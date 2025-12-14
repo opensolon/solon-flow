@@ -77,7 +77,9 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
                         exchanger.temporary().vars().put(StateResult.KEY_ACTIVITY_NODE, statefulNode);
 
                         //添加状态
-                        exchanger.context().statefulSupporter().statePut(task.getNode(), StateType.WAITING);
+                        if(state != StateType.WAITING) {
+                            exchanger.context().statefulSupporter().statePut(task.getNode(), StateType.WAITING);
+                        }
                     } else {
                         //没有中断或停止，表示已完成
 
@@ -113,6 +115,11 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
                         StatefulTask statefulNode = new StatefulTask(exchanger.engine(), task.getNode(), StateType.WAITING);
                         exchanger.temporary().vars().put(StateResult.KEY_ACTIVITY_NODE, statefulNode);
                         nodeList.add(statefulNode);
+
+                        //添加状态
+                        if(state != StateType.WAITING) {
+                            exchanger.context().statefulSupporter().statePut(task.getNode(), StateType.WAITING);
+                        }
 
                         if (nodeListGet) {
                             exchanger.interrupt();
