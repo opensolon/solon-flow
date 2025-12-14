@@ -65,6 +65,7 @@ Solon-Flow
 可视化设计器：
 
 * https://solon.noear.org/flow/designer/
+* 第三方开源（已组件化）：https://gitee.com/opensolon/solon-flow-bpmn-designer
 
 
 嵌入第三方框架的示例：
