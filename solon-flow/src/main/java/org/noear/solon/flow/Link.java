@@ -18,6 +18,7 @@ package org.noear.solon.flow;
 import org.noear.solon.Utils;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -28,21 +29,29 @@ import java.util.Map;
  */
 public class Link implements Comparable<Link> {
     private transient final Graph graph;
-    private transient final LinkDecl decl;
+
+    private transient final String nextId;
+    private transient final String title;
     private transient final Map<String, Object> metas;
+    private transient final int priority; //优先级（越大越高）
 
     private transient final String prevId;
+    private transient final Condition when;
     private transient Node prevNode, nextNode;
-    private transient Condition when;
 
     public Link(Graph graph, String prevId, LinkDecl decl) {
         this.graph = graph;
         this.prevId = prevId;
-        this.decl = decl;
+
+        this.nextId = decl.nextId;
+        this.title = decl.title;
+        this.priority = decl.priority;
+        this.when = new Condition(graph, decl.when, decl.whenComponent);
+
         if (decl.meta == null) {
             this.metas = Collections.emptyMap();
         } else {
-            this.metas = Collections.unmodifiableMap(decl.meta);
+            this.metas = Collections.unmodifiableMap(new LinkedHashMap<>(decl.meta));
         }
     }
 
@@ -57,7 +66,7 @@ public class Link implements Comparable<Link> {
      * 获取标题
      */
     public String getTitle() {
-        return decl.title;
+        return title;
     }
 
     /**
@@ -71,24 +80,20 @@ public class Link implements Comparable<Link> {
      * 获取元数据
      */
     public Object getMeta(String key) {
-        return decl.meta.get(key);
+        return metas.get(key);
     }
 
     /**
      * 获取元数据或默认
      */
     public Object getMetaOrDefault(String key, Object def) {
-        return decl.meta.getOrDefault(key, def);
+        return metas.getOrDefault(key, def);
     }
 
     /**
      * 分支流出条件
      */
     public Condition getWhen() {
-        if (when == null) {
-            when = new Condition(graph, decl.when, decl.whenComponent);
-        }
-
         return when;
     }
 
@@ -113,7 +118,7 @@ public class Link implements Comparable<Link> {
      * 后面的节点Id
      */
     public String getNextId() {
-        return decl.nextId;
+        return nextId;
     }
 
     /**
@@ -140,9 +145,9 @@ public class Link implements Comparable<Link> {
 
     @Override
     public int compareTo(Link o) {
-        if (this.decl.priority > o.decl.priority) {
+        if (this.priority > o.priority) {
             return -1; //大的在前
-        } else if (this.decl.priority < o.decl.priority) {
+        } else if (this.priority < o.priority) {
             return 1;
         } else {
             return 0;
@@ -154,20 +159,20 @@ public class Link implements Comparable<Link> {
         StringBuilder buf = new StringBuilder();
 
         buf.append("{");
-        buf.append("priority=").append(decl.priority);
+        buf.append("priority=").append(priority);
         buf.append(", prevId='").append(getPrevId()).append('\'');
         buf.append(", nextId='").append(getNextId()).append('\'');
 
-        if (Utils.isNotEmpty(decl.title)) {
-            buf.append(", title='").append(decl.title).append('\'');
+        if (Utils.isNotEmpty(title)) {
+            buf.append(", title='").append(title).append('\'');
         }
 
-        if (Utils.isNotEmpty(decl.meta)) {
-            buf.append(", meta=").append(decl.meta);
+        if (Utils.isNotEmpty(metas)) {
+            buf.append(", meta=").append(metas);
         }
 
-        if (Utils.isNotEmpty(decl.when)) {
-            buf.append(", when=").append(decl.when);
+        if (Utils.isNotEmpty(when.getDescription())) {
+            buf.append(", when=").append(when.getDescription());
         }
 
         buf.append("}");

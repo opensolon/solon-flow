@@ -30,15 +30,18 @@ public class Node {
     public static final String TAG = "node";
 
     private transient final Graph graph;
-    private transient final NodeDecl decl;
-    private transient final Map<String, Object> metas;
 
-    private transient final List<Link> nextLinks = new ArrayList<>(); //as nextLinks
+    private transient final String id;
+    private transient final String title;
+    private transient final NodeType type;
+    private transient final Map<String, Object> metas;
+    private transient final Condition when;
+    private transient final Task task;
+
+    private transient final List<Link> nextLinks; //as nextLinks
 
     private transient List<Node> prevNodes, nextNodes;
     private transient List<Link> prevLinks;
-    private transient Condition when;
-    private transient Task task;
     private transient NodeType imode = NodeType.UNKNOWN;
     private transient NodeType omode = NodeType.UNKNOWN;
 
@@ -49,17 +52,24 @@ public class Node {
 
     protected Node(Graph graph, NodeDecl decl, List<Link> links) {
         this.graph = graph;
-        this.decl = decl;
-        if (decl.meta == null) {
+
+        this.id = decl.id;
+        this.title = decl.title;
+        this.type = decl.type;
+        this.when = new Condition(graph, decl.when, decl.whenComponent);
+        this.task = new Task(this, decl.task, decl.taskComponent);
+
+        if (decl.meta == null || decl.meta.size() == 0) {
             this.metas = Collections.emptyMap();
         } else {
-            this.metas = Collections.unmodifiableMap(decl.meta);
+            this.metas = Collections.unmodifiableMap(new LinkedHashMap<>(decl.meta));
         }
 
-        if (links != null) {
-            this.nextLinks.addAll(links);
-            //按优先级排序
-            Collections.sort(nextLinks);
+        if (links == null || links.size() == 0) {
+            this.nextLinks = Collections.emptyList();
+        } else {
+            Collections.sort(links); //按优先级排序
+            this.nextLinks = Collections.unmodifiableList(links);
         }
 
         ioModeInit();
@@ -106,21 +116,21 @@ public class Node {
      * 获取标识
      */
     public String getId() {
-        return decl.id;
+        return id;
     }
 
     /**
      * 获取显示标题
      */
     public String getTitle() {
-        return decl.title;
+        return this.title;
     }
 
     /**
      * 获取类型
      */
     public NodeType getType() {
-        return decl.type;
+        return this.type;
     }
 
     /**
@@ -134,21 +144,21 @@ public class Node {
      * 获取元数据
      */
     public <T> T getMeta(String key) {
-        return (T) decl.meta.get(key);
+        return (T) metas.get(key);
     }
 
     /**
      * 是否有元数据键
      */
     public boolean hasMeta(String key) {
-        return decl.meta.containsKey(key);
+        return metas.containsKey(key);
     }
 
     /**
      * 获取元数据并转为 string
      */
     public String getMetaAsString(String key) {
-        Object tmp = decl.meta.get(key);
+        Object tmp = metas.get(key);
         if (tmp == null) {
             return null;
         } else if (tmp instanceof String) {
@@ -162,7 +172,7 @@ public class Node {
      * 获取元数据并转为 bool
      */
     public Boolean getMetaAsBool(String key) {
-        Object tmp = decl.meta.get(key);
+        Object tmp = metas.get(key);
         if (tmp == null) {
             return null;
         } else if (tmp instanceof Boolean) {
@@ -180,7 +190,7 @@ public class Node {
      * 获取元数据并转为 bool
      */
     public Number getMetaAsNumber(String key) {
-        Object tmp = decl.meta.get(key);
+        Object tmp = metas.get(key);
         if (tmp == null) {
             return null;
         } else if (tmp instanceof String) {
@@ -196,7 +206,7 @@ public class Node {
      * 获取元数据或默认
      */
     public <T> T getMetaOrDefault(String key, T def) {
-        return (T) decl.meta.getOrDefault(key, def);
+        return (T) metas.getOrDefault(key, def);
     }
 
     /**
@@ -227,7 +237,7 @@ public class Node {
      * 后面的连接（流出连接）
      */
     public List<Link> getNextLinks() {
-        return Collections.unmodifiableList(nextLinks);
+        return nextLinks;
     }
 
     /**
@@ -283,10 +293,6 @@ public class Node {
      * 任务条件
      */
     public Condition getWhen() {
-        if (when == null) {
-            when = new Condition(graph, decl.when, decl.whenComponent);
-        }
-
         return when;
     }
 
@@ -294,10 +300,6 @@ public class Node {
      * 任务
      */
     public Task getTask() {
-        if (task == null) {
-            task = new Task(this, decl.task, decl.taskComponent);
-        }
-
         return task;
     }
 
@@ -306,27 +308,27 @@ public class Node {
         StringBuilder buf = new StringBuilder();
 
         buf.append("{");
-        buf.append("id='").append(decl.id).append('\'');
-        buf.append(", type='").append(decl.type).append('\'');
+        buf.append("id='").append(id).append('\'');
+        buf.append(", type='").append(type).append('\'');
 
-        if (Utils.isNotEmpty(decl.title)) {
-            buf.append(", title='").append(decl.title).append('\'');
+        if (Utils.isNotEmpty(title)) {
+            buf.append(", title='").append(title).append('\'');
         }
 
-        if (Utils.isNotEmpty(decl.when)) {
-            buf.append(", when='").append(decl.when).append('\'');
+        if (Utils.isNotEmpty(when.getDescription())) {
+            buf.append(", when='").append(when.getDescription()).append('\'');
         }
 
-        if (Utils.isNotEmpty(decl.task)) {
-            buf.append(", task='").append(decl.task).append('\'');
+        if (Utils.isNotEmpty(task.getDescription())) {
+            buf.append(", task='").append(task.getDescription()).append('\'');
         }
 
-        if (Utils.isNotEmpty(decl.links)) {
-            buf.append(", link=").append(decl.links);
+        if (Utils.isNotEmpty(nextLinks)) {
+            buf.append(", link=").append(nextLinks);
         }
 
-        if (Utils.isNotEmpty(decl.meta)) {
-            buf.append(", meta=").append(decl.meta);
+        if (Utils.isNotEmpty(metas)) {
+            buf.append(", meta=").append(metas);
         }
 
         buf.append("}");
