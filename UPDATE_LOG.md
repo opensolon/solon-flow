@@ -18,6 +18,31 @@
 * 调整 `solon-flow` FlowStatefulService:evel、stepForward、stepBack 标为弃用
 
 
+新特性预览：Graph 硬编码方式
+
+```java
+Graph graph = Graph.create("demo1", "示例", decl -> {
+    decl.addStart("start").title("开始").linkAdd("01");
+    decl.addActivity("01").title("01").task("@AaMetaProcessCom").linkAdd("end");
+    decl.addEnd("end").title("结束");
+});
+```
+
+新特性预览：Graph 可输出节点状态（方便前端展示进度）
+
+```java
+graph.toJson(FlowContext.of("....")); //带 stateful:{node1:state1} 
+```
+
+新特性预览：FlowContext:lastNode （计算的中断与恢复）。参考：https://solon.noear.org/article/1246
+
+```java
+flowEngine.eval(graph, context.lastNode(), context);
+//...（从上一个节点开始执行）
+flowEngine.eval(graph, context.lastNode(), context);
+```
+
+
 ### 3.7.4
 
 * 添加 `solon-flow` Graph:create(id,title,consumer) 方法
