@@ -56,6 +56,25 @@ flowEngine.eval(graph, context.lastNodeId(), context);
 ```
 
 
+新特性预览：postTask（原名 postOperation）
+
+```java
+//（定制上下文后）不需要 stateController, stateRepository
+ApprovalFlowContext context = new ApprovalFlowContext("i1");
+
+//1. 从数据库获取后，推入状态
+context.stateMap().putAll(...);
+
+//2. 取出任务
+StatefulTask task = engine.forStateful().getTask("g1", context);
+
+//3. 提交任务
+engine.forStateful().postTask(task.getNode(), StateOp.FORWARD, context);
+
+//4. 把状态，存入数据库（持久化）
+context.stateMap();
+```
+
 ### 3.7.4
 
 * 添加 `solon-flow` Graph:create(id,title,consumer) 方法
