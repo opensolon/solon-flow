@@ -56,10 +56,12 @@ Solon-Flow
 
 支持已知流程编排的各种场景:
 
-* 可用于计算（或任务）的编排场景
-* 可用于业务规则和决策处理型的编排场景
-* 可用于办公审批型（有状态、可中断，人员参与）的编排场景
-* 可用于可中断、可恢复流程（结合自动前进，等待介入）的编排场景
+* 无状态流程
+  * 可用于计算（或任务）的编排场景
+  * 可用于业务规则和决策处理型的编排场景
+  * 可用于可中断、可恢复流程（结合自动前进，停止，再执行）的编排场景
+* 有状态流程（具体参考：[Solon Flow Stateful 开发](https://solon.noear.org/article/1106)）
+  * 可用于办公审批型（有状态、人员参与）的编排场景
 
 
 可视化设计器：
@@ -105,12 +107,11 @@ Solon-Flow
 通俗些，一个图就是通过 “点”（节点） + “线”（连接）画出来的一个结构。
 
 
-## 六大特性展示
+## 五大特性展示
 
+### 1、采用 yaml 或 json 偏平式编排格式
 
-### 1、采用 yaml 和 json 偏平式编排格式
-
-配置简洁，关系清晰。内容多了后有点像 docker-compose。
+偏平式编排，没有深度结构（所有节点平铺，使用 link 描述连接关系）。配置简洁，关系清晰
 
 ```yaml
 # c1.yml
@@ -145,14 +146,16 @@ layout:
   - { type: "end"}
 ```
 
-### 3、元数据配置，为扩展提供了无限空间（每个流程，相当于自带了元数据库）
+### 3、元数据配置，为扩展提供了无限空间
+
+元数据主要有两个作用：（1）为任务运行提供配置支持（2）为视图编辑提供配置支持
 
 ```yaml
 # c3.yml
 id: "c3"
 layout: 
   - { id: "n1", type: "start", link: "n2"}
-  - { id: "n2", type: "activity", link: "n3", meta: {cc: "demo@noear.org"}, task: "@MetaProcessCom"}
+  - { id: "n2", type: "activity", link: "n3", task: "@MetaProcessCom", meta: {cc: "demo@noear.org"}}
   - { id: "n3", type: "end"}
 ```
 
@@ -180,72 +183,25 @@ public class MetaProcessCom implements TaskComponent {
 id: f4
 layout:
   - task: |
-      //发送
+      //发送事件
       context.eventBus().send("demo.topic", "hello");  //支持泛型（类型按需指定，不指定时为 object）
   - task: |
-      //调用（要求答复）
-      String rst = context.eventBus().call("demo.topic.get", "hello").get();
+      //调用事件（就是要给答复）
+      String rst = context.eventBus().<String, String>call("demo.topic.get", "hello").get();
       System.out.println(rst);
 ```
 
-### 5、支持“无状态”、“有状态”两种需求分类
+### 5、支持无状态、有状态两种应用场景
 
 支持丰富的应用场景：
 
-* 支持无状态流程
+* 无状态流程
   * 可用于计算（或任务）的编排场景
   * 可用于业务规则和决策处理型的编排场景
-* 支持有状态流程
-  * 可用于办公审批型（有状态、可中断，人员参与）的编排场景
-  * 可用于长时间流程（结合自动前进，等待介入）的编排场景
+  * 可用于可中断、可恢复流程（结合自动前进，停止，再执行）的编排场景
+* 有状态流程（具体参考：[Solon Flow Stateful 开发](/article/1106)）
+  * 可用于办公审批型（有状态、人员参与）的编排场景
 
-
-自身也相当于一个低代码的运行引擎（单个 yml 或 json 文件，即可满足所有的执行需求）。
-
-
-### 6、驱动定制（是像 JDBC 有 MySql, PostgreSQL，还可能有 Elasticsearch）
-
-这是一个定制后的，支持基于状态驱动的流引擎效果。
-
-```java
-public class DemoFlowDriver implements FlowDriver {
-    ...
-}
-
-FlowEngine flowEngine =FlowEngine.newInstance(new DemoFlowDriver());
-
-StateController stateController = new ActorStateController("actor");
-StateRepository stateRepository = new InMemoryStateRepository();
-                
-var context = FlowContext.of("i1", stateController, stateRepository).put("actor", "陈鑫");
-
-//获取上下文用户的活动节点
-var task = flowEngine.forStateful().getTask("f1", context);
-
-assert "step2".equals(task.getNode().getId());
-assert StateType.UNKNOWN == task.getState(); //没有权限启动任务（因为没有配置操作员）
-
-//提交操作
-flowEngine.forStateful().postOperation(context, "f1", task.getNode().getId(), Operation.FORWARD);
-```
-
-流程配置样例：
-
-```yaml
-id: f1
-layout:
-  - {id: step1, title: "发起审批", type: "start"}
-  - {id: step2, title: "抄送", meta: {cc: "吕方"}, task: "@OaMetaProcessCom"}
-  - {id: step3, title: "审批", meta: {actor: "陈鑫", cc: "吕方"}, task: "@OaMetaProcessCom"}
-  - {id: step4, title: "审批", type: "parallel", link: [step4_1, step4_2]}
-  - {id: step4_1, meta: {actor: "陈宇"}, link: step4_end}
-  - {id: step4_2, meta: {actor: "吕方"}, link: step4_end}
-  - {id: step4_end, type: "parallel"}
-  - {id: step5, title: "抄送", meta: {cc: "吕方"}, task: "@OaMetaProcessCom"}
-  - {id: step6, title: "结束", type: "end"}
-```
-
-对于驱动器的定制，我们还可以：定制（或选择）不同的脚本执行器、组件容器实现等。
 
 
 
