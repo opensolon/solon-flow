@@ -18,7 +18,6 @@ package org.noear.solon.flow;
 import org.noear.dami2.Dami;
 import org.noear.dami2.bus.DamiBus;
 import org.noear.solon.flow.stateful.StatefulSupporter;
-import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 import org.noear.solon.flow.stateless.StatelessFlowContext;
 import org.noear.solon.flow.stateful.StateController;
 import org.noear.solon.flow.stateful.StateRepository;
@@ -225,7 +224,10 @@ public interface FlowContext {
 
     /**
      * 增量添加
+     *
+     * @since 3.8
      */
+    @Deprecated
     default int incrAdd(String key, int delta) {
         AtomicInteger tmp = (AtomicInteger) model().computeIfAbsent(key, k -> new AtomicInteger(0));
         return tmp.addAndGet(delta);
@@ -233,7 +235,10 @@ public interface FlowContext {
 
     /**
      * 增量获取
+     *
+     * @since 3.8
      */
+    @Deprecated
     default int incrGet(String key) {
         AtomicInteger tmp = (AtomicInteger) model().computeIfAbsent(key, k -> new AtomicInteger(0));
         return tmp.get();
