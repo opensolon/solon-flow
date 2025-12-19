@@ -11,18 +11,19 @@
 * 添加 `solon-flow` FlowContext:lastNode 方法（最后一个运行的节点）
 * 添加 `solon-flow` FlowContext:lastNodeId 方法（最后一个运行的节点Id）
 * 添加 `solon-flow` Node.getMetaAs, Link.getMetaAs 方法
+* 添加 `solon-flow` NodeDecl:linkRemove 方法（增强修改能力）
 * 添加 `solon-flow` Graph:create(id,title,consumer) 方法
 * 添加 `solon-flow` Graph:copy 方法（方便复制后修改）
 * 添加 `solon-flow` Graph:toYaml(FlowContext)，Graph:toJson(FlowContext) 方法，可输出节点状态（方便前端展示进度）
 * 添加 `solon-flow` GraphDecl:getNode 方法
 * 添加 `solon-flow` GraphDecl:addLoop 方法替代 addLooping（后者标为弃用）
-* 添加 `solon-flow` NodeDecl:linkRemove 方法（增强修改能力）
-* 添加 `solon-flow` FlowStatefulService:postOperationIfWaiting(Graph...),postOperation(Graph) 方法
-* 优化 `solon-flow` eval(Node startNode) 处理，改为从 root 开始恢复到 start 再开始执行（恢复过程中，不会执行任务）
+* 添加 `solon-flow` StatefulTask:getNodeId 方法
+* 添加 `solon-flow` FlowStatefulService:postTaskIfWaiting(Graph...),postTask(Graph) 方法
+* 优化 `solon-flow` FlowEngine:eval(Node startNode) 处理，改为从 root 开始恢复到 start 再开始执行（恢复过程中，不会执行任务）
 * 优化 `solon-flow` stateful 允许 stateController 独立使用（即可以没有 stateRepository）
 * 调整 `solon-flow` FlowContext:incrAdd,incrGet 标为弃用（上下文数据为型只能由输入侧决定）
 * 调整 `solon-flow` FlowStatefulService:evel、StateResult 标为移除
-* 调整 `solon-flow` Activity 预览属性 "$imode" 和 "$omode" 标为移除
+* 调整 `solon-flow` Activity 节点预览属性 "$imode" 和 "$omode" 标为移除
 * 调整 `solon-flow` Activity 节点流出改为自由模式（可以多线流出：无条件直接流出，有条件检测后流出）
 * 调整 `solon-flow` Node.getMeta 方法返回改为 Object 类型（并新增 getMetaAs）
 * 调整 `solon-flow` FlowStatefulService:stepForward、stepBack 标为移除（接口更专注、更简洁）
