@@ -68,7 +68,7 @@ public enum StateType {
     /**
      * 根据代码构建
      */
-    public static StateType byOperation(StateOp op) {
+    public static StateType byOp(StateOp op) {
         switch (op) {
             case BACK:
             case BACK_JUMP:

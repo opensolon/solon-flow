@@ -111,7 +111,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
             throw new IllegalArgumentException("StateOperation is UNKNOWN");
         }
 
-        StateType newState = StateType.byOperation(operation);
+        StateType newState = StateType.byOp(operation);
         FlowDriver driver = flowEngine.getDriverAs(node.getGraph(), FlowDriver.class);
 
         //更新状态

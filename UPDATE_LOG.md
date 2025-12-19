@@ -28,7 +28,7 @@
 * 调整 `solon-flow` FlowStatefulService:stepForward、stepBack 标为移除（接口更专注、更简洁）
 * 调整 `solon-flow` FlowStatefulService:postOperationIfWaiting 更名为 postTaskIfWaiting
 * 调整 `solon-flow` FlowStatefulService:postOperation 更名为 postTask
-* 调整 `solon-flow` Operation 更名为 StateOp（与 StateType 更对套）
+* 调整 `solon-flow` Operation 更名为 StateOp（与 StateType 更配套）
 
 
 新特性预览：Graph 硬编码方式
