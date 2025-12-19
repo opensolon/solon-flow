@@ -102,6 +102,11 @@ public class NodeDecl {
         return linkAdd(nextId, null);
     }
 
+    public NodeDecl linkRemove(String nextId) {
+        this.links.removeIf(l->l.getNextId().equals(nextId));
+        return this;
+    }
+
     /**
      * 配置任务条件
      */
@@ -253,11 +258,11 @@ public class NodeDecl {
     }
 
     public Map<String, Object> getMeta() {
-        return Collections.unmodifiableMap(meta);
+        return meta;
     }
 
     public List<LinkDecl> getLinks() {
-        return Collections.unmodifiableList(links);
+        return links;
     }
 
     public String getWhen() {

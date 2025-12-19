@@ -146,11 +146,16 @@ public class OaActionDemo {
 
     //减签
     public void case12() throws Exception {
-        //通过状态操作员和驱动定制，让某个节点不需要处理
-        FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
-        StatefulTask task = statefulService.getTask(graphId, context);
+        String gatewayId = "g1";
+        Graph graph = Graph.copy(flowEngine.getGraph(graphId), decl->{
+            //添加节点
+            decl.removeNode("a3");
+            //添加连接（加上 a3 节点）
+            decl.getNode(gatewayId).linkRemove("a3");
+        }); //复制
 
-        statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
+        //把新的图配置，做为实例对应的流配置
+        String graphJson = graph.toJson();
     }
 
     //会签
