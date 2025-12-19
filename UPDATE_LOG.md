@@ -6,7 +6,7 @@
 
 ### 3.8.0
 
-* 插件 `solon-flow` 第六次预览
+* 插件 `solon-flow` 第六次预览（FlowStatefulService 接口简化）
 * 添加 `solon-flow` Evaluation:runCondition 方法替代 runTest（后者标为弃用）
 * 添加 `solon-flow` FlowContext:lastNode 方法（最后一个运行的节点）
 * 添加 `solon-flow` FlowContext:lastNodeId 方法（最后一个运行的节点Id）
