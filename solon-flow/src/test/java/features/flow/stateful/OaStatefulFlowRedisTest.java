@@ -61,77 +61,77 @@ public class OaStatefulFlowRedisTest {
         FlowStatefulService statefulService = buildStatefulService();
 
         FlowContext context;
-        StatefulTask statefulNode;
+        StatefulTask task;
 
         context = getContext("刘涛");
-        statefulNode = statefulService.getTask(graphId, context);
-        log.warn("{}", statefulNode);
-        assert statefulNode != null;
-        assert "step1".equals(statefulNode.getNode().getId());
-        assert StateType.WAITING == statefulNode.getState(); //等待当前用户处理
+        task = statefulService.getTask(graphId, context);
+        log.warn("{}", task);
+        assert task != null;
+        assert "step1".equals(task.getNode().getId());
+        assert StateType.WAITING == task.getState(); //等待当前用户处理
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
+        statefulService.postTask(task.getNode(), StateOp.FORWARD, context);
 
 
         context = getContext("陈鑫");
-        statefulNode = statefulService.getTask(graphId, context);
-        log.warn("{}", statefulNode);
-        assert statefulNode != null;
-        assert "step3".equals(statefulNode.getNode().getId());
-        assert StateType.WAITING == statefulNode.getState(); //等待当前用户处理
+        task = statefulService.getTask(graphId, context);
+        log.warn("{}", task);
+        assert task != null;
+        assert "step3".equals(task.getNode().getId());
+        assert StateType.WAITING == task.getState(); //等待当前用户处理
 
         //二次测试
         context = getContext("陈鑫");
-        statefulNode = statefulService.getTask(graphId, context);
-        log.warn("{}", statefulNode);
-        assert statefulNode != null;
-        assert "step3".equals(statefulNode.getNode().getId());
-        assert StateType.WAITING == statefulNode.getState(); //等待当前用户处理
+        task = statefulService.getTask(graphId, context);
+        log.warn("{}", task);
+        assert task != null;
+        assert "step3".equals(task.getNode().getId());
+        assert StateType.WAITING == task.getState(); //等待当前用户处理
 
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
+        statefulService.postTask(task.getNode(), StateOp.FORWARD, context);
 
 
         context = getContext("陈鑫");
-        statefulNode = statefulService.getTask(graphId, context);
-        log.warn("{}", statefulNode);
-        assert statefulNode != null;
-        assert statefulNode.getNode().getId().startsWith("step4");
-        assert StateType.UNKNOWN == statefulNode.getState(); //没有权限
+        task = statefulService.getTask(graphId, context);
+        log.warn("{}", task);
+        assert task != null;
+        assert task.getNode().getId().startsWith("step4");
+        assert StateType.UNKNOWN == task.getState(); //没有权限
 
 
         context = getContext("陈宇");
-        statefulNode = statefulService.getTask(graphId, context);
-        log.warn("{}", statefulNode);
-        assert statefulNode != null;
-        assert statefulNode.getNode().getId().startsWith("step4_1");
-        assert StateType.WAITING == statefulNode.getState(); //等待当前用户处理
+        task = statefulService.getTask(graphId, context);
+        log.warn("{}", task);
+        assert task != null;
+        assert task.getNode().getId().startsWith("step4_1");
+        assert StateType.WAITING == task.getState(); //等待当前用户处理
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
+        statefulService.postTask(task.getNode(), StateOp.FORWARD, context);
 
 
         context = getContext("吕方");
-        statefulNode = statefulService.getTask(graphId, context);
-        log.warn("{}", statefulNode);
-        assert statefulNode != null;
-        assert statefulNode.getNode().getId().startsWith("step4_2");
-        assert StateType.WAITING == statefulNode.getState(); //等待当前用户处理
+        task = statefulService.getTask(graphId, context);
+        log.warn("{}", task);
+        assert task != null;
+        assert task.getNode().getId().startsWith("step4_2");
+        assert StateType.WAITING == task.getState(); //等待当前用户处理
 
         /// ////////////////
         //提交状态
-        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
+        statefulService.postTask(task.getNode(), StateOp.FORWARD, context);
 
 
         context = getContext("吕方");
-        statefulNode = statefulService.getTask(graphId, context);
-        log.warn("{}", statefulNode);
-        assert statefulNode == null; //抄送节点
+        task = statefulService.getTask(graphId, context);
+        log.warn("{}", task);
+        assert task == null; //抄送节点
 
         statefulService.clearState(graphId, context);
     }
@@ -158,7 +158,7 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交操作
-        statefulService.postOperation(statefulTask.getNode(), Operation.FORWARD, context);
+        statefulService.postTask(statefulTask.getNode(), StateOp.FORWARD, context);
 
         statefulTask = statefulService.getTask(graphId, context);
 

@@ -24,75 +24,75 @@ public class BlockStatefulFlowTest {
         FlowStatefulService statefulService = flowEngine.forStateful();
 
 
-        StatefulTask statefulNode;
+        StatefulTask task;
         String instanceId1 = "i1";
         String instanceId2 = "i2";
 
         FlowContext context = FlowContext.of(instanceId1, stateController, stateRepository);
 
         //获取节点
-        statefulNode = statefulService.getTask(graphId, context);
-        assertNode(statefulNode, "step1");
+        task = statefulService.getTask(graphId, context);
+        assertNode(task, "step1");
 
         //根据节点干活。。。。
 
         //（干完后）提交操作
-        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
+        statefulService.postTask(task.getNode(), StateOp.FORWARD, context);
 
         //获取节点
-        statefulNode = statefulService.getTask(graphId, context);
-        assertNode(statefulNode, "step2");
+        task = statefulService.getTask(graphId, context);
+        assertNode(task, "step2");
 
         //根据节点干活。。。。
 
         //（干完后）提交操作
-        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
+        statefulService.postTask(task.getNode(), StateOp.FORWARD, context);
 
 
         //获取节点
-        statefulNode = statefulService.getTask(graphId, context);
-        assertNode(statefulNode, "step3");
+        task = statefulService.getTask(graphId, context);
+        assertNode(task, "step3");
 
         //根据节点干活。。。。
 
         //（干完后）提交操作
-        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
+        statefulService.postTask(task.getNode(), StateOp.FORWARD, context);
 
 
         //获取节点
-        statefulNode = statefulService.getTask(graphId, context);
-        assertNode(statefulNode, "step4_1");
+        task = statefulService.getTask(graphId, context);
+        assertNode(task, "step4_1");
 
         //根据节点干活
 
         //提交操作
-        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
+        statefulService.postTask(task.getNode(), StateOp.FORWARD, context);
 
 
         ///  （换一个实例）
 
         context = FlowContext.of(instanceId2, stateController, stateRepository);
-        statefulNode = statefulService.getTask(graphId, context);
-        assertNode(statefulNode, "step1");
+        task = statefulService.getTask(graphId, context);
+        assertNode(task, "step1");
 
-        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
+        statefulService.postTask(task.getNode(), StateOp.FORWARD, context);
 
-        statefulNode = statefulService.getTask(graphId, context);
-        assertNode(statefulNode, "step2");
+        task = statefulService.getTask(graphId, context);
+        assertNode(task, "step2");
 
-        statefulService.postOperation(statefulNode.getNode(), Operation.FORWARD, context);
+        statefulService.postTask(task.getNode(), StateOp.FORWARD, context);
 
 
-        statefulNode = statefulService.getTask(graphId, context);
-        assertNode(statefulNode, "step3");
+        task = statefulService.getTask(graphId, context);
+        assertNode(task, "step3");
 
 
         // （再换回实例）
 
         //获取节点
         context = FlowContext.of(instanceId1, stateController, stateRepository);
-        statefulNode = statefulService.getTask(graphId, context);
-        assertNode(statefulNode, "step4_2");
+        task = statefulService.getTask(graphId, context);
+        assertNode(task, "step4_2");
     }
 
     @Test

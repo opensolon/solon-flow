@@ -66,6 +66,17 @@ public class StatefulTask {
     }
 
     /**
+     * 节点Id
+     */
+    public String getNodeId() {
+        if (node == null) {
+            return null;
+        } else {
+            return node.getId();
+        }
+    }
+
+    /**
      * 状态
      */
     public StateType getState() {

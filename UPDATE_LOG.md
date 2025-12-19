@@ -20,12 +20,15 @@
 * 添加 `solon-flow` FlowStatefulService:postOperationIfWaiting(Graph...),postOperation(Graph) 方法
 * 优化 `solon-flow` eval(Node startNode) 处理，改为从 root 开始恢复到 start 再开始执行（恢复过程中，不会执行任务）
 * 优化 `solon-flow` stateful 允许 stateController 独立使用（即可以没有 stateRepository）
+* 调整 `solon-flow` FlowContext:incrAdd,incrGet 标为弃用（上下文数据为型只能由输入侧决定）
 * 调整 `solon-flow` FlowStatefulService:evel、StateResult 标为移除
 * 调整 `solon-flow` Activity 预览属性 "$imode" 和 "$omode" 标为移除
 * 调整 `solon-flow` Activity 节点流出改为自由模式（可以多线流出：无条件直接流出，有条件检测后流出）
 * 调整 `solon-flow` Node.getMeta 方法返回改为 Object 类型（并新增 getMetaAs）
-* 调整 `solon-flow` FlowStatefulService:stepForward、stepBack 标为弃用
-* 调整 `solon-flow` FlowContext:incrAdd,incrGet 标为弃用（上下文数据为型只能由输入侧决定）
+* 调整 `solon-flow` FlowStatefulService:stepForward、stepBack 标为移除（接口更专注、更简洁）
+* 调整 `solon-flow` FlowStatefulService:postOperationIfWaiting 更名为 postTaskIfWaiting
+* 调整 `solon-flow` FlowStatefulService:postOperation 更名为 postTask
+* 调整 `solon-flow` Operation 更名为 StateOp（与 StateType 更对套）
 
 
 新特性预览：Graph 硬编码方式

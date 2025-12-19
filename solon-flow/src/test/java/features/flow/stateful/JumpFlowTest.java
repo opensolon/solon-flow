@@ -54,7 +54,7 @@ public class JumpFlowTest {
         FlowStatefulService statefulService = buildStatefulService();
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository).put(actor, "admin");
 
-        statefulService.postOperation(graphId, "n3", Operation.FORWARD_JUMP, context);
+        statefulService.postTask(graphId, "n3", StateOp.FORWARD_JUMP, context);
 
         StatefulTask task = statefulService.getTask(graphId, context);
 
@@ -63,7 +63,7 @@ public class JumpFlowTest {
         assert task.getNode().getId().equals("n4");
 
 
-        statefulService.postOperation(graphId, "n1", Operation.BACK_JUMP, context);
+        statefulService.postTask(graphId, "n1", StateOp.BACK_JUMP, context);
 
         task = statefulService.getTask(graphId, context);
 

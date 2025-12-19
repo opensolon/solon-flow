@@ -7,7 +7,7 @@ import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.handle.ModelAndView;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
-import org.noear.solon.flow.stateful.Operation;
+import org.noear.solon.flow.stateful.StateOp;
 import org.noear.solon.flow.stateful.StateController;
 import org.noear.solon.flow.stateful.StateRepository;
 import org.noear.solon.flow.stateful.StatefulTask;
@@ -41,6 +41,6 @@ public class DemoController {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", ctx.param("actor"));
 
-        flowEngine.forStateful().postOperation(graphId, nodeId, Operation.codeOf(operation), context);
+        flowEngine.forStateful().postTask(graphId, nodeId, StateOp.codeOf(operation), context);
     }
 }

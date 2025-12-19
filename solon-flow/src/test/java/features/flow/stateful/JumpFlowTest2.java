@@ -7,7 +7,7 @@ import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.stateful.FlowStatefulService;
-import org.noear.solon.flow.stateful.Operation;
+import org.noear.solon.flow.stateful.StateOp;
 import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
@@ -58,7 +58,7 @@ public class JumpFlowTest2 {
         FlowStatefulService statefulService = buildStatefulService();
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository).put(actor, "admin");
 
-        statefulService.postOperation(graphId, "n3", Operation.FORWARD_JUMP, context);
+        statefulService.postTask(graphId, "n3", StateOp.FORWARD_JUMP, context);
 
         StatefulTask task = statefulService.getTask(graphId, context);
 
@@ -67,7 +67,7 @@ public class JumpFlowTest2 {
         assert task.getNode().getId().equals("n4");
 
 
-        statefulService.postOperation(graphId, "n1", Operation.BACK_JUMP, context);
+        statefulService.postTask(graphId, "n1", StateOp.BACK_JUMP, context);
 
         task = statefulService.getTask(graphId, context);
 
@@ -84,11 +84,11 @@ public class JumpFlowTest2 {
         StatefulTask task = statefulService.getTask(graphId, context);
         log.debug(task.toString());
 
-        statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
+        statefulService.postTask(task.getNode(), StateOp.FORWARD, context);
         StatefulTask task2 = statefulService.getTask(graphId, context);
         log.debug(task2.toString());
 
-        statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
+        statefulService.postTask(task.getNode(), StateOp.FORWARD, context);
         StatefulTask task3 = statefulService.getTask(graphId, context);
         log.debug(task3.toString());
 

@@ -44,7 +44,7 @@ public interface FlowStatefulService {
      * @param operation 操作
      * @param context   流上下文
      */
-    boolean postOperationIfWaiting(String graphId, String nodeId, Operation operation, FlowContext context);
+    boolean postTaskIfWaiting(String graphId, String nodeId, StateOp operation, FlowContext context);
 
     /**
      * 提交操作（如果当前任务为等待介入）
@@ -54,7 +54,7 @@ public interface FlowStatefulService {
      * @param operation 操作
      * @param context   流上下文
      */
-    boolean postOperationIfWaiting(Graph graph, String nodeId, Operation operation, FlowContext context);
+    boolean postTaskIfWaiting(Graph graph, String nodeId, StateOp operation, FlowContext context);
 
     /**
      * 提交操作（如果当前任务为等待介入）
@@ -63,7 +63,7 @@ public interface FlowStatefulService {
      * @param operation 操作
      * @param context   流上下文
      */
-    boolean postOperationIfWaiting(Node node, Operation operation, FlowContext context);
+    boolean postTaskIfWaiting(Node node, StateOp operation, FlowContext context);
 
     /**
      * 提交操作
@@ -73,7 +73,7 @@ public interface FlowStatefulService {
      * @param operation 操作
      * @param context   流上下文
      */
-    void postOperation(String graphId, String nodeId, Operation operation, FlowContext context);
+    void postTask(String graphId, String nodeId, StateOp operation, FlowContext context);
 
     /**
      * 提交操作
@@ -83,7 +83,7 @@ public interface FlowStatefulService {
      * @param operation 操作
      * @param context   流上下文
      */
-    void postOperation(Graph graph, String nodeId, Operation operation, FlowContext context);
+    void postTask(Graph graph, String nodeId, StateOp operation, FlowContext context);
 
     /**
      * 提交操作
@@ -92,7 +92,7 @@ public interface FlowStatefulService {
      * @param operation 操作
      * @param context   流上下文
      */
-    void postOperation(Node node, Operation operation, FlowContext context);
+    void postTask(Node node, StateOp operation, FlowContext context);
 
 
     /// ////////////////////////////////
@@ -146,46 +146,4 @@ public interface FlowStatefulService {
      * @param context 流上下文
      */
     void clearState(Graph graph, FlowContext context);
-
-    /// ////////////////////////////////
-
-    /**
-     * 单步前进
-     *
-     * @param graphId 图id
-     * @param context 流上下文
-     * @deprecated 3.7.4
-     */
-    @Deprecated
-    StatefulTask stepForward(String graphId, FlowContext context);
-
-    /**
-     * 单步前进
-     *
-     * @param graph   图
-     * @param context 流上下文
-     * @deprecated 3.7.4
-     */
-    @Deprecated
-    StatefulTask stepForward(Graph graph, FlowContext context);
-
-    /**
-     * 单步后退
-     *
-     * @param graphId 图id
-     * @param context 流上下文
-     * @deprecated 3.7.4
-     */
-    @Deprecated
-    StatefulTask stepBack(String graphId, FlowContext context);
-
-    /**
-     * 单步后退
-     *
-     * @param graph   图
-     * @param context 流上下文
-     * @deprecated 3.7.4
-     */
-    @Deprecated
-    StatefulTask stepBack(Graph graph, FlowContext context);
 }
