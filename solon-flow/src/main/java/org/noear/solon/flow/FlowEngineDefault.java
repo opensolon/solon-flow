@@ -233,7 +233,7 @@ public class FlowEngineDefault implements FlowEngine {
         } catch (FlowException e) {
             throw e;
         } catch (Throwable e) {
-            throw new FlowException("The test handle failed: " + condition.getGraph().getId() + " / " + condition.getDescription(), e);
+            throw new FlowException("The condition handle failed: " + condition.getGraph().getId() + " / " + condition.getDescription(), e);
         }
     }
 
@@ -365,23 +365,6 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     protected boolean activity_run(FlowDriver driver, FlowExchanger exchanger, Node node, Node startNode, int depth) {
-        //流入 //v3.4.3 添加, v3.6.1 取消（不利于画线的控制）
-        if (node.getImode() == NodeType.PARALLEL) {
-            //v3.6.1
-            log.warn("Deprecated, requires the 'parallel' node type");
-
-            if (parallel_run_in(driver, exchanger, node, startNode, depth) == false) {
-                return false;
-            }
-        } else if (node.getImode() == NodeType.INCLUSIVE) {
-            //v3.6.1
-            log.warn("Deprecated, requires the 'inclusive' node type");
-
-            if (inclusive_run_in(driver, exchanger, node, startNode, depth) == false) {
-                return false;
-            }
-        }
-
         //尝试执行任务（可能为空）
         if (task_exec(driver, exchanger, node) == false) {
             return false;
@@ -389,31 +372,19 @@ public class FlowEngineDefault implements FlowEngine {
 
         //流出（原始态）
         //return node_run(driver, exchanger, node.getNextNode(), depth);
+       return activity_run_out(driver, exchanger, node, startNode, depth);
+    }
 
-        //流出（支持 排它流出）//v3.3.2 添加，v3.6.1 弃用（不利于画线的控制）
-        //return exclusive_run_out(driver, exchanger, node, depth);
-
-        //流出（支持 omode 配置） //v3.4.3 添加, v3.6.1 取消（不利于画线的控制）
-        if (node.getOmode() == NodeType.PARALLEL) {
-            //v3.6.1
-            log.warn("Deprecated, requires the 'parallel' node type");
-
-            return parallel_run_out(driver, exchanger, node, startNode, depth);
-        } else if (node.getOmode() == NodeType.EXCLUSIVE) {
-            //v3.6.1
-            log.warn("Deprecated, requires the 'inclusive' node type");
-
-            return inclusive_run_out(driver, exchanger, node, startNode, depth);
-        } else {
-            if (node.getNextLinks().size() > 1) {
-                //v3.6.1
-                log.warn("Deprecated, requires the 'exclusive' node type");
-
-                return exclusive_run_out(driver, exchanger, node, startNode, depth);
-            } else {
-                return node_run(driver, exchanger, node.getNextNode(), startNode, depth);
+    //活动节点
+    protected boolean activity_run_out(FlowDriver driver, FlowExchanger exchanger, Node node, Node startNode, int depth){
+        //::流出
+        for (Link l : node.getNextLinks()) {
+            if (condition_test(driver, exchanger, l.getWhen(), true)) {
+                node_run(driver, exchanger, l.getNextNode(), startNode, depth);
             }
         }
+
+        return true;
     }
 
     /**

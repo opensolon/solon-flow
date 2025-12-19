@@ -42,8 +42,6 @@ public class Node {
 
     private transient List<Node> prevNodes, nextNodes;
     private transient List<Link> prevLinks;
-    private transient NodeType imode = NodeType.UNKNOWN;
-    private transient NodeType omode = NodeType.UNKNOWN;
 
     /**
      * 附件（按需定制使用）
@@ -71,38 +69,6 @@ public class Node {
             Collections.sort(links); //按优先级排序
             this.nextLinks = Collections.unmodifiableList(new ArrayList<>(links));
         }
-
-        ioModeInit();
-    }
-
-    private void ioModeInit() {
-        //流入
-        String i_mode = getMetaAsString("$imode");
-        this.imode = NodeType.nameOf(i_mode, NodeType.UNKNOWN);
-
-        //流出
-        String o_mode = getMetaAsString("$omode");
-        this.omode = NodeType.nameOf(o_mode, NodeType.UNKNOWN);
-    }
-
-    /**
-     * 流入模式
-     *
-     * @since 3.4
-     */
-    @Preview("3.4")
-    protected NodeType getImode() {
-        return imode;
-    }
-
-    /**
-     * 流出模式
-     *
-     * @since 3.4
-     */
-    @Preview("3.4")
-    protected NodeType getOmode() {
-        return omode;
     }
 
     /**
