@@ -192,23 +192,22 @@ public interface FlowEngine {
      *
      * @param graphId 图Id
      * @param startId 开始节点Id
-     * @param context 上下文
+     * @since 3.8
      */
-    default void eval(String graphId, String startId, FlowContext context) throws FlowException {
-        eval(graphId, startId, -1, context);
+    default void eval(String graphId, String startId) throws FlowException {
+        eval(graphId, startId, -1, FlowContext.of());
     }
 
     /**
      * 运行
      *
-     * @param graphId   图Id
-     * @param startNode 开始节点
-     * @param context   上下文
+     * @param graphId 图Id
+     * @param startId 开始节点Id
+     * @param context 上下文
      */
-    default void eval(String graphId, Node startNode, FlowContext context) throws FlowException {
-        eval(graphId, startNode, -1, context);
+    default void eval(String graphId, String startId, FlowContext context) throws FlowException {
+        eval(graphId, startId, -1, context);
     }
-
 
     /**
      * 运行
@@ -224,6 +223,28 @@ public interface FlowEngine {
         eval(graph, startNode, depth, context);
     }
 
+    /**
+     * 运行
+     *
+     * @param graphId   图Id
+     * @param startNode 开始节点
+     * @since 3.8
+     */
+    default void eval(String graphId, Node startNode) throws FlowException {
+        eval(graphId, startNode, -1, FlowContext.of());
+    }
+
+    /**
+     * 运行
+     *
+     * @param graphId   图Id
+     * @param startNode 开始节点
+     * @param context   上下文
+     * @since 3.8
+     */
+    default void eval(String graphId, Node startNode, FlowContext context) throws FlowException {
+        eval(graphId, startNode, -1, context);
+    }
 
     /**
      * 运行
