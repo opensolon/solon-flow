@@ -6,7 +6,6 @@ import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.stateful.StateController;
 import org.noear.solon.flow.stateful.StateRepository;
-import org.noear.solon.flow.stateful.StateResult;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.controller.NotBlockStateController;
 import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
@@ -30,10 +29,10 @@ public class HelloTest {
             decl.addEnd("n4");
         });
 
-        StatefulTask result = engine.forStateful()
+        StatefulTask task = engine.forStateful()
                 .getTask(graph, FlowContext.of("i-1", stateController, stateRepository));
 
-        System.out.println(result.getNode().getId());
-        System.out.println(result.getState());
+        System.out.println(task.getNode().getId());
+        System.out.println(task.getState());
     }
 }

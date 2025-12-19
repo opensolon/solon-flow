@@ -82,6 +82,17 @@ public interface FlowContext {
     Node lastNode();
 
     /**
+     * 最后运行的节点Id
+     */
+    default String lastNodeId() {
+        if (lastNode() != null) {
+            return lastNode().getId();
+        }
+
+        return null;
+    }
+
+    /**
      * 交换器（只在任务执行时可获取）
      *
      * @since 3.5

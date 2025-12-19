@@ -186,10 +186,10 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
     public Collection<StatefulTask> getTasks(Graph graph, FlowContext context) {
         FlowExchanger exchanger = new FlowExchanger(context);
 
-        exchanger.temporary().vars().put(StateResult.KEY_ACTIVITY_LIST_GET, true);
+        exchanger.temporary().vars().put(StatefulTask.KEY_ACTIVITY_LIST_GET, true);
 
         flowEngine.eval(graph, graph.getStart(), -1, exchanger);
-        Collection<StatefulTask> tmp = (Collection<StatefulTask>) exchanger.temporary().vars().get(StateResult.KEY_ACTIVITY_LIST);
+        Collection<StatefulTask> tmp = (Collection<StatefulTask>) exchanger.temporary().vars().get(StatefulTask.KEY_ACTIVITY_LIST);
 
         if (tmp == null) {
             return Collections.emptyList();
@@ -218,7 +218,7 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         FlowExchanger exchanger = new FlowExchanger(context);
 
         flowEngine.eval(graph, graph.getStart(), -1, exchanger);
-        return (StatefulTask) exchanger.temporary().vars().get(StateResult.KEY_ACTIVITY_NODE);
+        return (StatefulTask) exchanger.temporary().vars().get(StatefulTask.KEY_ACTIVITY_NODE);
     }
 
     @Override
@@ -342,16 +342,5 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
         }
 
         return statefulTask;
-    }
-
-
-    /// ////////////////////////////////
-
-    @Override
-    public StateResult eval(Graph graph, Node startNode, FlowContext context) {
-        FlowExchanger exchanger = new FlowExchanger(context);
-
-        flowEngine.eval(graph, startNode, -1, exchanger);
-        return (StateResult) exchanger.temporary().vars().get(StateResult.KEY_ACTIVITY_NODE);
     }
 }

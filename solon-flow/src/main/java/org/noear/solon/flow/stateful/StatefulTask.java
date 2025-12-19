@@ -25,12 +25,9 @@ import org.noear.solon.lang.Preview;
  * @author noear
  * @since 3.1
  */
-public class StatefulTask implements StateResult {
-    @Deprecated
+public class StatefulTask {
     public static final String KEY_ACTIVITY_NODE = "ACTIVITY_NODE";
-    @Deprecated
     public static final String KEY_ACTIVITY_LIST = "ACTIVITY_LIST";
-    @Deprecated
     public static final String KEY_ACTIVITY_LIST_GET = "ACTIVITY_LIST_GET";
 
     private final FlowEngine flowEngine;
