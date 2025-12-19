@@ -49,6 +49,16 @@ public interface FlowStatefulService {
     /**
      * 提交操作（如果当前任务为等待介入）
      *
+     * @param graph     图
+     * @param nodeId    节点id
+     * @param operation 操作
+     * @param context   流上下文
+     */
+    boolean postOperationIfWaiting(Graph graph, String nodeId, Operation operation, FlowContext context);
+
+    /**
+     * 提交操作（如果当前任务为等待介入）
+     *
      * @param node      节点
      * @param operation 操作
      * @param context   流上下文
@@ -64,6 +74,16 @@ public interface FlowStatefulService {
      * @param context   流上下文
      */
     void postOperation(String graphId, String nodeId, Operation operation, FlowContext context);
+
+    /**
+     * 提交操作
+     *
+     * @param graph     图
+     * @param nodeId    节点id
+     * @param operation 操作
+     * @param context   流上下文
+     */
+    void postOperation(Graph graph, String nodeId, Operation operation, FlowContext context);
 
     /**
      * 提交操作

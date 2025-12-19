@@ -17,14 +17,14 @@ public class OaActionDemo {
     ActorStateController stateController = new ActorStateController();
     InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
-    String instanceId = "i1";
-    String graphId = "f1";
+    String instanceId = "i1"; //审批实例id
+    Graph graph;//审批实例对应的流程图
 
     //审批
     public void case1() throws Exception {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", "A");
-        StatefulTask task = statefulService.getTask(graphId, context);
+        StatefulTask task = statefulService.getTask(graph, context);
 
         //展示界面，操作。然后：
 
@@ -36,7 +36,7 @@ public class OaActionDemo {
     public void case2() throws Exception {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", "A");
-        StatefulTask task = statefulService.getTask(graphId, context);
+        StatefulTask task = statefulService.getTask(graph, context);
 
         context.put("op", "回退");//作为状态的一部分
         statefulService.postOperation(task.getNode(), Operation.BACK, context);
@@ -48,8 +48,8 @@ public class OaActionDemo {
 
         String nodeId = "demo1";
 
-        statefulService.postOperation(graphId, nodeId, Operation.FORWARD_JUMP, context);
-        StatefulTask task = statefulService.getTask(graphId, context);
+        statefulService.postOperation(graph, nodeId, Operation.FORWARD_JUMP, context);
+        StatefulTask task = statefulService.getTask(graph, context);
     }
 
     //任意跳转（退回）
@@ -58,8 +58,8 @@ public class OaActionDemo {
 
         String nodeId = "demo1";
 
-        statefulService.postOperation(graphId, nodeId, Operation.BACK_JUMP, context);
-        StatefulTask task = statefulService.getTask(graphId, context);
+        statefulService.postOperation(graph, nodeId, Operation.BACK_JUMP, context);
+        StatefulTask task = statefulService.getTask(graph, context);
     }
 
     //委派
@@ -67,7 +67,7 @@ public class OaActionDemo {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", "A");
         context.put("delegate", "B"); //需要定制下状态操作员（用A检测，但留下B的状态记录）
-        StatefulTask task = statefulService.getTask(graphId, context);
+        StatefulTask task = statefulService.getTask(graph, context);
 
         context.put("op", "委派");//作为状态的一部分
         statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
@@ -78,7 +78,7 @@ public class OaActionDemo {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", "A");
         context.put("transfer", "B"); //需要定制下状态操作员（用A检测，但留下B的状态记录）
-        StatefulTask task = statefulService.getTask(graphId, context);
+        StatefulTask task = statefulService.getTask(graph, context);
 
         context.put("op", "转办");//作为状态的一部分
         statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
@@ -87,7 +87,7 @@ public class OaActionDemo {
     //催办
     public void case6() throws Exception {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
-        StatefulTask task = statefulService.getTask(graphId, context);
+        StatefulTask task = statefulService.getTask(graph, context);
 
         String actor = task.getNode().getMeta("actor");
         //发邮件（或通知）
@@ -96,7 +96,7 @@ public class OaActionDemo {
     //取回（技术上与回退差不多）
     public void case7() throws Exception {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
-        StatefulTask task = statefulService.getTask(graphId, context);
+        StatefulTask task = statefulService.getTask(graph, context);
 
         //回退到顶（给发起人）；相当于重新开始走流程
         context.put("op", "取回");//作为状态的一部分
@@ -106,7 +106,7 @@ public class OaActionDemo {
     //撤销（和回退没啥区别）
     public void case8() throws Exception {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
-        StatefulTask task = statefulService.getTask(graphId, context);
+        StatefulTask task = statefulService.getTask(graph, context);
 
         context.put("op", "撤销");//作为状态的一部分
         statefulService.postOperation(task.getNode(), Operation.BACK, context);
@@ -115,7 +115,7 @@ public class OaActionDemo {
     //中止
     public void case9() throws Exception {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
-        StatefulTask task = statefulService.getTask(graphId, context);
+        StatefulTask task = statefulService.getTask(graph, context);
 
         context.put("op", "中止");//作为状态的一部分
         statefulService.postOperation(task.getNode(), Operation.TERMINATED, context);
@@ -124,7 +124,7 @@ public class OaActionDemo {
     //抄送
     public void case10() throws Exception {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
-        StatefulTask task = statefulService.getTask(graphId, context);
+        StatefulTask task = statefulService.getTask(graph, context);
 
         statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
         //提交后，会自动触发任务（如果有抄送配置，自动执行）
@@ -133,7 +133,7 @@ public class OaActionDemo {
     //加签
     public void case11() throws Exception {
         String gatewayId = "g1";
-        Graph graph = Graph.copy(flowEngine.getGraph(graphId), decl->{
+        Graph graphNew = Graph.copy(graph, decl->{
             //添加节点
             decl.addActivity("a3").linkAdd("b2");
             //添加连接（加上 a3 节点）
@@ -141,13 +141,14 @@ public class OaActionDemo {
         }); //复制
 
         //把新的图配置，做为实例对应的流配置
-        String graphJson = graph.toJson();
+        graph = graphNew;
+        String graphJson = graphNew.toJson();
     }
 
     //减签
     public void case12() throws Exception {
         String gatewayId = "g1";
-        Graph graph = Graph.copy(flowEngine.getGraph(graphId), decl->{
+        Graph graphNew = Graph.copy(graph, decl->{
             //添加节点
             decl.removeNode("a3");
             //添加连接（加上 a3 节点）
@@ -155,7 +156,8 @@ public class OaActionDemo {
         }); //复制
 
         //把新的图配置，做为实例对应的流配置
-        String graphJson = graph.toJson();
+        graph = graphNew;
+        String graphJson = graphNew.toJson();
     }
 
     //会签

@@ -53,7 +53,13 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public boolean postOperationIfWaiting(String graphId, String nodeId, Operation operation, FlowContext context) {
-        Node node = flowEngine.getGraphOrThrow(graphId).getNode(nodeId);
+        Node node = flowEngine.getGraphOrThrow(graphId).getNodeOrThrow(nodeId);
+        return postOperationIfWaiting(node, operation, context);
+    }
+
+    @Override
+    public boolean postOperationIfWaiting(Graph graph, String nodeId, Operation operation, FlowContext context) {
+        Node node = graph.getNodeOrThrow(nodeId);
         return postOperationIfWaiting(node, operation, context);
     }
 
@@ -85,7 +91,13 @@ public class FlowStatefulServiceDefault implements FlowStatefulService {
      */
     @Override
     public void postOperation(String graphId, String nodeId, Operation operation, FlowContext context) {
-        Node node = flowEngine.getGraphOrThrow(graphId).getNode(nodeId);
+        Node node = flowEngine.getGraphOrThrow(graphId).getNodeOrThrow(nodeId);
+        postOperation(node, operation, context);
+    }
+
+    @Override
+    public void postOperation(Graph graph, String nodeId, Operation operation, FlowContext context) {
+        Node node = graph.getNodeOrThrow(nodeId);
         postOperation(node, operation, context);
     }
 
