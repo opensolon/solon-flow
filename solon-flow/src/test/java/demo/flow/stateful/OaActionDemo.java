@@ -18,10 +18,27 @@ public class OaActionDemo {
     InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
     String instanceId = "i1"; //审批实例id
-    Graph graph;//审批实例对应的流程图
+
+    /**
+     * 获取实例对应的流程图
+     * */
+    public Graph getInstanceGraph(String instanceId) {
+        String graphJson = ""; //从持久层查询
+        return Graph.parseByText(graphJson);
+    }
+
+    /**
+     * 更新实例对应的流程图
+     * */
+    public void setInstanceGraph(String instanceId, Graph graph){
+        String graphJson = graph.toJson();
+        //更新到持久层
+    }
 
     //审批
     public void case1() throws Exception {
+        Graph graph = getInstanceGraph(instanceId);
+
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", "A");
         StatefulTask task = statefulService.getTask(graph, context);
@@ -34,6 +51,8 @@ public class OaActionDemo {
 
     //回退
     public void case2() throws Exception {
+        Graph graph = getInstanceGraph(instanceId);
+
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", "A");
         StatefulTask task = statefulService.getTask(graph, context);
@@ -44,6 +63,8 @@ public class OaActionDemo {
 
     //任意跳转（通过）
     public void case3_1() throws Exception {
+        Graph graph = getInstanceGraph(instanceId);
+
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
 
         String nodeId = "demo1";
@@ -54,6 +75,8 @@ public class OaActionDemo {
 
     //任意跳转（退回）
     public void case3_2() throws Exception {
+        Graph graph = getInstanceGraph(instanceId);
+
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
 
         String nodeId = "demo1";
@@ -64,6 +87,8 @@ public class OaActionDemo {
 
     //委派
     public void case4() throws Exception {
+        Graph graph = getInstanceGraph(instanceId);
+
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", "A");
         context.put("delegate", "B"); //需要定制下状态操作员（用A检测，但留下B的状态记录）
@@ -75,6 +100,8 @@ public class OaActionDemo {
 
     //转办（与委派技术实现差不多）
     public void case5() throws Exception {
+        Graph graph = getInstanceGraph(instanceId);
+
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", "A");
         context.put("transfer", "B"); //需要定制下状态操作员（用A检测，但留下B的状态记录）
@@ -86,6 +113,8 @@ public class OaActionDemo {
 
     //催办
     public void case6() throws Exception {
+        Graph graph = getInstanceGraph(instanceId);
+
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         StatefulTask task = statefulService.getTask(graph, context);
 
@@ -95,6 +124,8 @@ public class OaActionDemo {
 
     //取回（技术上与回退差不多）
     public void case7() throws Exception {
+        Graph graph = getInstanceGraph(instanceId);
+
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         StatefulTask task = statefulService.getTask(graph, context);
 
@@ -105,6 +136,8 @@ public class OaActionDemo {
 
     //撤销（和回退没啥区别）
     public void case8() throws Exception {
+        Graph graph = getInstanceGraph(instanceId);
+
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         StatefulTask task = statefulService.getTask(graph, context);
 
@@ -114,6 +147,8 @@ public class OaActionDemo {
 
     //中止
     public void case9() throws Exception {
+        Graph graph = getInstanceGraph(instanceId);
+
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         StatefulTask task = statefulService.getTask(graph, context);
 
@@ -123,6 +158,8 @@ public class OaActionDemo {
 
     //抄送
     public void case10() throws Exception {
+        Graph graph = getInstanceGraph(instanceId);
+
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         StatefulTask task = statefulService.getTask(graph, context);
 
@@ -132,6 +169,8 @@ public class OaActionDemo {
 
     //加签
     public void case11() throws Exception {
+        Graph graph = getInstanceGraph(instanceId);
+
         String gatewayId = "g1";
         Graph graphNew = Graph.copy(graph, decl->{
             //添加节点
@@ -140,13 +179,14 @@ public class OaActionDemo {
             decl.getNode(gatewayId).linkAdd("a3");
         }); //复制
 
-        //把新的图配置，做为实例对应的流配置
-        graph = graphNew;
-        String graphJson = graphNew.toJson();
+        //把新图，做为实例对应的流配置
+        setInstanceGraph(instanceId, graphNew);
     }
 
     //减签
     public void case12() throws Exception {
+        Graph graph = getInstanceGraph(instanceId);
+
         String gatewayId = "g1";
         Graph graphNew = Graph.copy(graph, decl->{
             //添加节点
@@ -155,9 +195,8 @@ public class OaActionDemo {
             decl.getNode(gatewayId).linkRemove("a3");
         }); //复制
 
-        //把新的图配置，做为实例对应的流配置
-        graph = graphNew;
-        String graphJson = graphNew.toJson();
+        //把新图，做为实例对应的流配置
+        setInstanceGraph(instanceId, graphNew);
     }
 
     //会签
