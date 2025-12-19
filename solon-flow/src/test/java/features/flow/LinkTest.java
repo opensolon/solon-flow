@@ -99,7 +99,7 @@ public class LinkTest {
         engine.register(flowDriver);
 
         // 动态构建图，包含多个连接
-        GraphDecl graph = new GraphDecl("test-graph").build(decl -> {
+        GraphDecl graph = new GraphDecl("test-graph").then(decl -> {
             decl.addNode(NodeDecl.activityOf("n1").task("@DemoCom"));
             decl.addNode(NodeDecl.activityOf("n2").task("@DemoCom"));
             decl.addNode(NodeDecl.activityOf("n3").task("@DemoCom"));

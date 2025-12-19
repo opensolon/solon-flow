@@ -62,7 +62,7 @@ public class GraphDecl {
         return create();
     }
 
-    public GraphDecl build(Consumer<GraphDecl> declaration) {
+    public GraphDecl then(Consumer<GraphDecl> declaration) {
         declaration.accept(this);
         return this;
     }
