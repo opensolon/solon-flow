@@ -109,7 +109,16 @@ public class Node {
     /**
      * 获取元数据
      */
-    public <T> T getMeta(String key) {
+    public Object getMeta(String key) {
+        return metas.get(key);
+    }
+
+    /**
+     * 获取元数据
+     *
+     * @since 3.8
+     */
+    public <T> T getMetaAs(String key) {
         return (T) metas.get(key);
     }
 

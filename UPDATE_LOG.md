@@ -9,6 +9,7 @@
 * 添加 `solon-flow` Evaluation:runCondition 方法替代 runTest（后者标为弃用）
 * 添加 `solon-flow` FlowContext:lastNode 方法（最后一个运行的节点）
 * 添加 `solon-flow` FlowContext:lastNodeId 方法（最后一个运行的节点Id）
+* 添加 `solon-flow` Node.getMetaAs, Link.getMetaAs 方法
 * 添加 `solon-flow` Graph:create(id,title,consumer) 方法
 * 添加 `solon-flow` Graph:copy 方法（方便复制后修改）
 * 添加 `solon-flow` Graph:toYaml(FlowContext)，Graph:toJson(FlowContext) 方法，可输出节点状态（方便前端展示进度）
@@ -21,6 +22,7 @@
 * 调整 `solon-flow` FlowStatefulService:evel、StateResult 标为移除
 * 调整 `solon-flow` Activity 预览属性 "$imode" 和 "$omode" 标为移除
 * 调整 `solon-flow` Activity 节点流出改为自由模式（可以多线流出：无条件直接流出，有条件检测后流出）
+* 调整 `solon-flow` Node.getMeta 方法返回改为 Object 类型（并新增 getMetaAs）
 * 调整 `solon-flow` FlowStatefulService:stepForward、stepBack 标为弃用
 * 调整 `solon-flow` FlowContext:incrAdd,incrGet 标为弃用（上下文数据为型只能由输入侧决定）
 

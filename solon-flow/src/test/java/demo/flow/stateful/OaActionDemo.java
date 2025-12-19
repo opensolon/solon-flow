@@ -116,7 +116,7 @@ public class OaActionDemo {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         StatefulTask task = flowEngine.forStateful().getTask(graph, context);
 
-        String actor = task.getNode().getMeta("actor");
+        String actor = task.getNode().getMetaAs("actor");
         //发邮件（或通知）
     }
 
