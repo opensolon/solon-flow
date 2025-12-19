@@ -38,12 +38,12 @@ Graph graph = Graph.create("demo1", "示例", decl -> {
 graph.toJson(FlowContext.of("....")); //带 stateful:{node1:state1} 
 ```
 
-新特性预览：FlowContext:lastNode （计算的中断与恢复）。参考：https://solon.noear.org/article/1246
+新特性预览：FlowContext:lastNodeId （计算的中断与恢复）。参考：https://solon.noear.org/article/1246
 
 ```java
-flowEngine.eval(graph, context.lastNode(), context);
+flowEngine.eval(graph, context.lastNodeId(), context);
 //...（从上一个节点开始执行）
-flowEngine.eval(graph, context.lastNode(), context);
+flowEngine.eval(graph, context.lastNodeId(), context);
 ```
 
 
