@@ -62,6 +62,11 @@ public class GraphDecl {
         return create();
     }
 
+    public GraphDecl build(Consumer<GraphDecl> declaration) {
+        declaration.accept(this);
+        return this;
+    }
+
     /**
      * 移除节点
      *
