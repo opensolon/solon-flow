@@ -84,6 +84,15 @@ public class Link implements Comparable<Link> {
     }
 
     /**
+     * 获取元数据
+     *
+     * @since 3.8
+     */
+    public <T> T getMetaAs(String key) {
+        return (T) metas.get(key);
+    }
+
+    /**
      * 获取元数据或默认
      */
     public Object getMetaOrDefault(String key, Object def) {
