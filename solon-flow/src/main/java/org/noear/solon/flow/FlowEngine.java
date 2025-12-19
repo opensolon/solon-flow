@@ -363,7 +363,7 @@ public interface FlowEngine {
      * 运行
      *
      * @param startNode 开始节点
-     * @deprecated 3.7.4 {@link #eval(Graph, Node, FlowContext)}
+     * @deprecated 3.8.0 {@link #eval(Graph, Node, FlowContext)}
      */
     @Deprecated
     default void eval(Node startNode) throws FlowException {
@@ -375,7 +375,7 @@ public interface FlowEngine {
      *
      * @param startNode 开始节点
      * @param context   上下文
-     * @deprecated 3.7.4 {@link #eval(Graph, Node, FlowContext)}
+     * @deprecated 3.8.0 {@link #eval(Graph, Node, FlowContext)}
      */
     @Deprecated
     default void eval(Node startNode, FlowContext context) throws FlowException {
@@ -388,7 +388,7 @@ public interface FlowEngine {
      * @param startNode 开始节点
      * @param depth     执行深度
      * @param context   上下文
-     * @deprecated 3.7.4 {@link #eval(Graph, Node, int, FlowContext)}
+     * @deprecated 3.8.0 {@link #eval(Graph, Node, int, FlowContext)}
      */
     @Deprecated
     default void eval(Node startNode, int depth, FlowContext context) throws FlowException {
@@ -401,7 +401,7 @@ public interface FlowEngine {
      * @param startNode 开始节点
      * @param depth     执行深度
      * @param exchanger 交换器
-     * @deprecated 3.7.4 {@link #eval(Graph, Node, int, FlowExchanger)}
+     * @deprecated 3.8.0 {@link #eval(Graph, Node, int, FlowExchanger)}
      */
     @Deprecated
     default void eval(Node startNode, int depth, FlowExchanger exchanger) throws FlowException {
