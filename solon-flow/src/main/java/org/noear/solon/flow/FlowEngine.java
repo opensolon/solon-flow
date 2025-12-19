@@ -18,6 +18,7 @@ package org.noear.solon.flow;
 import org.noear.solon.core.util.ResourceUtil;
 import org.noear.solon.flow.intercept.FlowInterceptor;
 import org.noear.solon.flow.stateful.FlowStatefulService;
+import org.noear.solon.lang.Internal;
 import org.noear.solon.lang.Preview;
 
 import java.util.Collection;
@@ -354,6 +355,7 @@ public interface FlowEngine {
      * @param depth     深度
      * @param exchanger 交换器
      */
+    @Internal
     void eval(Graph graph, Node startNode, int depth, FlowExchanger exchanger) throws FlowException;
 
 
@@ -363,9 +365,7 @@ public interface FlowEngine {
      * 运行
      *
      * @param startNode 开始节点
-     * @deprecated 3.8.0 {@link #eval(Graph, Node, FlowContext)}
      */
-    @Deprecated
     default void eval(Node startNode) throws FlowException {
         eval(startNode, -1, FlowContext.of());
     }
@@ -375,9 +375,7 @@ public interface FlowEngine {
      *
      * @param startNode 开始节点
      * @param context   上下文
-     * @deprecated 3.8.0 {@link #eval(Graph, Node, FlowContext)}
      */
-    @Deprecated
     default void eval(Node startNode, FlowContext context) throws FlowException {
         eval(startNode, -1, context);
     }
@@ -388,23 +386,8 @@ public interface FlowEngine {
      * @param startNode 开始节点
      * @param depth     执行深度
      * @param context   上下文
-     * @deprecated 3.8.0 {@link #eval(Graph, Node, int, FlowContext)}
      */
-    @Deprecated
     default void eval(Node startNode, int depth, FlowContext context) throws FlowException {
-        eval(startNode, depth, new FlowExchanger(context));
-    }
-
-    /**
-     * 运行
-     *
-     * @param startNode 开始节点
-     * @param depth     执行深度
-     * @param exchanger 交换器
-     * @deprecated 3.8.0 {@link #eval(Graph, Node, int, FlowExchanger)}
-     */
-    @Deprecated
-    default void eval(Node startNode, int depth, FlowExchanger exchanger) throws FlowException {
-        eval(startNode.getGraph(), startNode, depth, exchanger);
+        eval(startNode.getGraph(), startNode, depth, new FlowExchanger(context));
     }
 }
