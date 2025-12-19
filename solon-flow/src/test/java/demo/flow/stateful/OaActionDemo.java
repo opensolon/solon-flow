@@ -1,7 +1,6 @@
 package demo.flow.stateful;
 
 import org.noear.solon.flow.*;
-import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.flow.stateful.Operation;
 import org.noear.solon.flow.stateful.StatefulTask;
 import org.noear.solon.flow.stateful.controller.ActorStateController;
@@ -13,7 +12,6 @@ import org.noear.solon.flow.stateful.repository.InMemoryStateRepository;
 public class OaActionDemo {
     FlowEngine flowEngine = FlowEngine.newInstance();
 
-    FlowStatefulService statefulService = flowEngine.forStateful();
     ActorStateController stateController = new ActorStateController();
     InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
@@ -41,12 +39,12 @@ public class OaActionDemo {
 
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", "A");
-        StatefulTask task = statefulService.getTask(graph, context);
+        StatefulTask task = flowEngine.forStateful().getTask(graph, context);
 
         //展示界面，操作。然后：
 
         context.put("op", "审批");//作为状态的一部分
-        statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
+        flowEngine.forStateful().postOperation(task.getNode(), Operation.FORWARD, context);
     }
 
     //回退
@@ -55,10 +53,10 @@ public class OaActionDemo {
 
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", "A");
-        StatefulTask task = statefulService.getTask(graph, context);
+        StatefulTask task = flowEngine.forStateful().getTask(graph, context);
 
         context.put("op", "回退");//作为状态的一部分
-        statefulService.postOperation(task.getNode(), Operation.BACK, context);
+        flowEngine.forStateful().postOperation(task.getNode(), Operation.BACK, context);
     }
 
     //任意跳转（通过）
@@ -69,8 +67,8 @@ public class OaActionDemo {
 
         String nodeId = "demo1";
 
-        statefulService.postOperation(graph, nodeId, Operation.FORWARD_JUMP, context);
-        StatefulTask task = statefulService.getTask(graph, context);
+        flowEngine.forStateful().postOperation(graph, nodeId, Operation.FORWARD_JUMP, context);
+        StatefulTask task = flowEngine.forStateful().getTask(graph, context);
     }
 
     //任意跳转（退回）
@@ -81,8 +79,8 @@ public class OaActionDemo {
 
         String nodeId = "demo1";
 
-        statefulService.postOperation(graph, nodeId, Operation.BACK_JUMP, context);
-        StatefulTask task = statefulService.getTask(graph, context);
+        flowEngine.forStateful().postOperation(graph, nodeId, Operation.BACK_JUMP, context);
+        StatefulTask task = flowEngine.forStateful().getTask(graph, context);
     }
 
     //委派
@@ -92,10 +90,10 @@ public class OaActionDemo {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", "A");
         context.put("delegate", "B"); //需要定制下状态操作员（用A检测，但留下B的状态记录）
-        StatefulTask task = statefulService.getTask(graph, context);
+        StatefulTask task = flowEngine.forStateful().getTask(graph, context);
 
         context.put("op", "委派");//作为状态的一部分
-        statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
+        flowEngine.forStateful().postOperation(task.getNode(), Operation.FORWARD, context);
     }
 
     //转办（与委派技术实现差不多）
@@ -105,10 +103,10 @@ public class OaActionDemo {
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
         context.put("actor", "A");
         context.put("transfer", "B"); //需要定制下状态操作员（用A检测，但留下B的状态记录）
-        StatefulTask task = statefulService.getTask(graph, context);
+        StatefulTask task = flowEngine.forStateful().getTask(graph, context);
 
         context.put("op", "转办");//作为状态的一部分
-        statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
+        flowEngine.forStateful().postOperation(task.getNode(), Operation.FORWARD, context);
     }
 
     //催办
@@ -116,7 +114,7 @@ public class OaActionDemo {
         Graph graph = getInstanceGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
-        StatefulTask task = statefulService.getTask(graph, context);
+        StatefulTask task = flowEngine.forStateful().getTask(graph, context);
 
         String actor = task.getNode().getMeta("actor");
         //发邮件（或通知）
@@ -127,11 +125,11 @@ public class OaActionDemo {
         Graph graph = getInstanceGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
-        StatefulTask task = statefulService.getTask(graph, context);
+        StatefulTask task = flowEngine.forStateful().getTask(graph, context);
 
         //回退到顶（给发起人）；相当于重新开始走流程
         context.put("op", "取回");//作为状态的一部分
-        statefulService.postOperation(task.getNode(), Operation.RESTART, context);
+        flowEngine.forStateful().postOperation(task.getNode(), Operation.RESTART, context);
     }
 
     //撤销（和回退没啥区别）
@@ -139,10 +137,10 @@ public class OaActionDemo {
         Graph graph = getInstanceGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
-        StatefulTask task = statefulService.getTask(graph, context);
+        StatefulTask task = flowEngine.forStateful().getTask(graph, context);
 
         context.put("op", "撤销");//作为状态的一部分
-        statefulService.postOperation(task.getNode(), Operation.BACK, context);
+        flowEngine.forStateful().postOperation(task.getNode(), Operation.BACK, context);
     }
 
     //中止
@@ -150,10 +148,10 @@ public class OaActionDemo {
         Graph graph = getInstanceGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
-        StatefulTask task = statefulService.getTask(graph, context);
+        StatefulTask task = flowEngine.forStateful().getTask(graph, context);
 
         context.put("op", "中止");//作为状态的一部分
-        statefulService.postOperation(task.getNode(), Operation.TERMINATED, context);
+        flowEngine.forStateful().postOperation(task.getNode(), Operation.TERMINATED, context);
     }
 
     //抄送
@@ -161,9 +159,9 @@ public class OaActionDemo {
         Graph graph = getInstanceGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId, stateController, stateRepository);
-        StatefulTask task = statefulService.getTask(graph, context);
+        StatefulTask task = flowEngine.forStateful().getTask(graph, context);
 
-        statefulService.postOperation(task.getNode(), Operation.FORWARD, context);
+        flowEngine.forStateful().postOperation(task.getNode(), Operation.FORWARD, context);
         //提交后，会自动触发任务（如果有抄送配置，自动执行）
     }
 
