@@ -69,7 +69,7 @@ public class Node {
             this.nextLinks = Collections.emptyList();
         } else {
             Collections.sort(links); //按优先级排序
-            this.nextLinks = Collections.unmodifiableList(links);
+            this.nextLinks = Collections.unmodifiableList(new ArrayList<>(links));
         }
 
         ioModeInit();

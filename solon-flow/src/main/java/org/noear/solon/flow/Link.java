@@ -43,15 +43,15 @@ public class Link implements Comparable<Link> {
         this.graph = graph;
         this.prevId = prevId;
 
-        this.nextId = decl.nextId;
-        this.title = decl.title;
-        this.priority = decl.priority;
-        this.when = new Condition(graph, decl.when, decl.whenComponent);
+        this.nextId = decl.getNextId();
+        this.title = decl.getTitle();
+        this.priority = decl.getPriority();
+        this.when = new Condition(graph, decl.getWhen(), decl.getWhenComponent());
 
-        if (decl.meta == null) {
+        if (decl.getMeta() == null) {
             this.metas = Collections.emptyMap();
         } else {
-            this.metas = Collections.unmodifiableMap(new LinkedHashMap<>(decl.meta));
+            this.metas = Collections.unmodifiableMap(new LinkedHashMap<>(decl.getMeta()));
         }
     }
 

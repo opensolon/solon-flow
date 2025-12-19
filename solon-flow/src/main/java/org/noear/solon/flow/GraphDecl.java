@@ -411,18 +411,18 @@ public class GraphDecl {
                     Map<String, Object> domLink = new LinkedHashMap<>();
                     domLinks.add(domLink);
 
-                    domLink.put("nextId", link.nextId);
+                    domLink.put("nextId", link.getNextId());
 
-                    if (Utils.isNotEmpty(link.title)) {
-                        domLink.put("title", link.title);
+                    if (Utils.isNotEmpty(link.getTitle())) {
+                        domLink.put("title", link.getTitle());
                     }
 
-                    if (Utils.isNotEmpty(link.meta)) {
-                        domLink.put("meta", link.meta);
+                    if (Utils.isNotEmpty(link.getMeta())) {
+                        domLink.put("meta", link.getMeta());
                     }
 
-                    if (Utils.isNotEmpty(link.when)) {
-                        domLink.put("when", link.when);
+                    if (Utils.isNotEmpty(link.getWhen())) {
+                        domLink.put("when", link.getWhen());
                     }
                 }
 

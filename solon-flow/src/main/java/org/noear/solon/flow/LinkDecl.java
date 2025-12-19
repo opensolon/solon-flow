@@ -28,15 +28,15 @@ import java.util.Map;
  * @since 3.0
  */
 public class LinkDecl {
-    protected final String nextId;
-    protected String title;
-    protected Map<String, Object> meta;
-    protected String when;
-    protected ConditionComponent whenComponent;
+    private final String nextId;
+    private String title;
+    private Map<String, Object> meta;
+    private String when;
+    private ConditionComponent whenComponent;
     /**
      * 优先级（越大越高）
      */
-    protected int priority;
+    private int priority;
 
     /**
      * @param nextId 目标 id
@@ -142,7 +142,7 @@ public class LinkDecl {
     }
 
     public Map<String, Object> getMeta() {
-        return Collections.unmodifiableMap(meta);
+        return meta;
     }
 
     public String getWhen() {
