@@ -62,18 +62,22 @@ flowEngine.eval(graph, context.lastNodeId(), context);
 ```java
 //（定制上下文后）不需要 stateController, stateRepository
 ApprovalFlowContext context = new ApprovalFlowContext("i1");
+Graph graph = engine.getGraph("g1");
 
 //1. 从数据库获取后，推入状态
 context.stateMap().putAll(...);
 
 //2. 取出任务
-StatefulTask task = engine.forStateful().getTask("g1", context);
+StatefulTask task = engine.forStateful().getTask(graph, context);
 
 //3. 提交任务
 engine.forStateful().postTask(task.getNode(), StateOp.FORWARD, context);
 
 //4. 把状态，存入数据库（持久化）
 context.stateMap();
+
+//5. 输出节点状态（方便前端展示进度）
+String yaml = graph.toYaml(context); //or .toJson(context);
 ```
 
 ### 3.7.4
