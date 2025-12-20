@@ -35,34 +35,34 @@
 
 兼容变化对照表：
 
-| 旧名称                                            | 新名称                               | 说明             |  
-|------------------------------------------------|-----------------------------------|----------------|
-| Evaluation.runTest(..)                         | `runCondition(..)`                | 运行条件           |
-| FlowStatefulService.postOperation(..)          | `postTask(..)`                    | 提交任务           |
-| /                                              | `postTask(graph, ..)`             | 提交任务           |
-| FlowStatefulService.postOperationIfWaiting(..) | `postTaskIfWaiting(..)`           | 提交任务           |
-| /                                              | `postTaskIfWaiting(graph, ..)`    | 提交任务           |
-|                                                |                                   |                |
-| FlowStatefulService.evel(..)                   | /                                 | 执行（移除）         |
-| FlowStatefulService.stepForward(..)            | /                                 | 单步向前（移除）       |
-| FlowStatefulService.stepBack(..)               | /                                 | 单步向后（移除）       |
-|                                                |                                   |                |
-|                                                |                                   |                |
-| Operation                                      | `StateOp`                         | 状态操作           | 
-|                                                |                                   |                |
-| /                                              | `FlowContext.lastNode()`          | 最后一个运行节点       |
-| /                                              | `FlowContext.lastNodeId()`        | 最后一个运行节点Id     |
-| /                                              | `StatefulTask.getNodeId()`        | 任务对应的节点Id      |
-| /                                              | `Node.getMetaAs():T`              | 泛型获取元数据        |
-| /                                              | `Link.getMetaAs():T`              | 泛型获取元数据        |
-| /                                              | `NodeDecl.linkRemove(nextId)`     | 移除链接           |
-| /                                              | `GraphDecl.getNode(id)`           | 获取节点           |
-| /                                              | `GraphDecl.addLoop(id)`           | 添加 loop 循环节点   |
-| /                                              | `Graph.create(id,title,consumer)` | 创建图            |
-| /                                              | `Graph.copy(graph, consumer)`     | 复制图            |
-| /                                              | `Graph.toYaml(context)`           | 转为 yaml（带节点状态） |
-| /                                              | `Graph.toJson(context)`           | 转为 json（带节点状态） |
-| /                                              | `FlowEngine:eval(graph, ..)`      | 持行             |
+| 旧名称                                              | 新名称                               | 说明             |  
+|--------------------------------------------------|-----------------------------------|----------------|
+| `Evaluation.runTest(..)`                         | `runCondition(..)`                | 运行条件           |
+| `FlowStatefulService.postOperation(..)`          | `postTask(..)`                    | 提交任务           |
+| /                                                | `postTask(graph, ..)`             | 提交任务           |
+| `FlowStatefulService.postOperationIfWaiting(..)` | `postTaskIfWaiting(..)`           | 提交任务           |
+| /                                                | `postTaskIfWaiting(graph, ..)`    | 提交任务           |
+|                                                  |                                   |                |
+| `FlowStatefulService.evel(..)`                   | /                                 | 执行（移除）         |
+| `FlowStatefulService.stepForward(..)`            | /                                 | 单步向前（移除）       |
+| `FlowStatefulService.stepBack(..)`               | /                                 | 单步向后（移除）       |
+|                                                  |                                   |                |
+|                                                  |                                   |                |
+| `Operation`                                      | `StateOp`                         | 状态操作           | 
+|                                                  |                                   |                |
+| /                                                | `FlowContext.lastNode()`          | 最后一个运行节点       |
+| /                                                | `FlowContext.lastNodeId()`        | 最后一个运行节点Id     |
+| /                                                | `StatefulTask.getNodeId()`        | 任务对应的节点Id      |
+| /                                                | `Node.getMetaAs():T`              | 泛型获取元数据        |
+| /                                                | `Link.getMetaAs():T`              | 泛型获取元数据        |
+| /                                                | `NodeDecl.linkRemove(nextId)`     | 移除链接           |
+| /                                                | `GraphDecl.getNode(id)`           | 获取节点           |
+| /                                                | `GraphDecl.addLoop(id)`           | 添加 loop 循环节点   |
+| /                                                | `Graph.create(id,title,consumer)` | 创建图            |
+| /                                                | `Graph.copy(graph, consumer)`     | 复制图            |
+| /                                                | `Graph.toYaml(context)`           | 转为 yaml（带节点状态） |
+| /                                                | `Graph.toJson(context)`           | 转为 json（带节点状态） |
+| /                                                | `FlowEngine:eval(graph, ..)`      | 持行             |
 
 
 
