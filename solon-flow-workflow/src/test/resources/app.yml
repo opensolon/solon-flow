@@ -1,0 +1,15 @@
+
+
+solon.flow:
+  - "classpath:flow/*"
+
+solon.logging.logger:
+  root:
+    level: INFO
+
+solon.repo:
+  redis:
+    server: "127.0.0.1:6379"  # 改为你的 Redis Stack 地址
+    db: 0
+    password: 123456
+    maxTotal: 200

@@ -1,0 +1,13 @@
+id: fetch
+title: "采集"
+layout:
+  - task: "@fetchBanduCommunity"
+  - { type: loop, id: fetch-album, meta: { "$for": "communityId", "$in": "communityIds" } }
+  - task: "@fetchBanduAlbum"
+  - { type: loop, id: fetch-course,  meta: { "$for": "albumId", "$in": "albumIds" } }
+  - task: "@fetchBanduCourse"
+  - { type: loop, id: fetch-content, meta: { "$for": "courseId", "$in": "courseIds" } }
+  - task: "@fetchBanduContent"
+  - task: "@downloadBanduAttachment"
+  - task: "@convertBanduAttachment"
+  - task: "@markdownBanduAttachment"

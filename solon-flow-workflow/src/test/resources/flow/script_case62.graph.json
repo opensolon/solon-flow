@@ -1,0 +1,8 @@
+{
+  "id": "c62",
+  "layout": [
+    { "id": "n1", "type": "start", "link": "n2"},
+    { "id": "n2", "type": "activity", "link": "n3", "task":"context.put(\"result\", 112);"},
+    { "id": "n3", "type": "end"}
+  ]
+}

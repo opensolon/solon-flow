@@ -1,0 +1,19 @@
+id: fetch2
+title: "采集（完整结构）"
+layout:
+  - task: "@fetchBanduCommunity"
+  - { type: loop, id: fetch-album, meta: { "$for": "communityId", "$in": "communityIds" } }
+  - task: "@fetchBanduAlbum"
+  - { type: loop, id: fetch-course,  meta: { "$for": "albumId", "$in": "albumIds" } }
+  - task: "@fetchBanduCourse"
+  - { type: loop, id: fetch-content, meta: { "$for": "courseId", "$in": "courseIds" } }
+  - task: "@fetchBanduContent"
+  - task: "@downloadBanduAttachment"
+  - task: "@convertBanduAttachment"
+  - task: "@markdownBanduAttachment"
+  - {type: loop, id: fetch-content_end}
+  - task: 'context.incrAdd("a",1);'
+  - {type: loop, id: fetch-course_end}
+  - task: 'context.incrAdd("b",1);'
+  - {type: loop, id: fetch-album_end}
+  - task: 'context.incrAdd("c",1);'

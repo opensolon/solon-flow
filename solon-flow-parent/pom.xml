@@ -33,6 +33,12 @@
 
             <dependency>
                 <groupId>org.noear</groupId>
+                <artifactId>solon-flow-workflow</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.noear</groupId>
                 <artifactId>solon-flow-eval-aviator</artifactId>
                 <version>${project.version}</version>
             </dependency>

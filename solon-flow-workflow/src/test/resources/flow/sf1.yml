@@ -1,0 +1,11 @@
+id: sf1
+layout:
+  - {id: step1, title: "发起审批", meta: {actor: "刘涛", form: "form1"}}
+  - {id: step2, title: "抄送", meta: {cc: "吕方"}, task: "@OaMetaProcessCom"}
+  - {id: step3, title: "审批", meta: {actor: "陈鑫", cc: "吕方"}, task: "@OaMetaProcessCom"}
+  - {id: step4, title: "审批", type: "parallel", link: [step4_1, step4_2]}
+  - {id: step4_1, meta: {actor: "陈宇"}, link: step4_end}
+  - {id: step4_2, meta: {actor: "吕方"}, link: step4_end}
+  - {id: step4_end, type: "parallel"}
+  - {id: step5, title: "抄送", meta: {cc: "吕方"}, task: "@OaMetaProcessCom"}
+  - {id: step6, title: "结束", type: "end"}

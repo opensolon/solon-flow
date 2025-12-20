@@ -1,0 +1,12 @@
+id: "c9"
+title: "并行计算编排"
+layout:
+  - { type: "start"}
+  - { id: n1, task: 'System.out.println("hello n1-" + Thread.currentThread().getName());'}
+  - { type: "parallel", link: ["p1", "p2"]}
+  - { id: p1, task: 'System.out.println("hello p1-" + Thread.currentThread().getName());', link: p_e}
+  - { id: p2, task: 'System.out.println("hello p2-" + Thread.currentThread().getName());', link: p_e}
+  - { id: p_e, type: "parallel"}
+  - { id: n2, task: 'System.out.println("hello n2-" + Thread.currentThread().getName());'}
+  - { id: n3, task: 'System.out.println("hello n3-" + Thread.currentThread().getName());'}
+  - { type: "end"}

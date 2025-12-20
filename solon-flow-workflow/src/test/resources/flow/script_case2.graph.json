@@ -1,0 +1,11 @@
+{
+  "id": "c2",
+  "driver": "case2FlowDriver",
+  "layout": [
+    { "type": "start"},
+    { "task": "context.put(\"result\", 111 + a);"},
+    { "task": "context.put(\"result\", 222 + b);"},
+    { "task": "context.put(\"result\", 333 + c);"},
+    { "type": "end"}
+  ]
+}

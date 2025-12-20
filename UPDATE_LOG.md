@@ -6,7 +6,8 @@
 
 ### 3.8.0
 
-* 插件 `solon-flow` 第六次预览（FlowStatefulService 接口简化）
+* 插件 `solon-flow` 第六次预览
+* 新增 `solon-flow-workflow` 插件（替代 FlowStatefulService 接口）
 * 添加 `solon-flow` FlowContext:lastNode() 方法（最后一个运行的节点）
 * 添加 `solon-flow` FlowContext:lastNodeId() 方法（最后一个运行的节点Id）
 * 添加 `solon-flow` Node.getMetaAs, Link.getMetaAs 方法

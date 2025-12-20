@@ -1,0 +1,8 @@
+
+id: for_case1
+layout:
+  - type: 'start'
+  - task: 'System.out.println(context.incrGet("demo"));'
+    id: n1
+    type: "exclusive"
+    link: [{nextId: n1, when: 'context.incrAdd("demo", 1) < 5'}]
