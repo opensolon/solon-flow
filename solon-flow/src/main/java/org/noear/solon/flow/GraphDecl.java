@@ -354,17 +354,22 @@ public class GraphDecl {
      * 转为 yaml
      */
     public String toYaml() {
-        return new Yaml().dump(buildDom());
+        return new Yaml().dump(toMap());
     }
 
     /**
      * 转为 json
      */
     public String toJson() {
-        return ONode.serialize(buildDom());
+        return ONode.serialize(toMap());
     }
 
-    protected Map<String, Object> buildDom() {
+    /**
+     * 转为 map
+     *
+     * @since 3.8
+     */
+    public Map<String, Object> toMap() {
         Map<String, Object> domRoot = new LinkedHashMap<>();
         domRoot.put("id", id);
 

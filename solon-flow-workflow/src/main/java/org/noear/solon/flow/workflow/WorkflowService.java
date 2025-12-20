@@ -32,13 +32,13 @@ import java.util.Collection;
 @Preview("3.4")
 public interface WorkflowService {
     static WorkflowService of(FlowEngine engine, StateController stateController) {
-        return new WorkflowServiceDefault(engine, WorkflowDriverDefault.builder()
+        return new WorkflowServiceDefault(engine, WorkflowDriver.builder()
                 .stateController(stateController)
                 .build());
     }
 
     static WorkflowService of(FlowEngine engine, StateController stateController, StateRepository stateRepository) {
-        return new WorkflowServiceDefault(engine, WorkflowDriverDefault.builder()
+        return new WorkflowServiceDefault(engine, WorkflowDriver.builder()
                 .stateController(stateController)
                 .stateRepository(stateRepository)
                 .build());

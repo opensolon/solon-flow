@@ -5,6 +5,7 @@ import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.workflow.TaskAction;
 import org.noear.solon.flow.workflow.Task;
+import org.noear.solon.flow.workflow.WorkflowDriver;
 import org.noear.solon.flow.workflow.controller.ActorStateController;
 import org.noear.solon.flow.workflow.repository.InMemoryStateRepository;
 import org.noear.solon.flow.workflow.WorkflowService;
@@ -13,32 +14,34 @@ import org.noear.solon.flow.workflow.WorkflowService;
  * @author noear 2025/3/28 created
  */
 public class OaActionDemo {
-
-    ActorStateController stateController = new ActorStateController();
-    InMemoryStateRepository stateRepository = new InMemoryStateRepository();
-    WorkflowService workflow = WorkflowService.of(FlowEngine.newInstance(), stateController, stateRepository);
+    WorkflowService workflow = WorkflowService.of(FlowEngine.newInstance(), WorkflowDriver.builder()
+            .stateController(new ActorStateController())
+            .stateRepository(new InMemoryStateRepository())
+            .build());
 
     String instanceId = "i1"; //审批实例id
 
     /**
      * 获取实例对应的流程图
-     * */
-    public Graph getInstanceGraph(String instanceId) {
+     *
+     */
+    public Graph getGraph(String instanceId) {
         String graphJson = ""; //从持久层查询
         return Graph.parseByText(graphJson);
     }
 
     /**
      * 更新实例对应的流程图
-     * */
-    public void setInstanceGraph(String instanceId, Graph graph){
+     *
+     */
+    public void setGraph(String instanceId, Graph graph) {
         String graphJson = graph.toJson();
         //更新到持久层
     }
 
     //审批
     public void case1() throws Exception {
-        Graph graph = getInstanceGraph(instanceId);
+        Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
         context.put("actor", "A");
@@ -52,7 +55,7 @@ public class OaActionDemo {
 
     //回退
     public void case2() throws Exception {
-        Graph graph = getInstanceGraph(instanceId);
+        Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
         context.put("actor", "A");
@@ -64,7 +67,7 @@ public class OaActionDemo {
 
     //任意跳转（通过）
     public void case3_1() throws Exception {
-        Graph graph = getInstanceGraph(instanceId);
+        Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
 
@@ -76,7 +79,7 @@ public class OaActionDemo {
 
     //任意跳转（退回）
     public void case3_2() throws Exception {
-        Graph graph = getInstanceGraph(instanceId);
+        Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
 
@@ -88,7 +91,7 @@ public class OaActionDemo {
 
     //委派
     public void case4() throws Exception {
-        Graph graph = getInstanceGraph(instanceId);
+        Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
         context.put("actor", "A");
@@ -101,7 +104,7 @@ public class OaActionDemo {
 
     //转办（与委派技术实现差不多）
     public void case5() throws Exception {
-        Graph graph = getInstanceGraph(instanceId);
+        Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
         context.put("actor", "A");
@@ -114,7 +117,7 @@ public class OaActionDemo {
 
     //催办
     public void case6() throws Exception {
-        Graph graph = getInstanceGraph(instanceId);
+        Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
         Task task = workflow.getTask(graph, context);
@@ -125,7 +128,7 @@ public class OaActionDemo {
 
     //取回（技术上与回退差不多）
     public void case7() throws Exception {
-        Graph graph = getInstanceGraph(instanceId);
+        Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
         Task task = workflow.getTask(graph, context);
@@ -137,7 +140,7 @@ public class OaActionDemo {
 
     //撤销（和回退没啥区别）
     public void case8() throws Exception {
-        Graph graph = getInstanceGraph(instanceId);
+        Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
         Task task = workflow.getTask(graph, context);
@@ -148,7 +151,7 @@ public class OaActionDemo {
 
     //中止
     public void case9() throws Exception {
-        Graph graph = getInstanceGraph(instanceId);
+        Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
         Task task = workflow.getTask(graph, context);
@@ -159,7 +162,7 @@ public class OaActionDemo {
 
     //抄送
     public void case10() throws Exception {
-        Graph graph = getInstanceGraph(instanceId);
+        Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
         Task task = workflow.getTask(graph, context);
@@ -170,10 +173,10 @@ public class OaActionDemo {
 
     //加签
     public void case11() throws Exception {
-        Graph graph = getInstanceGraph(instanceId);
+        Graph graph = getGraph(instanceId);
 
         String gatewayId = "g1";
-        Graph graphNew = Graph.copy(graph, decl->{
+        Graph graphNew = Graph.copy(graph, decl -> {
             //添加节点
             decl.addActivity("a3").linkAdd("b2");
             //添加连接（加上 a3 节点）
@@ -181,15 +184,15 @@ public class OaActionDemo {
         }); //复制
 
         //把新图，做为实例对应的流配置
-        setInstanceGraph(instanceId, graphNew);
+        setGraph(instanceId, graphNew);
     }
 
     //减签
     public void case12() throws Exception {
-        Graph graph = getInstanceGraph(instanceId);
+        Graph graph = getGraph(instanceId);
 
         String gatewayId = "g1";
-        Graph graphNew = Graph.copy(graph, decl->{
+        Graph graphNew = Graph.copy(graph, decl -> {
             //添加节点
             decl.removeNode("a3");
             //添加连接（加上 a3 节点）
@@ -197,7 +200,7 @@ public class OaActionDemo {
         }); //复制
 
         //把新图，做为实例对应的流配置
-        setInstanceGraph(instanceId, graphNew);
+        setGraph(instanceId, graphNew);
     }
 
     //会签

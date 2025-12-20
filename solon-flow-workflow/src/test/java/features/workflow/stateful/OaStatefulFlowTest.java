@@ -38,7 +38,7 @@ public class OaStatefulFlowTest {
 
         fe.load("classpath:flow/*.yml");
 
-        return WorkflowService.of(fe, WorkflowDriverDefault.builder()
+        return WorkflowService.of(fe, WorkflowDriver.builder()
                 .container(container)
                 .stateController(stateController)
                 .stateRepository(stateRepository)

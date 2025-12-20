@@ -252,6 +252,8 @@ public class Graph {
 
     /**
      * 转为 map
+     *
+     * @since 3.8
      */
     public Map<String, Object> toMap() {
         Map<String, Object> domRoot = new LinkedHashMap<>();

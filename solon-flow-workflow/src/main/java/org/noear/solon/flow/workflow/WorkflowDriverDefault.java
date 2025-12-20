@@ -23,18 +23,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 有状态的简单流驱动器（兼容无状态）
+ * 工作流驱动器默认实现
  *
  * @author noear
- * @since 3.1
- * @since 3.5
+ * @since 3.8
  */
-@Preview("3.1")
+@Preview("3.8")
 public class WorkflowDriverDefault extends AbstractFlowDriver implements WorkflowDriver {
     private final StateController stateController;
     private final StateRepository stateRepository;
 
-    private WorkflowDriverDefault(Evaluation evaluation, Container container, StateController stateController, StateRepository stateRepository) {
+    public WorkflowDriverDefault(Evaluation evaluation, Container container, StateController stateController, StateRepository stateRepository) {
         super(evaluation, container);
 
         this.stateController = stateController;
@@ -148,61 +147,6 @@ public class WorkflowDriverDefault extends AbstractFlowDriver implements Workflo
                 //StatefulTask statefulNode = new StatefulTask(exchanger, task.getNode(), StateType.COMPLETED);
                 //exchanger.temporary().vars().put(StateResult.KEY_ACTIVITY_NODE, statefulNode);
             }
-        }
-    }
-
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private Evaluation evaluation;
-        private Container container;
-        private StateController stateController;
-        private StateRepository stateRepository;
-
-        /**
-         * 设置评估器
-         */
-        public Builder evaluation(Evaluation evaluation) {
-            this.evaluation = evaluation;
-            return this;
-        }
-
-        /**
-         * 设置容器
-         */
-        public Builder container(Container container) {
-            this.container = container;
-            return this;
-        }
-
-        /**
-         * 设置状态控制
-         */
-        public Builder stateController(StateController stateController) {
-            this.stateController = stateController;
-            return this;
-        }
-
-        /**
-         * 设置状态仓库
-         */
-        public Builder stateRepository(StateRepository stateRepository) {
-            this.stateRepository = stateRepository;
-            return this;
-        }
-
-        /**
-         * 构建
-         */
-        public WorkflowDriverDefault build() {
-            return new WorkflowDriverDefault(
-                    evaluation,
-                    container,
-                    stateController,
-                    stateRepository);
         }
     }
 }
