@@ -23,7 +23,7 @@
 * 调整 `solon-flow` Activity 节点预览属性 "$imode" 和 "$omode" 标为移除
 * 调整 `solon-flow` Activity 节点流出改为自由模式（可以多线流出：无条件直接流出，有条件检测后流出）
 * 调整 `solon-flow` Node.getMeta 方法返回改为 Object 类型（并新增 getMetaAs）
-* 添加 `solon-flow` Evaluation:runTest 改为 runCondition
+* 调整 `solon-flow` Evaluation:runTest 改为 runCondition
 * 调整 `solon-flow` FlowContext:incrAdd,incrGet 标为弃用（上下文数据为型只能由输入侧决定）
 * 调整 `solon-flow` FlowStatefulService:evel、StateResult 标为移除
 * 调整 `solon-flow` FlowStatefulService:stepForward、stepBack 标为移除（接口更专注、更简洁）
@@ -32,7 +32,7 @@
 * 调整 `solon-flow` Operation 更名为 StateOp（与 StateType 更配套）
 
 
-兼容变化说明：
+兼容变化对照表：
 
 | 旧名称                                           | 新名称                             | 说明              |  
 |-----------------------------------------------|---------------------------------|-----------------|
