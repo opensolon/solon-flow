@@ -64,6 +64,8 @@ public class FlowInvocation {
 
     /**
      * 图
+     *
+     * @since 3.8
      */
     public Graph getGraph() {
         return startNode.getGraph();
