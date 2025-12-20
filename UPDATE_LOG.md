@@ -99,7 +99,7 @@ flowEngine.eval(graph, context.lastNodeId(), context);
 ```
 
 
-新特性预览：postTask（原名 postOperation）
+新特性预览：Stateful postTask（原名 postOperation）
 
 ```java
 //（定制上下文后）不需要 stateController, stateRepository
