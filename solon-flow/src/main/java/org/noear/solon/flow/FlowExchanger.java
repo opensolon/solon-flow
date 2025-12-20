@@ -30,10 +30,11 @@ import org.noear.solon.lang.Preview;
 public class FlowExchanger {
     public static final String TAG = "exchanger";
 
+    //当前流程引擎
+    private transient final FlowEngine engine;
+    private transient final FlowDriver driver;
     //当前流程上下文
     private transient final FlowContext context;
-    //当前流程引擎
-    protected transient FlowEngine engine;
 
     //执行时临时存放器
     private transient final Temporary temporary = new Temporary();
@@ -44,25 +45,36 @@ public class FlowExchanger {
     //执行恢复中
     private transient volatile boolean reverting = true;
 
-    public FlowExchanger(FlowContext context) {
+    public FlowExchanger(FlowEngine engine, FlowDriver driver, FlowContext context) {
+        Assert.notNull(engine, "The engine is null");
+        Assert.notNull(driver, "The driver is null");
         Assert.notNull(context, "The context is null");
 
+        this.engine = engine;
+        this.driver = driver;
         this.context = context;
     }
 
-    /**
-     * 当前上下文
-     *
-     */
-    public FlowContext context() {
-        return context;
-    }
 
     /**
      * 当前流程引擎
      */
     public FlowEngine engine() {
         return engine;
+    }
+
+    /**
+     * 当前驱动
+     */
+    public FlowDriver driver() {
+        return driver;
+    }
+
+    /**
+     * 当前上下文
+     */
+    public FlowContext context() {
+        return context;
     }
 
     /**

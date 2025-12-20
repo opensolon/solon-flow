@@ -33,7 +33,7 @@ import java.util.function.Function;
  * @since 3.5
  */
 @Preview("3.5")
-public abstract class AbstractFlowContext implements FlowContext {
+public class FlowContextDefault implements FlowContext {
     //存放数据模型
     private transient final Map<String, Object> model = new ConcurrentHashMap<>();
     //异步执行器
@@ -41,11 +41,11 @@ public abstract class AbstractFlowContext implements FlowContext {
     //最后执行节点
     private transient volatile Node lastNode;
 
-    public AbstractFlowContext() {
+    public FlowContextDefault() {
         this(null);
     }
 
-    public AbstractFlowContext(String instanceId) {
+    public FlowContextDefault(String instanceId) {
         put("instanceId", (instanceId == null ? "" : instanceId));
         put("context", this); //放这里不需要不断的推入移出，性能更好（序列化是要移除）
     }
@@ -63,7 +63,7 @@ public abstract class AbstractFlowContext implements FlowContext {
      * 配置异步执行器
      */
     @Preview("3.3")
-    public AbstractFlowContext executor(ExecutorService executor) {
+    public FlowContextDefault executor(ExecutorService executor) {
         this.executor = executor;
         return this;
     }
@@ -91,7 +91,7 @@ public abstract class AbstractFlowContext implements FlowContext {
     /**
      * 推入
      */
-    public AbstractFlowContext put(String key, Object value) {
+    public FlowContextDefault put(String key, Object value) {
         if (value != null) {
             model.put(key, value);
         }
@@ -101,7 +101,7 @@ public abstract class AbstractFlowContext implements FlowContext {
     /**
      * 推入
      */
-    public AbstractFlowContext putIfAbsent(String key, Object value) {
+    public FlowContextDefault putIfAbsent(String key, Object value) {
         if (value != null) {
             model.putIfAbsent(key, value);
         }
@@ -111,7 +111,7 @@ public abstract class AbstractFlowContext implements FlowContext {
     /**
      * 推入全部
      */
-    public AbstractFlowContext putAll(Map<String, Object> model) {
+    public FlowContextDefault putAll(Map<String, Object> model) {
         this.model.putAll(model);
         return this;
     }

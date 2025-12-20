@@ -17,11 +17,6 @@ package org.noear.solon.flow;
 
 import org.noear.dami2.Dami;
 import org.noear.dami2.bus.DamiBus;
-import org.noear.solon.flow.stateful.StatefulSupporter;
-import org.noear.solon.flow.stateless.StatelessFlowContext;
-import org.noear.solon.flow.stateful.StateController;
-import org.noear.solon.flow.stateful.StateRepository;
-import org.noear.solon.flow.stateful.StatefulFlowContext;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
@@ -41,22 +36,12 @@ import java.util.function.Function;
 public interface FlowContext {
     static FlowContext of() {
         //无状态
-        return new StatelessFlowContext();
+        return new FlowContextDefault();
     }
 
     static FlowContext of(String instanceId) {
         //无状态
-        return new StatelessFlowContext(instanceId);
-    }
-
-    static FlowContext of(String instanceId, StateController stateController, StateRepository stateRepository) {
-        //有状态（有控制，有状态）
-        return new StatefulFlowContext(instanceId, stateController, stateRepository);
-    }
-
-    static FlowContext of(String instanceId, StateController stateController) {
-        //有状态（只有控制，没有状态）
-        return new StatefulFlowContext(instanceId, stateController, null);
+        return new FlowContextDefault(instanceId);
     }
 
     /**
@@ -142,18 +127,6 @@ public interface FlowContext {
         return getAs("instanceId");
     }
 
-    /**
-     * 是否为有状态的
-     */
-    @Preview("3.5")
-    boolean isStateful();
-
-    /**
-     * 获取有状态的支持者
-     */
-    @Preview("3.5")
-    StatefulSupporter statefulSupporter();
-
 
     /// /////////////////////////////////////
 
@@ -223,6 +196,13 @@ public interface FlowContext {
     }
 
     /**
+     * 移除
+     */
+    default void remove(String key) {
+        model().remove(key);
+    }
+
+    /**
      * 增量添加
      *
      * @since 3.8
@@ -242,12 +222,5 @@ public interface FlowContext {
     default int incrGet(String key) {
         AtomicInteger tmp = (AtomicInteger) model().computeIfAbsent(key, k -> new AtomicInteger(0));
         return tmp.get();
-    }
-
-    /**
-     * 移除
-     */
-    default void remove(String key) {
-        model().remove(key);
     }
 }

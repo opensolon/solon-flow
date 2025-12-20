@@ -30,7 +30,6 @@ import java.util.function.Consumer;
  * @since 3.7
  */
 public class FlowInvocation {
-    private final FlowDriver driver;
     private final FlowExchanger exchanger;
     private final Node startNode;
     private final int evalDepth;
@@ -39,8 +38,7 @@ public class FlowInvocation {
     private final Consumer<FlowInvocation> lastHandler;
     private int index;
 
-    public FlowInvocation(FlowDriver driver, FlowExchanger exchanger, Node startNode, int evalDepth, List<RankEntity<FlowInterceptor>> interceptorList, Consumer<FlowInvocation> lastHandler) {
-        this.driver = driver;
+    public FlowInvocation(FlowExchanger exchanger, Node startNode, int evalDepth, List<RankEntity<FlowInterceptor>> interceptorList, Consumer<FlowInvocation> lastHandler) {
         this.exchanger = exchanger;
         this.startNode = startNode;
         this.evalDepth = evalDepth;
@@ -48,13 +46,6 @@ public class FlowInvocation {
         this.interceptorList = interceptorList;
         this.lastHandler = lastHandler;
         this.index = 0;
-    }
-
-    /**
-     * 驱动器
-     */
-    public FlowDriver getDriver() {
-        return driver;
     }
 
     /**

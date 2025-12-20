@@ -17,7 +17,6 @@ package org.noear.solon.flow;
 
 import org.noear.snack4.ONode;
 import org.noear.solon.Utils;
-import org.noear.solon.flow.stateful.StateType;
 import org.noear.solon.lang.Preview;
 import org.yaml.snakeyaml.Yaml;
 
@@ -240,31 +239,21 @@ public class Graph {
      * 转为 yaml
      */
     public String toYaml() {
-        return new Yaml().dump(buildDom(null));
+        return new Yaml().dump(toMap());
     }
 
-    /**
-     * 转为 yaml
-     */
-    public String toYaml(FlowContext context) {
-        return new Yaml().dump(buildDom(context));
-    }
 
     /**
      * 转为 json
      */
     public String toJson() {
-        return ONode.serialize(buildDom(null));
+        return ONode.serialize(toMap());
     }
 
     /**
-     * 转为 json
+     * 转为 map
      */
-    public String toJson(FlowContext context) {
-        return ONode.serialize(buildDom(context));
-    }
-
-    protected Map<String, Object> buildDom(FlowContext context) {
+    public Map<String, Object> toMap() {
         Map<String, Object> domRoot = new LinkedHashMap<>();
         domRoot.put("id", id);
 
@@ -331,19 +320,6 @@ public class Graph {
                     }
                 }
 
-            }
-        }
-
-        if (context != null && context.isStateful()) {
-            //输出节点状态（方便前图标注进度）
-            Map<String, String> domStateful = new LinkedHashMap<>();
-            domRoot.put("stateful", domStateful);
-
-            for (Map.Entry<String, Node> entry : nodes.entrySet()) {
-                StateType type = context.statefulSupporter().stateGet(entry.getValue());
-                if (type != null && type != StateType.UNKNOWN) {
-                    domStateful.put(entry.getKey(), type.toString());
-                }
             }
         }
 

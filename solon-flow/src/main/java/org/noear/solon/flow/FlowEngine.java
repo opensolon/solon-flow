@@ -17,7 +17,6 @@ package org.noear.solon.flow;
 
 import org.noear.solon.core.util.ResourceUtil;
 import org.noear.solon.flow.intercept.FlowInterceptor;
-import org.noear.solon.flow.stateful.FlowStatefulService;
 import org.noear.solon.lang.Internal;
 import org.noear.solon.lang.Preview;
 
@@ -54,21 +53,6 @@ public interface FlowEngine {
      * 获取驱动
      */
     <T extends FlowDriver> T getDriverAs(Graph graph, Class<T> driverClass);
-
-    /**
-     * 为有状态场景
-     */
-    FlowStatefulService forStateful();
-
-    /**
-     * 有状态的服务
-     *
-     * @deprecated 3.6 {@link #forStateful()}
-     */
-    @Deprecated
-    default FlowStatefulService statefulService() {
-        return forStateful();
-    }
 
     /**
      * 添加拦截器
@@ -344,7 +328,8 @@ public interface FlowEngine {
      * @param context   上下文
      */
     default void eval(Graph graph, Node startNode, int depth, FlowContext context) throws FlowException {
-        eval(graph, startNode, depth, new FlowExchanger(context));
+        FlowDriver driver = getDriver(startNode.getGraph());
+        eval(graph, startNode, depth, new FlowExchanger(this, driver, context));
     }
 
     /**
@@ -388,6 +373,6 @@ public interface FlowEngine {
      * @param context   上下文
      */
     default void eval(Node startNode, int depth, FlowContext context) throws FlowException {
-        eval(startNode.getGraph(), startNode, depth, new FlowExchanger(context));
+        eval(startNode.getGraph(), startNode, depth, context);
     }
 }
