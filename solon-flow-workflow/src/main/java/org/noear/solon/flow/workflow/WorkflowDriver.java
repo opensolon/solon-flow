@@ -18,13 +18,15 @@ package org.noear.solon.flow.workflow;
 import org.noear.solon.flow.Container;
 import org.noear.solon.flow.Evaluation;
 import org.noear.solon.flow.FlowDriver;
+import org.noear.solon.lang.Preview;
 
 /**
  * 工作流驱动器
  *
  * @author noear
- * @since 3.8.0
+ * @since 3.8
  */
+@Preview("3.8")
 public interface WorkflowDriver extends FlowDriver {
     /**
      * 获取状态控制器

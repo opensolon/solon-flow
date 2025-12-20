@@ -28,6 +28,7 @@ import java.util.Collection;
  *
  * @author noear
  * @since 3.4
+ * @since 3.8
  */
 @Preview("3.4")
 public interface WorkflowService {
