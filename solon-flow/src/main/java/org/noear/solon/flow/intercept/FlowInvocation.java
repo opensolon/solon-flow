@@ -63,6 +63,13 @@ public class FlowInvocation {
     }
 
     /**
+     * 图
+     */
+    public Graph getGraph() {
+        return startNode.getGraph();
+    }
+
+    /**
      * 开始节点
      */
     public Node getStartNode() {
