@@ -172,12 +172,12 @@ public interface WorkflowService {
     /// ////////////
 
     /**
-     * 转为 yaml
+     * 获取图 yaml（带节点状态）
      */
     String getGraphYaml(Graph graph, FlowContext context);
 
     /**
-     * 转为 json
+     * 获取图 json（带节点状态）
      */
     String getGraphJson(Graph graph, FlowContext context);
 }
