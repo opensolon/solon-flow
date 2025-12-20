@@ -65,7 +65,7 @@ public class NotBlockStateFlowTest {
             @Override
             public void onNodeStart(FlowContext context, Node node) {
                 if (node.getId().equals("n1")) {
-                    context.exchanger().interrupt();
+                    context.interrupt();
                 }
             }
         };
