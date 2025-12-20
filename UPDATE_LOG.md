@@ -67,13 +67,20 @@
 
 
 
-新特性预览：Graph 硬编码方式
+新特性预览：Graph 硬编码方式（及修改能力增强）
 
 ```java
+//硬编码
 Graph graph = Graph.create("demo1", "示例", decl -> {
     decl.addStart("start").title("开始").linkAdd("01");
-    decl.addActivity("01").title("01").task("@AaMetaProcessCom").linkAdd("end");
+    decl.addActivity("n1").task("@AaMetaProcessCom").linkAdd("end");
     decl.addEnd("end").title("结束");
+});
+
+//修改
+Graph graphNew = Graph.copy(graph, decl -> {
+    decl.getNode("n1").linkRemove("end").linkAdd("n2"); //移掉 n1 连接；改为 n2 连接
+    decl.addActivity("n2").linkAdd("end");
 });
 ```
 
