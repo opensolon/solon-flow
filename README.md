@@ -195,6 +195,7 @@ layout:
 * 工作流（workflow）， 用于办公审批型（有状态、人员参与）的编排场景
 * 规则流（ruleflow）
 * 数据流（dataflow）
+* AI流（aiflow）
 * 等...
 
 
