@@ -96,7 +96,7 @@ public class FlowExchanger {
         Assert.notNull(node, "node is null");
 
         try {
-            engine().getDriver(node.getGraph()).handleTask(this, new Task(node, description));
+            engine().getDriver(node.getGraph()).handleTask(this, new TaskDesc(node, description));
         } catch (FlowException e) {
             throw e;
         } catch (Throwable e) {

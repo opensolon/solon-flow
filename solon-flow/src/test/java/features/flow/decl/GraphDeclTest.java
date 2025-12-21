@@ -1,10 +1,10 @@
 package features.flow.decl;
 
 import org.junit.jupiter.api.Test;
-import org.noear.solon.flow.GraphDecl;
-import org.noear.solon.flow.NodeDecl;
+import org.noear.solon.flow.GraphSpec;
+import org.noear.solon.flow.NodeSpec;
 import org.noear.solon.flow.NodeType;
-import org.noear.solon.flow.LinkDecl;
+import org.noear.solon.flow.LinkSpec;
 
 import java.util.Map;
 import java.util.List;
@@ -19,7 +19,7 @@ public class GraphDeclTest {
     @Test
     public void testGraphDeclGetters() {
         // 创建 GraphDecl 实例
-        GraphDecl graphDecl = new GraphDecl("test-id", "test-title", "test-driver");
+        GraphSpec graphDecl = new GraphSpec("test-id", "test-title", "test-driver");
 
         // 测试基础属性获取方法
         assertEquals("test-id", graphDecl.getId());
@@ -35,7 +35,7 @@ public class GraphDeclTest {
     @Test
     public void testNodeDeclGetters() {
         // 创建 NodeDecl 实例
-        NodeDecl nodeDecl = new NodeDecl("node-1", NodeType.ACTIVITY);
+        NodeSpec nodeDecl = new NodeSpec("node-1", NodeType.ACTIVITY);
         nodeDecl.title("测试节点")
                .task("test.task")
                .when("${condition} == true")
@@ -54,7 +54,7 @@ public class GraphDeclTest {
 
         // 测试连接获取
         nodeDecl.linkAdd("next-node");
-        List<LinkDecl> links = nodeDecl.getLinks();
+        List<LinkSpec> links = nodeDecl.getLinks();
         assertEquals(1, links.size());
         assertEquals("next-node", links.get(0).getNextId());
     }
@@ -62,7 +62,7 @@ public class GraphDeclTest {
     @Test
     public void testLinkDeclGetters() {
         // 创建 LinkDecl 实例
-        LinkDecl linkDecl = new LinkDecl("target-node");
+        LinkSpec linkDecl = new LinkSpec("target-node");
         linkDecl.title("测试连接")
                 .when("${age} > 18")
                 .priority(10)

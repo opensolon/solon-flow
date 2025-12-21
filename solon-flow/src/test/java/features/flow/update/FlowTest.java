@@ -2,8 +2,8 @@ package features.flow.update;
 
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.Graph;
-import org.noear.solon.flow.GraphDecl;
-import org.noear.solon.flow.NodeDecl;
+import org.noear.solon.flow.GraphSpec;
+import org.noear.solon.flow.NodeSpec;
 
 /**
  * @author noear 2025/7/20 created
@@ -12,12 +12,12 @@ public class FlowTest {
     @Test
     public void json() {
         //加鉴
-        Graph graph = new GraphDecl("c1").create(decl -> {
-            decl.addNode(NodeDecl.startOf("s1"));
-            decl.addNode(NodeDecl.parallelOf("p1").linkAdd("n1").linkAdd("n2"));
-            decl.addNode(NodeDecl.activityOf("n1").linkAdd("e1"));
-            decl.addNode(NodeDecl.activityOf("n2").linkAdd("e1"));
-            decl.addNode(NodeDecl.endOf("e1"));
+        Graph graph = new GraphSpec("c1").create(decl -> {
+            decl.addNode(NodeSpec.startOf("s1"));
+            decl.addNode(NodeSpec.parallelOf("p1").linkAdd("n1").linkAdd("n2"));
+            decl.addNode(NodeSpec.activityOf("n1").linkAdd("e1"));
+            decl.addNode(NodeSpec.activityOf("n2").linkAdd("e1"));
+            decl.addNode(NodeSpec.endOf("e1"));
         });
 
         String oldJson = graph.toJson();
@@ -28,9 +28,9 @@ public class FlowTest {
         System.out.println("---------------------");
 
         //------------------
-        Graph graph2 = GraphDecl.parseByText(oldJson).create(decl -> {
-            decl.addNode(NodeDecl.parallelOf("p1").linkAdd("n1").linkAdd("n2").linkAdd("n3"));
-            decl.addNode(NodeDecl.activityOf("n3").linkAdd("e1"));
+        Graph graph2 = GraphSpec.parseByText(oldJson).create(decl -> {
+            decl.addNode(NodeSpec.parallelOf("p1").linkAdd("n1").linkAdd("n2").linkAdd("n3"));
+            decl.addNode(NodeSpec.activityOf("n3").linkAdd("e1"));
         });
 
         String newJson = graph2.toJson();
@@ -42,12 +42,12 @@ public class FlowTest {
     @Test
     public void yaml() {
         //加鉴
-        Graph graph = new GraphDecl("c1").create(decl -> {
-            decl.addNode(NodeDecl.startOf("s1"));
-            decl.addNode(NodeDecl.parallelOf("p1").linkAdd("n1").linkAdd("n2"));
-            decl.addNode(NodeDecl.activityOf("n1").linkAdd("e1"));
-            decl.addNode(NodeDecl.activityOf("n2").linkAdd("e1"));
-            decl.addNode(NodeDecl.endOf("e1"));
+        Graph graph = new GraphSpec("c1").create(decl -> {
+            decl.addNode(NodeSpec.startOf("s1"));
+            decl.addNode(NodeSpec.parallelOf("p1").linkAdd("n1").linkAdd("n2"));
+            decl.addNode(NodeSpec.activityOf("n1").linkAdd("e1"));
+            decl.addNode(NodeSpec.activityOf("n2").linkAdd("e1"));
+            decl.addNode(NodeSpec.endOf("e1"));
         });
 
         String oldJson = graph.toYaml();
@@ -56,9 +56,9 @@ public class FlowTest {
         System.out.println("---------------------");
 
         //------------------
-        Graph graph2 = GraphDecl.parseByText(oldJson).create(decl -> {
-            decl.addNode(NodeDecl.parallelOf("p1").linkAdd("n1").linkAdd("n2").linkAdd("n3"));
-            decl.addNode(NodeDecl.activityOf("n3").linkAdd("e1"));
+        Graph graph2 = GraphSpec.parseByText(oldJson).create(decl -> {
+            decl.addNode(NodeSpec.parallelOf("p1").linkAdd("n1").linkAdd("n2").linkAdd("n3"));
+            decl.addNode(NodeSpec.activityOf("n3").linkAdd("e1"));
         });
 
 

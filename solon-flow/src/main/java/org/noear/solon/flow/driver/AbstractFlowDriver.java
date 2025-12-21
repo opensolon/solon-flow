@@ -93,14 +93,14 @@ public abstract class AbstractFlowDriver implements FlowDriver {
      * 处理条件
      */
     @Override
-    public boolean handleCondition(FlowExchanger exchanger, Condition condition) throws Throwable {
+    public boolean handleCondition(FlowExchanger exchanger, ConditionDesc condition) throws Throwable {
         //（不需要检测是否为空，引擎会把空条件作为默认，不会再传入）
 
         //如果 condition.description 有加密，可以转码后传入
         return handleConditionDo(exchanger, condition, condition.getDescription());
     }
 
-    protected boolean handleConditionDo(FlowExchanger exchanger, Condition condition, String description) throws Throwable {
+    protected boolean handleConditionDo(FlowExchanger exchanger, ConditionDesc condition, String description) throws Throwable {
         //按脚本运行
         if (condition.getComponent() != null) {
             return condition.getComponent().test(exchanger.context());
@@ -116,7 +116,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     /**
      * 尝试作为组件条件运行
      */
-    protected boolean tryAsComponentCondition(FlowExchanger exchanger, Condition condition, String description) throws Throwable {
+    protected boolean tryAsComponentCondition(FlowExchanger exchanger, ConditionDesc condition, String description) throws Throwable {
         //按组件运行
         String beanName = description.substring(1);
         Object component = getContainer().getComponent(beanName);
@@ -133,7 +133,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     /**
      * 尝试作为脚本条件运行
      */
-    protected boolean tryAsScriptCondition(FlowExchanger exchanger, Condition condition, String description) throws Throwable {
+    protected boolean tryAsScriptCondition(FlowExchanger exchanger, ConditionDesc condition, String description) throws Throwable {
         return getEvaluation().runCondition(exchanger.context(), description);
     }
 
@@ -143,7 +143,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
      * 提交处理任务
      */
     @Override
-    public void postHandleTask(FlowExchanger exchanger, Task task) throws Throwable {
+    public void postHandleTask(FlowExchanger exchanger, TaskDesc task) throws Throwable {
         //默认过滤空任务（活动节点可能没有配置任务）
         if (task.isEmpty()) {
             return;
@@ -153,7 +153,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
         handleTaskDo(exchanger, task);
     }
 
-    protected void handleTaskDo(FlowExchanger exchanger, Task task) throws Throwable {
+    protected void handleTaskDo(FlowExchanger exchanger, TaskDesc task) throws Throwable {
         if (task.getComponent() != null) {
             task.getComponent().run(exchanger.context(), task.getNode());
             return;
@@ -178,7 +178,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     /**
      * 尝试作为子图任务运行
      */
-    protected void tryAsGraphTask(FlowExchanger exchanger, Task task, String description) throws Throwable {
+    protected void tryAsGraphTask(FlowExchanger exchanger, TaskDesc task, String description) throws Throwable {
         //调用其它图
         String graphId = description.substring(1);
         Graph graph = exchanger.engine().getGraphOrThrow(graphId);
@@ -188,7 +188,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     /**
      * 尝试作为组件任务运行
      */
-    protected void tryAsComponentTask(FlowExchanger exchanger, Task task, String description) throws Throwable {
+    protected void tryAsComponentTask(FlowExchanger exchanger, TaskDesc task, String description) throws Throwable {
         //按组件运行
         String beanName = description.substring(1);
         Object component = getContainer().getComponent(beanName);
@@ -205,7 +205,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
     /**
      * 尝试作为脚本任务运行
      */
-    protected void tryAsScriptTask(FlowExchanger exchanger, Task task, String description) throws Throwable {
+    protected void tryAsScriptTask(FlowExchanger exchanger, TaskDesc task, String description) throws Throwable {
         //按脚本运行
         if (description.startsWith("$")) {
             String metaName = description.substring(1);

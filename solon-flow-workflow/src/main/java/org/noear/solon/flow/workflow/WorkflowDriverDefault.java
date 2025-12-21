@@ -57,7 +57,7 @@ public class WorkflowDriverDefault extends AbstractFlowDriver implements Workflo
      * @param task      任务
      */
     @Override
-    public void handleTask(FlowExchanger exchanger, org.noear.solon.flow.Task task) throws Throwable {
+    public void handleTask(FlowExchanger exchanger, TaskDesc task) throws Throwable {
         //有关态的
         if (stateController.isAutoForward(exchanger.context(), task.getNode())) {
             //自动前进

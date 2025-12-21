@@ -44,12 +44,12 @@ public class Task {
     }
 
     /**
-     * 运行当前节点任务（如果有？）
+     * 运行当前任务
      *
      * @param context 上下文
      */
     @Preview("3.4")
-    public void runTask(FlowContext context) throws FlowException {
+    public void run(FlowContext context) throws FlowException {
         Assert.notNull(node, "node is null");
 
         try {

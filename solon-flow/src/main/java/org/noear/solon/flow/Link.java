@@ -36,17 +36,17 @@ public class Link implements Comparable<Link> {
     private transient final int priority; //优先级（越大越高）
 
     private transient final String prevId;
-    private transient final Condition when;
+    private transient final ConditionDesc when;
     private transient Node prevNode, nextNode;
 
-    public Link(Graph graph, String prevId, LinkDecl decl) {
+    public Link(Graph graph, String prevId, LinkSpec decl) {
         this.graph = graph;
         this.prevId = prevId;
 
         this.nextId = decl.getNextId();
         this.title = decl.getTitle();
         this.priority = decl.getPriority();
-        this.when = new Condition(graph, decl.getWhen(), decl.getWhenComponent());
+        this.when = new ConditionDesc(graph, decl.getWhen(), decl.getWhenComponent());
 
         if (decl.getMeta() == null) {
             this.metas = Collections.emptyMap();
@@ -102,7 +102,7 @@ public class Link implements Comparable<Link> {
     /**
      * 分支流出条件
      */
-    public Condition getWhen() {
+    public ConditionDesc getWhen() {
         return when;
     }
 
@@ -112,7 +112,7 @@ public class Link implements Comparable<Link> {
      * @deprecated 3.3 {@link #getWhen()}
      */
     @Deprecated
-    public Condition getCondition() {
+    public ConditionDesc getCondition() {
         return getWhen();
     }
 

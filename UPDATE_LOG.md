@@ -11,11 +11,11 @@
 * 添加 `solon-flow` FlowContext:lastNode() 方法（最后一个运行的节点）
 * 添加 `solon-flow` FlowContext:lastNodeId() 方法（最后一个运行的节点Id）
 * 添加 `solon-flow` Node.getMetaAs, Link.getMetaAs 方法
-* 添加 `solon-flow` NodeDecl:linkRemove 方法（增强修改能力）
+* 添加 `solon-flow` NodeSpec:linkRemove 方法（增强修改能力）
 * 添加 `solon-flow` Graph:create(id,title,consumer) 方法
 * 添加 `solon-flow` Graph:copy(graph,consumer) 方法（方便复制后修改）
-* 添加 `solon-flow` GraphDecl:getNode(id) 方法
-* 添加 `solon-flow` GraphDecl:addLoop(id) 方法替代 addLooping（后者标为弃用）
+* 添加 `solon-flow` GraphSpec:getNode(id) 方法
+* 添加 `solon-flow` GraphSpec:addLoop(id) 方法替代 addLooping（后者标为弃用）
 * 添加 `solon-flow` FlowEngine:eval(Graph, ..) 系列方法
 * 优化 `solon-flow` FlowEngine:eval(Node startNode) 处理，改为从 root 开始恢复到 start 再开始执行（恢复过程中，不会执行任务）
 * 调整 `solon-flow` Activity 节点预览属性 "$imode" 和 "$omode" 标为移除
@@ -23,42 +23,27 @@
 * 调整 `solon-flow` Node.getMeta 方法返回改为 Object 类型（并新增 getMetaAs）
 * 调整 `solon-flow` Evaluation:runTest 改为 runCondition
 * 调整 `solon-flow` FlowContext:incrAdd,incrGet 标为弃用（上下文数据为型只能由输入侧决定）
+* 调整 `solon-flow` Condition 更名为 ConditionDesc
+* 调整 `solon-flow` Task 更名为 ConditionDesc
+* 调整 `solon-flow` XxxDecl 命名风格改为 XxxSpec
 
 
 兼容变化对照表：
 
-| 旧名称                                              | 新名称                                             | 说明             |  
-|--------------------------------------------------|-------------------------------------------------|----------------|
-| `Evaluation.runTest(..)`                         | `Evaluation.runCondition(..)`                   | 运行条件           |
-| `FlowStatefulService.postOperation(..)`          | `WorkflowService.postTask(..)`                  | 提交任务           |
-| /                                                | `WorkflowService.postTask(graph, ..)`           | 提交任务           |
-| `FlowStatefulService.postOperationIfWaiting(..)` | `WorkflowService.postTaskIfWaiting(..)`         | 提交任务           |
-| /                                                | `WorkflowService.postTaskIfWaiting(graph, ..)`  | 提交任务           |
-|                                                  |                                                 |                |
-| `FlowStatefulService.evel(..)`                   | /                                               | 执行（移除）         |
-| `FlowStatefulService.stepForward(..)`            | /                                               | 单步向前（移除）       |
-| `FlowStatefulService.stepBack(..)`               | /                                               | 单步向后（移除）       |
-|                                                  |                                                 |                |
-|                                                  |                                                 |                |
-| `StatefulTask`                                   | `Task`                                          | 状态操作           | 
-| `Operation`                                      | `TaskAction`                                    | 状态操作           | 
-| `TaskType`                                       | `TaskState`                                     | 状态操作           | 
-|                                                  |                                                 |                |
-| /                                                | `Task.getNodeId()`                              | 任务对应的节点Id      |
-| /                                                | `WorkflowService.getGraphYaml(graph,context)`   | 转为 yaml（带节点状态） |
-| /                                                | `WorkflowService.getGraphJson(graph,context)`   | 转为 json（带节点状态） |
-|                                                  |                                                 |                |
-| /                                                | `FlowContext.lastNode()`                        | 最后一个运行节点       |
-| /                                                | `FlowContext.lastNodeId()`                      | 最后一个运行节点Id     |
-| /                                                | `Node.getMetaAs():T`                            | 泛型获取元数据        |
-| /                                                | `Link.getMetaAs():T`                            | 泛型获取元数据        |
-| /                                                | `NodeDecl.linkRemove(nextId)`                   | 移除链接           |
-| /                                                | `GraphDecl.getNode(id)`                         | 获取节点           |
-| /                                                | `GraphDecl.addLoop(id)`                         | 添加 loop 循环节点   |
-| /                                                | `Graph.create(id,title,consumer)`               | 创建图            |
-| /                                                | `Graph.copy(graph, consumer)`                   | 复制图            |
-| /                                                | `FlowEngine:eval(graph, ..)`                    | 持行             |
-
+| 旧名称                      | 新名称                   | 说明                            |  
+|--------------------------|-----------------------|-------------------------------|
+| `GraphDecl`              | `GraphSpec`           | 图定义                           |
+| `LinkDecl`               | `LinkSpec`            | 连接定义                          |
+| `NodeDecl`               | `NodeSpec`            | 节点定义                          |
+| `Condition`              | `ConditionDesc`       | 条件描述                          |
+| `Task`                   | `TaskDesc`            | 任务描述（可避免与 workflow 的概念冲突） |
+|                          |                       |                               |
+| `FlowStatefulService`    | `WorkflowService`     | 工作流服务                         |
+| `StatefulTask`           | `Task`                | 任务                            | 
+| `Operation`              | `TaskAction`          | 任动工作                          | 
+| `TaskType`               | `TaskState`           | 任务状态                          | 
+|                          |                       |                               |
+| `Evaluation.runTest(..)` | `Evaluation.runCondition(..)` | 运行条件                          |
 
 
 
@@ -103,7 +88,7 @@ WorkflowService work = WorkflowService.of(engine, WorkflowDriver.builder()
 Task task = work.getTask(graph, context);
 
 //2. 提交任务
-work.postTask(task.getNode(), StateOp.FORWARD, context);
+work.postTask(task.getNode(), TaskAction.FORWARD, context);
 
 //3. 输出节点状态（方便前端展示进度）
 String yaml = work.getGraphYaml(graph, context);

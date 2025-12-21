@@ -17,17 +17,16 @@ package org.noear.solon.flow;
 
 import org.noear.solon.Utils;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 连接申明
+ * 连接定义
  *
  * @author noear
  * @since 3.0
  */
-public class LinkDecl {
+public class LinkSpec {
     private final String nextId;
     private String title;
     private Map<String, Object> meta;
@@ -41,14 +40,14 @@ public class LinkDecl {
     /**
      * @param nextId 目标 id
      */
-    public LinkDecl(String nextId) {
+    public LinkSpec(String nextId) {
         this.nextId = nextId;
     }
 
     /**
      * 配置标题
      */
-    public LinkDecl title(String title) {
+    public LinkSpec title(String title) {
         this.title = title;
         return this;
     }
@@ -56,7 +55,7 @@ public class LinkDecl {
     /**
      * 配置元数据
      */
-    public LinkDecl meta(Map<String, Object> meta) {
+    public LinkSpec meta(Map<String, Object> meta) {
         this.meta = meta;
         return this;
     }
@@ -64,7 +63,7 @@ public class LinkDecl {
     /**
      * 配置元数据
      */
-    public LinkDecl metaPut(String key, Object value) {
+    public LinkSpec metaPut(String key, Object value) {
         if (meta == null) {
             meta = new HashMap<>();
         }
@@ -76,7 +75,7 @@ public class LinkDecl {
     /**
      * 配置分支流出条件（用于配置）
      */
-    public LinkDecl when(String condition) {
+    public LinkSpec when(String condition) {
         this.when = condition;
         return this;
     }
@@ -86,7 +85,7 @@ public class LinkDecl {
      *
      * @since 3.7
      */
-    public LinkDecl when(ConditionComponent conditionComponent) {
+    public LinkSpec when(ConditionComponent conditionComponent) {
         this.whenComponent = conditionComponent;
         return this;
     }
@@ -97,14 +96,14 @@ public class LinkDecl {
      * @deprecated 3.3 {@link #when(String)}
      */
     @Deprecated
-    public LinkDecl condition(String condition) {
+    public LinkSpec condition(String condition) {
         return when(condition);
     }
 
     /**
      * 配置优先级（越大越优）
      */
-    public LinkDecl priority(int priority) {
+    public LinkSpec priority(int priority) {
         this.priority = priority;
         return this;
     }

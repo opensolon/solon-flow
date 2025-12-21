@@ -38,17 +38,17 @@ public interface FlowDriver {
     /**
      * 处理条件检测
      */
-    boolean handleCondition(FlowExchanger exchanger, Condition condition) throws Throwable;
+    boolean handleCondition(FlowExchanger exchanger, ConditionDesc condition) throws Throwable;
 
     /**
      * 处理执行任务
      */
-    default void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
+    default void handleTask(FlowExchanger exchanger, TaskDesc task) throws Throwable {
         postHandleTask(exchanger, task);
     }
 
     /**
      * 提交处理任务
      */
-    void postHandleTask(FlowExchanger exchanger, Task task) throws Throwable;
+    void postHandleTask(FlowExchanger exchanger, TaskDesc task) throws Throwable;
 }

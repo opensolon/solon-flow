@@ -104,6 +104,6 @@ public class JumpFlowTest2 {
         Task task = statefulService.getTask(graphId, context);
         log.debug(task.toString());
 
-        task.runTask(context);
+        task.run(context);
     }
 }

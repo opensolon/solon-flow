@@ -41,7 +41,7 @@ public class Graph {
     private transient final List<Link> links;
     private transient Node start;
 
-    protected Graph(GraphDecl decl) {
+    protected Graph(GraphSpec decl) {
         this.id = decl.id;
         this.title = decl.title;
         this.driver = decl.driver;
@@ -50,7 +50,7 @@ public class Graph {
         List<Link> linkAry = new ArrayList<>(decl.nodes.size());
 
         //倒排加入图
-        for (Map.Entry<String, NodeDecl> kv : decl.nodes.entrySet()) {
+        for (Map.Entry<String, NodeSpec> kv : decl.nodes.entrySet()) {
             doAddNode(kv.getValue(), nodeMap, linkAry);
         }
 
@@ -167,9 +167,9 @@ public class Graph {
     /**
      * 添加节点
      */
-    private void doAddNode(NodeDecl nodeDecl, Map<String, Node> nodeMap, List<Link> linkAry) {
+    private void doAddNode(NodeSpec nodeDecl, Map<String, Node> nodeMap, List<Link> linkAry) {
         List<Link> tmp = new ArrayList<>(nodeDecl.links.size());
-        for (LinkDecl linkSpec : nodeDecl.links) {
+        for (LinkSpec linkSpec : nodeDecl.links) {
             tmp.add(new Link(this, nodeDecl.id, linkSpec));
         }
 
@@ -189,8 +189,8 @@ public class Graph {
      *
      * @since 3.7
      */
-    public static Graph create(String id, Consumer<GraphDecl> consumer) {
-        GraphDecl decl = new GraphDecl(id);
+    public static Graph create(String id, Consumer<GraphSpec> consumer) {
+        GraphSpec decl = new GraphSpec(id);
         consumer.accept(decl);
         return decl.create();
     }
@@ -200,8 +200,8 @@ public class Graph {
      *
      * @since 3.7
      */
-    public static Graph create(String id, String title, Consumer<GraphDecl> consumer) {
-        GraphDecl decl = new GraphDecl(id, title);
+    public static Graph create(String id, String title, Consumer<GraphSpec> consumer) {
+        GraphSpec decl = new GraphSpec(id, title);
         consumer.accept(decl);
         return decl.create();
     }
@@ -211,8 +211,8 @@ public class Graph {
      *
      * @since 3.7.4
      */
-    public static Graph copy(Graph graph, Consumer<GraphDecl> consumer) {
-        GraphDecl decl = GraphDecl.copy(graph);
+    public static Graph copy(Graph graph, Consumer<GraphSpec> consumer) {
+        GraphSpec decl = GraphSpec.copy(graph);
         consumer.accept(decl);
         return decl.create();
     }
@@ -221,7 +221,7 @@ public class Graph {
      * 解析配置文件
      */
     public static Graph parseByUri(String uri) {
-        return GraphDecl.parseByUri(uri).create();
+        return GraphSpec.parseByUri(uri).create();
     }
 
     /**
@@ -230,7 +230,7 @@ public class Graph {
      * @param text 配置文本（支持 yml, json 格式）
      */
     public static Graph parseByText(String text) {
-        return GraphDecl.parseByText(text).create();
+        return GraphSpec.parseByText(text).create();
     }
 
     /// /////////////

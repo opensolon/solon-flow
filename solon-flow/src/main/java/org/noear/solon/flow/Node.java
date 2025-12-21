@@ -16,7 +16,6 @@
 package org.noear.solon.flow;
 
 import org.noear.solon.Utils;
-import org.noear.solon.lang.Preview;
 
 import java.util.*;
 
@@ -35,8 +34,8 @@ public class Node {
     private transient final String title;
     private transient final NodeType type;
     private transient final Map<String, Object> metas;
-    private transient final Condition when;
-    private transient final Task task;
+    private transient final ConditionDesc when;
+    private transient final TaskDesc task;
 
     private transient final List<Link> nextLinks; //as nextLinks
 
@@ -48,14 +47,14 @@ public class Node {
      */
     public Object attachment;//如果做扩展解析，用作存储位；
 
-    protected Node(Graph graph, NodeDecl decl, List<Link> links) {
+    protected Node(Graph graph, NodeSpec decl, List<Link> links) {
         this.graph = graph;
 
         this.id = decl.id;
         this.title = decl.title;
         this.type = decl.type;
-        this.when = new Condition(graph, decl.when, decl.whenComponent);
-        this.task = new Task(this, decl.task, decl.taskComponent);
+        this.when = new ConditionDesc(graph, decl.when, decl.whenComponent);
+        this.task = new TaskDesc(this, decl.task, decl.taskComponent);
 
         if (decl.meta == null || decl.meta.size() == 0) {
             this.metas = Collections.emptyMap();
@@ -267,14 +266,14 @@ public class Node {
     /**
      * 任务条件
      */
-    public Condition getWhen() {
+    public ConditionDesc getWhen() {
         return when;
     }
 
     /**
      * 任务
      */
-    public Task getTask() {
+    public TaskDesc getTask() {
         return task;
     }
 

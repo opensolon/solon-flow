@@ -192,7 +192,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 条件检测
      */
-    protected boolean condition_test(FlowExchanger exchanger, Condition condition, boolean def) throws FlowException {
+    protected boolean condition_test(FlowExchanger exchanger, ConditionDesc condition, boolean def) throws FlowException {
         if (condition.isEmpty()) {
             return def;
         }

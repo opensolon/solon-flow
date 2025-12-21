@@ -115,7 +115,7 @@ public class WorkflowServiceDefault implements WorkflowService {
             throw new IllegalArgumentException("StateOperation is UNKNOWN");
         }
 
-        TaskState newState = TaskState.byOp(operation);
+        TaskState newState = TaskState.fromAction(operation);
 
         //更新状态
         if (operation == TaskAction.BACK) {

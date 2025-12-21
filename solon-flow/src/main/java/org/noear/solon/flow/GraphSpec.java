@@ -26,28 +26,28 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * 图申明
+ * 图定义
  *
  * @author noear
  * @since 3.5
  */
 @Preview("3.5")
-public class GraphDecl {
+public class GraphSpec {
     protected final String id;
     protected final String title;
     protected final String driver;
     protected final Map<String, Object> meta = new LinkedHashMap<>(); //元数据
-    protected final Map<String, NodeDecl> nodes = new LinkedHashMap<>();
+    protected final Map<String, NodeSpec> nodes = new LinkedHashMap<>();
 
-    public GraphDecl(String id) {
+    public GraphSpec(String id) {
         this(id, null, null);
     }
 
-    public GraphDecl(String id, String title) {
+    public GraphSpec(String id, String title) {
         this(id, title, null);
     }
 
-    public GraphDecl(String id, String title, String driver) {
+    public GraphSpec(String id, String title, String driver) {
         this.id = id;
         this.title = (title == null ? id : title);
         this.driver = (driver == null ? "" : driver);
@@ -57,12 +57,12 @@ public class GraphDecl {
         return new Graph(this);
     }
 
-    public Graph create(Consumer<GraphDecl> declaration) {
+    public Graph create(Consumer<GraphSpec> declaration) {
         declaration.accept(this);
         return create();
     }
 
-    public GraphDecl then(Consumer<GraphDecl> declaration) {
+    public GraphSpec then(Consumer<GraphSpec> declaration) {
         declaration.accept(this);
         return this;
     }
@@ -78,14 +78,14 @@ public class GraphDecl {
     /**
      * 添加节点（或替换）
      */
-    public void addNode(NodeDecl nodeDecl) {
+    public void addNode(NodeSpec nodeDecl) {
         nodes.put(nodeDecl.id, nodeDecl);
     }
 
     /**
      * 获取节点（一般用于修改）
      */
-    public NodeDecl getNode(String id) {
+    public NodeSpec getNode(String id) {
         return nodes.get(id);
     }
 
@@ -95,7 +95,7 @@ public class GraphDecl {
     /**
      * 复制
      */
-    public static GraphDecl copy(Graph graph) {
+    public static GraphSpec copy(Graph graph) {
         return parseByText(graph.toJson());
     }
 
@@ -103,7 +103,7 @@ public class GraphDecl {
     /**
      * 解析配置文件
      */
-    public static GraphDecl parseByUri(String uri) {
+    public static GraphSpec parseByUri(String uri) {
         URL url = ResourceUtil.findResource(uri, false);
         if (url == null) {
             throw new IllegalArgumentException("Can't find resource: " + uri);
@@ -125,7 +125,7 @@ public class GraphDecl {
      *
      * @param text 配置文本（支持 yml, json 格式）
      */
-    public static GraphDecl parseByText(String text) {
+    public static GraphSpec parseByText(String text) {
         Object dom = new Yaml().load(text);
         return parseByDom(ONode.ofBean(dom));
     }
@@ -135,12 +135,12 @@ public class GraphDecl {
      *
      * @param dom 配置文档模型
      */
-    public static GraphDecl parseByDom(ONode dom) {
+    public static GraphSpec parseByDom(ONode dom) {
         String id = dom.get("id").getString();
         String title = dom.get("title").getString();
         String driver = dom.get("driver").getString();
 
-        GraphDecl graphDecl = new GraphDecl(id, title, driver);
+        GraphSpec graphDecl = new GraphSpec(id, title, driver);
 
         //元数据
         Map metaTmp = dom.get("meta").toBean(Map.class);
@@ -158,8 +158,8 @@ public class GraphDecl {
             layoutTmp = dom.get("nodes").getArray();
         }
 
-        List<NodeDecl> nodeDeclList = new ArrayList<>();
-        NodeDecl nodesLat = null;
+        List<NodeSpec> nodeDeclList = new ArrayList<>();
+        NodeSpec nodesLat = null;
         for (int i = layoutTmp.size(); i > 0; i--) {
             ONode n1 = layoutTmp.get(i - 1);
 
@@ -172,7 +172,7 @@ public class GraphDecl {
             String n1_typeStr = n1.get("type").getString();
             NodeType n1_type = NodeType.nameOf(n1_typeStr);
 
-            NodeDecl nodeDecl = new NodeDecl(n1_id, n1_type);
+            NodeSpec nodeDecl = new NodeSpec(n1_id, n1_type);
 
             nodeDecl.title(n1.get("title").getString());
             nodeDecl.meta(n1.get("meta").toBean(Map.class));
@@ -221,7 +221,7 @@ public class GraphDecl {
     /**
      * 添加连接
      */
-    private static void addLink(NodeDecl nodeDecl, ONode l1) {
+    private static void addLink(NodeSpec nodeDecl, ONode l1) {
         //支持 when 简写条件
         final String whenStr;
         if (l1.hasKey("when")) {
@@ -253,7 +253,7 @@ public class GraphDecl {
         return Collections.unmodifiableMap(meta);
     }
 
-    public Map<String, NodeDecl> getNodes() {
+    public Map<String, NodeSpec> getNodes() {
         return Collections.unmodifiableMap(nodes);
     }
 
@@ -264,8 +264,8 @@ public class GraphDecl {
      *
      * @since 3.7
      */
-    public NodeDecl addStart(String id) {
-        NodeDecl decl = new NodeDecl(id, NodeType.START);
+    public NodeSpec addStart(String id) {
+        NodeSpec decl = new NodeSpec(id, NodeType.START);
         addNode(decl);
         return decl;
     }
@@ -275,8 +275,8 @@ public class GraphDecl {
      *
      * @since 3.7
      */
-    public NodeDecl addEnd(String id) {
-        NodeDecl decl = new NodeDecl(id, NodeType.END);
+    public NodeSpec addEnd(String id) {
+        NodeSpec decl = new NodeSpec(id, NodeType.END);
         addNode(decl);
         return decl;
     }
@@ -286,8 +286,8 @@ public class GraphDecl {
      *
      * @since 3.7
      */
-    public NodeDecl addActivity(String id) {
-        NodeDecl decl = new NodeDecl(id, NodeType.ACTIVITY);
+    public NodeSpec addActivity(String id) {
+        NodeSpec decl = new NodeSpec(id, NodeType.ACTIVITY);
         addNode(decl);
         return decl;
     }
@@ -297,8 +297,8 @@ public class GraphDecl {
      *
      * @since 3.7
      */
-    public NodeDecl addInclusive(String id) {
-        NodeDecl decl = new NodeDecl(id, NodeType.INCLUSIVE);
+    public NodeSpec addInclusive(String id) {
+        NodeSpec decl = new NodeSpec(id, NodeType.INCLUSIVE);
         addNode(decl);
         return decl;
     }
@@ -308,8 +308,8 @@ public class GraphDecl {
      *
      * @since 3.7
      */
-    public NodeDecl addExclusive(String id) {
-        NodeDecl decl = new NodeDecl(id, NodeType.EXCLUSIVE);
+    public NodeSpec addExclusive(String id) {
+        NodeSpec decl = new NodeSpec(id, NodeType.EXCLUSIVE);
         addNode(decl);
         return decl;
     }
@@ -319,8 +319,8 @@ public class GraphDecl {
      *
      * @since 3.7
      */
-    public NodeDecl addParallel(String id) {
-        NodeDecl decl = new NodeDecl(id, NodeType.PARALLEL);
+    public NodeSpec addParallel(String id) {
+        NodeSpec decl = new NodeSpec(id, NodeType.PARALLEL);
         addNode(decl);
         return decl;
     }
@@ -332,7 +332,7 @@ public class GraphDecl {
      * @deprecated 3.7 {{@link #addLoop(String)}}
      */
     @Deprecated
-    public NodeDecl addLooping(String id) {
+    public NodeSpec addLooping(String id) {
         return addLoop(id);
     }
 
@@ -341,8 +341,8 @@ public class GraphDecl {
      *
      * @since 3.7
      */
-    public NodeDecl addLoop(String id) {
-        NodeDecl decl = new NodeDecl(id, NodeType.LOOP);
+    public NodeSpec addLoop(String id) {
+        NodeSpec decl = new NodeSpec(id, NodeType.LOOP);
         addNode(decl);
         return decl;
     }
@@ -388,8 +388,8 @@ public class GraphDecl {
         List<Map<String, Object>> domNodes = new ArrayList<>();
         domRoot.put("layout", domNodes);
 
-        for (Map.Entry<String, NodeDecl> kv : nodes.entrySet()) {
-            NodeDecl node = kv.getValue();
+        for (Map.Entry<String, NodeSpec> kv : nodes.entrySet()) {
+            NodeSpec node = kv.getValue();
 
             Map<String, Object> domNode = new LinkedHashMap<>();
             domNodes.add(domNode);
@@ -417,7 +417,7 @@ public class GraphDecl {
                 List<Map<String, Object>> domLinks = new ArrayList<>();
                 domNode.put("link", domLinks);
 
-                for (LinkDecl link : node.links) {
+                for (LinkSpec link : node.links) {
                     Map<String, Object> domLink = new LinkedHashMap<>();
                     domLinks.add(domLink);
 

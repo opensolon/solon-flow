@@ -21,17 +21,17 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * 节点申明
+ * 节点定义
  *
  * @author noear
  * @since 3.0
  */
-public class NodeDecl {
+public class NodeSpec {
     protected final String id;
     protected String title;
     protected NodeType type;      //元素类型
     protected final Map<String, Object> meta = new LinkedHashMap<>(); //元数据
-    protected List<LinkDecl> links = new ArrayList<>();
+    protected List<LinkSpec> links = new ArrayList<>();
     protected String when;
     protected ConditionComponent whenComponent;
     protected String task;
@@ -44,7 +44,7 @@ public class NodeDecl {
      * @param id   标识
      * @param type 类型
      */
-    public NodeDecl(String id, NodeType type) {
+    public NodeSpec(String id, NodeType type) {
         this.id = id;
         this.type = type;
     }
@@ -52,7 +52,7 @@ public class NodeDecl {
     /**
      * 配置标题
      */
-    public NodeDecl title(String title) {
+    public NodeSpec title(String title) {
         this.title = title;
         return this;
     }
@@ -60,7 +60,7 @@ public class NodeDecl {
     /**
      * 配置元数据
      */
-    public NodeDecl meta(Map<String, Object> map) {
+    public NodeSpec meta(Map<String, Object> map) {
         if (Utils.isNotEmpty(map)) {
             this.meta.putAll(map);
         }
@@ -71,7 +71,7 @@ public class NodeDecl {
     /**
      * 配置元数据
      */
-    public NodeDecl metaPut(String key, Object value) {
+    public NodeSpec metaPut(String key, Object value) {
         if (Utils.isNotEmpty(key)) {
             this.meta.put(key, value);
         }
@@ -84,8 +84,8 @@ public class NodeDecl {
      *
      * @param nextId 下个节点Id
      */
-    public NodeDecl linkAdd(String nextId, Consumer<LinkDecl> configure) {
-        LinkDecl linkDecl = new LinkDecl(nextId);
+    public NodeSpec linkAdd(String nextId, Consumer<LinkSpec> configure) {
+        LinkSpec linkDecl = new LinkSpec(nextId);
         if (configure != null) {
             configure.accept(linkDecl);
         }
@@ -98,11 +98,11 @@ public class NodeDecl {
      *
      * @param nextId 下个节点Id
      */
-    public NodeDecl linkAdd(String nextId) {
+    public NodeSpec linkAdd(String nextId) {
         return linkAdd(nextId, null);
     }
 
-    public NodeDecl linkRemove(String nextId) {
+    public NodeSpec linkRemove(String nextId) {
         this.links.removeIf(l->l.getNextId().equals(nextId));
         return this;
     }
@@ -110,7 +110,7 @@ public class NodeDecl {
     /**
      * 配置任务条件
      */
-    public NodeDecl when(String when) {
+    public NodeSpec when(String when) {
         this.when = when;
         return this;
     }
@@ -120,7 +120,7 @@ public class NodeDecl {
      *
      * @since  3.7
      */
-    public NodeDecl when(ConditionComponent whenComponent) {
+    public NodeSpec when(ConditionComponent whenComponent) {
         this.whenComponent = whenComponent;
         return this;
     }
@@ -128,7 +128,7 @@ public class NodeDecl {
     /**
      * 配置任务描述（适合配置）
      */
-    public NodeDecl task(String task) {
+    public NodeSpec task(String task) {
         this.task = task;
         return this;
     }
@@ -138,7 +138,7 @@ public class NodeDecl {
      *
      * @since 3.7
      */
-    public NodeDecl task(TaskComponent taskComponent) {
+    public NodeSpec task(TaskComponent taskComponent) {
         this.taskComponent = taskComponent;
         return this;
     }
@@ -189,50 +189,50 @@ public class NodeDecl {
     /**
      * 构建开始节点
      */
-    public static NodeDecl startOf(String id) {
-        return new NodeDecl(id, NodeType.START);
+    public static NodeSpec startOf(String id) {
+        return new NodeSpec(id, NodeType.START);
     }
 
     /**
      * 构建结束节点
      */
-    public static NodeDecl endOf(String id) {
-        return new NodeDecl(id, NodeType.END);
+    public static NodeSpec endOf(String id) {
+        return new NodeSpec(id, NodeType.END);
     }
 
     /**
      * 构建活动节点
      */
-    public static NodeDecl activityOf(String id) {
-        return new NodeDecl(id, NodeType.ACTIVITY);
+    public static NodeSpec activityOf(String id) {
+        return new NodeSpec(id, NodeType.ACTIVITY);
     }
 
     /**
      * 构建包容网关节点
      */
-    public static NodeDecl inclusiveOf(String id) {
-        return new NodeDecl(id, NodeType.INCLUSIVE);
+    public static NodeSpec inclusiveOf(String id) {
+        return new NodeSpec(id, NodeType.INCLUSIVE);
     }
 
     /**
      * 构建排他网关节点
      */
-    public static NodeDecl exclusiveOf(String id) {
-        return new NodeDecl(id, NodeType.EXCLUSIVE);
+    public static NodeSpec exclusiveOf(String id) {
+        return new NodeSpec(id, NodeType.EXCLUSIVE);
     }
 
     /**
      * 构建并行网关节点
      */
-    public static NodeDecl parallelOf(String id) {
-        return new NodeDecl(id, NodeType.PARALLEL);
+    public static NodeSpec parallelOf(String id) {
+        return new NodeSpec(id, NodeType.PARALLEL);
     }
 
     /**
      * 构建循环网关节点
      */
-    public static NodeDecl loopingOf(String id) {
-        return new NodeDecl(id, NodeType.LOOP);
+    public static NodeSpec loopingOf(String id) {
+        return new NodeSpec(id, NodeType.LOOP);
     }
 
     /**
@@ -241,7 +241,7 @@ public class NodeDecl {
      * @deprecated 3.6 {@link #loopingOf(String)}
      */
     @Deprecated
-    public static NodeDecl iteratorOf(String id) {
+    public static NodeSpec iteratorOf(String id) {
         return loopingOf(id);
     }
 
@@ -261,7 +261,7 @@ public class NodeDecl {
         return meta;
     }
 
-    public List<LinkDecl> getLinks() {
+    public List<LinkSpec> getLinks() {
         return links;
     }
 

@@ -23,7 +23,7 @@ public class ComJavaTest {
 
         SimpleFlowDriver driver = new SimpleFlowDriver() {
             @Override
-            public void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
+            public void handleTask(FlowExchanger exchanger, TaskDesc task) throws Throwable {
                 exchanger.context().put("result", task.getNode().getId());
                 if (task.getNode().getId().equals("n3")) {
                     exchanger.interrupt();

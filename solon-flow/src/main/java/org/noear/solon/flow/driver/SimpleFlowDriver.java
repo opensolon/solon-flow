@@ -53,7 +53,7 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
      * @param task      任务
      */
     @Override
-    public void handleTask(FlowExchanger exchanger, Task task) throws Throwable {
+    public void handleTask(FlowExchanger exchanger, TaskDesc task) throws Throwable {
         postHandleTask(exchanger, task);
     }
 

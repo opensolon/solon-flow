@@ -68,7 +68,7 @@ public enum TaskState {
     /**
      * 根据代码构建
      */
-    public static TaskState byOp(TaskAction op) {
+    public static TaskState fromAction(TaskAction op) {
         switch (op) {
             case BACK:
             case BACK_JUMP:

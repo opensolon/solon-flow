@@ -20,9 +20,9 @@ public class LinkTest {
     public void case1() {
         List<Link> links = new ArrayList<>();
 
-        links.add(new Link(null, "n1", new LinkDecl("n2").priority(1)));
-        links.add(new Link(null, "n1", new LinkDecl("n3").priority(3)));
-        links.add(new Link(null, "n1", new LinkDecl("n4").priority(2)));
+        links.add(new Link(null, "n1", new LinkSpec("n2").priority(1)));
+        links.add(new Link(null, "n1", new LinkSpec("n3").priority(3)));
+        links.add(new Link(null, "n1", new LinkSpec("n4").priority(2)));
 
         Collections.sort(links);
 
@@ -47,8 +47,8 @@ public class LinkTest {
         //-----
 
         //动态构建图，并执行
-        Graph graph = new GraphDecl("c1").create(decl -> {
-            decl.addNode(NodeDecl.activityOf("n1").task("@DemoCom"));
+        Graph graph = new GraphSpec("c1").create(decl -> {
+            decl.addNode(NodeSpec.activityOf("n1").task("@DemoCom"));
         });
 
         engine.eval(graph, "n1");
@@ -57,7 +57,7 @@ public class LinkTest {
     @Test
     public void testLinkRemove() {
         // 创建节点并添加多个连接
-        NodeDecl node = new NodeDecl("n1", NodeType.ACTIVITY);
+        NodeSpec node = new NodeSpec("n1", NodeType.ACTIVITY);
         node.linkAdd("n2");
         node.linkAdd("n3");
         node.linkAdd("n4");
@@ -99,11 +99,11 @@ public class LinkTest {
         engine.register(flowDriver);
 
         // 动态构建图，包含多个连接
-        GraphDecl graph = new GraphDecl("test-graph").then(decl -> {
-            decl.addNode(NodeDecl.activityOf("n1").task("@DemoCom"));
-            decl.addNode(NodeDecl.activityOf("n2").task("@DemoCom"));
-            decl.addNode(NodeDecl.activityOf("n3").task("@DemoCom"));
-            decl.addNode(NodeDecl.activityOf("n4").task("@DemoCom"));
+        GraphSpec graph = new GraphSpec("test-graph").then(decl -> {
+            decl.addNode(NodeSpec.activityOf("n1").task("@DemoCom"));
+            decl.addNode(NodeSpec.activityOf("n2").task("@DemoCom"));
+            decl.addNode(NodeSpec.activityOf("n3").task("@DemoCom"));
+            decl.addNode(NodeSpec.activityOf("n4").task("@DemoCom"));
 
             // n1 连接到 n2, n3, n4
             decl.getNode("n1").linkAdd("n2");
@@ -112,7 +112,7 @@ public class LinkTest {
         });
 
         // 验证初始状态
-        NodeDecl n1 = graph.getNodes().values().stream()
+        NodeSpec n1 = graph.getNodes().values().stream()
                 .filter(n -> "n1".equals(n.getId()))
                 .findFirst()
                 .orElse(null);
