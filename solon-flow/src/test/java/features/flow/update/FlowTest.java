@@ -12,13 +12,13 @@ public class FlowTest {
     @Test
     public void json() {
         //加鉴
-        Graph graph = new GraphSpec("c1").create(spec -> {
+        Graph graph = new GraphSpec("c1").then(spec -> {
             spec.addNode(NodeSpec.startOf("s1"));
             spec.addNode(NodeSpec.parallelOf("p1").linkAdd("n1").linkAdd("n2"));
             spec.addNode(NodeSpec.activityOf("n1").linkAdd("e1"));
             spec.addNode(NodeSpec.activityOf("n2").linkAdd("e1"));
             spec.addNode(NodeSpec.endOf("e1"));
-        });
+        }).create();
 
         String oldJson = graph.toJson();
         System.out.println(oldJson);
@@ -28,10 +28,10 @@ public class FlowTest {
         System.out.println("---------------------");
 
         //------------------
-        Graph graph2 = GraphSpec.fromText(oldJson).create(spec -> {
+        Graph graph2 = GraphSpec.fromText(oldJson).then(spec -> {
             spec.addNode(NodeSpec.parallelOf("p1").linkAdd("n1").linkAdd("n2").linkAdd("n3"));
             spec.addNode(NodeSpec.activityOf("n3").linkAdd("e1"));
-        });
+        }).create();
 
         String newJson = graph2.toJson();
         System.out.println(newJson);
@@ -42,13 +42,13 @@ public class FlowTest {
     @Test
     public void yaml() {
         //加鉴
-        Graph graph = new GraphSpec("c1").create(spec -> {
+        Graph graph = new GraphSpec("c1").then(spec -> {
             spec.addNode(NodeSpec.startOf("s1"));
             spec.addNode(NodeSpec.parallelOf("p1").linkAdd("n1").linkAdd("n2"));
             spec.addNode(NodeSpec.activityOf("n1").linkAdd("e1"));
             spec.addNode(NodeSpec.activityOf("n2").linkAdd("e1"));
             spec.addNode(NodeSpec.endOf("e1"));
-        });
+        }).create();
 
         String oldJson = graph.toYaml();
         System.out.println(oldJson);
@@ -56,10 +56,10 @@ public class FlowTest {
         System.out.println("---------------------");
 
         //------------------
-        Graph graph2 = GraphSpec.fromText(oldJson).create(spec -> {
+        Graph graph2 = GraphSpec.fromText(oldJson).then(spec -> {
             spec.addNode(NodeSpec.parallelOf("p1").linkAdd("n1").linkAdd("n2").linkAdd("n3"));
             spec.addNode(NodeSpec.activityOf("n3").linkAdd("e1"));
-        });
+        }).create();
 
 
         String newJson = graph2.toYaml();

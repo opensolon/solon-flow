@@ -47,9 +47,9 @@ public class LinkTest {
         //-----
 
         //动态构建图，并执行
-        Graph graph = new GraphSpec("c1").create(spec -> {
+        Graph graph = new GraphSpec("c1").then(spec -> {
             spec.addNode(NodeSpec.activityOf("n1").task("@DemoCom"));
-        });
+        }).create();
 
         engine.eval(graph, "n1");
     }

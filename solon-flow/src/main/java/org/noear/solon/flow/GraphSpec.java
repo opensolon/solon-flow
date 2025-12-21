@@ -53,18 +53,13 @@ public class GraphSpec {
         this.driver = (driver == null ? "" : driver);
     }
 
-    public Graph create() {
-        return new Graph(this);
-    }
-
-    public Graph create(Consumer<GraphSpec> definition) {
-        definition.accept(this);
-        return create();
-    }
-
     public GraphSpec then(Consumer<GraphSpec> definition) {
         definition.accept(this);
         return this;
+    }
+
+    public Graph create() {
+        return new Graph(this);
     }
 
     /**
