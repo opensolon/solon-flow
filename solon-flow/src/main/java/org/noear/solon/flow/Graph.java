@@ -211,9 +211,9 @@ public class Graph {
      *
      * @since 3.7.4
      */
-    public static Graph copy(Graph graph, Consumer<GraphSpec> definition) {
+    public static Graph copy(Graph graph, Consumer<GraphSpec> modification) {
         GraphSpec spec = GraphSpec.copy(graph);
-        definition.accept(spec);
+        modification.accept(spec);
         return spec.create();
     }
 
