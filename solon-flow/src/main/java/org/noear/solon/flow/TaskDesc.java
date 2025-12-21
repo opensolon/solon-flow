@@ -18,16 +18,16 @@ package org.noear.solon.flow;
 import org.noear.solon.Utils;
 
 /**
- * 任务（表达式参考：'F,tag/fun1;R,tag/rule1'）
+ * 任务描述（表达式参考：'F,tag/fun1;R,tag/rule1'）
  *
  * @author noear
  * @since 3.0
  * */
-public class Task {
+public class TaskDesc {
     /**
      * 是否为非空
      */
-    public static boolean isNotEmpty(Task t) {
+    public static boolean isNotEmpty(TaskDesc t) {
         return t != null && t.isEmpty() == false;
     }
 
@@ -46,7 +46,7 @@ public class Task {
     /**
      * @param description 任务描述
      */
-    public Task(Node node, String description) {
+    public TaskDesc(Node node, String description) {
         this.node = node;
         this.description = description;
         this.component = null;
@@ -55,7 +55,7 @@ public class Task {
     /**
      * @param description 任务描述
      */
-    public Task(Node node, String description, TaskComponent component) {
+    public TaskDesc(Node node, String description, TaskComponent component) {
         this.node = node;
         this.description = description;
         this.component = component;
