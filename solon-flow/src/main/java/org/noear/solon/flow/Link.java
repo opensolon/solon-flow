@@ -95,8 +95,8 @@ public class Link implements Comparable<Link> {
     /**
      * 获取元数据或默认
      */
-    public Object getMetaOrDefault(String key, Object def) {
-        return metas.getOrDefault(key, def);
+    public <T> T getMetaOrDefault(String key, T def) {
+        return (T)metas.getOrDefault(key, def);
     }
 
     /**
