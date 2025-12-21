@@ -50,16 +50,16 @@ public class Node {
     protected Node(Graph graph, NodeSpec spec, List<Link> links) {
         this.graph = graph;
 
-        this.id = spec.id;
-        this.title = spec.title;
-        this.type = spec.type;
-        this.when = new ConditionDesc(graph, spec.when, spec.whenComponent);
-        this.task = new TaskDesc(this, spec.task, spec.taskComponent);
+        this.id = spec.getId();
+        this.title = spec.getTitle();
+        this.type = spec.getType();
+        this.when = new ConditionDesc(graph, spec.getWhen(), spec.getWhenComponent());
+        this.task = new TaskDesc(this, spec.getTask(), spec.getTaskComponent());
 
-        if (spec.meta == null || spec.meta.size() == 0) {
+        if (spec.getMeta() == null || spec.getMeta().size() == 0) {
             this.metas = Collections.emptyMap();
         } else {
-            this.metas = Collections.unmodifiableMap(new LinkedHashMap<>(spec.meta));
+            this.metas = Collections.unmodifiableMap(new LinkedHashMap<>(spec.getMeta()));
         }
 
         if (links == null || links.size() == 0) {

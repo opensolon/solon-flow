@@ -33,11 +33,11 @@ import java.util.function.Consumer;
  */
 @Preview("3.5")
 public class GraphSpec {
-    protected final String id;
-    protected final String title;
-    protected final String driver;
-    protected final Map<String, Object> meta = new LinkedHashMap<>(); //元数据
-    protected final Map<String, NodeSpec> nodes = new LinkedHashMap<>();
+    private final String id;
+    private final String title;
+    private final String driver;
+    private final Map<String, Object> meta = new LinkedHashMap<>(); //元数据
+    private final Map<String, NodeSpec> nodes = new LinkedHashMap<>();
 
     public GraphSpec(String id) {
         this(id, null, null);
@@ -78,8 +78,8 @@ public class GraphSpec {
     /**
      * 添加节点（或替换）
      */
-    public void addNode(NodeSpec nodeDecl) {
-        nodes.put(nodeDecl.id, nodeDecl);
+    public void addNode(NodeSpec nodeSpec) {
+        nodes.put(nodeSpec.getId(), nodeSpec);
     }
 
     /**
@@ -140,12 +140,12 @@ public class GraphSpec {
         String title = dom.get("title").getString();
         String driver = dom.get("driver").getString();
 
-        GraphSpec graphDecl = new GraphSpec(id, title, driver);
+        GraphSpec spec = new GraphSpec(id, title, driver);
 
         //元数据
         Map metaTmp = dom.get("meta").toBean(Map.class);
         if (Utils.isNotEmpty(metaTmp)) {
-            graphDecl.meta.putAll(metaTmp);
+            spec.meta.putAll(metaTmp);
         }
 
         //节点（倒序加载，方便自动构建 link）
@@ -158,7 +158,7 @@ public class GraphSpec {
             layoutTmp = dom.get("nodes").getArray();
         }
 
-        List<NodeSpec> nodeDeclList = new ArrayList<>();
+        List<NodeSpec> nodeSpecList = new ArrayList<>();
         NodeSpec nodesLat = null;
         for (int i = layoutTmp.size(); i > 0; i--) {
             ONode n1 = layoutTmp.get(i - 1);
@@ -172,12 +172,12 @@ public class GraphSpec {
             String n1_typeStr = n1.get("type").getString();
             NodeType n1_type = NodeType.nameOf(n1_typeStr);
 
-            NodeSpec nodeDecl = new NodeSpec(n1_id, n1_type);
+            NodeSpec nodeSpec = new NodeSpec(n1_id, n1_type);
 
-            nodeDecl.title(n1.get("title").getString());
-            nodeDecl.meta(n1.get("meta").toBean(Map.class));
-            nodeDecl.when(n1.get("when").getString());
-            nodeDecl.task(n1.get("task").getString());
+            nodeSpec.title(n1.get("title").getString());
+            nodeSpec.meta(n1.get("meta").toBean(Map.class));
+            nodeSpec.when(n1.get("when").getString());
+            nodeSpec.task(n1.get("task").getString());
 
 
             ONode linkNode = n1.get("link");
@@ -186,42 +186,42 @@ public class GraphSpec {
                 for (ONode l1 : linkNode.getArrayUnsafe()) {
                     if (l1.isObject()) {
                         //对象模式
-                        addLink(nodeDecl, l1);
+                        addLink(nodeSpec, l1);
                     } else if (l1.isValue()) {
                         //单值模式
-                        nodeDecl.linkAdd(l1.getString());
+                        nodeSpec.linkAdd(l1.getString());
                     }
                 }
             } else if (linkNode.isObject()) {
                 //对象模式（单个）
-                addLink(nodeDecl, linkNode);
+                addLink(nodeSpec, linkNode);
             } else if (linkNode.isValue()) {
                 //单值模式（单个）
-                nodeDecl.linkAdd(linkNode.getString());
+                nodeSpec.linkAdd(linkNode.getString());
             } else if (linkNode.isNull()) {
                 //自动构建：如果没有时，生成 link
                 if (nodesLat != null) {
-                    nodeDecl.linkAdd(nodesLat.id);
+                    nodeSpec.linkAdd(nodesLat.getId());
                 }
             }
 
-            nodesLat = nodeDecl;
-            nodeDeclList.add(nodeDecl);
+            nodesLat = nodeSpec;
+            nodeSpecList.add(nodeSpec);
         }
 
         //倒排加入图
-        for (int i = nodeDeclList.size(); i > 0; i--) {
-            graphDecl.addNode(nodeDeclList.get(i - 1));
+        for (int i = nodeSpecList.size(); i > 0; i--) {
+            spec.addNode(nodeSpecList.get(i - 1));
         }
 
 
-        return graphDecl;
+        return spec;
     }
 
     /**
      * 添加连接
      */
-    private static void addLink(NodeSpec nodeDecl, ONode l1) {
+    private static void addLink(NodeSpec nodeSpec, ONode l1) {
         //支持 when 简写条件
         final String whenStr;
         if (l1.hasKey("when")) {
@@ -231,7 +231,7 @@ public class GraphSpec {
             whenStr = l1.get("condition").getString();
         }
 
-        nodeDecl.linkAdd(l1.get("nextId").getString(), ld -> ld
+        nodeSpec.linkAdd(l1.get("nextId").getString(), ld -> ld
                 .title(l1.get("title").getString())
                 .meta(l1.get("meta").toBean(Map.class))
                 .when(whenStr));
@@ -329,17 +329,6 @@ public class GraphSpec {
      * 构建循环网关节点
      *
      * @since 3.7
-     * @deprecated 3.7 {{@link #addLoop(String)}}
-     */
-    @Deprecated
-    public NodeSpec addLooping(String id) {
-        return addLoop(id);
-    }
-
-    /**
-     * 构建循环网关节点
-     *
-     * @since 3.7
      */
     public NodeSpec addLoop(String id) {
         NodeSpec decl = new NodeSpec(id, NodeType.LOOP);
@@ -394,30 +383,30 @@ public class GraphSpec {
             Map<String, Object> domNode = new LinkedHashMap<>();
             domNodes.add(domNode);
 
-            domNode.put("id", node.id);
-            domNode.put("type", node.type.toString().toLowerCase());
+            domNode.put("id", node.getId());
+            domNode.put("type", node.getType().toString().toLowerCase());
 
-            if (Utils.isNotEmpty(node.title)) {
-                domNode.put("title", node.title);
+            if (Utils.isNotEmpty(node.getTitle())) {
+                domNode.put("title", node.getTitle());
             }
 
-            if (Utils.isNotEmpty(node.meta)) {
-                domNode.put("meta", node.meta);
+            if (Utils.isNotEmpty(node.getMeta())) {
+                domNode.put("meta", node.getMeta());
             }
 
-            if (Utils.isNotEmpty(node.when)) {
-                domNode.put("when", node.when);
+            if (Utils.isNotEmpty(node.getWhen())) {
+                domNode.put("when", node.getWhen());
             }
 
-            if (Utils.isNotEmpty(node.task)) {
-                domNode.put("task", node.task);
+            if (Utils.isNotEmpty(node.getTask())) {
+                domNode.put("task", node.getTask());
             }
 
-            if (Utils.isNotEmpty(node.links)) {
+            if (Utils.isNotEmpty(node.getLinks())) {
                 List<Map<String, Object>> domLinks = new ArrayList<>();
                 domNode.put("link", domLinks);
 
-                for (LinkSpec link : node.links) {
+                for (LinkSpec link : node.getLinks()) {
                     Map<String, Object> domLink = new LinkedHashMap<>();
                     domLinks.add(domLink);
 

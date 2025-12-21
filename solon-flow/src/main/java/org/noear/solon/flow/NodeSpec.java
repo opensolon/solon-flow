@@ -27,15 +27,15 @@ import java.util.function.Consumer;
  * @since 3.0
  */
 public class NodeSpec {
-    protected final String id;
-    protected String title;
-    protected NodeType type;      //元素类型
-    protected final Map<String, Object> meta = new LinkedHashMap<>(); //元数据
-    protected List<LinkSpec> links = new ArrayList<>();
-    protected String when;
-    protected ConditionComponent whenComponent;
-    protected String task;
-    protected TaskComponent taskComponent;
+    private final String id;
+    private String title;
+    private NodeType type;      //元素类型
+    private final Map<String, Object> meta = new LinkedHashMap<>(); //元数据
+    private final List<LinkSpec> links = new ArrayList<>();
+    private String when;
+    private ConditionComponent whenComponent;
+    private String task;
+    private TaskComponent taskComponent;
 
 
     /// //////////////
@@ -85,11 +85,11 @@ public class NodeSpec {
      * @param nextId 下个节点Id
      */
     public NodeSpec linkAdd(String nextId, Consumer<LinkSpec> configure) {
-        LinkSpec linkDecl = new LinkSpec(nextId);
+        LinkSpec linkSpec = new LinkSpec(nextId);
         if (configure != null) {
-            configure.accept(linkDecl);
+            configure.accept(linkSpec);
         }
-        this.links.add(linkDecl);
+        this.links.add(linkSpec);
         return this;
     }
 
@@ -230,20 +230,13 @@ public class NodeSpec {
 
     /**
      * 构建循环网关节点
+     *
+     * @since 3.8
      */
-    public static NodeSpec loopingOf(String id) {
+    public static NodeSpec loopOf(String id) {
         return new NodeSpec(id, NodeType.LOOP);
     }
 
-    /**
-     * 构建循环网关节点
-     * 
-     * @deprecated 3.6 {@link #loopingOf(String)}
-     */
-    @Deprecated
-    public static NodeSpec iteratorOf(String id) {
-        return loopingOf(id);
-    }
 
     public String getId() {
         return id;

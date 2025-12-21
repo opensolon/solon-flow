@@ -42,25 +42,25 @@ public class Graph {
     private transient Node start;
 
     protected Graph(GraphSpec spec) {
-        this.id = spec.id;
-        this.title = spec.title;
-        this.driver = spec.driver;
+        this.id = spec.getId();
+        this.title = spec.getTitle();
+        this.driver = spec.getDriver();
 
-        Map<String, Node> nodeMap = new LinkedHashMap<>(spec.nodes.size());
-        List<Link> linkAry = new ArrayList<>(spec.nodes.size());
+        Map<String, Node> nodeMap = new LinkedHashMap<>(spec.getNodes().size());
+        List<Link> linkAry = new ArrayList<>(spec.getNodes().size());
 
         //倒排加入图
-        for (Map.Entry<String, NodeSpec> kv : spec.nodes.entrySet()) {
+        for (Map.Entry<String, NodeSpec> kv : spec.getNodes().entrySet()) {
             doAddNode(kv.getValue(), nodeMap, linkAry);
         }
 
         //正排加入图
         this.nodes = Collections.unmodifiableMap(nodeMap);
         this.links = Collections.unmodifiableList(linkAry);
-        if (spec.meta == null) {
+        if (spec.getMeta() == null) {
             this.metas = Collections.emptyMap();
         } else {
-            this.metas = Collections.unmodifiableMap(spec.meta);
+            this.metas = Collections.unmodifiableMap(spec.getMeta());
         }
 
         //校验结构
@@ -167,17 +167,17 @@ public class Graph {
     /**
      * 添加节点
      */
-    private void doAddNode(NodeSpec nodeDecl, Map<String, Node> nodeMap, List<Link> linkAry) {
-        List<Link> tmp = new ArrayList<>(nodeDecl.links.size());
-        for (LinkSpec linkSpec : nodeDecl.links) {
-            tmp.add(new Link(this, nodeDecl.id, linkSpec));
+    private void doAddNode(NodeSpec nodeSpec, Map<String, Node> nodeMap, List<Link> linkAry) {
+        List<Link> tmp = new ArrayList<>(nodeSpec.getLinks().size());
+        for (LinkSpec linkSpec : nodeSpec.getLinks()) {
+            tmp.add(new Link(this, nodeSpec.getId(), linkSpec));
         }
 
         linkAry.addAll(tmp);
 
-        Node node = new Node(this, nodeDecl, tmp);
+        Node node = new Node(this, nodeSpec, tmp);
         nodeMap.put(node.getId(), node);
-        if (nodeDecl.type == NodeType.START) {
+        if (nodeSpec.getType() == NodeType.START) {
             start = node;
         }
     }
