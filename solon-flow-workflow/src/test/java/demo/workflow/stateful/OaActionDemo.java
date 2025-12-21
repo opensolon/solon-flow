@@ -14,10 +14,9 @@ import org.noear.solon.flow.workflow.WorkflowService;
  * @author noear 2025/3/28 created
  */
 public class OaActionDemo {
-    WorkflowService workflow = WorkflowService.of(FlowEngine.newInstance(), WorkflowDriver.builder()
-            .stateController(new ActorStateController())
-            .stateRepository(new InMemoryStateRepository())
-            .build());
+    WorkflowService workflow = WorkflowService.of(FlowEngine.newInstance(),
+            new ActorStateController(),
+            new InMemoryStateRepository());
 
     String instanceId = "i1"; //审批实例id
 

@@ -32,12 +32,15 @@ import java.util.concurrent.locks.ReentrantLock;
 @Preview("3.4")
 public class WorkflowServiceDefault implements WorkflowService {
     private final transient FlowEngine engine;
-    private final transient WorkflowDriver driver;
+    private final StateController stateController;
+    private final StateRepository stateRepository;
+
     private final transient ReentrantLock LOCKER = new ReentrantLock();
 
-    public WorkflowServiceDefault(FlowEngine engine, WorkflowDriver driver) {
+    public WorkflowServiceDefault(FlowEngine engine, StateController stateController, StateRepository stateRepository) {
         this.engine = engine;
-        this.driver = driver;
+        this.stateController = stateController;
+        this.stateRepository = stateRepository;
     }
 
     /// ////////////////////////////////
@@ -45,6 +48,11 @@ public class WorkflowServiceDefault implements WorkflowService {
     @Override
     public FlowEngine engine() {
         return engine;
+    }
+
+
+    private FlowDriver getDriver(Graph graph) {
+        return new WorkflowDriver(engine.getDriver(graph), stateController, stateRepository);
     }
 
 
@@ -99,6 +107,8 @@ public class WorkflowServiceDefault implements WorkflowService {
 
     @Override
     public void postTask(Node node, TaskAction action, FlowContext context) {
+        FlowDriver driver = getDriver(node.getGraph());
+
         LOCKER.lock();
 
         try {
@@ -132,7 +142,7 @@ public class WorkflowServiceDefault implements WorkflowService {
             }
         } else if (action == TaskAction.RESTART) {
             //撤回全部（重新开始）
-            driver.getStateRepository().stateClear(exchanger.context());
+            stateRepository.stateClear(exchanger.context());
         } else if (action == TaskAction.FORWARD) {
             //前进
             forwardHandle(node, exchanger, newState);
@@ -149,7 +159,7 @@ public class WorkflowServiceDefault implements WorkflowService {
             }
         } else {
             //其它（等待或通过或拒绝）
-            driver.getStateRepository().statePut(exchanger.context(), node, newState);
+            stateRepository.statePut(exchanger.context(), node, newState);
         }
     }
 
@@ -173,12 +183,14 @@ public class WorkflowServiceDefault implements WorkflowService {
      */
     @Override
     public Collection<Task> getTasks(Graph graph, FlowContext context) {
+        FlowDriver driver = getDriver(graph);
         FlowExchanger exchanger = new FlowExchanger(engine, driver, context);
 
-        exchanger.temporary().vars().put(Task.KEY_ACTIVITY_LIST_GET, true);
+        exchanger.temporary().vars().put(WorkflowDriver.KEY_ACTIVITY_LIST_GET, true);
 
         engine.eval(graph, graph.getStart(), -1, exchanger);
-        Collection<Task> tmp = (Collection<Task>) exchanger.temporary().vars().get(Task.KEY_ACTIVITY_LIST);
+        Collection<Task> tmp = (Collection<Task>) exchanger.temporary().vars()
+                .get(WorkflowDriver.KEY_ACTIVITY_LIST);
 
         if (tmp == null) {
             return Collections.emptyList();
@@ -204,15 +216,16 @@ public class WorkflowServiceDefault implements WorkflowService {
      */
     @Override
     public Task getTask(Graph graph, FlowContext context) {
+        FlowDriver driver = getDriver(graph);
         FlowExchanger exchanger = new FlowExchanger(engine, driver, context);
 
         engine.eval(graph, graph.getStart(), -1, exchanger);
-        return (Task) exchanger.temporary().vars().get(Task.KEY_ACTIVITY_NODE);
+        return (Task) exchanger.temporary().vars().get(WorkflowDriver.KEY_ACTIVITY_NODE);
     }
 
     @Override
     public TaskState getState(Node node, FlowContext context) {
-        return driver.getStateRepository().stateGet(context, node);
+        return stateRepository.stateGet(context, node);
     }
 
     @Override
@@ -223,7 +236,7 @@ public class WorkflowServiceDefault implements WorkflowService {
 
     @Override
     public void clearState(Graph graph, FlowContext context) {
-        driver.getStateRepository().stateClear(context);
+        stateRepository.stateClear(context);
     }
 
     /// ////////////////////////////////
@@ -235,8 +248,8 @@ public class WorkflowServiceDefault implements WorkflowService {
     protected void forwardHandle(Node node, FlowExchanger exchanger, TaskState newState) {
         //如果是完成或跳过，则向前流动
         try {
-            driver.postHandleTask(exchanger, node.getTask());
-            driver.getStateRepository().statePut(exchanger.context(), node, newState);
+            exchanger.driver().postHandleTask(exchanger, node.getTask());
+            stateRepository.statePut(exchanger.context(), node, newState);
 
             //重新查找下一个可执行节点（可能为自动前进）
             Node nextNode = node.getNextNode();
@@ -253,9 +266,9 @@ public class WorkflowServiceDefault implements WorkflowService {
                 }
 
                 if (nextNode != null) {
-                    if (driver.getStateController().isAutoForward(exchanger.context(), nextNode)) {
+                    if (stateController.isAutoForward(exchanger.context(), nextNode)) {
                         //如果要自动前进
-                        engine.eval(nextNode.getGraph(), nextNode, -1, new FlowExchanger(engine, driver, exchanger.context()));
+                        engine.eval(nextNode.getGraph(), nextNode, -1, new FlowExchanger(engine, exchanger.driver(), exchanger.context()));
                     }
                 }
             }
@@ -275,12 +288,12 @@ public class WorkflowServiceDefault implements WorkflowService {
         for (Node n1 : node.getPrevNodes()) {
             //移除状态（要求重来）
             if (n1.getType() == NodeType.ACTIVITY) {
-                driver.getStateRepository().stateRemove(exchanger.context(), n1);
+                stateRepository.stateRemove(exchanger.context(), n1);
             } else if (NodeType.isGateway(n1.getType())) {
                 //回退所有子节点
                 for (Node n2 : n1.getNextNodes()) {
                     if (n2.getType() == NodeType.ACTIVITY) {
-                        driver.getStateRepository().stateRemove(exchanger.context(), n2);
+                        stateRepository.stateRemove(exchanger.context(), n2);
                     }
                 }
                 //再到前一级

@@ -29,10 +29,6 @@ import org.noear.solon.lang.Preview;
  * @since 3.1
  */
 public class Task {
-    public static final String KEY_ACTIVITY_NODE = "ACTIVITY_NODE";
-    public static final String KEY_ACTIVITY_LIST = "ACTIVITY_LIST";
-    public static final String KEY_ACTIVITY_LIST_GET = "ACTIVITY_LIST_GET";
-
     private transient final FlowExchanger exchanger;
     private transient final Node node;
     private transient final TaskState state;
