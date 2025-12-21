@@ -27,7 +27,7 @@ public class OaActionDemo {
      */
     public Graph getGraph(String instanceId) {
         String graphJson = ""; //从持久层查询
-        return Graph.parseByText(graphJson);
+        return Graph.fromText(graphJson);
     }
 
     /**

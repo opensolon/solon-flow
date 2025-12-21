@@ -23,14 +23,14 @@ public class ScriptJsonTest {
 
     @Test
     public void case1_demo() throws Throwable {
-        Graph graph = Graph.parseByUri("classpath:flow/script_case1.graph.json");
+        Graph graph = Graph.fromUri("classpath:flow/script_case1.graph.json");
 
         flowEngine.eval(graph);
     }
 
     @Test
     public void case2_interrupt() throws Throwable {
-        Graph graph = Graph.parseByUri("classpath:flow/script_case2.graph.json");
+        Graph graph = Graph.fromUri("classpath:flow/script_case2.graph.json");
 
         FlowContext context = FlowContext.of();
         context.put("a", 2);
@@ -45,7 +45,7 @@ public class ScriptJsonTest {
 
     @Test
     public void case2_interrupt2() throws Throwable {
-        Graph graph = Graph.parseByUri("classpath:flow/script_case2.graph.json");
+        Graph graph = Graph.fromUri("classpath:flow/script_case2.graph.json");
 
         FlowContext context = FlowContext.of();
         context.put("a", 12);
@@ -59,7 +59,7 @@ public class ScriptJsonTest {
 
     @Test
     public void case3_exclusive() throws Throwable {
-        Graph graph = Graph.parseByUri("classpath:flow/script_case3.graph.json");
+        Graph graph = Graph.fromUri("classpath:flow/script_case3.graph.json");
 
         FlowContext context = FlowContext.of();
         context.put("day", 1);
@@ -79,7 +79,7 @@ public class ScriptJsonTest {
 
     @Test
     public void case4_inclusive() throws Throwable {
-        Graph graph = Graph.parseByUri("classpath:flow/script_case4.graph.json");
+        Graph graph = Graph.fromUri("classpath:flow/script_case4.graph.json");
 
         FlowContext context = FlowContext.of();
         context.put("day", 1);
@@ -94,7 +94,7 @@ public class ScriptJsonTest {
 
     @Test
     public void case4_inclusive2() throws Throwable {
-        Graph graph = Graph.parseByUri("classpath:flow/script_case4.graph.json");
+        Graph graph = Graph.fromUri("classpath:flow/script_case4.graph.json");
 
         FlowContext context = FlowContext.of();
         context.put("day", 7);
@@ -104,7 +104,7 @@ public class ScriptJsonTest {
 
     @Test
     public void case5_parallel() throws Throwable {
-        Graph graph = Graph.parseByUri("classpath:flow/script_case5.graph.yml");
+        Graph graph = Graph.fromUri("classpath:flow/script_case5.graph.yml");
 
         FlowContext context = FlowContext.of();
         context.put("day", 7);
@@ -114,7 +114,7 @@ public class ScriptJsonTest {
 
     @Test
     public void case8() throws Throwable {
-        Graph graph = Graph.parseByUri("classpath:flow/script_case8.graph.yml");
+        Graph graph = Graph.fromUri("classpath:flow/script_case8.graph.yml");
 
         FlowContext context = FlowContext.of();
         context.put("result", 1);
@@ -124,7 +124,7 @@ public class ScriptJsonTest {
 
     @Test
     public void case9_parallel_async() throws Throwable {
-        Graph graph = Graph.parseByUri("classpath:flow/script_case9.graph.yml");
+        Graph graph = Graph.fromUri("classpath:flow/script_case9.graph.yml");
 
         FlowContext context = FlowContext.of();
         context.executor(Executors.newFixedThreadPool(4));

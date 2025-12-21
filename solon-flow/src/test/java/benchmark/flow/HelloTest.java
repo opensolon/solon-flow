@@ -13,14 +13,14 @@ public class HelloTest {
     public void parse1() {
         //预热
         for (int i = 0; i < 10; i++) {
-            Graph.parseByText(case1_yml);
+            Graph.fromText(case1_yml);
         }
 
         //测试
         int count = 10_000; //flow(on macbook): 1.2s 跑完
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
-            Graph.parseByText(case1_yml);
+            Graph.fromText(case1_yml);
         }
         long time1 = System.currentTimeMillis() - start;
         System.out.println("parse1:" + time1);
@@ -30,7 +30,7 @@ public class HelloTest {
     @Test
     public void case1() {
         FlowEngine flowEngine = FlowEngine.newInstance();
-        flowEngine.load(Graph.parseByText(case1_yml));
+        flowEngine.load(Graph.fromText(case1_yml));
 
         FlowContext context = FlowContext.of();
         context.put("a", 3);
@@ -73,7 +73,7 @@ public class HelloTest {
     @Test
     public void case2() {
         FlowEngine flowEngine = FlowEngine.newInstance();
-        flowEngine.load(Graph.parseByText(case2_yml));
+        flowEngine.load(Graph.fromText(case2_yml));
 
         //预热
         for (int i = 0; i < 10; i++) {

@@ -35,22 +35,26 @@
 * 调整 `solon-flow` Condition 更名为 ConditionDesc
 * 调整 `solon-flow` Task 更名为 ConditionDesc
 * 调整 `solon-flow` XxxDecl 命名风格改为 XxxSpec
+* 调整 `solon-flow` GraphDecl.parseByXxx 命名风格改为 GraphSpec.fromXxx
+* 调整 `solon-flow` Graph.parseByXxx 命名风格改为 Graph.fromXxx
 
 
 兼容变化对照表：
 
-| 旧名称                      | 新名称                            | 说明                           |  
-|--------------------------|--------------------------------|------------------------------|
-| `GraphDecl`              | `GraphSpec`                    | 图定义                          |
-| `LinkDecl`               | `LinkSpec`                     | 连接定义                         |
-| `NodeDecl`               | `NodeSpec`                     | 节点定义                         |
-| `Condition`              | `ConditionDesc`                | 条件描述                         |
-| `Task`                   | `TaskDesc`                     | 任务描述（避免与 workflow 的概念冲突） |
-|                          |                                |                              |
-| `FlowStatefulService`    | `WorkflowService`              | 工作流服务                        |
-| `StatefulTask`           | `Task`                         | 任务                           | 
-| `Operation`              | `TaskAction`                   | 任动工作                         | 
-| `TaskType`               | `TaskState`                    | 任务状态                         | 
+| 旧名称                    | 新名称                   | 说明                    |  
+|------------------------|-----------------------|-----------------------|
+| `GraphDecl`            | `GraphSpec`           | 图定义                   |
+| `GraphDecl.parseByXxx` | `GraphSpec.fromXxx`   | 图定义加载                    |
+| `Graph.parseByXxx`     | `Graph.fromXxx`       | 图加载                   |
+| `LinkDecl`             | `LinkSpec`            | 连接定义                  |
+| `NodeDecl`             | `NodeSpec`            | 节点定义                  |
+| `Condition`            | `ConditionDesc`       | 条件描述                  |
+| `Task`                 | `TaskDesc`            | 任务描述（避免与 workflow 的概念冲突） |
+|                        |                       |                       |
+| `FlowStatefulService`  | `WorkflowService`     | 工作流服务                 |
+| `StatefulTask`         | `Task`                | 任务                    | 
+| `Operation`            | `TaskAction`          | 任动工作                  | 
+| `TaskType`             | `TaskState`           | 任务状态                  | 
 
 
 FlowStatefulService 到 WorkflowService 的接口变化对照表：

@@ -28,7 +28,7 @@ public class FlowTest {
         System.out.println("---------------------");
 
         //------------------
-        Graph graph2 = GraphSpec.parseByText(oldJson).create(decl -> {
+        Graph graph2 = GraphSpec.fromText(oldJson).create(decl -> {
             decl.addNode(NodeSpec.parallelOf("p1").linkAdd("n1").linkAdd("n2").linkAdd("n3"));
             decl.addNode(NodeSpec.activityOf("n3").linkAdd("e1"));
         });
@@ -56,7 +56,7 @@ public class FlowTest {
         System.out.println("---------------------");
 
         //------------------
-        Graph graph2 = GraphSpec.parseByText(oldJson).create(decl -> {
+        Graph graph2 = GraphSpec.fromText(oldJson).create(decl -> {
             decl.addNode(NodeSpec.parallelOf("p1").linkAdd("n1").linkAdd("n2").linkAdd("n3"));
             decl.addNode(NodeSpec.activityOf("n3").linkAdd("e1"));
         });

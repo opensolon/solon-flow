@@ -23,7 +23,7 @@ public class FlowTest {
 
         FlowEngine flow = FlowEngine.newInstance();
         flow.register(new SimpleFlowDriver(mapContainer));
-        flow.load(Graph.parseByUri("classpath:flow/flow_case8.graph.yml"));
+        flow.load(Graph.fromUri("classpath:flow/flow_case8.graph.yml"));
 
         FlowContext context = FlowContext.of();
         context.put("log", new ArrayList<>());
@@ -52,7 +52,7 @@ public class FlowTest {
     @Test
     public void for_case1() throws Throwable {
         FlowEngine flow = FlowEngine.newInstance();
-        flow.load(Graph.parseByUri("classpath:flow/for_case1.graph.yml"));
+        flow.load(Graph.fromUri("classpath:flow/for_case1.graph.yml"));
 
         FlowContext context = FlowContext.of();
 

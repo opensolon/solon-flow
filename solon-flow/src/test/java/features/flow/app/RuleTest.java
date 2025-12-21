@@ -34,7 +34,7 @@ public class RuleTest {
     @Test
     public void case2() throws Throwable {
         FlowEngine flowEngine = FlowEngine.newInstance();
-        flowEngine.load(Graph.parseByUri("classpath:flow/rule/bookDiscount.yml"));
+        flowEngine.load(Graph.fromUri("classpath:flow/rule/bookDiscount.yml"));
 
         BookOrder bookOrder = new BookOrder();
         bookOrder.setOriginalPrice(120);
@@ -51,7 +51,7 @@ public class RuleTest {
     @Test
     public void case4() throws Throwable {
         FlowEngine flowEngine = FlowEngine.newInstance();//支持无状态
-        flowEngine.load(Graph.parseByUri("classpath:flow/rule/bookDiscount.yml"));
+        flowEngine.load(Graph.fromUri("classpath:flow/rule/bookDiscount.yml"));
 
         BookOrder bookOrder = new BookOrder();
         bookOrder.setOriginalPrice(500);

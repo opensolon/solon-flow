@@ -19,7 +19,7 @@ public class ComJsonTest {
         SimpleSolonApp solonApp = new SimpleSolonApp(ComJsonTest.class);
         solonApp.start(null);
 
-        Graph graph = Graph.parseByUri("classpath:flow/com.graph.json");
+        Graph graph = Graph.fromUri("classpath:flow/com.graph.json");
 
         FlowContext context = FlowContext.of();
         context.put("a", 2);

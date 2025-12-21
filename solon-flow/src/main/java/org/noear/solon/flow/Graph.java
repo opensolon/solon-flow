@@ -220,8 +220,8 @@ public class Graph {
     /**
      * 解析配置文件
      */
-    public static Graph parseByUri(String uri) {
-        return GraphSpec.parseByUri(uri).create();
+    public static Graph fromUri(String uri) {
+        return GraphSpec.fromUri(uri).create();
     }
 
     /**
@@ -229,8 +229,8 @@ public class Graph {
      *
      * @param text 配置文本（支持 yml, json 格式）
      */
-    public static Graph parseByText(String text) {
-        return GraphSpec.parseByText(text).create();
+    public static Graph fromText(String text) {
+        return GraphSpec.fromText(text).create();
     }
 
     /// /////////////

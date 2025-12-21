@@ -108,10 +108,10 @@ public interface FlowEngine {
     default void load(String graphUri) {
         if (graphUri.contains("*")) {
             for (String u1 : ResourceUtil.scanResources(graphUri)) {
-                load(Graph.parseByUri(u1));
+                load(Graph.fromUri(u1));
             }
         } else {
-            load(Graph.parseByUri(graphUri));
+            load(Graph.fromUri(graphUri));
         }
     }
 

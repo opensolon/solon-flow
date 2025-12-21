@@ -99,14 +99,14 @@ public class GraphSpec {
      * 复制
      */
     public static GraphSpec copy(Graph graph) {
-        return parseByText(graph.toJson());
+        return fromText(graph.toJson());
     }
 
 
     /**
      * 解析配置文件
      */
-    public static GraphSpec parseByUri(String uri) {
+    public static GraphSpec fromUri(String uri) {
         URL url = ResourceUtil.findResource(uri, false);
         if (url == null) {
             throw new IllegalArgumentException("Can't find resource: " + uri);
@@ -114,7 +114,7 @@ public class GraphSpec {
 
         if (uri.endsWith(".json") || uri.endsWith(".yml") || uri.endsWith(".yaml")) {
             try {
-                return parseByText(ResourceUtil.getResourceAsString(url));
+                return fromText(ResourceUtil.getResourceAsString(url));
             } catch (Throwable ex) {
                 throw new IllegalArgumentException("Failed to load resource: " + url, ex);
             }
@@ -128,9 +128,9 @@ public class GraphSpec {
      *
      * @param text 配置文本（支持 yml, json 格式）
      */
-    public static GraphSpec parseByText(String text) {
+    public static GraphSpec fromText(String text) {
         Object dom = new Yaml().load(text);
-        return parseByDom(ONode.ofBean(dom));
+        return fromDom(ONode.ofBean(dom));
     }
 
     /**
@@ -138,7 +138,7 @@ public class GraphSpec {
      *
      * @param dom 配置文档模型
      */
-    public static GraphSpec parseByDom(ONode dom) {
+    public static GraphSpec fromDom(ONode dom) {
         String id = dom.get("id").getString();
         String title = dom.get("title").getString();
         String driver = dom.get("driver").getString();
