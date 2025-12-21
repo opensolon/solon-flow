@@ -76,7 +76,7 @@ public enum TaskState {
             case FORWARD:
             case FORWARD_JUMP:
                 return COMPLETED;
-            case TERMINATED:
+            case TERMINATE:
                 return TERMINATED;
             default:
                 return UNKNOWN;

@@ -5,7 +5,6 @@ import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.workflow.TaskAction;
 import org.noear.solon.flow.workflow.Task;
-import org.noear.solon.flow.workflow.WorkflowDriver;
 import org.noear.solon.flow.workflow.controller.ActorStateController;
 import org.noear.solon.flow.workflow.repository.InMemoryStateRepository;
 import org.noear.solon.flow.workflow.WorkflowService;
@@ -20,19 +19,13 @@ public class OaActionDemo {
 
     String instanceId = "i1"; //审批实例id
 
-    /**
-     * 获取实例对应的流程图
-     *
-     */
+    //获取实例对应的流程图
     public Graph getGraph(String instanceId) {
         String graphJson = ""; //从持久层查询
         return Graph.fromText(graphJson);
     }
 
-    /**
-     * 更新实例对应的流程图
-     *
-     */
+    //更新实例对应的流程图
     public void setGraph(String instanceId, Graph graph) {
         String graphJson = graph.toJson();
         //更新到持久层
@@ -156,7 +149,7 @@ public class OaActionDemo {
         Task task = workflow.getTask(graph, context);
 
         context.put("op", "中止");//作为状态的一部分
-        workflow.postTask(graph, task.getNodeId(), TaskAction.TERMINATED, context);
+        workflow.postTask(graph, task.getNodeId(), TaskAction.TERMINATE, context);
     }
 
     //抄送

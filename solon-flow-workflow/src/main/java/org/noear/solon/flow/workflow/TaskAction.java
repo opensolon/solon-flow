@@ -45,7 +45,7 @@ public enum TaskAction {
     /**
      * 终止（取消）
      */
-    TERMINATED(1030), //=>state: TERMINATED
+    TERMINATE(1030), //=>state: TERMINATED
     /**
      * 重新开始
      */
@@ -76,7 +76,7 @@ public enum TaskAction {
             case 1021:
                 return FORWARD_JUMP;
             case 1030:
-                return TERMINATED;
+                return TERMINATE;
             case 1040:
                 return RESTART;
             default:
