@@ -39,32 +39,34 @@
 
 兼容变化对照表：
 
-| 旧名称                      | 新名称                            | 说明                            |  
-|--------------------------|--------------------------------|-------------------------------|
-| `GraphDecl`              | `GraphSpec`                    | 图定义                           |
-| `LinkDecl`               | `LinkSpec`                     | 连接定义                          |
-| `NodeDecl`               | `NodeSpec`                     | 节点定义                          |
-| `Condition`              | `ConditionDesc`                | 条件描述                          |
-| `Task`                   | `TaskDesc`                     | 任务描述（可避免与 workflow 的概念冲突） |
-|                          |                                |                               |
-| `FlowStatefulService`    | `WorkflowService`              | 工作流服务                         |
-| `StatefulTask`           | `Task`                         | 任务                            | 
-| `Operation`              | `TaskAction`                   | 任动工作                          | 
-| `TaskType`               | `TaskState`                    | 任务状态                          | 
-|                          |                                |                               |
-| `Evaluation.runTest(..)` | `Evaluation.runCondition(..)`  | 运行条件                          |
+| 旧名称                      | 新名称                            | 说明                           |  
+|--------------------------|--------------------------------|------------------------------|
+| `GraphDecl`              | `GraphSpec`                    | 图定义                          |
+| `LinkDecl`               | `LinkSpec`                     | 连接定义                         |
+| `NodeDecl`               | `NodeSpec`                     | 节点定义                         |
+| `Condition`              | `ConditionDesc`                | 条件描述                         |
+| `Task`                   | `TaskDesc`                     | 任务描述（避免与 workflow 的概念冲突） |
+|                          |                                |                              |
+| `FlowStatefulService`    | `WorkflowService`              | 工作流服务                        |
+| `StatefulTask`           | `Task`                         | 任务                           | 
+| `Operation`              | `TaskAction`                   | 任动工作                         | 
+| `TaskType`               | `TaskState`                    | 任务状态                         | 
+|                          |                                |                              |
+| `Evaluation.runTest(..)` | `Evaluation.runCondition(..)`  | 运行条件                         |
 
 
 FlowStatefulService 到 WorkflowService 的接口变化对照表：
 
-| 旧名称                          | 新名称                       | 说明     |  
-|------------------------------|---------------------------|--------|
-| `postOperation(..)`          | `postTask(..)`            | 提交任务   |
-| `postOperationIfWaiting(..)` | `postTaskIfWaiting(..)`   | 提交任务   |
-|                              |                           |        |
-| `evel(..)`                   | /                         | 执行     |
-| `stepForward(..)`            | /                         | 单步前进   |
-| `stepBack(..)`               | /                         | 单步后退   |
+| 旧名称                          | 新名称                     | 说明     |  
+|------------------------------|-------------------------|--------|
+| `postOperation(..)`          | `postTask(..)`          | 提交任务   |
+| `postOperationIfWaiting(..)` | `postTaskIfWaiting(..)` | 提交任务   |
+|                              |                         |        |
+| `evel(..)`                   | /                       | 执行     |
+| `stepForward(..)`            | /                       | 单步前进   |
+| `stepBack(..)`               | /                       | 单步后退   |
+|                              |                         |        |
+| /                            | `getState(..)`          | 获取状态   |
 
 
 
