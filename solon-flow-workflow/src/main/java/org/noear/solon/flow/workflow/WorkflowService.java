@@ -60,60 +60,60 @@ public interface WorkflowService {
     /**
      * 提交操作（如果当前任务为等待介入）
      *
-     * @param graphId   图id
-     * @param nodeId    节点id
-     * @param operation 操作
-     * @param context   流上下文
+     * @param graphId 图id
+     * @param nodeId  节点id
+     * @param action  动作
+     * @param context 流上下文
      */
-    boolean postTaskIfWaiting(String graphId, String nodeId, TaskAction operation, FlowContext context);
+    boolean postTaskIfWaiting(String graphId, String nodeId, TaskAction action, FlowContext context);
 
     /**
      * 提交操作（如果当前任务为等待介入）
      *
-     * @param graph     图
-     * @param nodeId    节点id
-     * @param operation 操作
-     * @param context   流上下文
+     * @param graph   图
+     * @param nodeId  节点id
+     * @param action  动作
+     * @param context 流上下文
      */
-    boolean postTaskIfWaiting(Graph graph, String nodeId, TaskAction operation, FlowContext context);
+    boolean postTaskIfWaiting(Graph graph, String nodeId, TaskAction action, FlowContext context);
 
     /**
      * 提交操作（如果当前任务为等待介入）
      *
-     * @param node      节点
-     * @param operation 操作
-     * @param context   流上下文
+     * @param node    节点
+     * @param action  动作
+     * @param context 流上下文
      */
-    boolean postTaskIfWaiting(Node node, TaskAction operation, FlowContext context);
+    boolean postTaskIfWaiting(Node node, TaskAction action, FlowContext context);
 
     /**
      * 提交操作
      *
-     * @param graphId   图id
-     * @param nodeId    节点id
-     * @param operation 操作
-     * @param context   流上下文
+     * @param graphId 图id
+     * @param nodeId  节点id
+     * @param action  动作
+     * @param context 流上下文
      */
-    void postTask(String graphId, String nodeId, TaskAction operation, FlowContext context);
+    void postTask(String graphId, String nodeId, TaskAction action, FlowContext context);
 
     /**
      * 提交操作
      *
-     * @param graph     图
-     * @param nodeId    节点id
-     * @param operation 操作
-     * @param context   流上下文
+     * @param graph   图
+     * @param nodeId  节点id
+     * @param action  动作
+     * @param context 流上下文
      */
-    void postTask(Graph graph, String nodeId, TaskAction operation, FlowContext context);
+    void postTask(Graph graph, String nodeId, TaskAction action, FlowContext context);
 
     /**
      * 提交操作
      *
-     * @param node      节点
-     * @param operation 操作
-     * @param context   流上下文
+     * @param node    节点
+     * @param action  动作
+     * @param context 流上下文
      */
-    void postTask(Node node, TaskAction operation, FlowContext context);
+    void postTask(Node node, TaskAction action, FlowContext context);
 
 
     /// ////////////////////////////////

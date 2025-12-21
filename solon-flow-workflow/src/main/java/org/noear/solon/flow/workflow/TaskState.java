@@ -68,8 +68,8 @@ public enum TaskState {
     /**
      * 根据代码构建
      */
-    public static TaskState fromAction(TaskAction op) {
-        switch (op) {
+    public static TaskState fromAction(TaskAction action) {
+        switch (action) {
             case BACK:
             case BACK_JUMP:
                 return WAITING;

@@ -37,10 +37,10 @@ public class DemoController {
 
     //操作提交
     @Mapping("post")
-    public void postFlow(Context ctx, String instanceId, String graphId, String nodeId, int operation) throws Throwable {
+    public void postFlow(Context ctx, String instanceId, String graphId, String nodeId, int action) throws Throwable {
         FlowContext context = FlowContext.of(instanceId);
         context.put("actor", ctx.param("actor"));
 
-        workflow.postTask(graphId, nodeId, TaskAction.codeOf(operation), context);
+        workflow.postTask(graphId, nodeId, TaskAction.codeOf(action), context);
     }
 }

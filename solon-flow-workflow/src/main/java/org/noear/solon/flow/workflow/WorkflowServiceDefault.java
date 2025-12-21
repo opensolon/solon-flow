@@ -56,19 +56,19 @@ public class WorkflowServiceDefault implements WorkflowService {
      * 提交操作（如果当前节点为等待介入）
      */
     @Override
-    public boolean postTaskIfWaiting(String graphId, String nodeId, TaskAction operation, FlowContext context) {
+    public boolean postTaskIfWaiting(String graphId, String nodeId, TaskAction action, FlowContext context) {
         Node node = engine.getGraphOrThrow(graphId).getNodeOrThrow(nodeId);
-        return postTaskIfWaiting(node, operation, context);
+        return postTaskIfWaiting(node, action, context);
     }
 
     @Override
-    public boolean postTaskIfWaiting(Graph graph, String nodeId, TaskAction operation, FlowContext context) {
+    public boolean postTaskIfWaiting(Graph graph, String nodeId, TaskAction action, FlowContext context) {
         Node node = graph.getNodeOrThrow(nodeId);
-        return postTaskIfWaiting(node, operation, context);
+        return postTaskIfWaiting(node, action, context);
     }
 
     @Override
-    public boolean postTaskIfWaiting(Node node, TaskAction operation, FlowContext context) {
+    public boolean postTaskIfWaiting(Node node, TaskAction action, FlowContext context) {
         Task statefulTask = getTask(node.getGraph(), context);
         if (statefulTask == null) {
             return false;
@@ -82,46 +82,46 @@ public class WorkflowServiceDefault implements WorkflowService {
             return false;
         }
 
-        postTask(statefulTask.getNode(), operation, context);
+        postTask(statefulTask.getNode(), action, context);
 
         return true;
     }
 
     @Override
-    public void postTask(String graphId, String nodeId, TaskAction operation, FlowContext context) {
+    public void postTask(String graphId, String nodeId, TaskAction action, FlowContext context) {
         Node node = engine.getGraphOrThrow(graphId).getNodeOrThrow(nodeId);
-        postTask(node, operation, context);
+        postTask(node, action, context);
     }
 
     @Override
-    public void postTask(Graph graph, String nodeId, TaskAction operation, FlowContext context) {
+    public void postTask(Graph graph, String nodeId, TaskAction action, FlowContext context) {
         Node node = graph.getNodeOrThrow(nodeId);
-        postTask(node, operation, context);
+        postTask(node, action, context);
     }
 
     @Override
-    public void postTask(Node node, TaskAction operation, FlowContext context) {
+    public void postTask(Node node, TaskAction action, FlowContext context) {
         LOCKER.lock();
 
         try {
-            postTaskDo(new FlowExchanger(engine, driver, context), node, operation);
+            postTaskDo(new FlowExchanger(engine, driver, context), node, action);
         } finally {
             LOCKER.unlock();
         }
     }
 
-    protected void postTaskDo(FlowExchanger exchanger, Node node, TaskAction operation) {
-        if (operation == TaskAction.UNKNOWN) {
+    protected void postTaskDo(FlowExchanger exchanger, Node node, TaskAction action) {
+        if (action == TaskAction.UNKNOWN) {
             throw new IllegalArgumentException("StateOperation is UNKNOWN");
         }
 
-        TaskState newState = TaskState.fromAction(operation);
+        TaskState newState = TaskState.fromAction(action);
 
         //更新状态
-        if (operation == TaskAction.BACK) {
+        if (action == TaskAction.BACK) {
             //后退
             backHandle(node, exchanger);
-        } else if (operation == TaskAction.BACK_JUMP) {
+        } else if (action == TaskAction.BACK_JUMP) {
             //跳转后退
             while (true) {
                 Task statefulNode = getTask(node.getGraph(), exchanger.context());
@@ -132,13 +132,13 @@ public class WorkflowServiceDefault implements WorkflowService {
                     break;
                 }
             }
-        } else if (operation == TaskAction.RESTART) {
+        } else if (action == TaskAction.RESTART) {
             //撤回全部（重新开始）
             driver.getStateRepository().stateClear(exchanger.context());
-        } else if (operation == TaskAction.FORWARD) {
+        } else if (action == TaskAction.FORWARD) {
             //前进
             forwardHandle(node, exchanger, newState);
-        } else if (operation == TaskAction.FORWARD_JUMP) {
+        } else if (action == TaskAction.FORWARD_JUMP) {
             //跳转前进
             while (true) {
                 Task task = getTask(node.getGraph(), exchanger.context());
