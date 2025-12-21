@@ -51,8 +51,6 @@
 | `StatefulTask`           | `Task`                         | 任务                           | 
 | `Operation`              | `TaskAction`                   | 任动工作                         | 
 | `TaskType`               | `TaskState`                    | 任务状态                         | 
-|                          |                                |                              |
-| `Evaluation.runTest(..)` | `Evaluation.runCondition(..)`  | 运行条件                         |
 
 
 FlowStatefulService 到 WorkflowService 的接口变化对照表：
@@ -96,7 +94,7 @@ flowEngine.eval(graph, context.lastNodeId(), context);
 ```
 
 
-新特性预览：WorkflowService（原名 FlowStatefulService）
+新特性预览：WorkflowService（替代 FlowStatefulService）
 
 ```java
 WorkflowService workflow = WorkflowService.of(engine, WorkflowDriver.builder()
