@@ -19,16 +19,16 @@ import org.noear.solon.Utils;
 
 
 /**
- * 条件（一般用于分支条件）
+ * 条件描述（一般用于分支条件）
  *
  * @author noear
  * @since 3.0
  * */
-public class Condition {
+public class ConditionDesc {
     /**
      * 是否为非空
      */
-    public static boolean isNotEmpty(Condition c) {
+    public static boolean isNotEmpty(ConditionDesc c) {
         return c != null && c.isEmpty() == false;
     }
 
@@ -44,7 +44,7 @@ public class Condition {
     /**
      * @param description 条件描述
      */
-    public Condition(Graph graph, String description) {
+    public ConditionDesc(Graph graph, String description) {
         this.graph = graph;
         this.description = description;
         this.component = null;
@@ -53,7 +53,7 @@ public class Condition {
     /**
      * @param description 条件描述
      */
-    public Condition(Graph graph, String description, ConditionComponent component) {
+    public ConditionDesc(Graph graph, String description, ConditionComponent component) {
         this.graph = graph;
         this.description = description;
         this.component = component;
