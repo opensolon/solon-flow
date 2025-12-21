@@ -15,10 +15,8 @@
  */
 package org.noear.solon.flow.workflow;
 
-import org.noear.snack4.ONode;
 import org.noear.solon.flow.*;
 import org.noear.solon.lang.Preview;
-import org.yaml.snakeyaml.Yaml;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
@@ -213,6 +211,11 @@ public class WorkflowServiceDefault implements WorkflowService {
     }
 
     @Override
+    public TaskState getState(Node node, FlowContext context) {
+        return driver.getStateRepository().stateGet(context, node);
+    }
+
+    @Override
     public void clearState(String graphId, FlowContext context) {
         this.clearState(engine.getGraphOrThrow(graphId), context);
     }
@@ -284,41 +287,5 @@ public class WorkflowServiceDefault implements WorkflowService {
                 backHandle(n1, exchanger);
             }
         }
-    }
-
-    /// ////////
-
-    /**
-     * 转为 yaml
-     */
-    public String getGraphYaml(Graph graph, FlowContext context) {
-        return new Yaml().dump(buildDom(graph, context));
-    }
-
-    /**
-     * 转为 json
-     */
-    public String getGraphJson(Graph graph, FlowContext context) {
-        return ONode.serialize(buildDom(graph, context));
-    }
-
-
-    protected Map<String, Object> buildDom(Graph graph, FlowContext context) {
-        Map<String, Object> domRoot = graph.toMap();
-
-        if (context != null) {
-            //输出节点状态（方便前图标注进度）
-            Map<String, String> domStateful = new LinkedHashMap<>();
-            domRoot.put("stateful", domStateful);
-
-            for (Map.Entry<String, Node> entry : graph.getNodes().entrySet()) {
-                TaskState type = driver.getStateRepository().stateGet(context, entry.getValue());
-                if (type != null && type != TaskState.UNKNOWN) {
-                    domStateful.put(entry.getKey(), type.toString());
-                }
-            }
-        }
-
-        return domRoot;
     }
 }

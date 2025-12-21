@@ -153,7 +153,12 @@ public interface WorkflowService {
     /// ////////////////////////////////
 
     /**
-     * 清空状态
+     * 获取状态
+     */
+    TaskState getState(Node node, FlowContext context);
+
+    /**
+     * 清空状态（主要方便测试）
      *
      * @param graphId 图id
      * @param context 流上下文
@@ -161,23 +166,10 @@ public interface WorkflowService {
     void clearState(String graphId, FlowContext context);
 
     /**
-     * 清空状态
+     * 清空状态（主要方便测试）
      *
      * @param graph   图
      * @param context 流上下文
      */
     void clearState(Graph graph, FlowContext context);
-
-
-    /// ////////////
-
-    /**
-     * 获取图 yaml（带节点状态）
-     */
-    String getGraphYaml(Graph graph, FlowContext context);
-
-    /**
-     * 获取图 json（带节点状态）
-     */
-    String getGraphJson(Graph graph, FlowContext context);
 }

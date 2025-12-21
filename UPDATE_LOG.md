@@ -6,8 +6,17 @@
 
 ### 3.8.0
 
+重要变化：
+
+* 取消“有状态”、“无状态”概念。
+* solon-flow 回归通用流程引擎（拨离“有状态”的概念）。
+* 新增 solon-flow-workflow 为工作流性质的封装（未来可能会有 dataflow 等）。
+
+
+具体更新：
+
 * 插件 `solon-flow` 第六次预览
-* 新增 `solon-flow-workflow` 插件（替代 FlowStatefulService 接口）
+* 新增 `solon-flow-workflow` 插件（由 FlowStatefulService 改造而来）
 * 添加 `solon-flow` FlowContext:lastNode() 方法（最后一个运行的节点）
 * 添加 `solon-flow` FlowContext:lastNodeId() 方法（最后一个运行的节点Id）
 * 添加 `solon-flow` Node.getMetaAs, Link.getMetaAs 方法
@@ -18,7 +27,7 @@
 * 添加 `solon-flow` GraphSpec:addLoop(id) 方法替代 addLooping（后者标为弃用）
 * 添加 `solon-flow` FlowEngine:eval(Graph, ..) 系列方法
 * 优化 `solon-flow` FlowEngine:eval(Node startNode) 处理，改为从 root 开始恢复到 start 再开始执行（恢复过程中，不会执行任务）
-* 调整 `solon-flow` Activity 节点预览属性 "$imode" 和 "$omode" 标为移除
+* 移除 `solon-flow` Activity 节点预览属性 "$imode" 和 "$omode" 
 * 调整 `solon-flow` Activity 节点流出改为自由模式（可以多线流出：无条件直接流出，有条件检测后流出）
 * 调整 `solon-flow` Node.getMeta 方法返回改为 Object 类型（并新增 getMetaAs）
 * 调整 `solon-flow` Evaluation:runTest 改为 runCondition
@@ -63,16 +72,16 @@ FlowStatefulService 到 WorkflowService 的接口变化对照表：
 
 ```java
 //硬编码
-Graph graph = Graph.create("demo1", "示例", decl -> {
-    decl.addStart("start").title("开始").linkAdd("01");
-    decl.addActivity("n1").task("@AaMetaProcessCom").linkAdd("end");
-    decl.addEnd("end").title("结束");
+Graph graph = Graph.create("demo1", "示例", spec -> {
+    spec.addStart("start").title("开始").linkAdd("01");
+    spec.addActivity("n1").task("@AaMetaProcessCom").linkAdd("end");
+    spec.addEnd("end").title("结束");
 });
 
 //修改
-Graph graphNew = Graph.copy(graph, decl -> {
-    decl.getNode("n1").linkRemove("end").linkAdd("n2"); //移掉 n1 连接；改为 n2 连接
-    decl.addActivity("n2").linkAdd("end");
+Graph graphNew = Graph.copy(graph, spec -> {
+    spec.getNode("n1").linkRemove("end").linkAdd("n2"); //移掉 n1 连接；改为 n2 连接
+    spec.addActivity("n2").linkAdd("end");
 });
 ```
 
@@ -88,22 +97,17 @@ flowEngine.eval(graph, context.lastNodeId(), context);
 新特性预览：WorkflowService（原名 FlowStatefulService）
 
 ```java
-//（定制上下文后）不需要 stateController, stateRepository
-Graph graph = engine.getGraph("g1");
-WorkflowService work = WorkflowService.of(engine, WorkflowDriver.builder()
-                .stateController(new ActorStateController()) 
+WorkflowService workflow = WorkflowService.of(engine, WorkflowDriver.builder()
+        .stateController(new ActorStateController()) 
         .stateRepository(new InMemoryStateRepository()) 
         .build());
 
 
 //1. 取出任务
-Task task = work.getTask(graph, context);
+Task task = workflow.getTask(graph, context);
 
 //2. 提交任务
-work.postTask(task.getNode(), TaskAction.FORWARD, context);
-
-//3. 输出节点状态（方便前端展示进度）
-String yaml = work.getGraphYaml(graph, context);
+workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
 ```
 
 ### 3.7.4

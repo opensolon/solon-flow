@@ -1,5 +1,6 @@
 package features.workflow.stateful;
 
+import demo.workflow.stateful.ExportUtil;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.FlowContext;
@@ -85,7 +86,7 @@ public class OaStatefulFlowTest {
 
         /// ////////////////
 
-        String yaml = workflow.getGraphYaml(graph, context);
+        String yaml = ExportUtil.toYaml(ExportUtil.buildGraphDom1(workflow,graph, context));
         System.out.println("------------");
         System.out.println(yaml);
         System.out.println("------------");
@@ -117,7 +118,7 @@ public class OaStatefulFlowTest {
 
         /// ////////////////
 
-        yaml = workflow.getGraphYaml(graph, context);
+        yaml = ExportUtil.toYaml(ExportUtil.buildGraphDom1(workflow,graph, context));
         System.out.println("------------");
         System.out.println(yaml);
         System.out.println("------------");
