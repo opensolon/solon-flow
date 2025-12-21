@@ -41,26 +41,26 @@ public class Graph {
     private transient final List<Link> links;
     private transient Node start;
 
-    protected Graph(GraphSpec decl) {
-        this.id = decl.id;
-        this.title = decl.title;
-        this.driver = decl.driver;
+    protected Graph(GraphSpec spec) {
+        this.id = spec.id;
+        this.title = spec.title;
+        this.driver = spec.driver;
 
-        Map<String, Node> nodeMap = new LinkedHashMap<>(decl.nodes.size());
-        List<Link> linkAry = new ArrayList<>(decl.nodes.size());
+        Map<String, Node> nodeMap = new LinkedHashMap<>(spec.nodes.size());
+        List<Link> linkAry = new ArrayList<>(spec.nodes.size());
 
         //倒排加入图
-        for (Map.Entry<String, NodeSpec> kv : decl.nodes.entrySet()) {
+        for (Map.Entry<String, NodeSpec> kv : spec.nodes.entrySet()) {
             doAddNode(kv.getValue(), nodeMap, linkAry);
         }
 
         //正排加入图
         this.nodes = Collections.unmodifiableMap(nodeMap);
         this.links = Collections.unmodifiableList(linkAry);
-        if (decl.meta == null) {
+        if (spec.meta == null) {
             this.metas = Collections.emptyMap();
         } else {
-            this.metas = Collections.unmodifiableMap(decl.meta);
+            this.metas = Collections.unmodifiableMap(spec.meta);
         }
 
         //校验结构
@@ -75,7 +75,7 @@ public class Graph {
         }
 
         if (start == null) {
-            throw new IllegalStateException("No start node found, graph: " + decl);
+            throw new IllegalStateException("No start node found, graph: " + spec);
         }
     }
 

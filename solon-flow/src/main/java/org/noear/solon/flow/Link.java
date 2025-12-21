@@ -39,19 +39,19 @@ public class Link implements Comparable<Link> {
     private transient final ConditionDesc when;
     private transient Node prevNode, nextNode;
 
-    public Link(Graph graph, String prevId, LinkSpec decl) {
+    public Link(Graph graph, String prevId, LinkSpec spec) {
         this.graph = graph;
         this.prevId = prevId;
 
-        this.nextId = decl.getNextId();
-        this.title = decl.getTitle();
-        this.priority = decl.getPriority();
-        this.when = new ConditionDesc(graph, decl.getWhen(), decl.getWhenComponent());
+        this.nextId = spec.getNextId();
+        this.title = spec.getTitle();
+        this.priority = spec.getPriority();
+        this.when = new ConditionDesc(graph, spec.getWhen(), spec.getWhenComponent());
 
-        if (decl.getMeta() == null) {
+        if (spec.getMeta() == null) {
             this.metas = Collections.emptyMap();
         } else {
-            this.metas = Collections.unmodifiableMap(new LinkedHashMap<>(decl.getMeta()));
+            this.metas = Collections.unmodifiableMap(new LinkedHashMap<>(spec.getMeta()));
         }
     }
 

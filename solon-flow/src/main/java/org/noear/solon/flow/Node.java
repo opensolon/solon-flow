@@ -47,19 +47,19 @@ public class Node {
      */
     public Object attachment;//如果做扩展解析，用作存储位；
 
-    protected Node(Graph graph, NodeSpec decl, List<Link> links) {
+    protected Node(Graph graph, NodeSpec spec, List<Link> links) {
         this.graph = graph;
 
-        this.id = decl.id;
-        this.title = decl.title;
-        this.type = decl.type;
-        this.when = new ConditionDesc(graph, decl.when, decl.whenComponent);
-        this.task = new TaskDesc(this, decl.task, decl.taskComponent);
+        this.id = spec.id;
+        this.title = spec.title;
+        this.type = spec.type;
+        this.when = new ConditionDesc(graph, spec.when, spec.whenComponent);
+        this.task = new TaskDesc(this, spec.task, spec.taskComponent);
 
-        if (decl.meta == null || decl.meta.size() == 0) {
+        if (spec.meta == null || spec.meta.size() == 0) {
             this.metas = Collections.emptyMap();
         } else {
-            this.metas = Collections.unmodifiableMap(new LinkedHashMap<>(decl.meta));
+            this.metas = Collections.unmodifiableMap(new LinkedHashMap<>(spec.meta));
         }
 
         if (links == null || links.size() == 0) {
