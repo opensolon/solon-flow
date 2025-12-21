@@ -57,10 +57,10 @@ public class ControlFlowTest {
     @Test
     public void case1() {
         //硬编码构建流图，方便测试
-        Graph graph = new GraphSpec("demo1").create(decl -> {
-            decl.addActivity("n1").task(new Draft()).linkAdd("n2");
-            decl.addActivity("n2").task(new Review()).linkAdd("n3");
-            decl.addActivity("n3").task(new Confirm());
+        Graph graph = new GraphSpec("demo1").create(spec -> {
+            spec.addActivity("n1").task(new Draft()).linkAdd("n2");
+            spec.addActivity("n2").task(new Review()).linkAdd("n3");
+            spec.addActivity("n3").task(new Confirm());
         });
 
         /// ////////////

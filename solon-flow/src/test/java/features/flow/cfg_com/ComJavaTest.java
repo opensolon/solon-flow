@@ -35,12 +35,12 @@ public class ComJavaTest {
 
         flowEngine.register(driver);
 
-        Graph graph = Graph.create("c1", decl -> {
-            decl.addStart("n1").linkAdd("n2");
-            decl.addActivity("n2").task("@a").linkAdd("n3");
-            decl.addActivity("n3").task("@b").linkAdd("n4");
-            decl.addActivity("n4").task("@c").linkAdd("n5");
-            decl.addEnd("n5");
+        Graph graph = Graph.create("c1", spec -> {
+            spec.addStart("n1").linkAdd("n2");
+            spec.addActivity("n2").task("@a").linkAdd("n3");
+            spec.addActivity("n3").task("@b").linkAdd("n4");
+            spec.addActivity("n4").task("@c").linkAdd("n5");
+            spec.addEnd("n5");
         });
 
 

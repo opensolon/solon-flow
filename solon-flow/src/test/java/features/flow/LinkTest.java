@@ -47,8 +47,8 @@ public class LinkTest {
         //-----
 
         //动态构建图，并执行
-        Graph graph = new GraphSpec("c1").create(decl -> {
-            decl.addNode(NodeSpec.activityOf("n1").task("@DemoCom"));
+        Graph graph = new GraphSpec("c1").create(spec -> {
+            spec.addNode(NodeSpec.activityOf("n1").task("@DemoCom"));
         });
 
         engine.eval(graph, "n1");
@@ -99,16 +99,16 @@ public class LinkTest {
         engine.register(flowDriver);
 
         // 动态构建图，包含多个连接
-        GraphSpec graph = new GraphSpec("test-graph").then(decl -> {
-            decl.addNode(NodeSpec.activityOf("n1").task("@DemoCom"));
-            decl.addNode(NodeSpec.activityOf("n2").task("@DemoCom"));
-            decl.addNode(NodeSpec.activityOf("n3").task("@DemoCom"));
-            decl.addNode(NodeSpec.activityOf("n4").task("@DemoCom"));
+        GraphSpec graph = new GraphSpec("test-graph").then(spec -> {
+            spec.addNode(NodeSpec.activityOf("n1").task("@DemoCom"));
+            spec.addNode(NodeSpec.activityOf("n2").task("@DemoCom"));
+            spec.addNode(NodeSpec.activityOf("n3").task("@DemoCom"));
+            spec.addNode(NodeSpec.activityOf("n4").task("@DemoCom"));
 
             // n1 连接到 n2, n3, n4
-            decl.getNode("n1").linkAdd("n2");
-            decl.getNode("n1").linkAdd("n3");
-            decl.getNode("n1").linkAdd("n4");
+            spec.getNode("n1").linkAdd("n2");
+            spec.getNode("n1").linkAdd("n3");
+            spec.getNode("n1").linkAdd("n4");
         });
 
         // 验证初始状态

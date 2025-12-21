@@ -151,10 +151,10 @@ solon-flow 兼容说明：
 solon-flow 硬编码更简便：
 
 ```java
-Graph graph = Graph.create("demo1", decl -> {
-    decl.addActivity("n1").task(new Draft()).linkAdd("n2");
-    decl.addActivity("n2").task(new Review()).linkAdd("n3");
-    decl.addActivity("n3").task(new Confirm());
+Graph graph = Graph.create("demo1", spec -> {
+    spec.addActivity("n1").task(new Draft()).linkAdd("n2");
+    spec.addActivity("n2").task(new Review()).linkAdd("n3");
+    spec.addActivity("n3").task(new Confirm());
 });
 ```
 
@@ -240,16 +240,16 @@ FlowContext context = FlowContext.of("1", stateController, stateRepository); //�
 
 
 //Chain 手动声明
-Chain chain = new ChainDecl("d3", "风控计算").create(decl->{
-            decl.addNode(NodeDecl.startOf("s").linkAdd("n2"));
-            decl.addNode(NodeDecl.activityOf("n1").title("基本信息评分").linkAdd("g1").task("@base_score"));
-            decl.addNode(NodeDecl.exclusiveOf("g1").title("分流")
+Chain chain = new ChainDecl("d3", "风控计算").create(spec->{
+            spec.addNode(NodeDecl.startOf("s").linkAdd("n2"));
+            spec.addNode(NodeDecl.activityOf("n1").title("基本信息评分").linkAdd("g1").task("@base_score"));
+            spec.addNode(NodeDecl.exclusiveOf("g1").title("分流")
                     .linkAdd("e", l -> l.title("优质用户（评分90以上）").condition("score > 90"))
                     .linkAdd("n2", l -> l.title("普通用户")) //没条件时，做为默认
             );
-            decl.addNode(NodeDecl.activityOf("n2").title("电商消费评分").linkAdd("n3").task("@ec_score"));
-            decl.addNode(NodeDecl.activityOf("n3").title("黑名单检测").linkAdd("e").task("@bl_score"));
-            decl.addNode(NodeDecl.endOf("e").task("."));
+            spec.addNode(NodeDecl.activityOf("n2").title("电商消费评分").linkAdd("n3").task("@ec_score"));
+            spec.addNode(NodeDecl.activityOf("n3").title("黑名单检测").linkAdd("e").task("@bl_score"));
+            spec.addNode(NodeDecl.endOf("e").task("."));
         });
 ```
 

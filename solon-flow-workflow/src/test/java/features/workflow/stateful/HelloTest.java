@@ -23,11 +23,11 @@ public class HelloTest {
         StateController stateController = new NotBlockStateController();
         StateRepository stateRepository = new InMemoryStateRepository();
 
-        Graph graph = Graph.create("c1", decl -> {
-            decl.addStart("n1").linkAdd("n2");
-            decl.addActivity("n2").task("System.out.println(\"hello world!\");").linkAdd("n3");
-            decl.addExclusive("n3").linkAdd("n4");
-            decl.addEnd("n4");
+        Graph graph = Graph.create("c1", spec -> {
+            spec.addStart("n1").linkAdd("n2");
+            spec.addActivity("n2").task("System.out.println(\"hello world!\");").linkAdd("n3");
+            spec.addExclusive("n3").linkAdd("n4");
+            spec.addEnd("n4");
         });
 
         Task task = WorkflowService.of(engine, stateController, stateRepository)

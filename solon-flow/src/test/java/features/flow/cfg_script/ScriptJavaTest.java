@@ -13,10 +13,10 @@ public class ScriptJavaTest {
 
     @Test
     public void case1() throws Throwable {
-        Graph graph = Graph.create("c1",decl -> {
-            decl.addStart("n1").linkAdd("n2");
-            decl.addActivity("n2").task("context.put(\"result\", 111 + a);").linkAdd("n3");
-            decl.addEnd("n2");
+        Graph graph = Graph.create("c1",spec -> {
+            spec.addStart("n1").linkAdd("n2");
+            spec.addActivity("n2").task("context.put(\"result\", 111 + a);").linkAdd("n3");
+            spec.addEnd("n2");
         });
 
         FlowContext context = FlowContext.of();

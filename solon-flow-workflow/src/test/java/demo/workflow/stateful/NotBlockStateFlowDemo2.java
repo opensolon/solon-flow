@@ -85,13 +85,13 @@ public class NotBlockStateFlowDemo2 {
     private Graph getGraph() {
         String task = "if(tag.equals(node.getId())){exchanger.interrupt();}";
 
-        Graph graph = Graph.create("tmp-" + System.currentTimeMillis(),decl->{
-            decl.addStart("s").linkAdd("n0");
-            decl.addActivity("n0").task(task).linkAdd("n1");
-            decl.addActivity("n1").task(task).linkAdd("n2");
-            decl.addActivity("n2").task(task).linkAdd("n3");
-            decl.addActivity("n3").task(task).linkAdd("e");
-            decl.addEnd("e");
+        Graph graph = Graph.create("tmp-" + System.currentTimeMillis(),spec->{
+            spec.addStart("s").linkAdd("n0");
+            spec.addActivity("n0").task(task).linkAdd("n1");
+            spec.addActivity("n1").task(task).linkAdd("n2");
+            spec.addActivity("n2").task(task).linkAdd("n3");
+            spec.addActivity("n3").task(task).linkAdd("e");
+            spec.addEnd("e");
         });
 
         return graph;

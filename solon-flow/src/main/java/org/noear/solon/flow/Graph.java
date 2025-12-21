@@ -190,9 +190,9 @@ public class Graph {
      * @since 3.7
      */
     public static Graph create(String id, Consumer<GraphSpec> definition) {
-        GraphSpec decl = new GraphSpec(id);
-        definition.accept(decl);
-        return decl.create();
+        GraphSpec spec = new GraphSpec(id);
+        definition.accept(spec);
+        return spec.create();
     }
 
     /**
@@ -201,9 +201,9 @@ public class Graph {
      * @since 3.7
      */
     public static Graph create(String id, String title, Consumer<GraphSpec> definition) {
-        GraphSpec decl = new GraphSpec(id, title);
-        definition.accept(decl);
-        return decl.create();
+        GraphSpec spec = new GraphSpec(id, title);
+        definition.accept(spec);
+        return spec.create();
     }
 
     /**
@@ -212,9 +212,9 @@ public class Graph {
      * @since 3.7.4
      */
     public static Graph copy(Graph graph, Consumer<GraphSpec> definition) {
-        GraphSpec decl = GraphSpec.copy(graph);
-        definition.accept(decl);
-        return decl.create();
+        GraphSpec spec = GraphSpec.copy(graph);
+        definition.accept(spec);
+        return spec.create();
     }
 
     /**

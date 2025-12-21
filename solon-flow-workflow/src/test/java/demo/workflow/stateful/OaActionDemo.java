@@ -176,11 +176,11 @@ public class OaActionDemo {
         Graph graph = getGraph(instanceId);
 
         String gatewayId = "g1";
-        Graph graphNew = Graph.copy(graph, decl -> {
+        Graph graphNew = Graph.copy(graph, spec -> {
             //添加节点
-            decl.addActivity("a3").linkAdd("b2");
+            spec.addActivity("a3").linkAdd("b2");
             //添加连接（加上 a3 节点）
-            decl.getNode(gatewayId).linkAdd("a3");
+            spec.getNode(gatewayId).linkAdd("a3");
         }); //复制
 
         //把新图，做为实例对应的流配置
@@ -192,11 +192,11 @@ public class OaActionDemo {
         Graph graph = getGraph(instanceId);
 
         String gatewayId = "g1";
-        Graph graphNew = Graph.copy(graph, decl -> {
+        Graph graphNew = Graph.copy(graph, spec -> {
             //添加节点
-            decl.removeNode("a3");
+            spec.removeNode("a3");
             //添加连接（加上 a3 节点）
-            decl.getNode(gatewayId).linkRemove("a3");
+            spec.getNode(gatewayId).linkRemove("a3");
         }); //复制
 
         //把新图，做为实例对应的流配置
