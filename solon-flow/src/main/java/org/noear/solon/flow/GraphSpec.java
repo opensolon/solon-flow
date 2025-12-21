@@ -90,150 +90,6 @@ public class GraphSpec {
 
     /// ///////////////////////////
 
-    /**
-     * 复制
-     */
-    public static GraphSpec copy(Graph graph) {
-        return fromText(graph.toJson());
-    }
-
-
-    /**
-     * 解析配置文件
-     */
-    public static GraphSpec fromUri(String uri) {
-        URL url = ResourceUtil.findResource(uri, false);
-        if (url == null) {
-            throw new IllegalArgumentException("Can't find resource: " + uri);
-        }
-
-        if (uri.endsWith(".json") || uri.endsWith(".yml") || uri.endsWith(".yaml")) {
-            try {
-                return fromText(ResourceUtil.getResourceAsString(url));
-            } catch (Throwable ex) {
-                throw new IllegalArgumentException("Failed to load resource: " + url, ex);
-            }
-        } else {
-            throw new IllegalArgumentException("File format is not supported: " + uri);
-        }
-    }
-
-    /**
-     * 解析配置文本
-     *
-     * @param text 配置文本（支持 yml, json 格式）
-     */
-    public static GraphSpec fromText(String text) {
-        Object dom = new Yaml().load(text);
-        return fromDom(ONode.ofBean(dom));
-    }
-
-    /**
-     * 解析配置文档模型
-     *
-     * @param dom 配置文档模型
-     */
-    public static GraphSpec fromDom(ONode dom) {
-        String id = dom.get("id").getString();
-        String title = dom.get("title").getString();
-        String driver = dom.get("driver").getString();
-
-        GraphSpec spec = new GraphSpec(id, title, driver);
-
-        //元数据
-        Map metaTmp = dom.get("meta").toBean(Map.class);
-        if (Utils.isNotEmpty(metaTmp)) {
-            spec.meta.putAll(metaTmp);
-        }
-
-        //节点（倒序加载，方便自动构建 link）
-        final List<ONode> layoutTmp;
-        if (dom.hasKey("layout")) {
-            //新用 layout
-            layoutTmp = dom.get("layout").getArray();
-        } else {
-            //弃用 v3.1
-            layoutTmp = dom.get("nodes").getArray();
-        }
-
-        List<NodeSpec> nodeSpecList = new ArrayList<>();
-        NodeSpec nodesLat = null;
-        for (int i = layoutTmp.size(); i > 0; i--) {
-            ONode n1 = layoutTmp.get(i - 1);
-
-            //自动构建：如果没有时，生成 id
-            String n1_id = n1.get("id").getString();
-            if (Utils.isEmpty(n1_id)) {
-                n1_id = "n-" + i;
-            }
-
-            String n1_typeStr = n1.get("type").getString();
-            NodeType n1_type = NodeType.nameOf(n1_typeStr);
-
-            NodeSpec nodeSpec = new NodeSpec(n1_id, n1_type);
-
-            nodeSpec.title(n1.get("title").getString());
-            nodeSpec.meta(n1.get("meta").toBean(Map.class));
-            nodeSpec.when(n1.get("when").getString());
-            nodeSpec.task(n1.get("task").getString());
-
-
-            ONode linkNode = n1.get("link");
-            if (linkNode.isArray()) {
-                //数组模式（多个）
-                for (ONode l1 : linkNode.getArrayUnsafe()) {
-                    if (l1.isObject()) {
-                        //对象模式
-                        addLink(nodeSpec, l1);
-                    } else if (l1.isValue()) {
-                        //单值模式
-                        nodeSpec.linkAdd(l1.getString());
-                    }
-                }
-            } else if (linkNode.isObject()) {
-                //对象模式（单个）
-                addLink(nodeSpec, linkNode);
-            } else if (linkNode.isValue()) {
-                //单值模式（单个）
-                nodeSpec.linkAdd(linkNode.getString());
-            } else if (linkNode.isNull()) {
-                //自动构建：如果没有时，生成 link
-                if (nodesLat != null) {
-                    nodeSpec.linkAdd(nodesLat.getId());
-                }
-            }
-
-            nodesLat = nodeSpec;
-            nodeSpecList.add(nodeSpec);
-        }
-
-        //倒排加入图
-        for (int i = nodeSpecList.size(); i > 0; i--) {
-            spec.addNode(nodeSpecList.get(i - 1));
-        }
-
-
-        return spec;
-    }
-
-    /**
-     * 添加连接
-     */
-    private static void addLink(NodeSpec nodeSpec, ONode l1) {
-        //支持 when 简写条件
-        final String whenStr;
-        if (l1.hasKey("when")) {
-            whenStr = l1.get("when").getString();
-        } else {
-            //弃用 v3.3
-            whenStr = l1.get("condition").getString();
-        }
-
-        nodeSpec.linkAdd(l1.get("nextId").getString(), ld -> ld
-                .title(l1.get("title").getString())
-                .meta(l1.get("meta").toBean(Map.class))
-                .when(whenStr));
-    }
 
     public String getId() {
         return id;
@@ -413,5 +269,152 @@ public class GraphSpec {
         }
 
         return domRoot;
+    }
+
+    /// ///////////
+
+    /**
+     * 复制
+     */
+    public static GraphSpec copy(Graph graph) {
+        return fromText(graph.toJson());
+    }
+
+
+    /**
+     * 解析配置文件
+     */
+    public static GraphSpec fromUri(String uri) {
+        URL url = ResourceUtil.findResource(uri, false);
+        if (url == null) {
+            throw new IllegalArgumentException("Can't find resource: " + uri);
+        }
+
+        if (uri.endsWith(".json") || uri.endsWith(".yml") || uri.endsWith(".yaml")) {
+            try {
+                return fromText(ResourceUtil.getResourceAsString(url));
+            } catch (Throwable ex) {
+                throw new IllegalArgumentException("Failed to load resource: " + url, ex);
+            }
+        } else {
+            throw new IllegalArgumentException("File format is not supported: " + uri);
+        }
+    }
+
+    /**
+     * 解析配置文本
+     *
+     * @param text 配置文本（支持 yml, json 格式）
+     */
+    public static GraphSpec fromText(String text) {
+        Object dom = new Yaml().load(text);
+        return fromDom(ONode.ofBean(dom));
+    }
+
+    /**
+     * 解析配置文档模型
+     *
+     * @param dom 配置文档模型
+     */
+    public static GraphSpec fromDom(ONode dom) {
+        String id = dom.get("id").getString();
+        String title = dom.get("title").getString();
+        String driver = dom.get("driver").getString();
+
+        GraphSpec spec = new GraphSpec(id, title, driver);
+
+        //元数据
+        Map metaTmp = dom.get("meta").toBean(Map.class);
+        if (Utils.isNotEmpty(metaTmp)) {
+            spec.meta.putAll(metaTmp);
+        }
+
+        //节点（倒序加载，方便自动构建 link）
+        final List<ONode> layoutTmp;
+        if (dom.hasKey("layout")) {
+            //新用 layout
+            layoutTmp = dom.get("layout").getArray();
+        } else {
+            //弃用 v3.1
+            layoutTmp = dom.get("nodes").getArray();
+        }
+
+        List<NodeSpec> nodeSpecList = new ArrayList<>();
+        NodeSpec nodesLat = null;
+        for (int i = layoutTmp.size(); i > 0; i--) {
+            ONode n1 = layoutTmp.get(i - 1);
+
+            //自动构建：如果没有时，生成 id
+            String n1_id = n1.get("id").getString();
+            if (Utils.isEmpty(n1_id)) {
+                n1_id = "n-" + i;
+            }
+
+            String n1_typeStr = n1.get("type").getString();
+            NodeType n1_type = NodeType.nameOf(n1_typeStr);
+
+            NodeSpec nodeSpec = new NodeSpec(n1_id, n1_type);
+
+            nodeSpec.title(n1.get("title").getString());
+            nodeSpec.meta(n1.get("meta").toBean(Map.class));
+            nodeSpec.when(n1.get("when").getString());
+            nodeSpec.task(n1.get("task").getString());
+
+
+            ONode linkNode = n1.get("link");
+            if (linkNode.isArray()) {
+                //数组模式（多个）
+                for (ONode l1 : linkNode.getArrayUnsafe()) {
+                    if (l1.isObject()) {
+                        //对象模式
+                        addLink(nodeSpec, l1);
+                    } else if (l1.isValue()) {
+                        //单值模式
+                        nodeSpec.linkAdd(l1.getString());
+                    }
+                }
+            } else if (linkNode.isObject()) {
+                //对象模式（单个）
+                addLink(nodeSpec, linkNode);
+            } else if (linkNode.isValue()) {
+                //单值模式（单个）
+                nodeSpec.linkAdd(linkNode.getString());
+            } else if (linkNode.isNull()) {
+                //自动构建：如果没有时，生成 link
+                if (nodesLat != null) {
+                    nodeSpec.linkAdd(nodesLat.getId());
+                }
+            }
+
+            nodesLat = nodeSpec;
+            nodeSpecList.add(nodeSpec);
+        }
+
+        //倒排加入图
+        for (int i = nodeSpecList.size(); i > 0; i--) {
+            spec.addNode(nodeSpecList.get(i - 1));
+        }
+
+
+        return spec;
+    }
+
+    /**
+     * 添加连接
+     */
+    private static void addLink(NodeSpec nodeSpec, ONode l1) {
+        //支持 when 简写条件
+        final String whenStr;
+        if (l1.hasKey("when")) {
+            whenStr = l1.get("when").getString();
+        } else {
+            //弃用 v3.3
+            whenStr = l1.get("condition").getString();
+        }
+
+        nodeSpec.linkAdd(l1.get("nextId").getString(), ld -> ld
+                .title(l1.get("title").getString())
+                .meta(l1.get("meta").toBean(Map.class))
+                .when(whenStr));
     }
 }

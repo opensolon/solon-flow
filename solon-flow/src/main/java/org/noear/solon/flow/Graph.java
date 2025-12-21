@@ -189,56 +189,6 @@ public class Graph {
         }
     }
 
-    /// ////////
-
-    /**
-     * 创建
-     *
-     * @since 3.7
-     */
-    public static Graph create(String id, Consumer<GraphSpec> definition) {
-        GraphSpec spec = new GraphSpec(id);
-        definition.accept(spec);
-        return spec.create();
-    }
-
-    /**
-     * 创建
-     *
-     * @since 3.7
-     */
-    public static Graph create(String id, String title, Consumer<GraphSpec> definition) {
-        GraphSpec spec = new GraphSpec(id, title);
-        definition.accept(spec);
-        return spec.create();
-    }
-
-    /**
-     * 复制
-     *
-     * @since 3.7.4
-     */
-    public static Graph copy(Graph graph, Consumer<GraphSpec> modification) {
-        GraphSpec spec = GraphSpec.copy(graph);
-        modification.accept(spec);
-        return spec.create();
-    }
-
-    /**
-     * 解析配置文件
-     */
-    public static Graph fromUri(String uri) {
-        return GraphSpec.fromUri(uri).create();
-    }
-
-    /**
-     * 解析配置文本
-     *
-     * @param text 配置文本（支持 yml, json 格式）
-     */
-    public static Graph fromText(String text) {
-        return GraphSpec.fromText(text).create();
-    }
 
     /// /////////////
 
@@ -333,5 +283,57 @@ public class Graph {
         }
 
         return domRoot;
+    }
+
+
+    /// ////////
+
+    /**
+     * 创建
+     *
+     * @since 3.7
+     */
+    public static Graph create(String id, Consumer<GraphSpec> definition) {
+        GraphSpec spec = new GraphSpec(id);
+        definition.accept(spec);
+        return spec.create();
+    }
+
+    /**
+     * 创建
+     *
+     * @since 3.7
+     */
+    public static Graph create(String id, String title, Consumer<GraphSpec> definition) {
+        GraphSpec spec = new GraphSpec(id, title);
+        definition.accept(spec);
+        return spec.create();
+    }
+
+    /**
+     * 复制
+     *
+     * @since 3.7.4
+     */
+    public static Graph copy(Graph graph, Consumer<GraphSpec> modification) {
+        GraphSpec spec = GraphSpec.copy(graph);
+        modification.accept(spec);
+        return spec.create();
+    }
+
+    /**
+     * 解析配置文件
+     */
+    public static Graph fromUri(String uri) {
+        return GraphSpec.fromUri(uri).create();
+    }
+
+    /**
+     * 解析配置文本
+     *
+     * @param text 配置文本（支持 yml, json 格式）
+     */
+    public static Graph fromText(String text) {
+        return GraphSpec.fromText(text).create();
     }
 }
