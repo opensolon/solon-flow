@@ -115,6 +115,13 @@ public class Graph {
     }
 
     /**
+     * 获取元数据
+     */
+    public <T> T getMetaAs(String key) {
+        return (T) metas.get(key);
+    }
+
+    /**
      * 获取元数据或默认
      */
     public Object getMetaOrDefault(String key, Object def) {
