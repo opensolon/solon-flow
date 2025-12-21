@@ -57,13 +57,13 @@ public class GraphSpec {
         return new Graph(this);
     }
 
-    public Graph create(Consumer<GraphSpec> declaration) {
-        declaration.accept(this);
+    public Graph create(Consumer<GraphSpec> definition) {
+        definition.accept(this);
         return create();
     }
 
-    public GraphSpec then(Consumer<GraphSpec> declaration) {
-        declaration.accept(this);
+    public GraphSpec then(Consumer<GraphSpec> definition) {
+        definition.accept(this);
         return this;
     }
 

@@ -189,9 +189,9 @@ public class Graph {
      *
      * @since 3.7
      */
-    public static Graph create(String id, Consumer<GraphSpec> consumer) {
+    public static Graph create(String id, Consumer<GraphSpec> definition) {
         GraphSpec decl = new GraphSpec(id);
-        consumer.accept(decl);
+        definition.accept(decl);
         return decl.create();
     }
 
@@ -200,9 +200,9 @@ public class Graph {
      *
      * @since 3.7
      */
-    public static Graph create(String id, String title, Consumer<GraphSpec> consumer) {
+    public static Graph create(String id, String title, Consumer<GraphSpec> definition) {
         GraphSpec decl = new GraphSpec(id, title);
-        consumer.accept(decl);
+        definition.accept(decl);
         return decl.create();
     }
 
