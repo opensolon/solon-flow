@@ -71,15 +71,18 @@ public class GraphSpec {
      * 移除节点
      *
      */
-    public void removeNode(String nodeId) {
-        nodes.remove(nodeId);
+    public NodeSpec removeNode(String nodeId) {
+        return nodes.remove(nodeId);
     }
 
     /**
      * 添加节点（或替换）
+     *
+     * @return added
      */
-    public void addNode(NodeSpec nodeSpec) {
+    public NodeSpec addNode(NodeSpec nodeSpec) {
         nodes.put(nodeSpec.getId(), nodeSpec);
+        return nodeSpec;
     }
 
     /**
@@ -265,9 +268,7 @@ public class GraphSpec {
      * @since 3.7
      */
     public NodeSpec addStart(String id) {
-        NodeSpec decl = new NodeSpec(id, NodeType.START);
-        addNode(decl);
-        return decl;
+        return addNode(new NodeSpec(id, NodeType.START));
     }
 
     /**
@@ -276,9 +277,7 @@ public class GraphSpec {
      * @since 3.7
      */
     public NodeSpec addEnd(String id) {
-        NodeSpec decl = new NodeSpec(id, NodeType.END);
-        addNode(decl);
-        return decl;
+        return addNode(new NodeSpec(id, NodeType.END));
     }
 
     /**
@@ -287,9 +286,7 @@ public class GraphSpec {
      * @since 3.7
      */
     public NodeSpec addActivity(String id) {
-        NodeSpec decl = new NodeSpec(id, NodeType.ACTIVITY);
-        addNode(decl);
-        return decl;
+        return addNode(new NodeSpec(id, NodeType.ACTIVITY));
     }
 
     /**
@@ -298,9 +295,7 @@ public class GraphSpec {
      * @since 3.7
      */
     public NodeSpec addInclusive(String id) {
-        NodeSpec decl = new NodeSpec(id, NodeType.INCLUSIVE);
-        addNode(decl);
-        return decl;
+        return addNode(new NodeSpec(id, NodeType.INCLUSIVE));
     }
 
     /**
@@ -309,9 +304,7 @@ public class GraphSpec {
      * @since 3.7
      */
     public NodeSpec addExclusive(String id) {
-        NodeSpec decl = new NodeSpec(id, NodeType.EXCLUSIVE);
-        addNode(decl);
-        return decl;
+        return addNode(new NodeSpec(id, NodeType.EXCLUSIVE));
     }
 
     /**
@@ -320,9 +313,7 @@ public class GraphSpec {
      * @since 3.7
      */
     public NodeSpec addParallel(String id) {
-        NodeSpec decl = new NodeSpec(id, NodeType.PARALLEL);
-        addNode(decl);
-        return decl;
+        return addNode(new NodeSpec(id, NodeType.PARALLEL));
     }
 
     /**
@@ -331,9 +322,7 @@ public class GraphSpec {
      * @since 3.7
      */
     public NodeSpec addLoop(String id) {
-        NodeSpec decl = new NodeSpec(id, NodeType.LOOP);
-        addNode(decl);
-        return decl;
+        return addNode(new NodeSpec(id, NodeType.LOOP));
     }
 
     /// //////////////////////////////
