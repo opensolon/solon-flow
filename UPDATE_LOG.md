@@ -8,6 +8,7 @@
 
 重要变化：
 
+* 第六次预览
 * 取消“有状态”、“无状态”概念。
 * solon-flow 回归通用流程引擎（分离“有状态”的概念）。
 * 新增 solon-flow-workflow 为工作流性质的封装（未来可能会有 dataflow 等）。
@@ -16,7 +17,7 @@
 具体更新：
 
 * 插件 `solon-flow` 第六次预览
-* 新增 `solon-flow-workflow` 插件（由 FlowStatefulService 改造而来）
+* 新增 `solon-flow-workflow` 插件（替代 FlowStatefulService）
 * 添加 `solon-flow` FlowContext:lastNode() 方法（最后一个运行的节点）
 * 添加 `solon-flow` FlowContext:lastNodeId() 方法（最后一个运行的节点Id）
 * 添加 `solon-flow` Node.getMetaAs, Link.getMetaAs 方法
@@ -27,7 +28,7 @@
 * 添加 `solon-flow` GraphSpec:addLoop(id) 方法替代 addLooping（后者标为弃用）
 * 添加 `solon-flow` FlowEngine:eval(Graph, ..) 系列方法
 * 优化 `solon-flow` FlowEngine:eval(Node startNode) 处理，改为从 root 开始恢复到 start 再开始执行（恢复过程中，不会执行任务）
-* 移除 `solon-flow` Activity 节点预览属性 "$imode" 和 "$omode" 
+* 调整 `solon-flow` 移除 Activity 节点预览属性 "$imode" 和 "$omode" 
 * 调整 `solon-flow` Activity 节点流出改为自由模式（可以多线流出：无条件直接流出，有条件检测后流出）
 * 调整 `solon-flow` Node.getMeta 方法返回改为 Object 类型（并新增 getMetaAs）
 * 调整 `solon-flow` Evaluation:runTest 改为 runCondition
