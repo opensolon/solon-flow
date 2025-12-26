@@ -158,14 +158,14 @@ function handleImport() {
   let dirType = state.layoutType // TB 从上到下 LR 从左到右
   let data = null
   let isAutoLayout = false;// 是否自动布局
-  if (state.importType == 'json') {
+  if (state.importType === 'json') {
     data = JSON.parse(state.importData); // 解析导入的数据
   } else {
     data = yamlUtils.load(state.importData); // 解析导入的数据
   }
 
   let portPosDef = ['port_b1', 'port_t1']
-  if (dirType == 'LR') {
+  if (dirType === 'LR') {
     portPosDef = ['port_r1', 'port_l1']
   }
 
@@ -191,12 +191,12 @@ function handleImport() {
     const nodes = [];
     let nodeEnd = [];
     layoutNodes.forEach(node => {
-      if (node.type == 'start') {
+      if (node.type === 'start') {
         nodes.unshift(node); //插到前面
-      } else if (node.type == 'end') {
+      } else if (node.type === 'end') {
         nodeEnd.push(node);
       } else {
-        if (node.type == 'loop') {
+        if (node.type === 'loop') {
           node.type = 'iterator';
         }
         nodes.push(node);
@@ -249,12 +249,12 @@ function handleImport() {
         }
       }
 
-      if (preNode && (!preNode.link || preNode.link.length == 0)) {
+      if (preNode && (!preNode.link || preNode.link.length === 0)) {
         const cell = preNode
         const nextCell = node
 
         // 如果cell和nextCell都是end，不连接
-        if (cell.type == 'end' && nextCell.type == 'end') {
+        if (cell.type === 'end' && nextCell.type === 'end') {
             preNode = node;
             // 两个节点类型都为 end 时，跳过当前循环
             return;
@@ -283,12 +283,12 @@ function handleImport_addLink(link, node, portPosDef, graphViewData){
       link.id = 'edge_' + utils.uuid2()
     }
     if (!link.v_source) {
-      link.v_source = node.id,
-          link.v_sourcePort = portPosDef[0]
+      link.v_source = node.id;
+      link.v_sourcePort = portPosDef[0];
     }
     if (!link.v_target) {
-      link.v_target = link.nextId,
-          link.v_targetPort = portPosDef[1]
+      link.v_target = link.nextId;
+      link.v_targetPort = portPosDef[1];
     }
     const edgeData = {
       id: link.id, // 边的唯一标识符
@@ -321,7 +321,7 @@ function toClear() {
 function buildEdgeForStringType(source, target, portPosDef) {
   const edgeId = 'edge_' + utils.uuid2()
 
-  const edgeData = {
+  return {
     id: edgeId, // 边的唯一标识符
     shape: 'flow-edge', // 边的形状
     source: { cell: source, port: portPosDef[0] }, // 边的源节点和端口
@@ -331,8 +331,7 @@ function buildEdgeForStringType(source, target, portPosDef) {
       nextId: target, // 边的目标节点
       title: null, // 边的标题
     },
-  }
-  return edgeData
+  };
 }
 
 async function handleCopyExport() {
