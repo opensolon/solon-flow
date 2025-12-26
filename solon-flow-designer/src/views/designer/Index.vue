@@ -242,47 +242,10 @@ function handleImport() {
       if (node.link) {
         if (Array.isArray(node.link)) {
           node.link.forEach(link => {
-            if (typeof link == 'object') {
-              if (!link.id) {
-                link.id = 'edge_' + utils.uuid2()
-              }
-              if (!link.v_source) {
-                link.v_source = node.id,
-                  link.v_sourcePort = portPosDef[0]
-              }
-              if (!link.v_target) {
-                link.v_target = link.nextId,
-                  link.v_targetPort = portPosDef[1]
-              }
-              const edgeData = {
-                id: link.id, // 边的唯一标识符
-                shape: 'flow-edge', // 边的形状
-                source: { cell: link.v_source, port: link.v_sourcePort }, // 边的源节点和端口
-                target: { cell: link.v_target, port: link.v_targetPort }, // 边的目标节点和端口
-                data: { // 边的自定义数据
-                  id: link.id, // 边的唯一标识符
-                  nextId: link.target, // 边的目标节点
-                  title: link.title, // 边的标题
-                  condition: link.when || link.condition, //支持 when 配置（未来替代 condition）
-                },
-              }
-              if (link.title) {
-                edgeData.labels = [link.title]
-              } else if (link.condition) {
-                edgeData.labels = [link.condition]
-              }
-              graphViewData.cells.push(edgeData); // 将边数据添加到数组中
-            } else {// string的情况
-              const edgeData = buildEdgeForStringType(node.id, link, portPosDef) // 构建边数据的函数
-              graphViewData.cells.push(edgeData); // 将边数据添加到数组中
-            }
-
-
+            handleImport_addLink(link, node, portPosDef, graphViewData);
           })
         } else {
-          // string的情况
-          const edgeData = buildEdgeForStringType(node.id, node.link, portPosDef) // 构建边数据的函数
-          graphViewData.cells.push(edgeData); // 将边数据添加到数组中
+          handleImport_addLink(node.link, node, portPosDef, graphViewData);
         }
       }
 
@@ -310,9 +273,45 @@ function handleImport() {
     }
   }
 
-
   state.importData = '';
   state.isImportDialogOpen = false; // 关闭导入对话框
+}
+
+function handleImport_addLink(link, node, portPosDef, graphViewData){
+  if (typeof link == 'object') {
+    if (!link.id) {
+      link.id = 'edge_' + utils.uuid2()
+    }
+    if (!link.v_source) {
+      link.v_source = node.id,
+          link.v_sourcePort = portPosDef[0]
+    }
+    if (!link.v_target) {
+      link.v_target = link.nextId,
+          link.v_targetPort = portPosDef[1]
+    }
+    const edgeData = {
+      id: link.id, // 边的唯一标识符
+      shape: 'flow-edge', // 边的形状
+      source: { cell: link.v_source, port: link.v_sourcePort }, // 边的源节点和端口
+      target: { cell: link.v_target, port: link.v_targetPort }, // 边的目标节点和端口
+      data: { // 边的自定义数据
+        id: link.id, // 边的唯一标识符
+        nextId: link.target, // 边的目标节点
+        title: link.title, // 边的标题
+        condition: link.when || link.condition, //支持 when 配置（未来替代 condition）
+      },
+    }
+    if (link.title) {
+      edgeData.labels = [link.title]
+    } else if (link.condition) {
+      edgeData.labels = [link.condition]
+    }
+    graphViewData.cells.push(edgeData); // 将边数据添加到数组中
+  } else {// string的情况
+    const edgeData = buildEdgeForStringType(node.id, link, portPosDef) // 构建边数据的函数
+    graphViewData.cells.push(edgeData); // 将边数据添加到数组中
+  }
 }
 
 function toClear() {
