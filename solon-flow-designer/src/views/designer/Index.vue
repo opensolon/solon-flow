@@ -68,7 +68,7 @@ const toExport = (type) => {
   let nodeEnd = null;
 
   data.graphViewData.cells.forEach(cell => {
-    if (cell.shape == 'flow-edge') {
+    if (cell.shape === 'flow-edge') {
       const edgeData = cell.data || {}
       const edge = {
         v_source: cell.source.cell,
@@ -107,9 +107,9 @@ const toExport = (type) => {
       }
 
       //排序（确保 start 在最前）
-      if (node.type == 'start') {
+      if (node.type === 'start') {
         nodes.unshift(node); //插到前面
-      } else if (node.type == 'end') {
+      } else if (node.type === 'end') {
         nodeEnd = node;
       } else {
         nodes.push(node);
@@ -140,7 +140,7 @@ const toExport = (type) => {
   graphData.layout = nodes
 
   console.log('graphData', graphData)
-  if ('json' == type) {
+  if ('json' === type) {
     state.exportData = JSON.stringify(graphData, null, 4); // 格式化输出 JSON 数据
   } else {
     state.exportData = yamlUtils.dump(graphData); // 格式化输出 YAML 数据
