@@ -155,9 +155,10 @@ function toImport(type) {
 }
 
 function handleImport() {
-  let dirType = state.layoutType // TB 从上到下 LR 从左到右
-  let data = null
+  let dirType = state.layoutType; // TB 从上到下 LR 从左到右
+  let data;
   let isAutoLayout = false;// 是否自动布局
+
   if (state.importType === 'json') {
     data = JSON.parse(state.importData); // 解析导入的数据
   } else {
