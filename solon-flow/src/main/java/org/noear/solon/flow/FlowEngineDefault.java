@@ -479,7 +479,7 @@ public class FlowEngineDefault implements FlowEngine {
         exchanger.temporary().countSet(node.getGraph(), node.getId(), 0);
 
         //::流出
-        if (exchanger.context().executor() == null || node.getNextNodes().size() < 2) { //没有2个，也没必要用线程池
+        if (exchanger.driver().getExecutor() == null || node.getNextNodes().size() < 2) { //没有2个，也没必要用线程池
             //单线程
             for (Node n : node.getNextNodes()) {
                 node_run(exchanger, n, startNode, depth);
@@ -489,7 +489,7 @@ public class FlowEngineDefault implements FlowEngine {
             CountDownLatch cdl = new CountDownLatch(node.getNextNodes().size());
             AtomicReference<Throwable> errorRef = new AtomicReference<>();
             for (Node n : node.getNextNodes()) {
-                exchanger.context().executor().execute(() -> {
+                exchanger.driver().getExecutor().execute(() -> {
                     try {
                         if (errorRef.get() != null) {
                             return;

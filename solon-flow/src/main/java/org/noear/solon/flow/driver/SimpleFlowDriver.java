@@ -19,6 +19,8 @@ import org.noear.solon.flow.*;
 import org.noear.solon.flow.Evaluation;
 import org.noear.solon.lang.Preview;
 
+import java.util.concurrent.ExecutorService;
+
 /**
  * 有状态的简单流驱动器（兼容无状态）
  *
@@ -33,16 +35,22 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
     }
 
     public SimpleFlowDriver(Evaluation evaluation) {
-        super(evaluation, null);
+        super(evaluation, null, null);
     }
 
     public SimpleFlowDriver(Container container) {
-        super(null, container);
+        super(null, container, null);
     }
 
     public SimpleFlowDriver(Evaluation evaluation, Container container) {
-        super(evaluation, container);
+        super(evaluation, container, null);
     }
+
+    public SimpleFlowDriver(Evaluation evaluation, Container container,  ExecutorService executor) {
+        super(evaluation, container, executor);
+    }
+
+
 
     /// ////////////////////////////
 
@@ -65,6 +73,7 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
     public static class Builder {
         private Evaluation evaluation;
         private Container container;
+        private ExecutorService executor;
 
         /**
          * 设置评估器
@@ -83,12 +92,21 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
         }
 
         /**
+         * 异步执行器
+         */
+        public Builder executor(ExecutorService executor) {
+            this.executor = executor;
+            return this;
+        }
+
+        /**
          * 构建
          */
         public SimpleFlowDriver build() {
             return new SimpleFlowDriver(
                     evaluation,
-                    container);
+                    container,
+                    executor);
         }
     }
 }

@@ -15,7 +15,10 @@
  */
 package org.noear.solon.flow;
 
+import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
+
+import java.util.concurrent.ExecutorService;
 
 /**
  * 流驱动器
@@ -25,6 +28,18 @@ import org.noear.solon.lang.Preview;
  * */
 @Preview("3.0")
 public interface FlowDriver {
+    /**
+     * 异步执行器
+     *
+     * @since 3.8.1
+     */
+    @Preview("3.8")
+    @Nullable
+    default ExecutorService getExecutor() {
+        return null;
+    }
+
+
     /**
      * 节点运行开始时
      */

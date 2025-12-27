@@ -36,13 +36,11 @@ import java.util.function.Function;
  * @since 3.5
  */
 @Preview("3.5")
-public class FlowContextDefault implements FlowContext {
+public class FlowContextDefault implements FlowContextInternal {
     static final String TAG = "context";
 
     //存放数据模型
     private transient final Map<String, Object> model = new ConcurrentHashMap<>();
-    //线程池
-    private transient volatile ExecutorService executor;
     //交换器
     private transient volatile FlowExchanger exchanger;
     //事件总线
@@ -94,24 +92,6 @@ public class FlowContextDefault implements FlowContext {
             lastNode = oNode.get("lastNode").toBean(NodeTrace.class);
         }
 
-        return this;
-    }
-
-
-    /**
-     * 异步执行器
-     */
-    @Preview("3.3")
-    public @Nullable ExecutorService executor() {
-        return executor;
-    }
-
-    /**
-     * 配置异步执行器
-     */
-    @Preview("3.3")
-    public FlowContextDefault executor(ExecutorService executor) {
-        this.executor = executor;
         return this;
     }
 

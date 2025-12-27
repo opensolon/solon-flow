@@ -32,7 +32,7 @@ public class FlowExchanger {
     private transient final FlowEngine engine;
     private transient final FlowDriver driver;
     //当前流程上下文
-    private transient final FlowContext context;
+    private transient final FlowContextInternal context;
 
     //执行时临时存放器
     private transient final Temporary temporary = new Temporary();
@@ -50,7 +50,7 @@ public class FlowExchanger {
 
         this.engine = engine;
         this.driver = driver;
-        this.context = context;
+        this.context = (FlowContextInternal)context;
     }
 
 
@@ -71,7 +71,7 @@ public class FlowExchanger {
     /**
      * 当前上下文
      */
-    public FlowContext context() {
+    public FlowContextInternal context() {
         return context;
     }
 

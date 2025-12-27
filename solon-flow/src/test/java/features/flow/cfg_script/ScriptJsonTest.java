@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
+import org.noear.solon.flow.driver.SimpleFlowDriver;
 
 import java.util.concurrent.Executors;
 
@@ -14,7 +15,9 @@ import java.util.concurrent.Executors;
  * @author noear 2025/1/11 created
  */
 public class ScriptJsonTest {
-    private static FlowEngine flowEngine = FlowEngine.newInstance();
+    private static FlowEngine flowEngine = FlowEngine.newInstance(SimpleFlowDriver.builder()
+            .executor(Executors.newFixedThreadPool(4))
+            .build());
 
     @BeforeAll
     public static void before() {
@@ -127,7 +130,6 @@ public class ScriptJsonTest {
         Graph graph = Graph.fromUri("classpath:flow/script_case9.graph.yml");
 
         FlowContext context = FlowContext.of();
-        context.executor(Executors.newFixedThreadPool(4));
 
         flowEngine.eval(graph, context);
     }

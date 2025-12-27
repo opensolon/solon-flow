@@ -21,6 +21,7 @@ import org.noear.solon.flow.container.SolonContainer;
 import org.noear.solon.flow.evaluation.LiquorEvaluation;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 /**
  * 流驱动器基类（方便定制）
@@ -31,14 +32,16 @@ import java.util.Map;
 public abstract class AbstractFlowDriver implements FlowDriver {
     private final Evaluation evaluation;
     private final Container container;
+    private final ExecutorService executor;
 
     /**
      * @param evaluation 脚本执行器
      * @param container  组件容器
      */
-    public AbstractFlowDriver(Evaluation evaluation, Container container) {
+    public AbstractFlowDriver(Evaluation evaluation, Container container, ExecutorService executor) {
         this.evaluation = (evaluation == null ? new LiquorEvaluation() : evaluation);
         this.container = (container == null ? new SolonContainer() : container);
+        this.executor = executor;
     }
 
     /**
@@ -67,6 +70,12 @@ public abstract class AbstractFlowDriver implements FlowDriver {
      */
     protected boolean isComponent(String description) {
         return description.startsWith("@");
+    }
+
+    /// //////////////
+
+    public ExecutorService getExecutor() {
+        return executor;
     }
 
     /// //////////////
