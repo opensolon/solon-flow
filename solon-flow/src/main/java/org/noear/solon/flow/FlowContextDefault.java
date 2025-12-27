@@ -25,7 +25,6 @@ import org.noear.solon.lang.Preview;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -48,13 +47,28 @@ public class FlowContextDefault implements FlowContextInternal {
     //最后执行节点
     private transient volatile NodeTrace lastNode;
 
-    public FlowContextDefault() {
+    protected FlowContextDefault() {
         this(null);
     }
 
-    public FlowContextDefault(String instanceId) {
+    protected FlowContextDefault(String instanceId) {
         put("instanceId", (instanceId == null ? "" : instanceId));
         put("context", this); //放这里不需要不断的推入移出，性能更好（序列化是要移除）
+    }
+
+    protected static FlowContext fromJson(String json) {
+        FlowContextDefault tmp = new FlowContextDefault();
+        ONode oNode = ONode.ofJson(json, OPTIONS);
+
+        if (oNode.hasKey("model")) {
+            tmp.model.putAll(oNode.get("model").toBean(Map.class));
+        }
+
+        if (oNode.hasKey("lastNode")) {
+            tmp.lastNode = oNode.get("lastNode").toBean(NodeTrace.class);
+        }
+
+        return tmp;
     }
 
     private static final Options OPTIONS = Options.of(
@@ -78,21 +92,6 @@ public class FlowContextDefault implements FlowContextInternal {
         oNode.set("lastNode", ONode.ofBean(lastNode));
 
         return oNode.toJson();
-    }
-
-    @Override
-    public FlowContext loadJson(String json) {
-        ONode oNode = ONode.ofJson(json, OPTIONS);
-
-        if (oNode.hasKey("model")) {
-            model.putAll(oNode.get("model").toBean(Map.class));
-        }
-
-        if (oNode.hasKey("lastNode")) {
-            lastNode = oNode.get("lastNode").toBean(NodeTrace.class);
-        }
-
-        return this;
     }
 
     @Override

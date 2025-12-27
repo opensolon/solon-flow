@@ -41,6 +41,13 @@ public interface FlowContext {
         return new FlowContextDefault(instanceId);
     }
 
+    /**
+     * 从 json 加载（用于持久化）
+     */
+    static FlowContext fromJson(String json){
+        return FlowContextDefault.fromJson(json);
+    }
+
     /// ////////////
 
     /**
@@ -48,10 +55,6 @@ public interface FlowContext {
      */
     String toJson();
 
-    /**
-     * 加载 json（用于持久化）
-     */
-    FlowContext loadJson(String json);
 
     /// ////////////
 
