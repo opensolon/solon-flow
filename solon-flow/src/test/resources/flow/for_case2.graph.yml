@@ -2,6 +2,7 @@
 id: for_case1
 layout:
   - type: 'start'
-  - task: 'System.out.println(context.incrGet("demo"));'
+  - task: 'context.put("demo", new java.util.concurrent.atomic.AtomicInteger(0));'
+  - task: 'System.out.println(demo.get());'
     id: n1
-    link: [{nextId: n1, when: 'context.incrAdd("demo", 1) < 5'}]
+    link: [{nextId: n1, when: 'demo.incrementAndGet() < 5'}]

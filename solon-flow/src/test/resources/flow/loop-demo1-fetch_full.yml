@@ -1,6 +1,9 @@
 id: fetch2
 title: "采集（完整结构）"
 layout:
+  - task: 'context.put("a", new java.util.concurrent.atomic.AtomicInteger(0));'
+  - task: 'context.put("b", new java.util.concurrent.atomic.AtomicInteger(0));'
+  - task: 'context.put("c", new java.util.concurrent.atomic.AtomicInteger(0));'
   - task: "@fetchBanduCommunity"
   - { type: loop, id: fetch-album, meta: { "$for": "communityId", "$in": "communityIds" } }
   - task: "@fetchBanduAlbum"
@@ -12,8 +15,8 @@ layout:
   - task: "@convertBanduAttachment"
   - task: "@markdownBanduAttachment"
   - {type: loop, id: fetch-content_end}
-  - task: 'context.incrAdd("a",1);'
+  - task: 'a.incrementAndGet();'
   - {type: loop, id: fetch-course_end}
-  - task: 'context.incrAdd("b",1);'
+  - task: 'b.incrementAndGet();'
   - {type: loop, id: fetch-album_end}
-  - task: 'context.incrAdd("c",1);'
+  - task: 'c.incrementAndGet();'

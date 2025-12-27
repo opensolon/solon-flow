@@ -1,5 +1,0 @@
-id: loop_demo2
-layout:
-  - type: loop
-    meta: { "$for": "itemId", "$in": ["a","b","c"] }
-  - task: 'context.put("temp",itemId)'
