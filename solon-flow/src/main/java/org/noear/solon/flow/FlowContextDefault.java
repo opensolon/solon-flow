@@ -74,7 +74,7 @@ public class FlowContextDefault implements FlowContext {
             });
         });
 
-        oNode.set("lastNode", lastNode);
+        oNode.set("lastNode", ONode.ofBean(lastNode));
 
         return oNode.toJson();
     }
