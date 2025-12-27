@@ -46,7 +46,6 @@ public interface FlowContext {
     }
 
 
-
     /**
      * 转为 json（用于持久化）
      */
@@ -72,16 +71,16 @@ public interface FlowContext {
     FlowContext executor(ExecutorService executor);
 
     /**
-     * 节点跟踪记录
-     */
-    Collection<NodeTrace> nodeTraces();
-
-    /**
      * 最后运行的节点
      */
     @Preview("3.7.4")
     @Nullable
     NodeTrace lastNode();
+
+    /**
+     * 记录最后运行的节点
+     */
+    void lastNode(Node node);
 
     /**
      * 最后运行的节点Id

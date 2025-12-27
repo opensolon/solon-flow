@@ -20,7 +20,6 @@ import org.noear.dami2.bus.DamiBus;
 import org.noear.snack4.Feature;
 import org.noear.snack4.ONode;
 import org.noear.snack4.Options;
-import org.noear.snack4.codec.TypeRef;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
@@ -41,7 +40,6 @@ public class FlowContextDefault implements FlowContext {
 
     //存放数据模型
     private transient final Map<String, Object> model = new ConcurrentHashMap<>();
-    private transient final List<NodeTrace> nodeTraces = new ArrayList<>();
     //异步执行器
     private transient volatile ExecutorService executor;
     //最后执行节点
@@ -55,6 +53,7 @@ public class FlowContextDefault implements FlowContext {
         put("instanceId", (instanceId == null ? "" : instanceId));
         put("context", this); //放这里不需要不断的推入移出，性能更好（序列化是要移除）
     }
+
     private static final Options OPTIONS = Options.of(
             Feature.Read_AutoType,
             Feature.Write_ClassName,
@@ -75,22 +74,17 @@ public class FlowContextDefault implements FlowContext {
             });
         });
 
-        oNode.set("nodeTraces", nodeTraces);
         oNode.set("lastNode", lastNode);
 
         return oNode.toJson();
     }
 
     @Override
-    public FlowContext loadJson(String json){
+    public FlowContext loadJson(String json) {
         ONode oNode = ONode.ofJson(json, OPTIONS);
 
         if (oNode.hasKey("model")) {
             model.putAll(oNode.get("model").toBean(Map.class));
-        }
-
-        if (oNode.hasKey("nodeTraces")) {
-            nodeTraces.addAll(oNode.get("nodeTraces").toBean(TypeRef.listOf(NodeTrace.class)));
         }
 
         if (oNode.hasKey("lastNode")) {
@@ -118,11 +112,6 @@ public class FlowContextDefault implements FlowContext {
         return this;
     }
 
-    @Override
-    public Collection<NodeTrace> nodeTraces() {
-        return nodeTraces;
-    }
-
     /**
      * 最后运行的节点
      */
@@ -132,9 +121,9 @@ public class FlowContextDefault implements FlowContext {
         return lastNode;
     }
 
+    @Override
     public void lastNode(Node node) {
         this.lastNode = new NodeTrace(node);
-        this.nodeTraces.add(lastNode);
     }
 
     /**
