@@ -8,6 +8,7 @@
 
 * 添加 `solon-flow` FlowContext:toJson,loadJson 方法
 * 添加 `solon-flow` NodeTrace 类
+* 优化 `solon-flow` FlowContext 接口设计，并增加持久化辅助方法
 * 优化 `solon-flow` FlowContext.eventBus 内部实现改为字段模式
 * 调整 `solon-flow` FlowContext:executor 转移到 FlowDriver
 * 移除 `solon-flow` FlowContext:incrAdd,incrGet 弃用接口

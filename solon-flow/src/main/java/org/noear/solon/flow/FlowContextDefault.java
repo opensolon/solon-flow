@@ -56,6 +56,11 @@ public class FlowContextDefault implements FlowContextInternal {
         put("context", this); //放这里不需要不断的推入移出，性能更好（序列化是要移除）
     }
 
+    private static final Options OPTIONS = Options.of(
+            Feature.Read_AutoType,
+            Feature.Write_ClassName,
+            Feature.Write_NotMapClassName);
+
     protected static FlowContext fromJson(String json) {
         FlowContextDefault tmp = new FlowContextDefault();
         ONode oNode = ONode.ofJson(json, OPTIONS);
@@ -70,11 +75,6 @@ public class FlowContextDefault implements FlowContextInternal {
 
         return tmp;
     }
-
-    private static final Options OPTIONS = Options.of(
-            Feature.Read_AutoType,
-            Feature.Write_ClassName,
-            Feature.Write_NotMapClassName);
 
     @Override
     public String toJson() {
