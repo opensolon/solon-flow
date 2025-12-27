@@ -28,8 +28,6 @@ import org.noear.solon.lang.Preview;
  */
 @Preview("3.5")
 public class FlowExchanger {
-    public static final String TAG = "exchanger";
-
     //当前流程引擎
     private transient final FlowEngine engine;
     private transient final FlowDriver driver;

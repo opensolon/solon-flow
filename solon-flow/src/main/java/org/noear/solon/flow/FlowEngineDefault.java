@@ -134,26 +134,17 @@ public class FlowEngineDefault implements FlowEngine {
      */
     @Override
     public void eval(Graph graph, Node startNode, int depth, FlowExchanger exchanger) throws FlowException {
+        //开始执行
         if (startNode == null) {
             startNode = graph.getStart();
         }
 
-        //开始执行
-        FlowExchanger bak = exchanger.context().getAs(FlowExchanger.TAG); //跨图调用时，可能会有
+        FlowExchanger bak = exchanger.context().exchanger();
         try {
-            if (bak != exchanger) {
-                exchanger.context().put(FlowExchanger.TAG, exchanger);
-            }
-
+            exchanger.context().exchanger(exchanger);
             new FlowInvocation(exchanger, startNode, depth, this.interceptorList, this::evalDo).invoke();
         } finally {
-            if (bak != exchanger) {
-                if (bak == null) {
-                    exchanger.context().remove(FlowExchanger.TAG);
-                } else {
-                    exchanger.context().put(FlowExchanger.TAG, bak);
-                }
-            }
+            exchanger.context().exchanger(bak);
         }
     }
 
@@ -271,7 +262,7 @@ public class FlowEngineDefault implements FlowEngine {
                 exchanger.reverting(false);
             }
         } else {
-            ((FlowContextDefault) exchanger.context()).lastNode(node);
+            exchanger.context().lastNode(node);
         }
 
         //执行深度控制
@@ -341,11 +332,11 @@ public class FlowEngineDefault implements FlowEngine {
 
         //流出（原始态）
         //return node_run(exchanger, node.getNextNode(), depth);
-       return activity_run_out(exchanger, node, startNode, depth);
+        return activity_run_out(exchanger, node, startNode, depth);
     }
 
     //活动节点
-    protected boolean activity_run_out(FlowExchanger exchanger, Node node, Node startNode, int depth){
+    protected boolean activity_run_out(FlowExchanger exchanger, Node node, Node startNode, int depth) {
         //::流出
         for (Link l : node.getNextLinks()) {
             if (condition_test(exchanger, l.getWhen(), true)) {

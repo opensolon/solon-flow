@@ -15,12 +15,11 @@
  */
 package org.noear.solon.flow;
 
-import org.noear.dami2.Dami;
 import org.noear.dami2.bus.DamiBus;
+import org.noear.solon.lang.Internal;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,8 +34,6 @@ import java.util.function.Function;
  */
 @Preview("3.0")
 public interface FlowContext {
-    static final String TAG = "context";
-
     static FlowContext of() {
         return new FlowContextDefault();
     }
@@ -45,6 +42,7 @@ public interface FlowContext {
         return new FlowContextDefault(instanceId);
     }
 
+    /// ////////////
 
     /**
      * 转为 json（用于持久化）
@@ -56,6 +54,7 @@ public interface FlowContext {
      */
     FlowContext loadJson(String json);
 
+    /// ////////////
 
     /**
      * 异步执行器
@@ -69,6 +68,44 @@ public interface FlowContext {
      */
     @Preview("3.3")
     FlowContext executor(ExecutorService executor);
+
+    /**
+     * 获取事件总线（based damibus）
+     */
+    DamiBus eventBus();
+
+    /**
+     * 配置交换器
+     *
+     * @since 3.8
+     */
+    @Internal
+    @Preview("3.8")
+    void exchanger(FlowExchanger exchanger);
+
+
+    /**
+     * 交换器
+     */
+    @Internal
+    @Nullable
+    FlowExchanger exchanger();
+
+    /**
+     * 中断（仅对当前分支有效）
+     *
+     * @since 3.7
+     */
+    void interrupt();
+
+    /**
+     * 停止（即结束运行）
+     *
+     * @since 3.7
+     */
+    void stop();
+
+    /// ////////////
 
     /**
      * 最后运行的节点
@@ -93,49 +130,12 @@ public interface FlowContext {
         return null;
     }
 
-    /**
-     * 交换器（只在任务执行时可获取）
-     *
-     * @since 3.5
-     */
-    @Preview("3.5")
-    @Nullable
-    default FlowExchanger exchanger() {
-        return getAs(FlowExchanger.TAG);
-    }
-
-    /**
-     * 中断（仅对当前分支有效）
-     *
-     * @since 3.7
-     */
-    @Preview("3.7")
-    default void interrupt() {
-        FlowExchanger exchanger = exchanger();
-        if (exchanger != null) {
-            exchanger.interrupt();
-        }
-    }
-
-    /**
-     * 停止（即结束运行）
-     *
-     * @since 3.7
-     */
-    @Preview("3.7")
-    default void stop() {
-        FlowExchanger exchanger = exchanger();
-        if (exchanger != null) {
-            exchanger.stop();
-        }
-    }
+    /// ////////////
 
     /**
      * 数据模型
      */
     Map<String, Object> model();
-
-    /// /////////////////////////////////////
 
     /**
      * 获取流实例id
@@ -144,14 +144,6 @@ public interface FlowContext {
         return getAs("instanceId");
     }
 
-
-    /// /////////////////////////////////////
-
-
-    /**
-     * 获取事件总线（based damibus）
-     */
-    DamiBus eventBus();
 
     /**
      * 推入

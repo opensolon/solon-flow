@@ -37,11 +37,14 @@ import java.util.function.Function;
  */
 @Preview("3.5")
 public class FlowContextDefault implements FlowContext {
+    static final String TAG = "context";
 
     //存放数据模型
     private transient final Map<String, Object> model = new ConcurrentHashMap<>();
-    //异步执行器
+    //线程池
     private transient volatile ExecutorService executor;
+    //交换器
+    private transient volatile FlowExchanger exchanger;
     //事件总线
     private transient volatile DamiBus eventBus;
     //最后执行节点
@@ -66,8 +69,7 @@ public class FlowContextDefault implements FlowContext {
         ONode oNode = new ONode(OPTIONS).asObject();
         oNode.getOrNew("model").then(n -> {
             model.forEach((k, v) -> {
-                if (FlowContext.TAG.equals(k) ||
-                        FlowExchanger.TAG.equals(k)) {
+                if (TAG.equals(k)) {
                     return;
                 }
 
@@ -112,6 +114,38 @@ public class FlowContextDefault implements FlowContext {
         this.executor = executor;
         return this;
     }
+
+    @Override
+    public void exchanger(FlowExchanger exchanger) {
+        this.exchanger = exchanger;
+    }
+
+    @Override
+    public @Nullable FlowExchanger exchanger() {
+        return exchanger;
+    }
+
+    /**
+     * 中断（仅对当前分支有效）
+     */
+    public void interrupt() {
+        if (exchanger != null) {
+            exchanger.interrupt();
+        }
+    }
+
+    /**
+     * 停止（即结束运行）
+     */
+    public void stop() {
+        if (exchanger != null) {
+            exchanger.stop();
+        }
+    }
+
+
+    /// //////////////////
+
 
     /**
      * 最后运行的节点
