@@ -20,6 +20,7 @@ import org.noear.dami2.bus.DamiBus;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -34,15 +35,28 @@ import java.util.function.Function;
  */
 @Preview("3.0")
 public interface FlowContext {
+    static final String TAG = "context";
+
     static FlowContext of() {
-        //无状态
         return new FlowContextDefault();
     }
 
     static FlowContext of(String instanceId) {
-        //无状态
         return new FlowContextDefault(instanceId);
     }
+
+
+
+    /**
+     * 转为 json（用于持久化）
+     */
+    String toJson();
+
+    /**
+     * 加载 json（用于持久化）
+     */
+    FlowContext loadJson(String json);
+
 
     /**
      * 异步执行器
@@ -57,13 +71,17 @@ public interface FlowContext {
     @Preview("3.3")
     FlowContext executor(ExecutorService executor);
 
+    /**
+     * 节点跟踪记录
+     */
+    Collection<NodeTrace> nodeTraces();
 
     /**
      * 最后运行的节点
      */
     @Preview("3.7.4")
     @Nullable
-    Node lastNode();
+    NodeTrace lastNode();
 
     /**
      * 最后运行的节点Id

@@ -17,10 +17,14 @@ package org.noear.solon.flow;
 
 import org.noear.dami2.Dami;
 import org.noear.dami2.bus.DamiBus;
+import org.noear.snack4.Feature;
+import org.noear.snack4.ONode;
+import org.noear.snack4.Options;
+import org.noear.snack4.codec.TypeRef;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -34,12 +38,14 @@ import java.util.function.Function;
  */
 @Preview("3.5")
 public class FlowContextDefault implements FlowContext {
+
     //存放数据模型
     private transient final Map<String, Object> model = new ConcurrentHashMap<>();
+    private transient final List<NodeTrace> nodeTraces = new ArrayList<>();
     //异步执行器
     private transient volatile ExecutorService executor;
     //最后执行节点
-    private transient volatile Node lastNode;
+    private transient volatile NodeTrace lastNode;
 
     public FlowContextDefault() {
         this(null);
@@ -48,6 +54,50 @@ public class FlowContextDefault implements FlowContext {
     public FlowContextDefault(String instanceId) {
         put("instanceId", (instanceId == null ? "" : instanceId));
         put("context", this); //放这里不需要不断的推入移出，性能更好（序列化是要移除）
+    }
+    private static final Options OPTIONS = Options.of(
+            Feature.Read_AutoType,
+            Feature.Write_ClassName,
+            Feature.Write_NotMapClassName);
+
+    @Override
+    public String toJson() {
+        ONode oNode = new ONode(OPTIONS).asObject();
+        oNode.getOrNew("model").then(n -> {
+            model.forEach((k, v) -> {
+                if (FlowContext.TAG.equals(k) ||
+                        FlowExchanger.TAG.equals(k) ||
+                        "eventBus".equals(k)) {
+                    return;
+                }
+
+                n.set(k, v);
+            });
+        });
+
+        oNode.set("nodeTraces", nodeTraces);
+        oNode.set("lastNode", lastNode);
+
+        return oNode.toJson();
+    }
+
+    @Override
+    public FlowContext loadJson(String json){
+        ONode oNode = ONode.ofJson(json, OPTIONS);
+
+        if (oNode.hasKey("model")) {
+            model.putAll(oNode.get("model").toBean(Map.class));
+        }
+
+        if (oNode.hasKey("nodeTraces")) {
+            nodeTraces.addAll(oNode.get("nodeTraces").toBean(TypeRef.listOf(NodeTrace.class)));
+        }
+
+        if (oNode.hasKey("lastNode")) {
+            lastNode = oNode.get("lastNode").toBean(NodeTrace.class);
+        }
+
+        return this;
     }
 
 
@@ -68,17 +118,23 @@ public class FlowContextDefault implements FlowContext {
         return this;
     }
 
+    @Override
+    public Collection<NodeTrace> nodeTraces() {
+        return nodeTraces;
+    }
+
     /**
      * 最后运行的节点
      */
     @Preview("3.7")
     @Override
-    public @Nullable Node lastNode() {
+    public @Nullable NodeTrace lastNode() {
         return lastNode;
     }
 
     public void lastNode(Node node) {
-        this.lastNode = node;
+        this.lastNode = new NodeTrace(node);
+        this.nodeTraces.add(lastNode);
     }
 
     /**
