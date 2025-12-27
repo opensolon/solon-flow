@@ -201,6 +201,7 @@ public class FlowContextDefault implements FlowContext {
     /**
      * 增量添加
      */
+    @Deprecated
     public int incrAdd(String key, int delta) {
         AtomicInteger tmp = (AtomicInteger) model.computeIfAbsent(key, k -> new AtomicInteger(0));
         return tmp.addAndGet(delta);
@@ -209,6 +210,7 @@ public class FlowContextDefault implements FlowContext {
     /**
      * 增量获取
      */
+    @Deprecated
     public int incrGet(String key) {
         AtomicInteger tmp = (AtomicInteger) model.computeIfAbsent(key, k -> new AtomicInteger(0));
         return tmp.get();
