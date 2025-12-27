@@ -25,6 +25,20 @@ import java.util.Collection;
 /**
  * 流引擎
  *
+ * <pre>{@code
+ * FlowEngine flowEngine = FlowEngine.newInstance();
+ *
+ * flowEngine.eval("g1", FlowContext.of());
+ * }</pre>
+ *
+ * <pre>{@code
+ * FlowEngine flowEngine = FlowEngine.newInstance(SimpleFlowDriver.builder()
+ *                 .container(container)
+ *                 .build())
+ *
+ * flowEngine.eval("g1", FlowContext.of());
+ * }</pre>
+ *
  * @author noear
  * @since 3.0
  * */

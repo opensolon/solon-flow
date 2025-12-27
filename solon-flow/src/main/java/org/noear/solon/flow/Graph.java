@@ -26,6 +26,25 @@ import java.util.function.Consumer;
 /**
  * 图
  *
+ * <pre>{@code
+ * Graph graph = Graph.create("demo1", "示例", spec -> {
+ *     spec.addStart("start").title("开始").linkAdd("01");
+ *     spec.addActivity("n1").task("@AaMetaProcessCom").linkAdd("end");
+ *     spec.addEnd("end").title("结束");
+ * });
+ *
+ * flowEngine.eval(graph);
+ * }</pre>
+ *
+ * <pre>{@code
+ * Graph graphNew = Graph.copy(graph, spec -> {
+ *     spec.getNode("n1").linkRemove("end").linkAdd("n2"); //移掉 n1 连接；改为 n2 连接
+ *     spec.addActivity("n2").linkAdd("end");
+ * });
+ *
+ * flowEngine.eval(graphNew);
+ * }</pre>
+ *
  * @author noear
  * @since 3.0
  * @since 3.7

@@ -26,6 +26,20 @@ import java.util.Collection;
 /**
  * 工作流服务
  *
+ * <pre>{@code
+ * WorkflowService workflow = WorkflowService.of(engine, WorkflowDriver.builder()
+ *         .stateController(new ActorStateController())
+ *         .stateRepository(new InMemoryStateRepository())
+ *         .build());
+ *
+ *
+ * //1. 取出任务
+ * Task task = workflow.getTask(graph, context);
+ *
+ * //2. 提交任务
+ * workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
+ * }</pre>
+ *
  * @author noear
  * @since 3.4
  * @since 3.8
