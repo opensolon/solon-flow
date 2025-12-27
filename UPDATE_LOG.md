@@ -44,9 +44,9 @@
 * 调整 `solon-flow` FlowContext:incrAdd,incrGet 标为弃用（上下文数据为型只能由输入侧决定）
 * 调整 `solon-flow` Condition 更名为 ConditionDesc
 * 调整 `solon-flow` Task 更名为 ConditionDesc
-* 调整 `solon-flow` XxxDecl 命名风格改为 XxxSpec
-* 调整 `solon-flow` GraphDecl.parseByXxx 命名风格改为 GraphSpec.fromXxx
-* 调整 `solon-flow` Graph.parseByXxx 命名风格改为 Graph.fromXxx
+* 调整 `solon-flow` GraphDecl 重命名改为 GraphSpec，NodeDecl 重命名改为 NodeSpec，LinkDecl 重命名改为 LinkSpec
+* 调整 `solon-flow` GraphSpec.parseByText 重命名改为 fromText，parseByUri 重命名改为 fromUri
+* 调整 `solon-flow` Graph.parseByText 重命名改为 fromText，parseByUri 重命名改为 fromUri
 
 
 兼容变化对照表：
