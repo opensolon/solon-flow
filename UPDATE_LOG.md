@@ -8,6 +8,7 @@
 
 * 添加 `solon-flow` FlowContext:toJson,loadJson 方法
 * 添加 `solon-flow` NodeTrace 类
+* 调整 `solon-flow` FlowContext.eventBus 内部实现改为字段模式
 
 ### 3.8.0
 
