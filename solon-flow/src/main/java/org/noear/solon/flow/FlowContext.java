@@ -92,14 +92,14 @@ public interface FlowContext {
     FlowExchanger exchanger();
 
     /**
-     * 中断（仅对当前分支有效）
+     * 中断当前分支（如果有其它分支，仍会执行）
      *
      * @since 3.7
      */
     void interrupt();
 
     /**
-     * 停止（即结束运行）
+     * 停止执行（即结束运行）
      *
      * @since 3.7
      */
