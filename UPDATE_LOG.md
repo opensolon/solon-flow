@@ -6,7 +6,8 @@
 
 ### 3.8.1
 
-* 添加 `solon-flow` FlowContext:toJson,loadJson,nodeTraces 方法
+* 添加 `solon-flow` FlowContext:toJson,loadJson 方法
+* 添加 `solon-flow` NodeTrace 类
 
 ### 3.8.0
 
