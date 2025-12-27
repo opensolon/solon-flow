@@ -28,9 +28,9 @@ import java.util.function.Consumer;
  *
  * <pre>{@code
  * Graph graph = Graph.create("demo1", "示例", spec -> {
- *     spec.addStart("start").title("开始").linkAdd("01");
- *     spec.addActivity("n1").task("@AaMetaProcessCom").linkAdd("end");
- *     spec.addEnd("end").title("结束");
+ *     spec.addStart("s").title("开始").linkAdd("n1");
+ *     spec.addActivity("n1").task("@AaMetaProcessCom").linkAdd("e");
+ *     spec.addEnd("e").title("结束");
  * });
  *
  * flowEngine.eval(graph);
@@ -38,8 +38,8 @@ import java.util.function.Consumer;
  *
  * <pre>{@code
  * Graph graphNew = Graph.copy(graph, spec -> {
- *     spec.getNode("n1").linkRemove("end").linkAdd("n2"); //移掉 n1 连接；改为 n2 连接
- *     spec.addActivity("n2").linkAdd("end");
+ *     spec.getNode("n1").linkRemove("e").linkAdd("n2"); //移掉 n1 连接；改为 n2 连接
+ *     spec.addActivity("n2").linkAdd("e");
  * });
  *
  * flowEngine.eval(graphNew);
