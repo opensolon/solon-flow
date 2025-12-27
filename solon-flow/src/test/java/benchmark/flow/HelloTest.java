@@ -4,10 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
+import org.noear.solon.test.SolonTest;
 
 /**
  * @author noear 2025/6/18 created
  */
+@SolonTest
 public class HelloTest {
     @Test
     public void parse1() {
