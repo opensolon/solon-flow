@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 有状态的服务默认实现
+ * 工作流服务默认实现
  *
  * @author noear
  * @since 3.4

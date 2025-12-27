@@ -24,7 +24,7 @@ import org.noear.solon.lang.Preview;
 import java.util.Collection;
 
 /**
- * 有状态的服务
+ * 工作流服务
  *
  * @author noear
  * @since 3.4
