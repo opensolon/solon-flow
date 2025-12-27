@@ -176,22 +176,6 @@ public class FlowContextDefault implements FlowContext {
         return (T) model.get(key);
     }
 
-    public Object getAsObject(String key) {
-        return getAs(key);
-    }
-
-    public String getAsString(String key) {
-        return getAs(key);
-    }
-
-    public Number getAsNumber(String key) {
-        return getAs(key);
-    }
-
-    public Boolean getAsBoolean(String key) {
-        return getAs(key);
-    }
-
     /**
      * 获取或默认
      */
