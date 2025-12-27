@@ -151,10 +151,7 @@ public interface FlowContext {
     /**
      * 获取事件总线（based damibus）
      */
-    default DamiBus eventBus() {
-        //通过模型，可以被转移或替代
-        return computeIfAbsent("eventBus", k -> Dami.newBus());
-    }
+    DamiBus eventBus();
 
     /**
      * 推入

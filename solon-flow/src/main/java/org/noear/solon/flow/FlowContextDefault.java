@@ -42,6 +42,8 @@ public class FlowContextDefault implements FlowContext {
     private transient final Map<String, Object> model = new ConcurrentHashMap<>();
     //异步执行器
     private transient volatile ExecutorService executor;
+    //事件总线
+    private transient volatile DamiBus eventBus;
     //最后执行节点
     private transient volatile NodeTrace lastNode;
 
@@ -65,8 +67,7 @@ public class FlowContextDefault implements FlowContext {
         oNode.getOrNew("model").then(n -> {
             model.forEach((k, v) -> {
                 if (FlowContext.TAG.equals(k) ||
-                        FlowExchanger.TAG.equals(k) ||
-                        "eventBus".equals(k)) {
+                        FlowExchanger.TAG.equals(k)) {
                     return;
                 }
 
@@ -234,7 +235,10 @@ public class FlowContextDefault implements FlowContext {
      * 获取事件总线（based damibus）
      */
     public DamiBus eventBus() {
-        //通过模型，可以被转移或替代
-        return computeIfAbsent("eventBus", k -> Dami.newBus());
+        if (eventBus == null) {
+            eventBus = Dami.newBus();
+        }
+
+        return eventBus;
     }
 }
