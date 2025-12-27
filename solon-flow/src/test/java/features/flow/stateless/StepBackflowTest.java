@@ -39,7 +39,7 @@ public class StepBackflowTest {
 
         //尝试持久化转换加载
         String flowContextJson = flowContext.toJson();
-        flowContext = FlowContext.of().loadJson(flowContextJson);
+        flowContext = FlowContext.fromJson(flowContextJson);
 
         assert flowContext.lastNode() != null;
         assert flowContext.lastNode().getTitle().equals("活动节点3");

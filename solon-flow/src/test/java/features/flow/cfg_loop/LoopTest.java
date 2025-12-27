@@ -9,6 +9,7 @@ import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.test.SolonTest;
 
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @SolonTest
@@ -35,9 +36,9 @@ public class LoopTest {
         context.remove("context");
         log.warn(new TreeMap<>(context.model()).toString());
 
-        assert context.incrGet("a") == 9;
-        assert context.incrGet("b") == 3;
-        assert context.incrGet("c") == 1;
+        assert context.<AtomicInteger>getAs("a").get() == 9;
+        assert context.<AtomicInteger>getAs("b").get() == 3;
+        assert context.<AtomicInteger>getAs("c").get() == 1;
     }
 
     @Test

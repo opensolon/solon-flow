@@ -20,8 +20,6 @@ import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 /**
@@ -44,7 +42,7 @@ public interface FlowContext {
     /**
      * 从 json 加载（用于持久化）
      */
-    static FlowContext fromJson(String json){
+    static FlowContext fromJson(String json) {
         return FlowContextDefault.fromJson(json);
     }
 
@@ -178,27 +176,5 @@ public interface FlowContext {
      */
     default void remove(String key) {
         model().remove(key);
-    }
-
-    /**
-     * 增量添加
-     *
-     * @since 3.8
-     */
-    @Deprecated
-    default int incrAdd(String key, int delta) {
-        AtomicInteger tmp = (AtomicInteger) model().computeIfAbsent(key, k -> new AtomicInteger(0));
-        return tmp.addAndGet(delta);
-    }
-
-    /**
-     * 增量获取
-     *
-     * @since 3.8
-     */
-    @Deprecated
-    default int incrGet(String key) {
-        AtomicInteger tmp = (AtomicInteger) model().computeIfAbsent(key, k -> new AtomicInteger(0));
-        return tmp.get();
     }
 }

@@ -9,6 +9,7 @@ import org.noear.solon.flow.driver.SimpleFlowDriver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author noear 2025/3/20 created
@@ -58,6 +59,6 @@ public class FlowTest {
 
         flow.eval("for_case1", context);
 
-        assert  context.incrGet("demo") == 5;
+        assert  context.<AtomicInteger>getAs("demo").get() == 5;
     }
 }
