@@ -94,6 +94,7 @@ public class FlowContextDefault implements FlowContextInternal {
         return oNode.toJson();
     }
 
+
     @Override
     public void exchanger(FlowExchanger exchanger) {
         this.exchanger = exchanger;
@@ -102,6 +103,17 @@ public class FlowContextDefault implements FlowContextInternal {
     @Override
     public @Nullable FlowExchanger exchanger() {
         return exchanger;
+    }
+
+    /**
+     * 获取事件总线（based damibus）
+     */
+    public DamiBus eventBus() {
+        if (eventBus == null) {
+            eventBus = Dami.newBus();
+        }
+
+        return eventBus;
     }
 
     /**
@@ -140,11 +152,22 @@ public class FlowContextDefault implements FlowContextInternal {
         this.lastNode = new NodeTrace(node);
     }
 
+
+    /// //////////////////
+
     /**
      * 数据模型
      */
     public Map<String, Object> model() {
         return model;
+    }
+
+
+    /**
+     * 获取流实例id
+     */
+    public String getInstanceId() {
+        return getAs("instanceId");
     }
 
     /**
@@ -197,45 +220,9 @@ public class FlowContextDefault implements FlowContextInternal {
     }
 
     /**
-     * 增量添加
-     */
-    @Deprecated
-    public int incrAdd(String key, int delta) {
-        AtomicInteger tmp = (AtomicInteger) model.computeIfAbsent(key, k -> new AtomicInteger(0));
-        return tmp.addAndGet(delta);
-    }
-
-    /**
-     * 增量获取
-     */
-    @Deprecated
-    public int incrGet(String key) {
-        AtomicInteger tmp = (AtomicInteger) model.computeIfAbsent(key, k -> new AtomicInteger(0));
-        return tmp.get();
-    }
-
-    /**
      * 移除
      */
     public void remove(String key) {
         model.remove(key);
-    }
-
-    /**
-     * 获取流实例id
-     */
-    public String getInstanceId() {
-        return getAs("instanceId");
-    }
-
-    /**
-     * 获取事件总线（based damibus）
-     */
-    public DamiBus eventBus() {
-        if (eventBus == null) {
-            eventBus = Dami.newBus();
-        }
-
-        return eventBus;
     }
 }
