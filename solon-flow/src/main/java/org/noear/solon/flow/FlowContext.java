@@ -41,6 +41,8 @@ public interface FlowContext {
 
     /**
      * 从 json 加载（用于持久化）
+     *
+     * @since 3.8.1
      */
     static FlowContext fromJson(String json) {
         return FlowContextDefault.fromJson(json);
@@ -50,6 +52,8 @@ public interface FlowContext {
 
     /**
      * 转为 json（用于持久化）
+     *
+     * @since 3.8.1
      */
     String toJson();
 
