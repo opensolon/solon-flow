@@ -84,18 +84,17 @@ public interface FlowContext {
     /**
      * 最后运行的节点
      */
-    @Preview("3.7.4")
+    @Preview("3.8.0")
     @Nullable
     NodeTrace lastNode();
 
     /**
-     * 记录最后运行的节点
-     */
-    void lastNode(Node node);
-
-    /**
      * 最后运行的节点Id
+     *
+     * @since 3.8.0
      */
+    @Preview("3.8.0")
+    @Nullable
     default String lastNodeId() {
         if (lastNode() != null) {
             return lastNode().getId();

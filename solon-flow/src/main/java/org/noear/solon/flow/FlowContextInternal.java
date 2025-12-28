@@ -25,7 +25,7 @@ import org.noear.solon.lang.Preview;
  * @author noear
  * @since 3.8.1
  */
-public interface FlowContextInternal extends FlowContext{
+public interface FlowContextInternal extends FlowContext {
     /**
      * 配置交换器
      *
@@ -42,4 +42,11 @@ public interface FlowContextInternal extends FlowContext{
     @Internal
     @Nullable
     FlowExchanger exchanger();
+
+
+    /**
+     * 记录最后运行的节点
+     */
+    @Preview("3.8")
+    void lastNode(Node node);
 }
