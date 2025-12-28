@@ -13,6 +13,22 @@
 * 调整 `solon-flow` FlowContext:executor 转移到 FlowDriver
 * 移除 `solon-flow` FlowContext:incrAdd,incrGet 弃用预览接口
 
+
+新特性预览：上下文序列化与持久化
+
+
+```java
+//恢复上下文
+FlowContext context = FlowContext.fromJson(json);
+
+//从恢复上下文开始持行
+flowEngine.eval(graphId, context.lastNodeId(), context);
+
+//转为 json（方便持久化）
+json = context.toJson();
+```
+
+
 ### 3.8.0
 
 重要变化：
