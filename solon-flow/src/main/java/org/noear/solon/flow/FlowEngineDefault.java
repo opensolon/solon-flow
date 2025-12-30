@@ -337,6 +337,11 @@ public class FlowEngineDefault implements FlowEngine {
                 break;
         }
 
+        if (exchanger.isReverting() == false) {
+            //再恢复一次（跨流执行时会有改动）
+            exchanger.context().lastNode(node);
+        }
+
         return node_end;
     }
 
