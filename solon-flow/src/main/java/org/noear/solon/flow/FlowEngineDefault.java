@@ -158,7 +158,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 节点运行开始时
      */
-    protected void onNodeStart(FlowExchanger exchanger, Node node) {
+    protected boolean onNodeStart(FlowExchanger exchanger, Node node) {
         if (exchanger.isReverting() == false) {
             //恢复完成，才执行拦截
             for (RankEntity<FlowInterceptor> interceptor : interceptorList) {
@@ -166,20 +166,50 @@ public class FlowEngineDefault implements FlowEngine {
             }
 
             exchanger.driver().onNodeStart(exchanger, node);
+
+
+            //如果停止
+            if (exchanger.isStopped()) {
+                return false;
+            }
+
+            //如果阻断，就不再执行了（onNodeBefore 可能会触发中断）
+            if (exchanger.isInterrupted()) {
+                //重置阻断（不影响别的分支）
+                exchanger.interrupt(false);
+                return false;
+            }
         }
+
+        return true;
     }
 
     /**
      * 节点运行结束时
      */
-    protected void onNodeEnd(FlowExchanger exchanger, Node node) {
+    protected boolean onNodeEnd(FlowExchanger exchanger, Node node) {
         if (exchanger.isReverting() == false) {
             for (RankEntity<FlowInterceptor> interceptor : interceptorList) {
                 interceptor.target.onNodeEnd(exchanger.context(), node);
             }
 
             exchanger.driver().onNodeEnd(exchanger, node);
+
+
+            //如果停止
+            if (exchanger.isStopped()) {
+                return false;
+            }
+
+            //如果阻断，就不再执行了（onNodeBefore 可能会触发中断）
+            if (exchanger.isInterrupted()) {
+                //重置阻断（不影响别的分支）
+                exchanger.interrupt(false);
+                return false;
+            }
         }
+
+        return true;
     }
 
     /**
@@ -238,21 +268,7 @@ public class FlowEngineDefault implements FlowEngine {
 
         /// ///////////////////
 
-        onNodeEnd(exchanger, node);
-
-        //如果停止
-        if (exchanger.isStopped()) {
-            return false;
-        }
-
-        //如果阻断，就不再执行了（onNodeBefore 可能会触发中断）
-        if (exchanger.isInterrupted()) {
-            //重置阻断（不影响别的分支）
-            exchanger.interrupt(false);
-            return false;
-        }
-
-        return true;
+        return onNodeEnd(exchanger, node);
     }
 
     /**
@@ -294,20 +310,9 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
         //节点运行之前事件
-        onNodeStart(exchanger, node);
-
-        //如果停止
-        if (exchanger.isStopped()) {
+        if(onNodeStart(exchanger, node) == false){
             return false;
         }
-
-        //如果阻断，就不再执行了（onNodeBefore 可能会触发中断）
-        if (exchanger.isInterrupted()) {
-            //重置阻断（不影响别的分支）
-            exchanger.interrupt(false);
-            return false;
-        }
-
 
         boolean node_end = true;
 
