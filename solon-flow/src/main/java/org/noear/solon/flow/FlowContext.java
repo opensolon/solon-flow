@@ -82,6 +82,12 @@ public interface FlowContext {
     /// ////////////
 
     /**
+     * 记录最后运行的节点
+     */
+    @Preview("3.8")
+    void lastNode(Node node);
+
+    /**
      * 最后运行的节点
      */
     @Preview("3.8.0")

@@ -149,7 +149,11 @@ public class FlowContextDefault implements FlowContextInternal {
 
     @Override
     public void lastNode(Node node) {
-        this.lastNode = new NodeTrace(node);
+        if (node == null) {
+            this.lastNode = null;
+        } else {
+            this.lastNode = new NodeTrace(node);
+        }
     }
 
 

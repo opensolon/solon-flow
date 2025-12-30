@@ -42,11 +42,4 @@ public interface FlowContextInternal extends FlowContext {
     @Internal
     @Nullable
     FlowExchanger exchanger();
-
-
-    /**
-     * 记录最后运行的节点
-     */
-    @Preview("3.8")
-    void lastNode(Node node);
 }

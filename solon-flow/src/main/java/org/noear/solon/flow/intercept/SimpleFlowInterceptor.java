@@ -29,16 +29,16 @@ import java.util.function.Consumer;
  * @since 3.8.1
  */
 public class SimpleFlowInterceptor implements FlowInterceptor {
+    private final Consumer<FlowInvocation> doIntercept;
     private final BiConsumer<FlowContext, Node> onNodeStart;
     private final BiConsumer<FlowContext, Node> onNodeEnd;
-    private final Consumer<FlowInvocation> doIntercept;
 
-    public SimpleFlowInterceptor(BiConsumer<FlowContext, Node> onNodeStart,
-                                 BiConsumer<FlowContext, Node> onNodeEnd,
-                                 Consumer<FlowInvocation> doIntercept) {
+    public SimpleFlowInterceptor(Consumer<FlowInvocation> doIntercept,
+                                 BiConsumer<FlowContext, Node> onNodeStart,
+                                 BiConsumer<FlowContext, Node> onNodeEnd) {
+        this.doIntercept = doIntercept;
         this.onNodeStart = onNodeStart;
         this.onNodeEnd = onNodeEnd;
-        this.doIntercept = doIntercept;
     }
 
 
@@ -72,9 +72,14 @@ public class SimpleFlowInterceptor implements FlowInterceptor {
     }
 
     public static class Builder {
+        private Consumer<FlowInvocation> doIntercept;
         private BiConsumer<FlowContext, Node> onNodeStart;
         private BiConsumer<FlowContext, Node> onNodeEnd;
-        private Consumer<FlowInvocation> doIntercept;
+
+        public Builder doIntercept(Consumer<FlowInvocation> doIntercept) {
+            this.doIntercept = doIntercept;
+            return this;
+        }
 
         public Builder onNodeStart(BiConsumer<FlowContext, Node> onNodeStart) {
             this.onNodeStart = onNodeStart;
@@ -86,13 +91,8 @@ public class SimpleFlowInterceptor implements FlowInterceptor {
             return this;
         }
 
-        public Builder doIntercept(Consumer<FlowInvocation> doIntercept) {
-            this.doIntercept = doIntercept;
-            return this;
-        }
-
         public SimpleFlowInterceptor build() {
-            return new SimpleFlowInterceptor(onNodeStart, onNodeEnd, doIntercept);
+            return new SimpleFlowInterceptor(doIntercept, onNodeStart, onNodeEnd);
         }
     }
 }

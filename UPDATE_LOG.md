@@ -12,6 +12,7 @@
 * 优化 `solon-flow` FlowContext.eventBus 内部实现改为字段模式
 * 调整 `solon-flow` FlowContext:executor 转移到 FlowDriver
 * 移除 `solon-flow` FlowContext:incrAdd,incrGet 弃用预览接口
+* 修复 `solon-flow` FlowContext 跨多引擎中转时 exchanger 的冲突问题
 
 
 新特性预览：上下文序列化与持久化
