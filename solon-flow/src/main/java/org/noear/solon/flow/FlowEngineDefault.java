@@ -173,11 +173,13 @@ public class FlowEngineDefault implements FlowEngine {
      * 节点运行结束时
      */
     protected void onNodeEnd(FlowExchanger exchanger, Node node) {
-        for (RankEntity<FlowInterceptor> interceptor : interceptorList) {
-            interceptor.target.onNodeEnd(exchanger.context(), node);
-        }
+        if (exchanger.isReverting() == false) {
+            for (RankEntity<FlowInterceptor> interceptor : interceptorList) {
+                interceptor.target.onNodeEnd(exchanger.context(), node);
+            }
 
-        exchanger.driver().onNodeEnd(exchanger, node);
+            exchanger.driver().onNodeEnd(exchanger, node);
+        }
     }
 
     /**
@@ -208,6 +210,8 @@ public class FlowEngineDefault implements FlowEngine {
             return true;
         }
 
+        /// ///////////////////
+
         //尝试检测条件；缺省为 true
         if (condition_test(exchanger, node.getWhen(), true)) {
             //起到触发事件的作用 //处理方会“过滤”空任务
@@ -219,6 +223,22 @@ public class FlowEngineDefault implements FlowEngine {
                 throw new FlowException("The task handle failed: " + node.getGraph().getId() + " / " + node.getId(), e);
             }
         }
+
+        //如果停止
+        if (exchanger.isStopped()) {
+            return false;
+        }
+
+        //如果阻断，就不再执行了（onNodeBefore 可能会触发中断）
+        if (exchanger.isInterrupted()) {
+            //重置阻断（不影响别的分支）
+            exchanger.interrupt(false);
+            return false;
+        }
+
+        /// ///////////////////
+
+        onNodeEnd(exchanger, node);
 
         //如果停止
         if (exchanger.isStopped()) {
@@ -293,10 +313,12 @@ public class FlowEngineDefault implements FlowEngine {
 
         switch (node.getType()) {
             case START:
+                onNodeEnd(exchanger, node);
                 //转到下个节点
                 node_run(exchanger, node.getNextNode(), startNode, depth);
                 break;
             case END:
+                onNodeEnd(exchanger, node);
                 break;
             case ACTIVITY:
                 node_end = activity_run(exchanger, node, startNode, depth);
@@ -314,12 +336,6 @@ public class FlowEngineDefault implements FlowEngine {
                 node_end = loop_run(exchanger, node, startNode, depth);
                 break;
         }
-
-        //节点运行之后事件
-        if (node_end) {
-            onNodeEnd(exchanger, node);
-        }
-
 
         return node_end;
     }
