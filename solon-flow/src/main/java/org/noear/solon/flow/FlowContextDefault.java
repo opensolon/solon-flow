@@ -58,7 +58,8 @@ public class FlowContextDefault implements FlowContextInternal {
     private static final Options OPTIONS = Options.of(
             Feature.Read_AutoType,
             Feature.Write_ClassName,
-            Feature.Write_NotMapClassName);
+            Feature.Write_NotMapClassName, //比如只读的 Map 避免有类名
+            Feature.Write_EnumUsingName);
 
     protected static FlowContext fromJson(String json) {
         FlowContextDefault tmp = new FlowContextDefault();
@@ -84,7 +85,7 @@ public class FlowContextDefault implements FlowContextInternal {
                     return;
                 }
 
-                n.set(k, v);
+                n.set(k, ONode.ofBean(v, OPTIONS));
             });
         });
 
