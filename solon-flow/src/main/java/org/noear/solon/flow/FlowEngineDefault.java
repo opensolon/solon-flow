@@ -313,12 +313,10 @@ public class FlowEngineDefault implements FlowEngine {
 
         switch (node.getType()) {
             case START:
-                onNodeEnd(exchanger, node);
-                //转到下个节点
-                node_run(exchanger, node.getNextNode(), startNode, depth);
+                start_run(exchanger, node, startNode, depth);
                 break;
             case END:
-                onNodeEnd(exchanger, node);
+                end_run(exchanger, node, startNode, depth);
                 break;
             case ACTIVITY:
                 node_end = activity_run(exchanger, node, startNode, depth);
@@ -340,19 +338,27 @@ public class FlowEngineDefault implements FlowEngine {
         return node_end;
     }
 
+    protected void start_run(FlowExchanger exchanger, Node node, Node startNode, int depth) {
+        onNodeEnd(exchanger, node);
+
+        //::流出
+        for (Link l : node.getNextLinks()) {
+            if (condition_test(exchanger, l.getWhen(), true)) {
+                node_run(exchanger, l.getNextNode(), startNode, depth);
+            }
+        }
+    }
+
+    protected void end_run(FlowExchanger exchanger, Node node, Node startNode, int depth) {
+        onNodeEnd(exchanger, node);
+    }
+
     protected boolean activity_run(FlowExchanger exchanger, Node node, Node startNode, int depth) {
         //尝试执行任务（可能为空）
         if (task_exec(exchanger, node) == false) {
             return false;
         }
 
-        //流出（原始态）
-        //return node_run(exchanger, node.getNextNode(), depth);
-        return activity_run_out(exchanger, node, startNode, depth);
-    }
-
-    //活动节点
-    protected boolean activity_run_out(FlowExchanger exchanger, Node node, Node startNode, int depth) {
         //::流出
         for (Link l : node.getNextLinks()) {
             if (condition_test(exchanger, l.getWhen(), true)) {

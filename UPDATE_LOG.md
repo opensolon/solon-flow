@@ -10,6 +10,7 @@
 * 添加 `solon-flow` NodeTrace 类
 * 优化 `solon-flow` FlowContext 接口设计，并增加持久化辅助方法
 * 优化 `solon-flow` FlowContext.eventBus 内部实现改为字段模式
+* 优化 `solon-flow` start 类型节点改为自由流出像 activity 一样（只是没有任务）
 * 优化 `solon-flow` 引擎的 onNodeEnd 执行时机（改为任务执行之后，连接流出之前）//要补单测
 * 调整 `solon-flow` FlowContext:executor 转移到 FlowDriver
 * 移除 `solon-flow` FlowContext:incrAdd,incrGet 弃用预览接口
