@@ -123,6 +123,10 @@ public class LinkSpec {
             buf.append(", when='").append(when).append('\'');
         }
 
+        if (whenComponent != null) {
+            buf.append(", whenComponent=").append(whenComponent);
+        }
+
         if (Utils.isNotEmpty(meta)) {
             buf.append(", meta=").append(meta);
         }

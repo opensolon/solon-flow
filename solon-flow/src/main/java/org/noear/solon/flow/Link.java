@@ -184,6 +184,10 @@ public class Link implements Comparable<Link> {
             buf.append(", when=").append(when.getDescription());
         }
 
+        if(when.getComponent() != null) {
+            buf.append(", whenComponent=").append(when.getComponent());
+        }
+
         buf.append("}");
 
         return buf.toString();

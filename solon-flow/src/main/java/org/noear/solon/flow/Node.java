@@ -293,8 +293,16 @@ public class Node {
             buf.append(", when='").append(when.getDescription()).append('\'');
         }
 
+        if(when.getComponent() != null) {
+            buf.append(", whenComponent=").append(when.getComponent());
+        }
+
         if (Utils.isNotEmpty(task.getDescription())) {
             buf.append(", task='").append(task.getDescription()).append('\'');
+        }
+
+        if (task.getComponent() != null) {
+            buf.append(", taskComponent=").append(task.getComponent());
         }
 
         if (Utils.isNotEmpty(nextLinks)) {
