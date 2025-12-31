@@ -295,8 +295,8 @@ public class FlowEngineDefault implements FlowEngine {
 
         //检测恢复情况
         if (exchanger.isReverting()) {
-            if (node.getId().equals(startNode.getId())) {
-                //恢复完成（相对之前的 startNode 方案，新方案能还原上层状态）
+            if (node.getId().equals(startNode.getId()) && node.getGraph().getId().equals(startNode.getGraph().getId())) {
+                //恢复完成（恢复到同图同节点）
                 exchanger.reverting(false);
             }
         } else {
