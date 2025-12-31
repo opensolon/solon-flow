@@ -50,6 +50,14 @@ public class NodeSpec {
     }
 
     /**
+     * 然后，构建自己
+     */
+    public NodeSpec then(Consumer<NodeSpec> consumer) {
+        consumer.accept(this);
+        return this;
+    }
+
+    /**
      * 配置标题
      */
     public NodeSpec title(String title) {
@@ -103,7 +111,7 @@ public class NodeSpec {
     }
 
     public NodeSpec linkRemove(String nextId) {
-        this.links.removeIf(l->l.getNextId().equals(nextId));
+        this.links.removeIf(l -> l.getNextId().equals(nextId));
         return this;
     }
 
@@ -118,7 +126,7 @@ public class NodeSpec {
     /**
      * 配置任务条件（用于硬编码）
      *
-     * @since  3.7
+     * @since 3.7
      */
     public NodeSpec when(ConditionComponent whenComponent) {
         this.whenComponent = whenComponent;
