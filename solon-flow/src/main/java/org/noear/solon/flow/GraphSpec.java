@@ -141,12 +141,34 @@ public class GraphSpec {
     }
 
     /**
+     * 构建活动节点
+     *
+     * @since 3.8.1
+     */
+    public NodeSpec addActivity(NamedTaskComponent com) {
+        Objects.requireNonNull(com.name(), "name");
+
+        return addNode(new NodeSpec(com.name(), NodeType.ACTIVITY)).task(com);
+    }
+
+    /**
      * 构建包容网关节点
      *
      * @since 3.7
      */
     public NodeSpec addInclusive(String id) {
         return addNode(new NodeSpec(id, NodeType.INCLUSIVE));
+    }
+
+    /**
+     * 构建包容网关节点
+     *
+     * @since 3.8.1
+     */
+    public NodeSpec addInclusive(NamedTaskComponent com) {
+        Objects.requireNonNull(com.name(), "name");
+
+        return addNode(new NodeSpec(com.name(), NodeType.INCLUSIVE)).task(com);
     }
 
     /**
@@ -159,6 +181,17 @@ public class GraphSpec {
     }
 
     /**
+     * 构建排他网关节点
+     *
+     * @since 3.8.1
+     */
+    public NodeSpec addExclusive(NamedTaskComponent com) {
+        Objects.requireNonNull(com.name(), "name");
+
+        return addNode(new NodeSpec(com.name(), NodeType.EXCLUSIVE)).task(com);
+    }
+
+    /**
      * 构建并行网关节点
      *
      * @since 3.7
@@ -168,12 +201,34 @@ public class GraphSpec {
     }
 
     /**
+     * 构建并行网关节点
+     *
+     * @since 3.8.1
+     */
+    public NodeSpec addParallel(NamedTaskComponent com) {
+        Objects.requireNonNull(com.name(), "name");
+
+        return addNode(new NodeSpec(com.name(), NodeType.PARALLEL)).task(com);
+    }
+
+    /**
      * 构建循环网关节点
      *
      * @since 3.7
      */
     public NodeSpec addLoop(String id) {
         return addNode(new NodeSpec(id, NodeType.LOOP));
+    }
+
+    /**
+     * 构建循环网关节点
+     *
+     * @since 3.8.1
+     */
+    public NodeSpec addLoop(NamedTaskComponent com) {
+        Objects.requireNonNull(com.name(), "name");
+
+        return addNode(new NodeSpec(com.name(), NodeType.LOOP)).task(com);
     }
 
     /// //////////////////////////////

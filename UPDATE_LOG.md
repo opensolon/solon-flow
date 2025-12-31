@@ -9,6 +9,7 @@
 * 添加 `solon-flow` FlowContext:toJson,fromJson 序列化方法（方便持久化和恢复）
 * 添加 `solon-flow` NodeTrace 类
 * 添加 `solon-flow` FlowContext:with 方法（强调方法域内的变量）
+* 添加 `solon-flow` NamedTaskComponent 接口，方便智能体开发
 * 优化 `solon-flow` FlowContext 接口设计，并增加持久化辅助方法
 * 优化 `solon-flow` FlowContext.eventBus 内部实现改为字段模式
 * 优化 `solon-flow` start 类型节点改为自由流出像 activity 一样（只是没有任务）
