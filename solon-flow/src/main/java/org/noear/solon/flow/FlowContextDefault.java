@@ -22,6 +22,7 @@ import org.noear.snack4.ONode;
 import org.noear.snack4.Options;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
+import org.noear.solon.util.RunnableTx;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -172,6 +173,22 @@ public class FlowContextDefault implements FlowContextInternal {
      */
     public String getInstanceId() {
         return getAs("instanceId");
+    }
+
+    @Override
+    public <X extends Throwable> void with(String key, Object value, RunnableTx<X> runnable) throws X {
+        Object bak = get(key);
+
+        try {
+            put(key, value);
+            runnable.run();
+        } finally {
+            if (bak == null) {
+                remove(key);
+            } else {
+                put(key, bak);
+            }
+        }
     }
 
     /**

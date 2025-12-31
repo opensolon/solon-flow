@@ -18,6 +18,7 @@ package org.noear.solon.flow;
 import org.noear.dami2.bus.DamiBus;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
+import org.noear.solon.util.RunnableTx;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -122,6 +123,12 @@ public interface FlowContext {
     default String getInstanceId() {
         return getAs("instanceId");
     }
+
+
+    /**
+     * 临时域变量
+     */
+    <X extends Throwable> void with(String key, Object value, RunnableTx<X> runnable) throws X;
 
 
     /**
