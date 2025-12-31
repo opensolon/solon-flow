@@ -189,6 +189,8 @@ public class FlowEngineDefault implements FlowEngine {
      */
     protected boolean onNodeEnd(FlowExchanger exchanger, Node node) {
         if (exchanger.isReverting() == false) {
+            exchanger.context().lastNode(node);
+
             for (RankEntity<FlowInterceptor> interceptor : interceptorList) {
                 interceptor.target.onNodeEnd(exchanger.context(), node);
             }
@@ -298,6 +300,7 @@ public class FlowEngineDefault implements FlowEngine {
                 exchanger.reverting(false);
             }
         } else {
+            //提前记录，方便下次进来
             exchanger.context().lastNode(node);
         }
 
