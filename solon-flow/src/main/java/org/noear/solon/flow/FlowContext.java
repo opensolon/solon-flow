@@ -167,6 +167,13 @@ public interface FlowContext {
     }
 
     /**
+     * 包含 key
+     * */
+    default boolean containsKey(String key){
+        return model().containsKey(key);
+    }
+
+    /**
      * 获取
      */
     default Object get(String key) {
