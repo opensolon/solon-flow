@@ -243,6 +243,11 @@ public class FlowEngineDefault implements FlowEngine {
             return true;
         }
 
+        //任务之前，流入之后
+        if (onNodeStart(exchanger, node) == false) {
+            return false;
+        }
+
         /// ///////////////////
 
         //尝试检测条件；缺省为 true
@@ -271,6 +276,7 @@ public class FlowEngineDefault implements FlowEngine {
 
         /// ///////////////////
 
+        //任务之后，流出之前
         return onNodeEnd(exchanger, node);
     }
 
@@ -313,11 +319,6 @@ public class FlowEngineDefault implements FlowEngine {
             depth--;
         }
 
-        //节点运行之前事件
-        if (onNodeStart(exchanger, node) == false) {
-            return;
-        }
-
         switch (node.getType()) {
             case START:
                 start_run(exchanger, node, startNode, depth);
@@ -344,7 +345,15 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     protected void start_run(FlowExchanger exchanger, Node node, Node startNode, int depth) {
-        onNodeEnd(exchanger, node);
+        //任务之前，流入之后
+        if (onNodeStart(exchanger, node) == false) {
+            return;
+        }
+
+        //任务之后，流出之前
+        if(onNodeEnd(exchanger, node) == false){
+            return;
+        }
 
         //::流出
         for (Link l : node.getNextLinks()) {
@@ -355,7 +364,15 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     protected void end_run(FlowExchanger exchanger, Node node, Node startNode, int depth) {
-        onNodeEnd(exchanger, node);
+        //任务之前，流入之后
+        if (onNodeStart(exchanger, node) == false) {
+            return;
+        }
+
+        //任务之后，流出之前
+        if(onNodeEnd(exchanger, node) == false){
+            return;
+        }
     }
 
     protected void activity_run(FlowExchanger exchanger, Node node, Node startNode, int depth) {
