@@ -119,7 +119,8 @@ public class FlowExchanger {
      * 是否已停止（用于内部控制）
      */
     public boolean isStopped() {
-        return stopped;
+        // context.isStopped() 每次 flow.eval 时会重置，但是执行内是有效的（可支持跨图、跨引擎传递）
+        return stopped || context.isStopped();
     }
 
     /**
