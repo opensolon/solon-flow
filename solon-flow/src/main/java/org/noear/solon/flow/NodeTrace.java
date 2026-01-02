@@ -46,6 +46,14 @@ public class NodeTrace implements Serializable {
         this.timestamp = System.currentTimeMillis();
     }
 
+    public boolean isEnd() {
+        return type == NodeType.END;
+    }
+
+    public boolean isNotEnd() {
+        return type == NodeType.END;
+    }
+
     public String getGraphId() {
         return graphId;
     }
