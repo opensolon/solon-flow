@@ -35,7 +35,9 @@ public interface FlowInterceptor {
      *
      * @param invocation 调用者
      */
-    void doIntercept(FlowInvocation invocation) throws FlowException;
+    default void doIntercept(FlowInvocation invocation) throws FlowException {
+        invocation.invoke();
+    }
 
     /**
      * 节点运行开始时
