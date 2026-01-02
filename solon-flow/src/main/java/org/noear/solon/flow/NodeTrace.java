@@ -51,7 +51,7 @@ public class NodeTrace implements Serializable {
     }
 
     public boolean isNotEnd() {
-        return type == NodeType.END;
+        return type != NodeType.END;
     }
 
     public String getGraphId() {
