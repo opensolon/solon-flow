@@ -13,10 +13,10 @@
 
 * 添加 `solon-flow` FlowContext:toJson,fromJson 序列化方法（方便持久化和恢复）
 * 添加 `solon-flow` NodeTrace 类
-* 添加 `solon-flow` NodeSpec:then 方法
-* 添加 `solon-flow` FlowContext:with 方法（强调方法域内的变量）
+* 添加 `solon-flow` NodeSpec.then 方法
+* 添加 `solon-flow` FlowContext.with 方法（强调方法域内的变量）
 * 添加 `solon-flow` FlowContext.containsKey 方法
-* 添加 `solon-flow` FlowContext：isStopped 方法（用于外部检测）
+* 添加 `solon-flow` FlowContext.isStopped 方法（用于外部检测）
 * 添加 `solon-flow` NamedTaskComponent 接口，方便智能体开发
 * 优化 `solon-flow` FlowContext 接口设计，并增加持久化辅助方法
 * 优化 `solon-flow` FlowContext.eventBus 内部实现改为字段模式
@@ -27,7 +27,7 @@
 * 优化 `solon-flow` 引擎的 reverting 处理（支持跨引擎多图场景）
 * 优化 `solon-flow` Node,Link toString 处理（加 whenComponent）
 * 调整 `solon-flow` FlowContext:executor 转移到 FlowDriver
-* 调整 `solon-flow` FlowInterceptor:doIntercept 更名为 FlowInterceptor，并标为 default（扩展时语义清晰，且不需要强制实现）
+* 调整 `solon-flow` FlowInterceptor:doIntercept 更名为 doFlowInterceptor，并标为 default（扩展时语义清晰，且不需要强制实现）
 * 移除 `solon-flow` FlowContext:incrAdd,incrGet 弃用预览接口
 * 修复 `solon-flow` FlowContext 跨多引擎中转时 exchanger 的冲突问题
 
