@@ -27,6 +27,12 @@ import org.noear.solon.lang.Preview;
  */
 public interface FlowContextInternal extends FlowContext {
     /**
+     * 是否已停止（跨引擎传递）
+     */
+    @Preview("3.8")
+    void stopped(boolean stopped);
+
+    /**
      * 配置交换器
      *
      * @since 3.8
@@ -34,7 +40,6 @@ public interface FlowContextInternal extends FlowContext {
     @Internal
     @Preview("3.8")
     void exchanger(FlowExchanger exchanger);
-
 
     /**
      * 交换器

@@ -116,7 +116,7 @@ public class FlowExchanger {
     /// ///////////////////////////
 
     /**
-     * 是否已停止
+     * 是否已停止（用于内部控制）
      */
     public boolean isStopped() {
         return stopped;
@@ -127,10 +127,11 @@ public class FlowExchanger {
      */
     public void stop() {
         stopped = true;
+        context.stopped(true);
     }
 
     /**
-     * 是否已阻断
+     * 是否已阻断（用于内部控制）
      */
     public boolean isInterrupted() {
         return interrupted;

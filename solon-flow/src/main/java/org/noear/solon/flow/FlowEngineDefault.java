@@ -142,6 +142,7 @@ public class FlowEngineDefault implements FlowEngine {
         FlowExchanger bak = exchanger.context().exchanger();
         try {
             exchanger.context().exchanger(exchanger);
+            exchanger.context().stopped(false); //每次执行前，重置下
             new FlowInvocation(exchanger, startNode, depth, this.interceptorList, this::evalDo).invoke();
         } finally {
             exchanger.context().exchanger(bak);

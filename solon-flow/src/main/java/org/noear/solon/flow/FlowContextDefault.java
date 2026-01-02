@@ -46,6 +46,8 @@ public class FlowContextDefault implements FlowContextInternal {
     private transient volatile DamiBus eventBus;
     //最后执行节点
     private transient volatile NodeTrace lastNode;
+    //是否已停止
+    private transient volatile boolean stopped;
 
     protected FlowContextDefault() {
         this(null);
@@ -135,6 +137,15 @@ public class FlowContextDefault implements FlowContextInternal {
         }
     }
 
+    @Override
+    public boolean isStopped() {
+        return stopped;
+    }
+
+    @Override
+    public void stopped(boolean stopped) {
+        this.stopped = stopped;
+    }
 
     /// //////////////////
 

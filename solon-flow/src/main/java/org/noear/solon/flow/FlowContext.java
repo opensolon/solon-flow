@@ -80,6 +80,11 @@ public interface FlowContext {
      */
     void stop();
 
+    /**
+     * 是否已停止（用于外部检测）
+     */
+    boolean isStopped();
+
     /// ////////////
 
     /**
