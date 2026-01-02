@@ -43,7 +43,7 @@ public class SimpleFlowInterceptor implements FlowInterceptor {
 
 
     @Override
-    public void doIntercept(FlowInvocation invocation) throws FlowException {
+    public void doFlowIntercept(FlowInvocation invocation) throws FlowException {
         if (doIntercept != null) {
             doIntercept.accept(invocation);
         } else {

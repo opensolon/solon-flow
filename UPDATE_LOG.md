@@ -21,7 +21,7 @@
 * 优化 `solon-flow` 引擎的 reverting 处理（支持跨引擎多图场景）
 * 优化 `solon-flow` Node,Link toString 处理（加 whenComponent）
 * 调整 `solon-flow` FlowContext:executor 转移到 FlowDriver
-* 调整 `solon-flow` FlowInterceptor:doIntercept 改为 default（不需要强制实现）
+* 调整 `solon-flow` FlowInterceptor:doIntercept 更名为 FlowInterceptor，并标为 default（方便扩展语义清晰，且不需要强制实现）
 * 移除 `solon-flow` FlowContext:incrAdd,incrGet 弃用预览接口
 * 修复 `solon-flow` FlowContext 跨多引擎中转时 exchanger 的冲突问题
 

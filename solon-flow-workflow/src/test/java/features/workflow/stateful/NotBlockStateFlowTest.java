@@ -58,7 +58,7 @@ public class NotBlockStateFlowTest {
     public void caseInterceptorBlock() {
         FlowInterceptor interceptor = new FlowInterceptor() {
             @Override
-            public void doIntercept(FlowInvocation invocation) throws FlowException {
+            public void doFlowIntercept(FlowInvocation invocation) throws FlowException {
                 invocation.invoke();
             }
 
