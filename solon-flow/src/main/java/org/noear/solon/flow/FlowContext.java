@@ -110,13 +110,6 @@ public interface FlowContext {
     NodeRecord lastRecord();
 
     /**
-     * 子图最后运行的节点
-     */
-    @Preview("3.8.0")
-    @Nullable
-    Node lastNode(Graph graph);
-
-    /**
      * 根图最后运行的节点Id
      *
      * @since 3.8.0
