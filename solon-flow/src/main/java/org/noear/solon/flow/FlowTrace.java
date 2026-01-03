@@ -56,7 +56,20 @@ public class FlowTrace implements Serializable {
     /**
      * 记录
      */
-    public void record(Graph graph, Node node) {
+    public void recordNodeId(Graph graph, String nodeId) {
+        if (enabled == false) {
+            return;
+        }
+
+        Objects.requireNonNull(graph, "graph");
+
+        recordNode(graph, graph.getNodeOrThrow(nodeId));
+    }
+
+    /**
+     * 记录
+     */
+    public void recordNode(Graph graph, Node node) {
         if (enabled == false) {
             return;
         }
