@@ -16,6 +16,8 @@
 package org.noear.solon.flow;
 
 
+import org.noear.solon.lang.Preview;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
@@ -28,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author noear
  * @since 3.8.1
  */
+@Preview("3.8.1")
 public class FlowTrace implements Serializable {
     private volatile boolean enabled = true;
     //根图id

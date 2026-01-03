@@ -17,6 +17,7 @@ package org.noear.solon.flow;
 
 import org.noear.snack4.Feature;
 import org.noear.snack4.annotation.ONodeAttr;
+import org.noear.solon.lang.Preview;
 
 import java.io.Serializable;
 
@@ -26,6 +27,7 @@ import java.io.Serializable;
  * @author noear
  * @since 3.8.1
  */
+@Preview("3.8")
 public class NodeRecord implements Serializable {
     private String graphId;
     private String id;
