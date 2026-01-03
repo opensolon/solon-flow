@@ -97,7 +97,7 @@ public class FlowTrace implements Serializable {
     /**
      * 获取图的最后记录
      */
-    public NodeRecord lastNode(String graphId) {
+    public NodeRecord lastRecord(String graphId) {
         if (enabled == false) {
             return null;
         }
@@ -113,8 +113,18 @@ public class FlowTrace implements Serializable {
         return lastRecords.get(graphId);
     }
 
+    public Node lastNode(Graph graph) {
+        String nodeId = lastNodeId(graph.getId());
+
+        if (nodeId == null) {
+            graph.getStart();
+        }
+
+        return graph.getNodeOrThrow(nodeId);
+    }
+
     public String lastNodeId(String graphId) {
-        NodeRecord tmp = lastNode(graphId);
+        NodeRecord tmp = lastRecord(graphId);
 
         if (tmp == null) {
             return null;

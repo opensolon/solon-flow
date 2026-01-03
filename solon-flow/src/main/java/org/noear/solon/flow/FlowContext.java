@@ -107,15 +107,14 @@ public interface FlowContext {
      */
     @Preview("3.8.0")
     @Nullable
-    default NodeRecord lastNode(){
-        return lastNode(null);
-    }
+    NodeRecord lastRecord();
 
     /**
      * 子图最后运行的节点
      */
+    @Preview("3.8.0")
     @Nullable
-    NodeRecord lastNode(String graphId);
+    Node lastNode(Graph graph);
 
     /**
      * 根图最后运行的节点Id
@@ -124,17 +123,7 @@ public interface FlowContext {
      */
     @Preview("3.8.0")
     @Nullable
-    default String lastNodeId(){
-        return lastNodeId(null);
-    }
-
-    /**
-     * 子图最后运行的节点Id
-     *
-     * @since 3.8.0
-     */
-    @Nullable
-    String lastNodeId(String graphId);
+    String lastNodeId();
 
     /// ////////////
 

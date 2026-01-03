@@ -92,7 +92,7 @@ public class FlowContextDefault implements FlowContextInternal {
             });
         });
 
-        if(trace != null) {
+        if (trace != null) {
             oNode.set("trace", ONode.ofBean(trace));
         }
 
@@ -163,13 +163,18 @@ public class FlowContextDefault implements FlowContextInternal {
     }
 
     @Override
-    public @Nullable NodeRecord lastNode(String graphId) {
-        return trace.lastNode(graphId);
+    public @Nullable NodeRecord lastRecord() {
+        return trace.lastRecord(null);
     }
 
     @Override
-    public @Nullable String lastNodeId(String graphId) {
-        return trace.lastNodeId(graphId);
+    public @Nullable Node lastNode(Graph graph) {
+        return trace.lastNode(graph);
+    }
+
+    @Override
+    public @Nullable String lastNodeId() {
+        return trace.lastNodeId(null);
     }
 
     /// //////////////////
