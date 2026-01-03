@@ -194,12 +194,7 @@ public class Graph {
             return start;
         }
 
-        Node node = getNode(nodeId);
-        if (node == null) {
-            throw new IllegalArgumentException("Node not found, id: " + id);
-        }
-
-        return node;
+        return getNodeOrThrow(nodeId);
     }
 
     /// ////////
