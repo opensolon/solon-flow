@@ -19,6 +19,7 @@ package org.noear.solon.flow;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -55,16 +56,22 @@ public class FlowTrace implements Serializable {
     /**
      * 记录
      */
-    public void record(Node node) {
+    public void record(Graph graph, Node node) {
         if (enabled == false) {
             return;
         }
 
+        Objects.requireNonNull(graph, "graph");
+
         if (rootGraphId == null) {
-            rootGraphId = node.getGraph().getId();
+            rootGraphId = graph.getId();
         }
 
-        lastRecords.put(node.getGraph().getId(), new NodeRecord(node));
+        if (node == null) {
+            lastRecords.remove(graph.getId());
+        } else {
+            lastRecords.put(graph.getId(), new NodeRecord(node));
+        }
     }
 
     /**

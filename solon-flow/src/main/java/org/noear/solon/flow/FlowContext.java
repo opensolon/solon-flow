@@ -88,19 +88,19 @@ public interface FlowContext {
     /// ////////////
     /**
      * 痕迹
+     *
+     * @since 3.8.1
      */
+    @Preview("3.8.0")
     FlowTrace trace();
 
     /**
      * 启用痕迹（默认为启用）
+     *
+     * @since 3.8.1
      */
+    @Preview("3.8.0")
     FlowContext enableTrace(boolean enable);
-
-    /**
-     * 记录最后运行的节点
-     */
-    @Preview("3.8")
-    void recordNode(Graph graph, Node node);
 
     /**
      * 根图最后运行的节点

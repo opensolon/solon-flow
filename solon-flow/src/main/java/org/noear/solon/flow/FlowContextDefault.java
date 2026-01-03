@@ -163,21 +163,6 @@ public class FlowContextDefault implements FlowContextInternal {
     }
 
     @Override
-    public void recordNode(Graph graph, @Nullable Node node) {
-        if (trace.isEnabled() == false) {
-            return;
-        }
-
-        Objects.requireNonNull(graph, "graph");
-
-        if(node == null) {
-            trace.record(graph.getStart());
-        } else {
-            trace.record(node);
-        }
-    }
-
-    @Override
     public @Nullable NodeRecord lastNode(String graphId) {
         return trace.last(graphId);
     }
