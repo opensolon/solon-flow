@@ -45,7 +45,7 @@ public class HelloTest {
         }
 
         //测试
-        int count = 1_000_000; //flow(on macbook): 1.2s 跑完
+        int count = 1_000_000; //flow(on macbook): 1.2s 跑完 //3.1s 跑完
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
             flowEngine.eval("case1", context);
@@ -84,7 +84,7 @@ public class HelloTest {
         }
 
         //测试
-        int count = 100_000; //flow: 0.6s 跑完
+        int count = 100_000; //flow: 0.6s 跑完 //0.5s 跑完
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
             flowEngine.eval("case2");
