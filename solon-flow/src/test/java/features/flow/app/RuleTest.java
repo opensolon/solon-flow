@@ -50,7 +50,7 @@ public class RuleTest {
 
     @Test
     public void case4() throws Throwable {
-        FlowEngine flowEngine = FlowEngine.newInstance();//支持无状态
+        FlowEngine flowEngine = FlowEngine.newInstance();
         flowEngine.load(Graph.fromUri("classpath:flow/rule/bookDiscount.yml"));
 
         BookOrder bookOrder = new BookOrder();
