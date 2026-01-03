@@ -188,9 +188,11 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 节点运行结束时
      */
-    protected boolean onNodeEnd(FlowExchanger exchanger, Node node) {
+    protected boolean onNodeEnd(FlowExchanger exchanger, Node node, boolean record) {
         if (exchanger.isReverting() == false) {
-            exchanger.context().lastNode(node.getGraph(), node);
+            if(record) {
+                exchanger.context().lastNode(node.getGraph(), node);
+            }
 
             for (RankEntity<FlowInterceptor> interceptor : interceptorList) {
                 interceptor.target.onNodeEnd(exchanger.context(), node);
@@ -277,7 +279,7 @@ public class FlowEngineDefault implements FlowEngine {
         /// ///////////////////
 
         //任务之后，流出之前
-        return onNodeEnd(exchanger, node);
+        return onNodeEnd(exchanger, node, true);
     }
 
     /**
@@ -351,7 +353,7 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
         //任务之后，流出之前
-        if(onNodeEnd(exchanger, node) == false){
+        if(onNodeEnd(exchanger, node, false) == false){
             return;
         }
 
@@ -370,7 +372,7 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
         //任务之后，流出之前
-        if(onNodeEnd(exchanger, node) == false){
+        if(onNodeEnd(exchanger, node, false) == false){
             return;
         }
     }

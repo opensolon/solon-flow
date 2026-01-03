@@ -40,12 +40,12 @@ public class FlowContextDefault implements FlowContextInternal {
 
     //存放数据模型
     private transient final Map<String, Object> model = new ConcurrentHashMap<>();
+    //痕迹
+    private transient FlowTrace trace = new FlowTrace();
     //交换器
     private transient volatile FlowExchanger exchanger;
     //事件总线
     private transient volatile DamiBus eventBus;
-    //最后执行节点
-    private transient volatile FlowTrace trace = new FlowTrace();
     //是否已停止
     private transient volatile boolean stopped;
 
@@ -149,23 +149,22 @@ public class FlowContextDefault implements FlowContextInternal {
         this.stopped = stopped;
     }
 
-    @Override
-    public void enableTrace(boolean enable) {
-        if(enable){
-            if(trace == null){
-                trace = new FlowTrace();
-            }
-        } else {
-            trace = null;
-        }
-    }
-
     /// //////////////////
 
+    @Override
+    public FlowTrace trace() {
+        return trace;
+    }
+
+    @Override
+    public FlowContext enableTrace(boolean enable) {
+        trace.enable(enable);
+        return this;
+    }
 
     @Override
     public void lastNode(Graph graph, @Nullable Node node) {
-        if (trace == null) {
+        if (trace.isEnabled() == false) {
             return;
         }
 
@@ -180,20 +179,12 @@ public class FlowContextDefault implements FlowContextInternal {
 
     @Override
     public @Nullable NodeRecord lastNode(String graphId) {
-        if (trace == null) {
-            return null;
-        } else {
-            return trace.last(graphId);
-        }
+        return trace.last(graphId);
     }
 
     @Override
     public @Nullable String lastNodeId(String graphId) {
-        if (trace == null) {
-            return null;
-        } else {
-            return trace.lastNodeId(graphId);
-        }
+        return trace.lastNodeId(graphId);
     }
 
     /// //////////////////

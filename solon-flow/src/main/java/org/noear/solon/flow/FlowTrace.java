@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 3.8.1
  */
 public class FlowTrace implements Serializable {
+    private volatile boolean enabled;
     //根图id
     private volatile String rootGraphId;
     //每个图的最后一个节点记录
@@ -38,9 +39,27 @@ public class FlowTrace implements Serializable {
     }
 
     /**
+     * 是否已启用
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * 启用（默认为启用）
+     */
+    public void enable(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    /**
      * 记录
      */
     public void record(Node node) {
+        if (enabled == false) {
+            return;
+        }
+
         if (rootGraphId == null) {
             rootGraphId = node.getGraph().getId();
         }
@@ -52,11 +71,15 @@ public class FlowTrace implements Serializable {
      * 获取图的最后记录
      */
     public NodeRecord last(String graphId) {
+        if (enabled == false) {
+            return null;
+        }
+
         if (graphId == null) {
             graphId = rootGraphId;
         }
 
-        if(graphId == null){
+        if (graphId == null) {
             return null;
         }
 

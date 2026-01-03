@@ -86,11 +86,15 @@ public interface FlowContext {
     boolean isStopped();
 
     /// ////////////
+    /**
+     * 痕迹
+     */
+    FlowTrace trace();
 
     /**
-     * 启用跟踪（默认为启用）
+     * 启用痕迹（默认为启用）
      */
-    void enableTrace(boolean enable);
+    FlowContext enableTrace(boolean enable);
 
     /**
      * 根图最后运行的节点
