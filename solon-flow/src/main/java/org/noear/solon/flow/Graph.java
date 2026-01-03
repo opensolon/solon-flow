@@ -173,10 +173,6 @@ public class Graph {
      * 获取节点
      */
     public Node getNode(String id) {
-        if (id == null) {
-            return start;
-        }
-
         return nodes.get(id);
     }
 
@@ -185,6 +181,20 @@ public class Graph {
      */
     public Node getNodeOrThrow(String id) {
         Node node = getNode(id);
+        if (node == null) {
+            throw new IllegalArgumentException("Node not found, id: " + id);
+        }
+
+        return node;
+    }
+
+    public Node getNodeOrThrow(FlowContext context) {
+        String nodeId = context.lastNodeId(this.getId());
+        if (nodeId == null) {
+            return start;
+        }
+
+        Node node = getNode(nodeId);
         if (node == null) {
             throw new IllegalArgumentException("Node not found, id: " + id);
         }

@@ -198,8 +198,7 @@ public abstract class AbstractFlowDriver implements FlowDriver {
         Graph graph = exchanger.engine().getGraphOrThrow(graphId);
 
         //获取跟踪的最后节点
-        String nodeId = exchanger.context().lastNodeId(graphId);
-        exchanger.engine().eval(graph, graph.getNodeOrThrow(nodeId), -1, exchanger);
+        exchanger.engine().eval(graph, graph.getNodeOrThrow(exchanger.context()), -1, exchanger);
     }
 
     /**

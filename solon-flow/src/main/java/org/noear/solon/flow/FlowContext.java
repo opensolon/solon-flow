@@ -97,6 +97,12 @@ public interface FlowContext {
     FlowContext enableTrace(boolean enable);
 
     /**
+     * 记录最后运行的节点
+     */
+    @Preview("3.8")
+    void recordNode(Graph graph, Node node);
+
+    /**
      * 根图最后运行的节点
      */
     @Preview("3.8.0")
