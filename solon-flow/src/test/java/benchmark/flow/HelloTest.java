@@ -45,7 +45,7 @@ public class HelloTest {
         }
 
         //测试
-        int count = 1_000_000; //flow(on macbook): 1.2s 跑完 //2.9s 跑完
+        int count = 1_000_000; //flow(on macbook): 1.2s 跑完 //2.9s 跑完 //1.3s 跑完
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
             flowEngine.eval(graph, context);
