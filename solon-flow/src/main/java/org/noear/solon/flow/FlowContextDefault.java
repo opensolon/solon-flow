@@ -45,7 +45,7 @@ public class FlowContextDefault implements FlowContextInternal {
     //事件总线
     private transient volatile DamiBus eventBus;
     //最后执行节点
-    private transient volatile NodeTrace lastNode;
+    private transient volatile FlowTrace trace = new FlowTrace();
     //是否已停止
     private transient volatile boolean stopped;
 
@@ -72,8 +72,8 @@ public class FlowContextDefault implements FlowContextInternal {
             tmp.model.putAll(oNode.get("model").toBean(Map.class));
         }
 
-        if (oNode.hasKey("lastNode")) {
-            tmp.lastNode = oNode.get("lastNode").toBean(NodeTrace.class);
+        if (oNode.hasKey("trace")) {
+            tmp.trace = oNode.get("trace").toBean(FlowTrace.class);
         }
 
         return tmp;
@@ -92,7 +92,9 @@ public class FlowContextDefault implements FlowContextInternal {
             });
         });
 
-        oNode.set("lastNode", ONode.ofBean(lastNode));
+        if(trace != null) {
+            oNode.set("trace", ONode.ofBean(trace));
+        }
 
         return oNode.toJson();
     }
@@ -147,27 +149,52 @@ public class FlowContextDefault implements FlowContextInternal {
         this.stopped = stopped;
     }
 
-    /// //////////////////
-
-
-    /**
-     * 最后运行的节点
-     */
-    @Preview("3.7")
     @Override
-    public @Nullable NodeTrace lastNode() {
-        return lastNode;
-    }
-
-    @Override
-    public void lastNode(Node node) {
-        if (node == null) {
-            this.lastNode = null;
+    public void enableTrace(boolean enable) {
+        if(enable){
+            if(trace == null){
+                trace = new FlowTrace();
+            }
         } else {
-            this.lastNode = new NodeTrace(node);
+            trace = null;
         }
     }
 
+    /// //////////////////
+
+
+    @Override
+    public void lastNode(Graph graph, @Nullable Node node) {
+        if (trace == null) {
+            return;
+        }
+
+        Objects.requireNonNull(graph, "graph");
+
+        if(node == null) {
+            trace.record(graph.getStart());
+        } else {
+            trace.record(node);
+        }
+    }
+
+    @Override
+    public @Nullable NodeRecord lastNode(String graphId) {
+        if (trace == null) {
+            return null;
+        } else {
+            return trace.last(graphId);
+        }
+    }
+
+    @Override
+    public @Nullable String lastNodeId(String graphId) {
+        if (trace == null) {
+            return null;
+        } else {
+            return trace.lastNodeId(graphId);
+        }
+    }
 
     /// //////////////////
 

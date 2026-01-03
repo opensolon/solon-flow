@@ -21,12 +21,12 @@ import org.noear.snack4.annotation.ONodeAttr;
 import java.io.Serializable;
 
 /**
- * 节点痕迹
+ * 节点记录
  *
  * @author noear
  * @since 3.8.1
  */
-public class NodeTrace implements Serializable {
+public class NodeRecord implements Serializable {
     private String graphId;
     private String id;
     private String title;
@@ -34,11 +34,11 @@ public class NodeTrace implements Serializable {
     private NodeType type;
     private long timestamp;
 
-    public NodeTrace() {
+    public NodeRecord() {
         //用于反序列化
     }
 
-    public NodeTrace(Node node) {
+    public NodeRecord(Node node) {
         this.graphId = node.getGraph().getId();
         this.id = node.getId();
         this.title = node.getTitle();
@@ -46,26 +46,44 @@ public class NodeTrace implements Serializable {
         this.timestamp = System.currentTimeMillis();
     }
 
+    /**
+     * 是否为 end 类型节点
+     */
     public boolean isEnd() {
         return NodeType.END == type;
     }
 
+    /**
+     * 获取图id
+     */
     public String getGraphId() {
         return graphId;
     }
 
+    /**
+     * 获取节点Id
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * 获取节点标题
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * 获取节点类型
+     */
     public NodeType getType() {
         return type;
     }
 
+    /**
+     * 获取记录时间
+     */
     public long getTimestamp() {
         return timestamp;
     }

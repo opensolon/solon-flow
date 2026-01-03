@@ -173,6 +173,10 @@ public class Graph {
      * 获取节点
      */
     public Node getNode(String id) {
+        if (id == null) {
+            return start;
+        }
+
         return nodes.get(id);
     }
 

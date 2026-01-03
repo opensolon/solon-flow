@@ -18,6 +18,7 @@
 * 添加 `solon-flow` FlowContext.containsKey 方法
 * 添加 `solon-flow` FlowContext.isStopped 方法（用于外部检测）
 * 添加 `solon-flow` NamedTaskComponent 接口，方便智能体开发
+* 添加 `solon-flow` 多图多引擎状态记录与序列化支持
 * 优化 `solon-flow` FlowContext 接口设计，并增加持久化辅助方法
 * 优化 `solon-flow` FlowContext.eventBus 内部实现改为字段模式
 * 优化 `solon-flow` start 类型节点改为自由流出像 activity 一样（只是没有任务）

@@ -88,32 +88,43 @@ public interface FlowContext {
     /// ////////////
 
     /**
-     * 记录最后运行的节点
+     * 启用跟踪（默认为启用）
      */
-    @Preview("3.8")
-    void lastNode(Node node);
+    void enableTrace(boolean enable);
 
     /**
-     * 最后运行的节点
+     * 根图最后运行的节点
      */
     @Preview("3.8.0")
     @Nullable
-    NodeTrace lastNode();
+    default NodeRecord lastNode(){
+        return lastNode(null);
+    }
 
     /**
-     * 最后运行的节点Id
+     * 子图最后运行的节点
+     */
+    @Nullable
+    NodeRecord lastNode(String graphId);
+
+    /**
+     * 根图最后运行的节点Id
      *
      * @since 3.8.0
      */
     @Preview("3.8.0")
     @Nullable
-    default String lastNodeId() {
-        if (lastNode() != null) {
-            return lastNode().getId();
-        }
-
-        return null;
+    default String lastNodeId(){
+        return lastNodeId(null);
     }
+
+    /**
+     * 子图最后运行的节点Id
+     *
+     * @since 3.8.0
+     */
+    @Nullable
+    String lastNodeId(String graphId);
 
     /// ////////////
 
@@ -173,8 +184,9 @@ public interface FlowContext {
 
     /**
      * 包含 key
-     * */
-    default boolean containsKey(String key){
+     *
+     */
+    default boolean containsKey(String key) {
         return model().containsKey(key);
     }
 

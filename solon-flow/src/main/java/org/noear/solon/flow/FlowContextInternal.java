@@ -32,6 +32,13 @@ public interface FlowContextInternal extends FlowContext {
     @Preview("3.8")
     void stopped(boolean stopped);
 
+
+    /**
+     * 记录最后运行的节点
+     */
+    @Preview("3.8")
+    void lastNode(Graph graph, Node node);
+
     /**
      * 配置交换器
      *
