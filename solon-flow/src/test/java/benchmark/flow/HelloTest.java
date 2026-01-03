@@ -31,8 +31,8 @@ public class HelloTest {
     //没有 io
     @Test
     public void case1() {
-        FlowEngine flowEngine = FlowEngine.newInstance();
-        flowEngine.load(Graph.fromText(case1_yml));
+        FlowEngine flowEngine = FlowEngine.newInstance(true);
+        Graph graph = Graph.fromText(case1_yml);
 
         FlowContext context = FlowContext.of();
         context.put("a", 3);
@@ -40,15 +40,15 @@ public class HelloTest {
 
         //预热
         for (int i = 0; i < 10; i++) {
-            flowEngine.eval("case1", context);
+            flowEngine.eval(graph, context);
             case1_java(3, 4);
         }
 
         //测试
-        int count = 1_000_000; //flow(on macbook): 1.2s 跑完 //3.1s 跑完
+        int count = 1_000_000; //flow(on macbook): 1.2s 跑完 //1.3s 跑完
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
-            flowEngine.eval("case1", context);
+            flowEngine.eval(graph, context);
         }
         long time_flow = System.currentTimeMillis() - start;
 

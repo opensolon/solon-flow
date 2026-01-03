@@ -24,7 +24,6 @@ import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.util.Stepper;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -57,8 +56,8 @@ public class FlowEngineDefault implements FlowEngine {
             this.graphMap = Collections.emptyMap();
             this.driverMap = Collections.emptyMap();
         } else {
-            this.graphMap = new ConcurrentHashMap<>();
-            this.driverMap = new ConcurrentHashMap<>();
+            this.graphMap = new HashMap<>();
+            this.driverMap = new HashMap<>();
         }
     }
 
