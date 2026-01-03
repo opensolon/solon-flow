@@ -107,7 +107,7 @@ public interface FlowEngine {
      * @param driver 默认驱动器
      */
     default void register(FlowDriver driver) {
-        register("", driver);
+        register(null, driver);
     }
 
     /**

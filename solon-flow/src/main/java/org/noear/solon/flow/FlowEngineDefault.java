@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class FlowEngineDefault implements FlowEngine {
     protected final Map<String, Graph> graphMap;
     protected final Map<String, FlowDriver> driverMap;
-    protected final FlowDriver driverDef;
+    protected FlowDriver driverDef;
     protected final List<RankEntity<FlowInterceptor>> interceptorList;
     protected final boolean simplified;
 
@@ -97,7 +97,11 @@ public class FlowEngineDefault implements FlowEngine {
     @Override
     public void register(String name, FlowDriver driver) {
         if (driver != null) {
-            driverMap.put(name, driver);
+            if (name == null) {
+                driverDef = driver;
+            } else {
+                driverMap.put(name, driver);
+            }
         }
     }
 
