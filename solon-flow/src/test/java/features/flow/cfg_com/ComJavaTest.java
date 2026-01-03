@@ -63,7 +63,8 @@ public class ComJavaTest {
         context.put("c", 14);
 
         //执行一层
-        flowEngine.eval(graph, "n2", 1, context);
+        context.trace().recordNodeId(graph, "n2");
+        flowEngine.eval(graph, 1, context);
 
 
         assert "n2".equals(context.getAs("result"));

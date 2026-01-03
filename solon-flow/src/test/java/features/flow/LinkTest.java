@@ -51,7 +51,8 @@ public class LinkTest {
             spec.addNode(NodeSpec.activityOf("n1").task("@DemoCom"));
         }).create();
 
-        engine.eval(graph, "n1");
+        FlowContext context = FlowContext.of().then(c -> c.trace().recordNodeId(graph, "n1"));
+        engine.eval(graph, context);
     }
 
     @Test

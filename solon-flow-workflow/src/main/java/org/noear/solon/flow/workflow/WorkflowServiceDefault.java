@@ -188,7 +188,9 @@ public class WorkflowServiceDefault implements WorkflowService {
 
         exchanger.temporary().vars().put(WorkflowDriver.KEY_ACTIVITY_LIST_GET, true);
 
-        engine.eval(graph, graph.getStart(), -1, exchanger);
+        exchanger.recordNode(graph, graph.getStart());
+        engine.eval(graph,  -1, exchanger);
+
         Collection<Task> tmp = (Collection<Task>) exchanger.temporary().vars()
                 .get(WorkflowDriver.KEY_ACTIVITY_LIST);
 
@@ -219,7 +221,9 @@ public class WorkflowServiceDefault implements WorkflowService {
         FlowDriver driver = getDriver(graph);
         FlowExchanger exchanger = new FlowExchanger(engine, driver, context);
 
-        engine.eval(graph, graph.getStart(), -1, exchanger);
+        exchanger.recordNode(graph, graph.getStart());
+        engine.eval(graph,  -1, exchanger);
+
         return (Task) exchanger.temporary().vars().get(WorkflowDriver.KEY_ACTIVITY_NODE);
     }
 
@@ -268,7 +272,8 @@ public class WorkflowServiceDefault implements WorkflowService {
                 if (nextNode != null) {
                     if (stateController.isAutoForward(exchanger.context(), nextNode)) {
                         //如果要自动前进
-                        engine.eval(nextNode.getGraph(), nextNode, -1, new FlowExchanger(engine, exchanger.driver(), exchanger.context()));
+                        exchanger.recordNode(nextNode.getGraph(), nextNode);
+                        engine.eval(nextNode.getGraph(), -1, new FlowExchanger(engine, exchanger.driver(), exchanger.context()));
                     }
                 }
             }

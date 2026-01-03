@@ -50,7 +50,7 @@ public class FlowExchanger {
 
         this.engine = engine;
         this.driver = driver;
-        this.context = (FlowContextInternal)context;
+        this.context = (FlowContextInternal) context;
     }
 
 
@@ -83,6 +83,13 @@ public class FlowExchanger {
     }
 
     /// ///////////////////////////
+
+    /**
+     * 记录节点
+     */
+    public void recordNode(Graph graph, Node node) {
+        context.trace().recordNode(graph, node);
+    }
 
     /**
      * 运行任务

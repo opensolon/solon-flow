@@ -68,12 +68,12 @@ public class ControlFlowTest {
         OrderState initialState = new OrderState("o-1", null, false, null);
 
         FlowContext context = FlowContext.of(initialState.orderId).put("state", initialState);
-        flowEngine.eval(graph, context.lastNodeId(), context);
+        flowEngine.eval(graph, context);
         Assertions.assertEquals("n2", context.lastNodeId());
 
         //模拟人工审核后
         initialState.setApproved(true);
-        flowEngine.eval(graph, context.lastNodeId(), context);
+        flowEngine.eval(graph, context);
         Assertions.assertEquals("n3", context.lastNodeId());
     }
 }

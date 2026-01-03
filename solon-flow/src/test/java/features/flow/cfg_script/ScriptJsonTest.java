@@ -56,7 +56,8 @@ public class ScriptJsonTest {
         context.put("c", 14);
 
         //执行一层
-        flowEngine.eval(graph, "n-2", 1, context);
+        context.trace().recordNodeId(graph, "n-2");
+        flowEngine.eval(graph, 1, context);
         assert context.getAs("result").equals(123);
     }
 

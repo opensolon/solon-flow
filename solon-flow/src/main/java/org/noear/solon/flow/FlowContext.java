@@ -21,6 +21,7 @@ import org.noear.solon.lang.Preview;
 import org.noear.solon.util.RunnableTx;
 
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -132,6 +133,13 @@ public interface FlowContext {
         return getAs("instanceId");
     }
 
+    /**
+     * 然后（装配自己）
+     */
+    default FlowContext then(Consumer<FlowContext> consumer) {
+        consumer.accept(this);
+        return this;
+    }
 
     /**
      * 临时域变量

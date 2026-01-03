@@ -114,13 +114,13 @@ public class FlowTrace implements Serializable {
     }
 
     public Node lastNode(Graph graph) {
-        String nodeId = lastNodeId(graph.getId());
+        NodeRecord record = lastRecord(graph.getId());
 
-        if (nodeId == null) {
-            graph.getStart();
+        if (record == null) {
+            return graph.getStart();
         }
 
-        return graph.getNodeOrThrow(nodeId);
+        return graph.getNodeOrThrow(record.getId());
     }
 
     public String lastNodeId(String graphId) {

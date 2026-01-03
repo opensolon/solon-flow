@@ -25,15 +25,15 @@ public class StepBackflowTest {
                 .put("a", 4)
                 .put("b", 6);
 
-        flowEngine.eval(graphId, flowContext.lastNodeId(), 1, flowContext);
+        flowEngine.eval(graphId, 1, flowContext);
         System.out.println(flowContext.lastRecord().getTitle());
         Assertions.assertEquals("活动节点1", flowContext.lastRecord().getTitle());
 
-        flowEngine.eval(graphId, flowContext.lastNodeId(), 1, flowContext);
+        flowEngine.eval(graphId, 1, flowContext);
         System.out.println(flowContext.lastRecord().getTitle());
         Assertions.assertEquals("排他网关1", flowContext.lastRecord().getTitle());
 
-        flowEngine.eval(graphId, flowContext.lastNodeId(), 1, flowContext);
+        flowEngine.eval(graphId, 1, flowContext);
         System.out.println(flowContext.lastRecord().getTitle());
         Assertions.assertEquals("活动节点3", flowContext.lastRecord().getTitle());
 
@@ -44,11 +44,11 @@ public class StepBackflowTest {
         assert flowContext.lastRecord() != null;
         assert flowContext.lastRecord().getTitle().equals("活动节点3");
 
-        flowEngine.eval(graphId, flowContext.lastNodeId(), 1, flowContext);
+        flowEngine.eval(graphId, 1, flowContext);
         System.out.println(flowContext.lastRecord().getTitle());
         Assertions.assertEquals("排他网关2", flowContext.lastRecord().getTitle());
 
-        flowEngine.eval(graphId, flowContext.lastNodeId(), 1, flowContext);
+        flowEngine.eval(graphId, 1, flowContext);
         System.out.println(flowContext.lastRecord().getTitle());
         Assertions.assertEquals("活动节点1", flowContext.lastRecord().getTitle());
     }

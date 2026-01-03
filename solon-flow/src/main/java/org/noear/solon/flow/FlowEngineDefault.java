@@ -128,22 +128,20 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 评估
      *
-     * @param startNode 开始节点
+     * @param graph     图
      * @param depth     执行深度
      * @param exchanger 交换器
      */
     @Override
-    public void eval(Graph graph, Node startNode, int depth, FlowExchanger exchanger) throws FlowException {
+    public void eval(Graph graph, int depth, FlowExchanger exchanger) throws FlowException {
         //开始执行
-        if (startNode == null) {
-            startNode = graph.getStart();
-        }
-
+        Node lastNode = exchanger.context().trace().lastNode(graph);
         FlowExchanger bak = exchanger.context().exchanger();
+
         try {
             exchanger.context().exchanger(exchanger);
             exchanger.context().stopped(false); //每次执行前，重置下
-            new FlowInvocation(exchanger, startNode, depth, this.interceptorList, this::evalDo).invoke();
+            new FlowInvocation(exchanger, lastNode, depth, this.interceptorList, this::evalDo).invoke();
         } finally {
             exchanger.context().exchanger(bak);
         }
@@ -349,7 +347,7 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
         //任务之后，流出之前
-        if(onNodeEnd(exchanger, node) == false){
+        if (onNodeEnd(exchanger, node) == false) {
             return;
         }
 
@@ -368,7 +366,7 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
         //任务之后，流出之前
-        if(onNodeEnd(exchanger, node) == false){
+        if (onNodeEnd(exchanger, node) == false) {
             return;
         }
     }
