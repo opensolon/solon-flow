@@ -188,15 +188,6 @@ public class Graph {
         return node;
     }
 
-    public Node lastNode(FlowContext context) {
-        String nodeId = context.lastNodeId(this.getId());
-        if (nodeId == null) {
-            return start;
-        }
-
-        return getNodeOrThrow(nodeId);
-    }
-
     /// ////////
 
     /**

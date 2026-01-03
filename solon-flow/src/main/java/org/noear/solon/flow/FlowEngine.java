@@ -350,6 +350,19 @@ public interface FlowEngine {
      * 运行
      *
      * @param graph     图
+     * @param startId   开始节点Id
+     * @param depth     深度
+     * @param exchanger 交换器
+     */
+    @Internal
+    default void eval(Graph graph, String startId, int depth, FlowExchanger exchanger) throws FlowException {
+        eval(graph, graph.getNodeOrThrow(startId), depth, exchanger);
+    }
+
+    /**
+     * 运行
+     *
+     * @param graph     图
      * @param startNode 开始节点
      * @param depth     深度
      * @param exchanger 交换器
