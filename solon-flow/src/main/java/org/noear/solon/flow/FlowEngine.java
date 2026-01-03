@@ -23,7 +23,7 @@ import org.noear.solon.lang.Preview;
 import java.util.Collection;
 
 /**
- * 流引擎
+ * 流引擎（通用流程引擎）
  *
  * <pre>{@code
  * FlowEngine flowEngine = FlowEngine.newInstance();

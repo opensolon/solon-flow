@@ -24,7 +24,7 @@ import org.noear.solon.lang.Preview;
 import java.util.Collection;
 
 /**
- * 工作流服务
+ * 工作流服务（审批型工作流程服务）
  *
  * <pre>{@code
  * WorkflowService workflow = WorkflowService.of(engine, WorkflowDriver.builder()
