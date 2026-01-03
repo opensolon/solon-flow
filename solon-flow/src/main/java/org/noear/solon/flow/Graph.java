@@ -188,7 +188,7 @@ public class Graph {
         return node;
     }
 
-    public Node getNodeOrThrow(FlowContext context) {
+    public Node lastNode(FlowContext context) {
         String nodeId = context.lastNodeId(this.getId());
         if (nodeId == null) {
             return start;
