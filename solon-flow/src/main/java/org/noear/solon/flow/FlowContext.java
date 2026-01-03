@@ -50,6 +50,7 @@ public interface FlowContext {
         return FlowContextDefault.fromJson(json);
     }
 
+
     /// ////////////
 
     /**
@@ -58,6 +59,16 @@ public interface FlowContext {
      * @since 3.8.1
      */
     String toJson();
+
+    /// ////////////
+
+    /**
+     * 然后（装配自己）
+     */
+    default FlowContext then(Consumer<FlowContext> consumer) {
+        consumer.accept(this);
+        return this;
+    }
 
 
     /// ////////////
@@ -83,8 +94,11 @@ public interface FlowContext {
 
     /**
      * 是否已停止（用于外部检测）
+     *
+     * @since 3.8.1
      */
     boolean isStopped();
+
 
     /// ////////////
     /**
@@ -131,14 +145,6 @@ public interface FlowContext {
      */
     default String getInstanceId() {
         return getAs("instanceId");
-    }
-
-    /**
-     * 然后（装配自己）
-     */
-    default FlowContext then(Consumer<FlowContext> consumer) {
-        consumer.accept(this);
-        return this;
     }
 
     /**

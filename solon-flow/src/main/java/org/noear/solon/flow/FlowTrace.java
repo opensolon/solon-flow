@@ -38,9 +38,6 @@ public class FlowTrace implements Serializable {
     //每个图的最后一个节点记录
     private final Map<String, NodeRecord> lastRecords = new ConcurrentHashMap<>();
 
-    public Collection<NodeRecord> lastRecords() {
-        return lastRecords.values();
-    }
 
     /**
      * 是否已启用
@@ -57,7 +54,21 @@ public class FlowTrace implements Serializable {
     }
 
     /**
-     * 记录
+     * 每个图的最后记录
+     */
+    public Collection<NodeRecord> lastRecords() {
+        return lastRecords.values();
+    }
+
+    /**
+     * 清空记录
+     */
+    public void clear() {
+        lastRecords.clear();
+    }
+
+    /**
+     * 记录节点
      */
     public void recordNodeId(Graph graph, String nodeId) {
         if (enabled == false) {
@@ -74,7 +85,7 @@ public class FlowTrace implements Serializable {
     }
 
     /**
-     * 记录
+     * 记录节点
      */
     public void recordNode(Graph graph, Node node) {
         if (enabled == false) {
@@ -113,6 +124,9 @@ public class FlowTrace implements Serializable {
         return lastRecords.get(graphId);
     }
 
+    /**
+     * 获取图的最后节点
+     */
     public Node lastNode(Graph graph) {
         NodeRecord record = lastRecord(graph.getId());
 
@@ -123,6 +137,9 @@ public class FlowTrace implements Serializable {
         return graph.getNodeOrThrow(record.getId());
     }
 
+    /**
+     * 获取图的最后节点Id
+     */
     public String lastNodeId(String graphId) {
         NodeRecord tmp = lastRecord(graphId);
 
