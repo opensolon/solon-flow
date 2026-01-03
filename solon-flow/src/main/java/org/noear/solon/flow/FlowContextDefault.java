@@ -164,7 +164,7 @@ public class FlowContextDefault implements FlowContextInternal {
 
     @Override
     public @Nullable NodeRecord lastNode(String graphId) {
-        return trace.last(graphId);
+        return trace.lastNode(graphId);
     }
 
     @Override

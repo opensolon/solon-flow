@@ -63,7 +63,11 @@ public class FlowTrace implements Serializable {
 
         Objects.requireNonNull(graph, "graph");
 
-        recordNode(graph, graph.getNodeOrThrow(nodeId));
+        if (nodeId == null) {
+            lastRecords.remove(graph.getId());
+        } else {
+            recordNode(graph, graph.getNodeOrThrow(nodeId));
+        }
     }
 
     /**
@@ -90,7 +94,7 @@ public class FlowTrace implements Serializable {
     /**
      * 获取图的最后记录
      */
-    public NodeRecord last(String graphId) {
+    public NodeRecord lastNode(String graphId) {
         if (enabled == false) {
             return null;
         }
@@ -107,7 +111,7 @@ public class FlowTrace implements Serializable {
     }
 
     public String lastNodeId(String graphId) {
-        NodeRecord tmp = last(graphId);
+        NodeRecord tmp = lastNode(graphId);
 
         if (tmp == null) {
             return null;
