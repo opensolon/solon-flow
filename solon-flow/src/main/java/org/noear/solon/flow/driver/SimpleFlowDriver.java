@@ -30,6 +30,13 @@ import java.util.concurrent.ExecutorService;
  */
 @Preview("3.1")
 public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
+    private static FlowDriver instance = new SimpleFlowDriver();
+
+    public static FlowDriver getInstance() {
+        return instance;
+    }
+
+
     public SimpleFlowDriver() {
         this(null, null);
     }
@@ -46,10 +53,9 @@ public class SimpleFlowDriver extends AbstractFlowDriver implements FlowDriver {
         super(evaluation, container, null);
     }
 
-    public SimpleFlowDriver(Evaluation evaluation, Container container,  ExecutorService executor) {
+    public SimpleFlowDriver(Evaluation evaluation, Container container, ExecutorService executor) {
         super(evaluation, container, executor);
     }
-
 
 
     /// ////////////////////////////

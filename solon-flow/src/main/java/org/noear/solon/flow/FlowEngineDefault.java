@@ -35,43 +35,47 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 3.0
  */
 public class FlowEngineDefault implements FlowEngine {
-    protected final Map<String, Graph> graphMap = new ConcurrentHashMap<>();
-    protected final Map<String, FlowDriver> driverMap = new ConcurrentHashMap<>();
-    protected final List<RankEntity<FlowInterceptor>> interceptorList = new ArrayList<>();
+    protected final Map<String, Graph> graphMap;
+    protected final Map<String, FlowDriver> driverMap;
+    protected final FlowDriver driverDef;
+    protected final List<RankEntity<FlowInterceptor>> interceptorList;
+    protected final boolean simplified;
 
-    public FlowEngineDefault() {
-        this(null);
-    }
-
-    public FlowEngineDefault(FlowDriver driver) {
+    public FlowEngineDefault(FlowDriver driver, boolean simplified) {
         //默认驱动器
         if (driver == null) {
-            driver = new SimpleFlowDriver();
+            driver = SimpleFlowDriver.getInstance();
         }
 
-        driverMap.put("", driver);
+
+        this.interceptorList = new ArrayList<>();
+        this.driverDef = driver;
+
+        this.simplified = simplified;
+
+        if (simplified) {
+            this.graphMap = Collections.emptyMap();
+            this.driverMap = Collections.emptyMap();
+        } else {
+            this.graphMap = new ConcurrentHashMap<>();
+            this.driverMap = new ConcurrentHashMap<>();
+        }
     }
 
     @Override
     public FlowDriver getDriver(Graph graph) {
         Assert.notNull(graph, "graph is null");
 
-        FlowDriver driver = driverMap.get(graph.getDriver());
-
-        if (driver == null) {
-            throw new IllegalArgumentException("No driver found for: '" + graph.getDriver() + "'");
-        }
-
-        return driver;
-    }
-
-    @Override
-    public <T extends FlowDriver> T getDriverAs(Graph graph, Class<T> driverClass) {
-        FlowDriver driver = getDriver(graph);
-        if (driverClass.isInstance(driver)) {
-            return (T) driver;
+        if (Assert.isEmpty(graph.getDriver())) {
+            return driverDef;
         } else {
-            throw new IllegalArgumentException("No " + driverClass.getSimpleName() + " found for: '" + graph.getDriver() + "'");
+            FlowDriver driver = driverMap.get(graph.getDriver());
+
+            if (driver == null) {
+                throw new IllegalArgumentException("No driver found for: '" + graph.getDriver() + "'");
+            }
+
+            return driver;
         }
     }
 

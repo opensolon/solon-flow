@@ -128,13 +128,13 @@ public class FlowTrace implements Serializable {
      * 获取图的最后节点
      */
     public Node lastNode(Graph graph) {
-        NodeRecord record = lastRecord(graph.getId());
+        NodeRecord tmp = lastRecord(graph.getId());
 
-        if (record == null) {
+        if (tmp == null) {
             return graph.getStart();
+        } else {
+            return graph.getNodeOrThrow(tmp.getId());
         }
-
-        return graph.getNodeOrThrow(record.getId());
     }
 
     /**

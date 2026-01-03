@@ -48,25 +48,27 @@ public interface FlowEngine {
      * 新实例
      */
     static FlowEngine newInstance() {
-        return new FlowEngineDefault();
+        return new FlowEngineDefault(null, false);
     }
 
     /**
      * 新实例
      */
     static FlowEngine newInstance(FlowDriver driver) {
-        return new FlowEngineDefault(driver);
+        return new FlowEngineDefault(driver, false);
+    }
+
+    /**
+     * 新实例
+     */
+    static FlowEngine newInstance(boolean simplified) {
+        return new FlowEngineDefault(null, simplified);
     }
 
     /**
      * 获取驱动
      */
     FlowDriver getDriver(Graph graph);
-
-    /**
-     * 获取驱动
-     */
-    <T extends FlowDriver> T getDriverAs(Graph graph, Class<T> driverClass);
 
     /**
      * 添加拦截器
