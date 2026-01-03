@@ -25,11 +25,13 @@ This project includes:
   Byte Buddy (without dependencies) under Apache License, Version 2.0
   Byte Buddy agent under Apache License, Version 2.0
   dami2 under The Apache Software License, Version 2.0
+  eggg under The Apache Software License, Version 2.0
   error-prone annotations under Apache 2.0
   Gson under Apache-2.0
   JavaPoet under Apache 2.0
   Jedis under MIT
   JSON in Java under Public Domain
+  JSpecify annotations under The Apache License, Version 2.0
   JUnit Jupiter (Aggregator) under Eclipse Public License v2.0
   JUnit Jupiter API under Eclipse Public License v2.0
   JUnit Jupiter Engine under Eclipse Public License v2.0
@@ -54,7 +56,7 @@ This project includes:
   solon under The Apache Software License, Version 2.0
   solon-aot under The Apache Software License, Version 2.0
   solon-cache under The Apache Software License, Version 2.0
-  solon-config-plus under The Apache Software License, Version 2.0
+  solon-config-snack4 under The Apache Software License, Version 2.0
   solon-config-yaml under The Apache Software License, Version 2.0
   solon-data under The Apache Software License, Version 2.0
   solon-expression under The Apache Software License, Version 2.0
@@ -64,7 +66,9 @@ This project includes:
   solon-flow-eval-beetl under The Apache Software License, Version 2.0
   solon-flow-eval-magic under The Apache Software License, Version 2.0
   solon-flow-parent under The Apache Software License, Version 2.0
+  solon-flow-workflow under The Apache Software License, Version 2.0
   solon-handle under The Apache Software License, Version 2.0
+  solon-lib under The Apache Software License, Version 2.0
   solon-logging under The Apache Software License, Version 2.0
   solon-logging-simple under The Apache Software License, Version 2.0
   solon-net-httputils under The Apache Software License, Version 2.0
