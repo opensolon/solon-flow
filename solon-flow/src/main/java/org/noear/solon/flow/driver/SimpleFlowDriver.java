@@ -22,7 +22,7 @@ import org.noear.solon.lang.Preview;
 import java.util.concurrent.ExecutorService;
 
 /**
- * 有状态的简单流驱动器（兼容无状态）
+ * 简单流驱动器
  *
  * @author noear
  * @since 3.1
