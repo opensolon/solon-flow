@@ -356,7 +356,8 @@ public interface FlowEngine {
      */
     @Internal
     default void eval(Graph graph, String startId, int depth, FlowExchanger exchanger) throws FlowException {
-        eval(graph, graph.getNodeOrThrow(startId), depth, exchanger);
+        Node startNode = (startId == null ? graph.getStart() : graph.getNodeOrThrow(startId));
+        eval(graph, startNode, depth, exchanger);
     }
 
     /**
