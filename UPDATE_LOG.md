@@ -42,11 +42,13 @@
 
 
 ```java
-//恢复上下文
+//恢复的上下文
 FlowContext context = FlowContext.fromJson(json);
+//新上下文
+FlowContext context = FlowContext.of();
 
 //从恢复上下文开始持行
-flowEngine.eval(graph, graph.lastNode(context), context);
+flowEngine.eval(graph, context);
 
 //转为 json（方便持久化）
 json = context.toJson();
