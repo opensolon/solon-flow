@@ -208,6 +208,14 @@ public class Graph {
         }
     }
 
+    /// /////////////
+
+    /**
+     * 转为任务组件模式
+     */
+    public NamedTaskComponent asTask(){
+        return new GraphTaskComponent(this);
+    }
 
     /// /////////////
 
