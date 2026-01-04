@@ -26,4 +26,11 @@ public interface NamedTaskComponent extends TaskComponent {
      * 名字
      */
     String name();
+
+    /**
+     * 标题
+     */
+    default String title() {
+        return name();
+    }
 }

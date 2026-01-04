@@ -148,7 +148,7 @@ public class GraphSpec {
     public NodeSpec addActivity(NamedTaskComponent com) {
         Objects.requireNonNull(com.name(), "name");
 
-        return addNode(new NodeSpec(com.name(), NodeType.ACTIVITY)).task(com);
+        return addNode(new NodeSpec(com.name(), NodeType.ACTIVITY)).task(com).title(com.title());
     }
 
     /**
@@ -168,7 +168,7 @@ public class GraphSpec {
     public NodeSpec addInclusive(NamedTaskComponent com) {
         Objects.requireNonNull(com.name(), "name");
 
-        return addNode(new NodeSpec(com.name(), NodeType.INCLUSIVE)).task(com);
+        return addNode(new NodeSpec(com.name(), NodeType.INCLUSIVE)).task(com).title(com.title());
     }
 
     /**
@@ -188,7 +188,7 @@ public class GraphSpec {
     public NodeSpec addExclusive(NamedTaskComponent com) {
         Objects.requireNonNull(com.name(), "name");
 
-        return addNode(new NodeSpec(com.name(), NodeType.EXCLUSIVE)).task(com);
+        return addNode(new NodeSpec(com.name(), NodeType.EXCLUSIVE)).task(com).title(com.title());
     }
 
     /**
@@ -208,7 +208,7 @@ public class GraphSpec {
     public NodeSpec addParallel(NamedTaskComponent com) {
         Objects.requireNonNull(com.name(), "name");
 
-        return addNode(new NodeSpec(com.name(), NodeType.PARALLEL)).task(com);
+        return addNode(new NodeSpec(com.name(), NodeType.PARALLEL)).task(com).title(com.title());
     }
 
     /**
@@ -228,7 +228,7 @@ public class GraphSpec {
     public NodeSpec addLoop(NamedTaskComponent com) {
         Objects.requireNonNull(com.name(), "name");
 
-        return addNode(new NodeSpec(com.name(), NodeType.LOOP)).task(com);
+        return addNode(new NodeSpec(com.name(), NodeType.LOOP)).task(com).title(com.title());
     }
 
     /// //////////////////////////////
