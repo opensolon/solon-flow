@@ -16,6 +16,7 @@
 package org.noear.solon.flow;
 
 import org.noear.dami2.bus.DamiBus;
+import org.noear.solon.lang.Internal;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 import org.noear.solon.util.RunnableTx;
@@ -78,6 +79,15 @@ public interface FlowContext {
      */
     DamiBus eventBus();
 
+    /// ////////////
+
+    /**
+     * 交换器
+     */
+    @Internal
+    @Nullable
+    FlowExchanger exchanger();
+
     /**
      * 中断当前分支（如果有其它分支，仍会执行）
      *
@@ -101,6 +111,7 @@ public interface FlowContext {
 
 
     /// ////////////
+
     /**
      * 痕迹
      *

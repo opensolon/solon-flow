@@ -92,6 +92,15 @@ public class FlowExchanger {
     }
 
     /**
+     * 运行图
+     *
+     * @param graph 图
+     */
+    public void runGraph(Graph graph) {
+        engine.eval(graph, context);
+    }
+
+    /**
      * 运行任务
      *
      * @param node        节点
