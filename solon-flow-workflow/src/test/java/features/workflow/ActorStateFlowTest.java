@@ -1,4 +1,4 @@
-package features.workflow.stateful;
+package features.workflow;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -38,7 +38,7 @@ public class ActorStateFlowTest {
     public void case1() {
         FlowEngine flowEngine = FlowEngine.newInstance();
 
-        flowEngine.load("classpath:flow/stateful/*.yml");
+        flowEngine.load("classpath:flow/workflow/*.yml");
 
         WorkflowService statefulService = WorkflowService.of(flowEngine, stateController, stateRepository);
 

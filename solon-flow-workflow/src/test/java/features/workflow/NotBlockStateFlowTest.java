@@ -1,4 +1,4 @@
-package features.workflow.stateful;
+package features.workflow;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -36,7 +36,7 @@ public class NotBlockStateFlowTest {
     public void case1() {
         FlowEngine flowEngine = FlowEngine.newInstance();
 
-        flowEngine.load("classpath:flow/stateful/*.yml");
+        flowEngine.load("classpath:flow/workflow/*.yml");
 
         WorkflowService workflow = WorkflowService.of(flowEngine, stateController, stateRepository);
 
@@ -72,7 +72,7 @@ public class NotBlockStateFlowTest {
         FlowEngine flowEngine = FlowEngine.newInstance();
         flowEngine.addInterceptor(interceptor);
 
-        flowEngine.load("classpath:flow/stateful/*.yml");
+        flowEngine.load("classpath:flow/workflow/*.yml");
 
         WorkflowService workflow = WorkflowService.of(flowEngine, stateController, stateRepository);
 

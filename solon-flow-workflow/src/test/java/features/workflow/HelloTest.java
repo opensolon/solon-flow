@@ -1,4 +1,4 @@
-package features.workflow.stateful;
+package features.workflow;
 
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.FlowContext;

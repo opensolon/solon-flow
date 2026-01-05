@@ -1,49 +1,38 @@
-package features.workflow.stateful;
+package features.workflow;
 
+import demo.workflow.stateful.ExportUtil;
 import org.junit.jupiter.api.Test;
-import org.noear.redisx.RedisClient;
-import org.noear.solon.Solon;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
+import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.workflow.*;
 import org.noear.solon.flow.workflow.controller.ActorStateController;
-import org.noear.solon.flow.workflow.repository.RedisStateRepository;
+import org.noear.solon.flow.workflow.repository.InMemoryStateRepository;
 import org.noear.solon.test.SolonTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 /**
  * @author noear 2025/3/27 created
  */
 @SolonTest
-public class OaStatefulFlowRedisTest {
-    static final Logger log = LoggerFactory.getLogger(OaStatefulFlowRedisTest.class);
+public class OaStatefulFlowTest {
+    static final Logger log = LoggerFactory.getLogger(OaStatefulFlowTest.class);
 
     final String graphId = "sf1";
     final String instanceId = Utils.uuid();
 
-    ActorStateController stateController;
-    RedisStateRepository stateRepository;
-
+    ActorStateController stateController = new ActorStateController();
+    InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
     private WorkflowService buildStatefulService() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
-
-
-        // 创建 Redis 客户端
-        RedisClient redisClient = Solon.cfg().getBean("solon.repo.redis", RedisClient.class);
-        if (redisClient == null) {
-            throw new IllegalStateException("Redis client configuration not found!");
-        }
-
-        if (stateController == null) {
-            stateController = new ActorStateController();
-            stateRepository = new RedisStateRepository(redisClient);
-        }
 
         FlowEngine fe = FlowEngine.newInstance(SimpleFlowDriver.builder()
                 .container(container)
@@ -58,13 +47,15 @@ public class OaStatefulFlowRedisTest {
     @Test
     public void case1() throws Throwable {
         //初始化引擎
-        WorkflowService statefulService = buildStatefulService();
+        WorkflowService workflow = buildStatefulService();
+        Graph graph = workflow.engine().getGraph(graphId);
 
         FlowContext context;
         Task task;
 
+
         context = getContext("刘涛");
-        task = statefulService.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert "step1".equals(task.getNode().getId());
@@ -72,11 +63,12 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postTask(task.getNode(), TaskAction.FORWARD, context);
+        context.put("oaState", 2); //用于扩展状态记录
+        workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
 
 
         context = getContext("陈鑫");
-        task = statefulService.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert "step3".equals(task.getNode().getId());
@@ -84,7 +76,7 @@ public class OaStatefulFlowRedisTest {
 
         //二次测试
         context = getContext("陈鑫");
-        task = statefulService.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert "step3".equals(task.getNode().getId());
@@ -92,20 +84,47 @@ public class OaStatefulFlowRedisTest {
 
 
         /// ////////////////
+
+        String yaml = ExportUtil.toYaml(ExportUtil.buildGraphDom1(workflow,graph, context));
+        System.out.println("------------");
+        System.out.println(yaml);
+        System.out.println("------------");
+
+
+        /// ////////////////
         //提交状态
-        statefulService.postTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
+
+
+        context = getContext(null);
+        Collection<Task> nodes = workflow.getTasks(graphId, context);
+        assert nodes.size() == 2;
+        assert 0 == nodes.stream().filter(n -> n.getState() == TaskState.WAITING).count();
+
+        context = getContext("陈宇");
+        nodes = workflow.getTasks(graphId, context);
+        assert nodes.size() == 2;
+        assert 1 == nodes.stream().filter(n -> n.getState() == TaskState.WAITING).count();
 
 
         context = getContext("陈鑫");
-        task = statefulService.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert task.getNode().getId().startsWith("step4");
         assert TaskState.UNKNOWN == task.getState(); //没有权限
 
 
+        /// ////////////////
+
+        yaml = ExportUtil.toYaml(ExportUtil.buildGraphDom1(workflow,graph, context));
+        System.out.println("------------");
+        System.out.println(yaml);
+        System.out.println("------------");
+
+
         context = getContext("陈宇");
-        task = statefulService.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert task.getNode().getId().startsWith("step4_1");
@@ -113,11 +132,11 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
 
 
         context = getContext("吕方");
-        task = statefulService.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert task.getNode().getId().startsWith("step4_2");
@@ -125,15 +144,15 @@ public class OaStatefulFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        statefulService.postTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
 
 
         context = getContext("吕方");
-        task = statefulService.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
         log.warn("{}", task);
-        assert task == null; //抄送节点
+        assert task == null;
 
-        statefulService.clearState(graphId, context);
+        workflow.clearState(graphId, context);
     }
 
     private FlowContext getContext(String actor) throws Throwable {
@@ -145,24 +164,23 @@ public class OaStatefulFlowRedisTest {
     //@Test //只看看
     public void case2() throws Throwable {
         FlowContext context = FlowContext.of("i1").put("actor", "陈鑫");
-        Task statefulTask;
+        Task statefulNode;
 
         //初始化引擎
         WorkflowService statefulService = buildStatefulService();
 
+        statefulNode = statefulService.getTask(graphId, context);
 
-        statefulTask = statefulService.getTask(graphId, context);
-
-        assert "step2".equals(statefulTask.getNode().getId());
-        assert TaskState.UNKNOWN == statefulTask.getState(); //没有权限启动任务（因为没有配置操作员）
+        assert "step2".equals(statefulNode.getNode().getId());
+        assert TaskState.UNKNOWN == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
 
         /// ////////////////
         //提交操作
-        statefulService.postTask(statefulTask.getNode(), TaskAction.FORWARD, context);
+        statefulService.postTask(statefulNode.getNode(), TaskAction.FORWARD, context);
 
-        statefulTask = statefulService.getTask(graphId, context);
+        statefulNode = statefulService.getTask(graphId, context);
 
-        assert "step3".equals(statefulTask.getNode().getId());
-        assert TaskState.WAITING == statefulTask.getState(); //等待当前用户处理（有权限操作）
+        assert "step3".equals(statefulNode.getNode().getId());
+        assert TaskState.WAITING == statefulNode.getState(); //等待当前用户处理（有权限操作）
     }
 }
