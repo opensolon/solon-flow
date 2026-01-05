@@ -49,7 +49,7 @@ public class Task {
         Assert.notNull(node, "node is null");
 
         try {
-            exchanger.driver().handleTask(new FlowExchanger(exchanger.engine(), exchanger.driver(), context), node.getTask());
+            exchanger.driver().handleTask(exchanger.copy(context), node.getTask());
         } catch (FlowException e) {
             throw e;
         } catch (Throwable e) {

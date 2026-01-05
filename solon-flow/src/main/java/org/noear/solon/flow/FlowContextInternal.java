@@ -42,11 +42,4 @@ public interface FlowContextInternal extends FlowContext {
     @Internal
     @Preview("3.8")
     void exchanger(FlowExchanger exchanger);
-
-    /**
-     * 交换器
-     */
-    @Internal
-    @Nullable
-    FlowExchanger exchanger();
 }

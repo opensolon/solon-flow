@@ -32,16 +32,14 @@ import java.util.function.Consumer;
 public class FlowInvocation {
     private final FlowExchanger exchanger;
     private final Node startNode;
-    private final int evalDepth;
 
     private final List<RankEntity<FlowInterceptor>> interceptorList;
     private final Consumer<FlowInvocation> lastHandler;
     private int index;
 
-    public FlowInvocation(FlowExchanger exchanger, Node startNode, int evalDepth, List<RankEntity<FlowInterceptor>> interceptorList, Consumer<FlowInvocation> lastHandler) {
+    public FlowInvocation(FlowExchanger exchanger, Node startNode, List<RankEntity<FlowInterceptor>> interceptorList, Consumer<FlowInvocation> lastHandler) {
         this.exchanger = exchanger;
         this.startNode = startNode;
-        this.evalDepth = evalDepth;
 
         this.interceptorList = interceptorList;
         this.lastHandler = lastHandler;
@@ -76,13 +74,6 @@ public class FlowInvocation {
      */
     public Node getStartNode() {
         return startNode;
-    }
-
-    /**
-     * 评估深度
-     */
-    public int getEvalDepth() {
-        return evalDepth;
     }
 
     /**

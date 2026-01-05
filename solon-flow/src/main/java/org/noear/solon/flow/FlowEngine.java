@@ -21,6 +21,7 @@ import org.noear.solon.lang.Internal;
 import org.noear.solon.lang.Preview;
 
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 流引擎（通用流程引擎）
@@ -191,12 +192,12 @@ public interface FlowEngine {
      * 运行
      *
      * @param graphId 图Id
-     * @param depth   执行深度
+     * @param steps   步数
      * @param context 上下文
      */
-    default void eval(String graphId, int depth, FlowContext context) throws FlowException {
+    default void eval(String graphId, int steps, FlowContext context) throws FlowException {
         Graph graph = getGraphOrThrow(graphId);
-        eval(graph, depth, context);
+        eval(graph, steps, context);
     }
 
 
@@ -223,21 +224,20 @@ public interface FlowEngine {
      * 运行
      *
      * @param graph   图
-     * @param depth   深度
+     * @param steps   步数
      * @param context 上下文
      */
-    default void eval(Graph graph, int depth, FlowContext context) throws FlowException {
+    default void eval(Graph graph, int steps, FlowContext context) throws FlowException {
         FlowDriver driver = getDriver(graph);
-        eval(graph, depth, new FlowExchanger(this, driver, context));
+        eval(graph, new FlowExchanger(this, driver, context, steps, new AtomicInteger(0)));
     }
 
     /**
      * 运行
      *
      * @param graph     图
-     * @param depth     深度
      * @param exchanger 交换器
      */
     @Internal
-    void eval(Graph graph, int depth, FlowExchanger exchanger) throws FlowException;
+    void eval(Graph graph, FlowExchanger exchanger) throws FlowException;
 }

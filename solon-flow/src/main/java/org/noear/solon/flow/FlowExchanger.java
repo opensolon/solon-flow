@@ -19,6 +19,8 @@ import org.noear.liquor.eval.Scripts;
 import org.noear.solon.core.util.Assert;
 import org.noear.solon.lang.Preview;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * 流交换器，表示一个流在一次运行时的可交换数据和状态（对内，不支持序列化）
  *
@@ -30,9 +32,13 @@ import org.noear.solon.lang.Preview;
 public class FlowExchanger {
     //当前流程引擎
     private transient final FlowEngine engine;
+    //当前流驱动
     private transient final FlowDriver driver;
     //当前流程上下文
     private transient final FlowContextInternal context;
+    //执行步进
+    private transient final int steps;
+    private transient final AtomicInteger stepCount;
 
     //执行时临时存放器
     private transient final Temporary temporary = new Temporary();
@@ -43,7 +49,7 @@ public class FlowExchanger {
     //执行恢复中
     private transient volatile boolean reverting = true;
 
-    public FlowExchanger(FlowEngine engine, FlowDriver driver, FlowContext context) {
+    public FlowExchanger(FlowEngine engine, FlowDriver driver, FlowContext context, int steps, AtomicInteger stepCount) {
         Assert.notNull(engine, "The engine is null");
         Assert.notNull(driver, "The driver is null");
         Assert.notNull(context, "The context is null");
@@ -51,8 +57,30 @@ public class FlowExchanger {
         this.engine = engine;
         this.driver = driver;
         this.context = (FlowContextInternal) context;
+        this.steps = steps;
+        this.stepCount = stepCount;
     }
 
+    /**
+     * 浅度复制
+     */
+    public FlowExchanger copy() {
+        return new FlowExchanger(engine, driver, context, steps, stepCount);
+    }
+
+    /**
+     * 浅度复制
+     */
+    public FlowExchanger copy(FlowContext contextNew) {
+        return new FlowExchanger(engine, driver, contextNew, steps, stepCount);
+    }
+
+    /**
+     * 浅度复制
+     */
+    public FlowExchanger copy(FlowEngine engineNew, FlowDriver driverNew, FlowContext contextNew) {
+        return new FlowExchanger(engineNew, driverNew, contextNew, steps, stepCount);
+    }
 
     /**
      * 当前流程引擎
@@ -97,7 +125,7 @@ public class FlowExchanger {
      * @param graph 图
      */
     public void runGraph(Graph graph) {
-        engine.eval(graph, context);
+        engine.eval(graph, copy());
     }
 
     /**
@@ -128,8 +156,33 @@ public class FlowExchanger {
         return Scripts.eval(script, context().model());
     }
 
-
     /// ///////////////////////////
+
+
+    /**
+     * 获取执行步数
+     */
+    public int getSteps() {
+        return steps;
+    }
+
+    /**
+     * 获取步进计数
+     */
+    public int getStepCount() {
+        return stepCount.get();
+    }
+
+    /**
+     * 下一步
+     */
+    public boolean nextSetp() {
+        if (steps < 0) {
+            return true;
+        } else {
+            return stepCount.addAndGet(1) <= steps;
+        }
+    }
 
     /**
      * 是否已停止（用于内部控制）

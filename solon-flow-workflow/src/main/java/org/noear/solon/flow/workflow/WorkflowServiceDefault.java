@@ -19,6 +19,7 @@ import org.noear.solon.flow.*;
 import org.noear.solon.lang.Preview;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -112,7 +113,7 @@ public class WorkflowServiceDefault implements WorkflowService {
         LOCKER.lock();
 
         try {
-            postTaskDo(new FlowExchanger(engine, driver, context), node, action);
+            postTaskDo(new FlowExchanger(engine, driver, context, -1, new AtomicInteger(0)), node, action);
         } finally {
             LOCKER.unlock();
         }
@@ -184,12 +185,12 @@ public class WorkflowServiceDefault implements WorkflowService {
     @Override
     public Collection<Task> getTasks(Graph graph, FlowContext context) {
         FlowDriver driver = getDriver(graph);
-        FlowExchanger exchanger = new FlowExchanger(engine, driver, context);
+        FlowExchanger exchanger = new FlowExchanger(engine, driver, context, -1, new AtomicInteger(0));
 
         exchanger.temporary().vars().put(WorkflowDriver.KEY_ACTIVITY_LIST_GET, true);
 
         exchanger.recordNode(graph, graph.getStart());
-        engine.eval(graph,  -1, exchanger);
+        engine.eval(graph, exchanger);
 
         Collection<Task> tmp = (Collection<Task>) exchanger.temporary().vars()
                 .get(WorkflowDriver.KEY_ACTIVITY_LIST);
@@ -219,10 +220,10 @@ public class WorkflowServiceDefault implements WorkflowService {
     @Override
     public Task getTask(Graph graph, FlowContext context) {
         FlowDriver driver = getDriver(graph);
-        FlowExchanger exchanger = new FlowExchanger(engine, driver, context);
+        FlowExchanger exchanger = new FlowExchanger(engine, driver, context, -1, new AtomicInteger(0));
 
         exchanger.recordNode(graph, graph.getStart());
-        engine.eval(graph,  -1, exchanger);
+        engine.eval(graph, exchanger);
 
         return (Task) exchanger.temporary().vars().get(WorkflowDriver.KEY_ACTIVITY_NODE);
     }
@@ -273,7 +274,7 @@ public class WorkflowServiceDefault implements WorkflowService {
                     if (stateController.isAutoForward(exchanger.context(), nextNode)) {
                         //如果要自动前进
                         exchanger.recordNode(nextNode.getGraph(), nextNode);
-                        engine.eval(nextNode.getGraph(), -1, new FlowExchanger(engine, exchanger.driver(), exchanger.context()));
+                        engine.eval(nextNode.getGraph(), exchanger.copy());
                     }
                 }
             }

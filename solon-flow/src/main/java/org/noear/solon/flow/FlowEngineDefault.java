@@ -136,11 +136,10 @@ public class FlowEngineDefault implements FlowEngine {
      * 评估
      *
      * @param graph     图
-     * @param depth     执行深度
      * @param exchanger 交换器
      */
     @Override
-    public void eval(Graph graph, int depth, FlowExchanger exchanger) throws FlowException {
+    public void eval(Graph graph, FlowExchanger exchanger) throws FlowException {
         //开始执行
         Node lastNode = exchanger.context().trace().lastNode(graph);
         FlowExchanger bak = exchanger.context().exchanger();
@@ -148,7 +147,7 @@ public class FlowEngineDefault implements FlowEngine {
         try {
             exchanger.context().exchanger(exchanger);
             exchanger.context().stopped(false); //每次执行前，重置下
-            new FlowInvocation(exchanger, lastNode, depth, this.interceptorList, this::evalDo).invoke();
+            new FlowInvocation(exchanger, lastNode, this.interceptorList, this::evalDo).invoke();
         } finally {
             exchanger.context().exchanger(bak);
         }
@@ -158,7 +157,7 @@ public class FlowEngineDefault implements FlowEngine {
      * 执行评估
      */
     protected void evalDo(FlowInvocation inv) throws FlowException {
-        node_run(inv.getExchanger(), inv.getStartNode().getGraph().getStart(), inv.getStartNode(), inv.getEvalDepth());
+        node_run(inv.getExchanger(), inv.getStartNode().getGraph().getStart(), inv.getStartNode());
     }
 
     /**
@@ -286,7 +285,7 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 运行节点
      */
-    protected void node_run(FlowExchanger exchanger, Node node, Node startNode, int depth) throws FlowException {
+    protected void node_run(FlowExchanger exchanger, Node node, Node startNode) throws FlowException {
         if (node == null) {
             return;
         }
@@ -315,39 +314,38 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
         //执行深度控制
-        if (depth == 0) {
-            return;
-        } else if (exchanger.isReverting() == false) {
-            //恢复后再计算深度
-            depth--;
+        if (exchanger.isReverting() == false){
+            if (exchanger.nextSetp() == false) {
+                return;
+            }
         }
 
         switch (node.getType()) {
             case START:
-                start_run(exchanger, node, startNode, depth);
+                start_run(exchanger, node, startNode);
                 break;
             case END:
-                end_run(exchanger, node, startNode, depth);
+                end_run(exchanger, node, startNode);
                 break;
             case ACTIVITY:
-                activity_run(exchanger, node, startNode, depth);
+                activity_run(exchanger, node, startNode);
                 break;
             case INCLUSIVE: //包容网关（多选）
-                inclusive_run(exchanger, node, startNode, depth);
+                inclusive_run(exchanger, node, startNode);
                 break;
             case EXCLUSIVE: //排他网关（单选）
-                exclusive_run(exchanger, node, startNode, depth);
+                exclusive_run(exchanger, node, startNode);
                 break;
             case PARALLEL: //并行网关（全选）
-                parallel_run(exchanger, node, startNode, depth);
+                parallel_run(exchanger, node, startNode);
                 break;
             case LOOP:
-                loop_run(exchanger, node, startNode, depth);
+                loop_run(exchanger, node, startNode);
                 break;
         }
     }
 
-    protected void start_run(FlowExchanger exchanger, Node node, Node startNode, int depth) {
+    protected void start_run(FlowExchanger exchanger, Node node, Node startNode) {
         //任务之前，流入之后
         if (onNodeStart(exchanger, node) == false) {
             return;
@@ -361,12 +359,12 @@ public class FlowEngineDefault implements FlowEngine {
         //::流出
         for (Link l : node.getNextLinks()) {
             if (condition_test(exchanger, l.getWhen(), true)) {
-                node_run(exchanger, l.getNextNode(), startNode, depth);
+                node_run(exchanger, l.getNextNode(), startNode);
             }
         }
     }
 
-    protected void end_run(FlowExchanger exchanger, Node node, Node startNode, int depth) {
+    protected void end_run(FlowExchanger exchanger, Node node, Node startNode) {
         //任务之前，流入之后
         if (onNodeStart(exchanger, node) == false) {
             return;
@@ -378,7 +376,7 @@ public class FlowEngineDefault implements FlowEngine {
         }
     }
 
-    protected void activity_run(FlowExchanger exchanger, Node node, Node startNode, int depth) {
+    protected void activity_run(FlowExchanger exchanger, Node node, Node startNode) {
         //尝试执行任务（可能为空）
         if (task_exec(exchanger, node) == false) {
             return;
@@ -387,7 +385,7 @@ public class FlowEngineDefault implements FlowEngine {
         //::流出
         for (Link l : node.getNextLinks()) {
             if (condition_test(exchanger, l.getWhen(), true)) {
-                node_run(exchanger, l.getNextNode(), startNode, depth);
+                node_run(exchanger, l.getNextNode(), startNode);
             }
         }
     }
@@ -395,8 +393,8 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 运行包容网关
      */
-    protected void inclusive_run(FlowExchanger exchanger, Node node, Node startNode, int depth) throws FlowException {
-        if (inclusive_run_in(exchanger, node, startNode, depth) == false) {
+    protected void inclusive_run(FlowExchanger exchanger, Node node, Node startNode) throws FlowException {
+        if (inclusive_run_in(exchanger, node, startNode) == false) {
             return;
         }
 
@@ -406,11 +404,11 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
 
-        inclusive_run_out(exchanger, node, startNode, depth);
+        inclusive_run_out(exchanger, node, startNode);
     }
 
     //包容网关
-    protected boolean inclusive_run_in(FlowExchanger exchanger, Node node, Node startNode, int depth) throws FlowException {
+    protected boolean inclusive_run_in(FlowExchanger exchanger, Node node, Node startNode) throws FlowException {
         Stack<Integer> inclusive_stack = exchanger.temporary().stack(node.getGraph(), "inclusive_run");
 
         //::流入
@@ -432,7 +430,7 @@ public class FlowEngineDefault implements FlowEngine {
     }
 
     //包容网关
-    protected void inclusive_run_out(FlowExchanger exchanger, Node node, Node startNode, int depth) throws FlowException {
+    protected void inclusive_run_out(FlowExchanger exchanger, Node node, Node startNode) throws FlowException {
         Stack<Integer> inclusive_stack = exchanger.temporary().stack(node.getGraph(), "inclusive_run");
 
         //::流出
@@ -450,7 +448,7 @@ public class FlowEngineDefault implements FlowEngine {
 
             //执行所有满足条件
             for (Link l : matched_lines) {
-                node_run(exchanger, l.getNextNode(), startNode, depth);
+                node_run(exchanger, l.getNextNode(), startNode);
             }
         }
     }
@@ -458,17 +456,17 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 运行排他网关
      */
-    protected void exclusive_run(FlowExchanger exchanger, Node node, Node startNode, int depth) throws FlowException {
+    protected void exclusive_run(FlowExchanger exchanger, Node node, Node startNode) throws FlowException {
         //尝试执行任务（可能为空）
         if (task_exec(exchanger, node) == false) {
             return;
         }
 
         //::流出
-        exclusive_run_out(exchanger, node, startNode, depth);
+        exclusive_run_out(exchanger, node, startNode);
     }
 
-    protected void exclusive_run_out(FlowExchanger exchanger, Node node, Node startNode, int depth) throws FlowException {
+    protected void exclusive_run_out(FlowExchanger exchanger, Node node, Node startNode) throws FlowException {
         //::流出
         Link def_line = null; //默认线
         for (Link l : node.getNextLinks()) {
@@ -477,7 +475,7 @@ public class FlowEngineDefault implements FlowEngine {
             } else {
                 if (condition_test(exchanger, l.getWhen(), false)) {
                     //执行第一个满足条件
-                    node_run(exchanger, l.getNextNode(), startNode, depth);
+                    node_run(exchanger, l.getNextNode(), startNode);
                     return; //结束
                 }
             }
@@ -485,15 +483,15 @@ public class FlowEngineDefault implements FlowEngine {
 
         if (def_line != null) {
             //如果有默认
-            node_run(exchanger, def_line.getNextNode(), startNode, depth);
+            node_run(exchanger, def_line.getNextNode(), startNode);
         }
     }
 
     /**
      * 运行并行网关
      */
-    protected void parallel_run(FlowExchanger exchanger, Node node, Node startNode, int depth) throws FlowException {
-        if (parallel_run_in(exchanger, node, startNode, depth) == false) {
+    protected void parallel_run(FlowExchanger exchanger, Node node, Node startNode) throws FlowException {
+        if (parallel_run_in(exchanger, node, startNode) == false) {
             return;
         }
 
@@ -502,10 +500,10 @@ public class FlowEngineDefault implements FlowEngine {
             return;
         }
 
-        parallel_run_out(exchanger, node, startNode, depth);
+        parallel_run_out(exchanger, node, startNode);
     }
 
-    protected boolean parallel_run_in(FlowExchanger exchanger, Node node, Node startNode, int depth) throws FlowException {
+    protected boolean parallel_run_in(FlowExchanger exchanger, Node node, Node startNode) throws FlowException {
         //::流入
         int count = exchanger.temporary().countIncr(node.getGraph(), node.getId());//运行次数累计
         if (node.getPrevLinks().size() > count) { //等待所有支线计数完成
@@ -515,7 +513,7 @@ public class FlowEngineDefault implements FlowEngine {
         return true;
     }
 
-    protected void parallel_run_out(FlowExchanger exchanger, Node node, Node startNode, int depth) throws FlowException {
+    protected void parallel_run_out(FlowExchanger exchanger, Node node, Node startNode) throws FlowException {
         //恢复计数
         exchanger.temporary().countSet(node.getGraph(), node.getId(), 0);
 
@@ -523,7 +521,7 @@ public class FlowEngineDefault implements FlowEngine {
         if (exchanger.driver().getExecutor() == null || node.getNextNodes().size() < 2) { //没有2个，也没必要用线程池
             //单线程
             for (Node n : node.getNextNodes()) {
-                node_run(exchanger, n, startNode, depth);
+                node_run(exchanger, n, startNode);
             }
         } else {
             //多线程
@@ -536,7 +534,7 @@ public class FlowEngineDefault implements FlowEngine {
                             return;
                         }
 
-                        node_run(exchanger, n, startNode, depth);
+                        node_run(exchanger, n, startNode);
                     } catch (Throwable ex) {
                         errorRef.set(ex);
                     } finally {
@@ -563,10 +561,10 @@ public class FlowEngineDefault implements FlowEngine {
         }
     }
 
-    protected void loop_run(FlowExchanger exchanger, Node node, Node startNode, int depth) {
+    protected void loop_run(FlowExchanger exchanger, Node node, Node startNode) {
         if (Utils.isEmpty(node.getMetaAsString("$for"))) {
             //流入（结束）
-            if (loop_run_in(exchanger, node, startNode, depth) == false) {
+            if (loop_run_in(exchanger, node, startNode) == false) {
                 return;
             }
 
@@ -576,7 +574,7 @@ public class FlowEngineDefault implements FlowEngine {
             }
 
             //流出
-            node_run(exchanger, node.getNextNode(), startNode, depth);
+            node_run(exchanger, node.getNextNode(), startNode);
         } else {
             //尝试执行任务（可能为空）
             if (task_exec(exchanger, node) == false) {
@@ -584,11 +582,11 @@ public class FlowEngineDefault implements FlowEngine {
             }
 
             //流出（开始）
-            loop_run_out(exchanger, node, startNode, depth);
+            loop_run_out(exchanger, node, startNode);
         }
     }
 
-    protected boolean loop_run_in(FlowExchanger exchanger, Node node, Node startNode, int depth) {
+    protected boolean loop_run_in(FlowExchanger exchanger, Node node, Node startNode) {
         Stack<Iterator> loop_stack = exchanger.temporary().stack(node.getGraph(), "loop_run");
 
         //::流入
@@ -606,7 +604,7 @@ public class FlowEngineDefault implements FlowEngine {
         return true;
     }
 
-    protected void loop_run_out(FlowExchanger exchanger, Node node, Node startNode, int depth) {
+    protected void loop_run_out(FlowExchanger exchanger, Node node, Node startNode) {
         String forKey = node.getMetaAsString("$for");
         Object inKey = node.getMeta("$in");
         Object inObj = null;
@@ -645,7 +643,7 @@ public class FlowEngineDefault implements FlowEngine {
         while (inIter.hasNext()) {
             Object item = inIter.next();
             exchanger.context().put(forKey, item);
-            node_run(exchanger, node.getNextNode(), startNode, depth);
+            node_run(exchanger, node.getNextNode(), startNode);
         }
     }
 }
