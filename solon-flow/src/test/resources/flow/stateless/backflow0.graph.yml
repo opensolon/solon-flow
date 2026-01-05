@@ -1,0 +1,38 @@
+id: backflow0
+layout:
+  - id: node_1txlypkthu
+    type: start
+    title: 开始
+    link:
+      - nextId: node_ot8buxm6ac
+  - id: node_ot8buxm6ac
+    title: 活动节点1
+    link:
+      - nextId: node_v1uc2rbtq
+  - id: node_v1uc2rbtq
+    type: exclusive
+    title: 排他网关1
+    link:
+      - nextId: node_focvfre5rq
+        title: ''
+      - nextId: node_pzf5u4xbv8
+        title: ''
+        condition: a > 3
+  - id: node_focvfre5rq
+    title: 活动节点2
+    link:
+      - nextId: node_taosvt7gh
+  - id: node_pzf5u4xbv8
+    title: 活动节点3
+    link:
+      - nextId: node_xdntd2nsfe
+  - id: node_xdntd2nsfe
+    type: exclusive
+    title: 排他网关2
+    link:
+      - nextId: node_ot8buxm6ac
+        condition: b > 5
+      - nextId: node_taosvt7gh
+  - id: node_taosvt7gh
+    type: end
+    title: 结束
