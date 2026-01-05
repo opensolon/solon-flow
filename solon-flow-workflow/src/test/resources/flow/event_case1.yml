@@ -1,4 +1,0 @@
-id: event1
-layout:
-  - task: '@DemoCom'
-  - task: 'context.eventBus().send("demo.topic", "hello");'
