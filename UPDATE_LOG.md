@@ -28,7 +28,7 @@
 * 调整 `solon-flow` 移除 FlowContext:incrAdd,incrGet 弃用预览接口
 * 修复 `solon-flow` FlowContext 跨多引擎中转时 exchanger 的冲突问题
 * 修复 `solon-flow` 跨图单步执行时，步数传导会失效的问题
-* 修复 `solon-flow-workflow` 跨图单步执行时，步数传导会失效的问题
+* 修复 `solon-flow-workflow` 跨图单步执行时，步数传导会失效的问题？？
 
 兼容变化对照表：
 
