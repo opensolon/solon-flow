@@ -212,7 +212,10 @@ public class Graph {
 
     /**
      * 转为任务组件模式
+     *
+     * @since 3.8.1
      */
+    @Preview("3.8.1")
     public NamedTaskComponent asTask(){
         return new GraphTaskComponent(this);
     }

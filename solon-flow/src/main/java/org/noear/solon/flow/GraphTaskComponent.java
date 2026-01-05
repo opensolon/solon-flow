@@ -43,6 +43,6 @@ public class GraphTaskComponent implements NamedTaskComponent {
 
     @Override
     public void run(FlowContext context, Node node) throws Throwable {
-        context.exchanger().runGraph(graph);
+        ((FlowContextInternal) context).exchanger().runGraph(graph);
     }
 }

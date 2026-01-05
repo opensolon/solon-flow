@@ -82,13 +82,6 @@ public interface FlowContext {
     /// ////////////
 
     /**
-     * 交换器
-     */
-    @Internal
-    @Nullable
-    FlowExchanger exchanger();
-
-    /**
      * 中断当前分支（如果有其它分支，仍会执行）
      *
      * @since 3.7

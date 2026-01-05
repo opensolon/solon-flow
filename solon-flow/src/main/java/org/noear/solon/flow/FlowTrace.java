@@ -64,6 +64,7 @@ public class FlowTrace implements Serializable {
      * 清空记录
      */
     public void clear() {
+        rootGraphId = null;
         lastRecords.clear();
     }
 
