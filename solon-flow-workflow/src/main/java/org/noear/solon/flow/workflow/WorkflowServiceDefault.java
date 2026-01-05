@@ -76,20 +76,20 @@ public class WorkflowServiceDefault implements WorkflowService {
 
     @Override
     public boolean postTaskIfWaiting(Node node, TaskAction action, FlowContext context) {
-        Task statefulTask = getTask(node.getGraph(), context);
-        if (statefulTask == null) {
+        Task task = getTask(node.getGraph(), context);
+        if (task == null) {
             return false;
         }
 
-        if (statefulTask.getState() != TaskState.WAITING) {
+        if (task.getState() != TaskState.WAITING) {
             return false;
         }
 
-        if (statefulTask.getNode().getId().equals(node.getId()) == false) {
+        if (task.getNode().getId().equals(node.getId()) == false) {
             return false;
         }
 
-        postTask(statefulTask.getNode(), action, context);
+        postTask(task.getNode(), action, context);
 
         return true;
     }
@@ -133,11 +133,11 @@ public class WorkflowServiceDefault implements WorkflowService {
         } else if (action == TaskAction.BACK_JUMP) {
             //跳转后退
             while (true) {
-                Task statefulNode = getTask(node.getGraph(), exchanger.context());
-                backHandle(statefulNode.getNode(), exchanger);
+                Task task = getTask(node.getGraph(), exchanger.context());
+                backHandle(task.getNode(), exchanger);
 
                 //到目标节点了
-                if (statefulNode.getNode().getId().equals(node.getId())) {
+                if (task.getNode().getId().equals(node.getId())) {
                     break;
                 }
             }
@@ -262,10 +262,10 @@ public class WorkflowServiceDefault implements WorkflowService {
             if (nextNode != null) {
                 if (nextNode.getType() == NodeType.INCLUSIVE || nextNode.getType() == NodeType.PARALLEL) {
                     //如果是流入网关，要通过引擎计算获取下个活动节点（且以图做为参数，可能自动流转到网关外）
-                    Task statefulNextNode = getTask(node.getGraph(), exchanger.context());
+                    Task task = getTask(node.getGraph(), exchanger.context());
 
-                    if (statefulNextNode != null) {
-                        nextNode = statefulNextNode.getNode();
+                    if (task != null) {
+                        nextNode = task.getNode();
                     } else {
                         nextNode = null;
                     }

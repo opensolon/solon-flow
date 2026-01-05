@@ -40,7 +40,7 @@ public class JumpFlowTest2 {
     };
     InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
-    private WorkflowService buildStatefulService() {
+    private WorkflowService buildWorkflow() {
         MapContainer container = new MapContainer();
 
         FlowEngine fe = FlowEngine.newInstance(SimpleFlowDriver.builder()
@@ -55,7 +55,7 @@ public class JumpFlowTest2 {
 
     @Test
     public void case1() {
-        WorkflowService workflow = buildStatefulService();
+        WorkflowService workflow = buildWorkflow();
         FlowContext context = FlowContext.of(instanceId).put(actor, "admin");
 
         workflow.postTask(graphId, "n3", TaskAction.FORWARD_JUMP, context);
@@ -78,7 +78,7 @@ public class JumpFlowTest2 {
 
     @Test
     public void case2() {
-        WorkflowService workflow = buildStatefulService();
+        WorkflowService workflow = buildWorkflow();
         FlowContext context = FlowContext.of(instanceId).put(actor, "admin");
 
         Task task = workflow.getTask(graphId, context);
@@ -98,7 +98,7 @@ public class JumpFlowTest2 {
 
     @Test
     public void case3() throws Throwable {
-        WorkflowService workflow = buildStatefulService();
+        WorkflowService workflow = buildWorkflow();
         FlowContext context = FlowContext.of(instanceId).put(actor, "admin");
 
         Task task = workflow.getTask(graphId, context);

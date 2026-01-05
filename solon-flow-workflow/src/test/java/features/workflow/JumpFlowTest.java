@@ -41,7 +41,7 @@ public class JumpFlowTest {
         }
     };
 
-    private WorkflowService buildStatefulService() {
+    private WorkflowService buildWorkflow() {
         MapContainer container = new MapContainer();
         FlowEngine fe = FlowEngine.newInstance(SimpleFlowDriver.builder()
                 .container(container)
@@ -55,7 +55,7 @@ public class JumpFlowTest {
 
     @Test
     public void case1() {
-        WorkflowService workflow = buildStatefulService();
+        WorkflowService workflow = buildWorkflow();
         FlowContext context = FlowContext.of(instanceId).put(actor, "admin");
 
         workflow.postTask(graphId, "n3", TaskAction.FORWARD_JUMP, context);

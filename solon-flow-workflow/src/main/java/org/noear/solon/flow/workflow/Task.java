@@ -84,7 +84,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "StatefulNode{" +
+        return "Task{" +
                 "node=" + node +
                 ", state=" + state +
                 '}';

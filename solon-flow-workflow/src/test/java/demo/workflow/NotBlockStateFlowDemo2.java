@@ -33,7 +33,7 @@ public class NotBlockStateFlowDemo2 {
     };
 
     @Test
-    public void useFlowStateful() {
+    public void case1() {
         //计算后，可获取最新状态
 
         WorkflowService workflow = WorkflowService.of(FlowEngine.newInstance(), stateController, stateRepository);

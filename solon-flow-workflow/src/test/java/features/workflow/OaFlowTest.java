@@ -21,8 +21,8 @@ import java.util.Collection;
  * @author noear 2025/3/27 created
  */
 @SolonTest
-public class OaStatefulFlowTest {
-    static final Logger log = LoggerFactory.getLogger(OaStatefulFlowTest.class);
+public class OaFlowTest {
+    static final Logger log = LoggerFactory.getLogger(OaFlowTest.class);
 
     final String graphId = "sf1";
     final String instanceId = Utils.uuid();
@@ -30,7 +30,7 @@ public class OaStatefulFlowTest {
     ActorStateController stateController = new ActorStateController();
     InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
-    private WorkflowService buildStatefulService() {
+    private WorkflowService buildWorkflow() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
@@ -47,7 +47,7 @@ public class OaStatefulFlowTest {
     @Test
     public void case1() throws Throwable {
         //初始化引擎
-        WorkflowService workflow = buildStatefulService();
+        WorkflowService workflow = buildWorkflow();
         Graph graph = workflow.engine().getGraph(graphId);
 
         FlowContext context;
@@ -164,23 +164,23 @@ public class OaStatefulFlowTest {
     //@Test //只看看
     public void case2() throws Throwable {
         FlowContext context = FlowContext.of("i1").put("actor", "陈鑫");
-        Task statefulNode;
+        Task task;
 
         //初始化引擎
-        WorkflowService workflow = buildStatefulService();
+        WorkflowService workflow = buildWorkflow();
 
-        statefulNode = workflow.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
 
-        assert "step2".equals(statefulNode.getNode().getId());
-        assert TaskState.UNKNOWN == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
+        assert "step2".equals(task.getNode().getId());
+        assert TaskState.UNKNOWN == task.getState(); //没有权限启动任务（因为没有配置操作员）
 
         /// ////////////////
         //提交操作
-        workflow.postTask(statefulNode.getNode(), TaskAction.FORWARD, context);
+        workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
 
-        statefulNode = workflow.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
 
-        assert "step3".equals(statefulNode.getNode().getId());
-        assert TaskState.WAITING == statefulNode.getState(); //等待当前用户处理（有权限操作）
+        assert "step3".equals(task.getNode().getId());
+        assert TaskState.WAITING == task.getState(); //等待当前用户处理（有权限操作）
     }
 }

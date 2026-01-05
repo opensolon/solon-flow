@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
  * @author noear 2025/3/27 created
  */
 @SolonTest
-public class OaStatefulFlowRedisTest {
-    static final Logger log = LoggerFactory.getLogger(OaStatefulFlowRedisTest.class);
+public class OaFlowRedisTest {
+    static final Logger log = LoggerFactory.getLogger(OaFlowRedisTest.class);
 
     final String graphId = "sf1";
     final String instanceId = Utils.uuid();
@@ -29,7 +29,7 @@ public class OaStatefulFlowRedisTest {
     RedisStateRepository stateRepository;
 
 
-    private WorkflowService buildStatefulService() {
+    private WorkflowService buildWorkflow() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
@@ -58,7 +58,7 @@ public class OaStatefulFlowRedisTest {
     @Test
     public void case1() throws Throwable {
         //初始化引擎
-        WorkflowService workflow = buildStatefulService();
+        WorkflowService workflow = buildWorkflow();
 
         FlowContext context;
         Task task;
@@ -145,24 +145,24 @@ public class OaStatefulFlowRedisTest {
     //@Test //只看看
     public void case2() throws Throwable {
         FlowContext context = FlowContext.of("i1").put("actor", "陈鑫");
-        Task statefulTask;
+        Task task;
 
         //初始化引擎
-        WorkflowService workflow = buildStatefulService();
+        WorkflowService workflow = buildWorkflow();
 
 
-        statefulTask = workflow.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
 
-        assert "step2".equals(statefulTask.getNode().getId());
-        assert TaskState.UNKNOWN == statefulTask.getState(); //没有权限启动任务（因为没有配置操作员）
+        assert "step2".equals(task.getNode().getId());
+        assert TaskState.UNKNOWN == task.getState(); //没有权限启动任务（因为没有配置操作员）
 
         /// ////////////////
         //提交操作
-        workflow.postTask(statefulTask.getNode(), TaskAction.FORWARD, context);
+        workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
 
-        statefulTask = workflow.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
 
-        assert "step3".equals(statefulTask.getNode().getId());
-        assert TaskState.WAITING == statefulTask.getState(); //等待当前用户处理（有权限操作）
+        assert "step3".equals(task.getNode().getId());
+        assert TaskState.WAITING == task.getState(); //等待当前用户处理（有权限操作）
     }
 }

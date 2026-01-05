@@ -64,11 +64,11 @@ public class ActorStateFlowTest {
 
 
         context = getFlowContext("dm");
-        Collection<Task> statefulNodes = workflow.getTasks(graphId, context);
-        for (Task auditNode : statefulNodes) {
+        Collection<Task> tasks = workflow.getTasks(graphId, context);
+        for (Task task1 : tasks) {
             context = getFlowContext("dm");
             context.put("amount", amount);
-            workflow.postTask(auditNode.getNode(), TaskAction.FORWARD, context);
+            workflow.postTask(task1.getNode(), TaskAction.FORWARD, context);
         }
 
         context = getFlowContext("oa");

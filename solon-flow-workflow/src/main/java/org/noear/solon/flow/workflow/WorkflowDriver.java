@@ -64,67 +64,67 @@ public class WorkflowDriver implements FlowDriver {
      * 处理任务
      *
      * @param exchanger 流交换器
-     * @param task      任务
+     * @param taskDesc      任务
      */
     @Override
-    public void handleTask(FlowExchanger exchanger, TaskDesc task) throws Throwable {
-        if (stateController.isAutoForward(exchanger.context(), task.getNode())) {
+    public void handleTask(FlowExchanger exchanger, TaskDesc taskDesc) throws Throwable {
+        if (stateController.isAutoForward(exchanger.context(), taskDesc.getNode())) {
             //自动前进
-            TaskState state = stateRepository.stateGet(exchanger.context(), task.getNode());
+            TaskState state = stateRepository.stateGet(exchanger.context(), taskDesc.getNode());
             if (state == TaskState.UNKNOWN || state == TaskState.WAITING) {
                 //确保任务只被执行一次
-                postHandleTask(exchanger, task);
+                postHandleTask(exchanger, taskDesc);
 
                 if ((exchanger.isStopped() || exchanger.isInterrupted())) {
                     //中断或停止，表示处理中
 
                     //记录当前流程节点（用于展示）
-                    Task statefulNode = new Task(exchanger, task.getNode(), TaskState.WAITING);
-                    exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, statefulNode);
+                    Task task = new Task(exchanger, taskDesc.getNode(), TaskState.WAITING);
+                    exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, task);
 
                     //添加状态
                     if (state != TaskState.WAITING) {
-                        stateRepository.statePut(exchanger.context(), task.getNode(), TaskState.WAITING);
+                        stateRepository.statePut(exchanger.context(), taskDesc.getNode(), TaskState.WAITING);
                     }
                 } else {
                     //没有中断或停止，表示已完成
 
                     //记录当前流程节点（用于展示）
-                    Task statefulNode = new Task(exchanger, task.getNode(), TaskState.COMPLETED);
-                    exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, statefulNode);
+                    Task task = new Task(exchanger, taskDesc.getNode(), TaskState.COMPLETED);
+                    exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, task);
 
                     //添加状态
-                    stateRepository.statePut(exchanger.context(), task.getNode(), TaskState.COMPLETED);
+                    stateRepository.statePut(exchanger.context(), taskDesc.getNode(), TaskState.COMPLETED);
                 }
             } else if (state == TaskState.TERMINATED) {
                 //终止
-                Task statefulNode = new Task(exchanger, task.getNode(), TaskState.TERMINATED);
-                exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, statefulNode);
+                Task task = new Task(exchanger, taskDesc.getNode(), TaskState.TERMINATED);
+                exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, task);
 
                 //终止
                 exchanger.stop();
             } else if (state == TaskState.COMPLETED) {
                 //完成
-                //StatefulTask statefulNode = new StatefulTask(exchanger, task.getNode(), StateType.COMPLETED);
-                //exchanger.temporary().vars().put(StateResult.KEY_ACTIVITY_NODE, statefulNode);
+                //Task task = new Task(exchanger, task.getNode(), StateType.COMPLETED);
+                //exchanger.temporary().vars().put(StateResult.KEY_ACTIVITY_NODE, task);
             }
         } else {
             //控制前进
-            TaskState state = stateRepository.stateGet(exchanger.context(), task.getNode());
+            TaskState state = stateRepository.stateGet(exchanger.context(), taskDesc.getNode());
             List<Task> nodeList = (List<Task>) exchanger.temporary().vars().computeIfAbsent(KEY_ACTIVITY_LIST, k -> new ArrayList<>());
             boolean nodeListGet = (boolean) exchanger.temporary().vars().getOrDefault(KEY_ACTIVITY_LIST_GET, false);
 
             if (state == TaskState.UNKNOWN || state == TaskState.WAITING) {
                 //检查是否为当前用户的任务
-                if (stateController.isOperatable(exchanger.context(), task.getNode())) {
+                if (stateController.isOperatable(exchanger.context(), taskDesc.getNode())) {
                     //记录当前流程节点（用于展示）
-                    Task statefulNode = new Task(exchanger, task.getNode(), TaskState.WAITING);
-                    exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, statefulNode);
-                    nodeList.add(statefulNode);
+                    Task task = new Task(exchanger, taskDesc.getNode(), TaskState.WAITING);
+                    exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, task);
+                    nodeList.add(task);
 
                     //添加状态
                     if (state != TaskState.WAITING) {
-                        stateRepository.statePut(exchanger.context(), task.getNode(), TaskState.WAITING);
+                        stateRepository.statePut(exchanger.context(), taskDesc.getNode(), TaskState.WAITING);
                     }
 
                     if (nodeListGet) {
@@ -134,17 +134,17 @@ public class WorkflowDriver implements FlowDriver {
                     }
                 } else {
                     //阻断当前分支（等待别的用户办理）
-                    Task statefulNode = new Task(exchanger, task.getNode(), TaskState.UNKNOWN);
-                    exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, statefulNode);
-                    nodeList.add(statefulNode);
+                    Task task = new Task(exchanger, taskDesc.getNode(), TaskState.UNKNOWN);
+                    exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, task);
+                    nodeList.add(task);
 
                     exchanger.interrupt();
                 }
             } else if (state == TaskState.TERMINATED) {
                 //终止
-                Task statefulNode = new Task(exchanger, task.getNode(), TaskState.TERMINATED);
-                exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, statefulNode);
-                nodeList.add(statefulNode);
+                Task task = new Task(exchanger, taskDesc.getNode(), TaskState.TERMINATED);
+                exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, task);
+                nodeList.add(task);
 
                 if (nodeListGet) {
                     exchanger.interrupt();
