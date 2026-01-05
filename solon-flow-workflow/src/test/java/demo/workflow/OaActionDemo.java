@@ -1,4 +1,4 @@
-package demo.workflow.stateful;
+package demo.workflow;
 
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;

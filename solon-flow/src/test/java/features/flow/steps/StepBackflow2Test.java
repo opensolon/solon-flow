@@ -1,4 +1,4 @@
-package features.flow.stateless;
+package features.flow.steps;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

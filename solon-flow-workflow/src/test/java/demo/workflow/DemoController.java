@@ -1,4 +1,4 @@
-package demo.workflow.stateful;
+package demo.workflow;
 
 import org.noear.solon.annotation.Controller;
 import org.noear.solon.annotation.Inject;
