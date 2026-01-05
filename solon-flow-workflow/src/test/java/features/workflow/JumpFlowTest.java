@@ -55,21 +55,21 @@ public class JumpFlowTest {
 
     @Test
     public void case1() {
-        WorkflowService statefulService = buildStatefulService();
+        WorkflowService workflow = buildStatefulService();
         FlowContext context = FlowContext.of(instanceId).put(actor, "admin");
 
-        statefulService.postTask(graphId, "n3", TaskAction.FORWARD_JUMP, context);
+        workflow.postTask(graphId, "n3", TaskAction.FORWARD_JUMP, context);
 
-        Task task = statefulService.getTask(graphId, context);
+        Task task = workflow.getTask(graphId, context);
 
         log.debug(task.toString());
         assert task.getState() == TaskState.WAITING;
         assert task.getNode().getId().equals("n4");
 
 
-        statefulService.postTask(graphId, "n1", TaskAction.BACK_JUMP, context);
+        workflow.postTask(graphId, "n1", TaskAction.BACK_JUMP, context);
 
-        task = statefulService.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
 
         log.debug(task.toString());
         assert task.getState() == TaskState.WAITING;

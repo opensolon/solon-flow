@@ -40,7 +40,7 @@ public class ActorStateFlowTest {
 
         flowEngine.load("classpath:flow/workflow/*.yml");
 
-        WorkflowService statefulService = WorkflowService.of(flowEngine, stateController, stateRepository);
+        WorkflowService workflow = WorkflowService.of(flowEngine, stateController, stateRepository);
 
 
         /// ////////////
@@ -50,29 +50,29 @@ public class ActorStateFlowTest {
 
 
         context = getFlowContext("employee");
-        task = statefulService.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
         Assertions.assertEquals("n0", task.getNode().getId());
         Assertions.assertEquals(TaskState.WAITING, task.getState());
-        statefulService.postTask(graphId, task.getNodeId(), TaskAction.FORWARD, context);
+        workflow.postTask(graphId, task.getNodeId(), TaskAction.FORWARD, context);
 
 
         context = getFlowContext("tl");
-        task = statefulService.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
         Assertions.assertEquals("n1", task.getNode().getId());
         Assertions.assertEquals(TaskState.WAITING, task.getState());
-        statefulService.postTask(graphId, task.getNodeId(), TaskAction.FORWARD, context);
+        workflow.postTask(graphId, task.getNodeId(), TaskAction.FORWARD, context);
 
 
         context = getFlowContext("dm");
-        Collection<Task> statefulNodes = statefulService.getTasks(graphId, context);
+        Collection<Task> statefulNodes = workflow.getTasks(graphId, context);
         for (Task auditNode : statefulNodes) {
             context = getFlowContext("dm");
             context.put("amount", amount);
-            statefulService.postTask(auditNode.getNode(), TaskAction.FORWARD, context);
+            workflow.postTask(auditNode.getNode(), TaskAction.FORWARD, context);
         }
 
         context = getFlowContext("oa");
-        task = statefulService.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
         Assertions.assertNull(task, "必须为End节点");
 
     }

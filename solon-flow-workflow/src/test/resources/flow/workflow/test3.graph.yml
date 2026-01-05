@@ -1,5 +1,5 @@
 id: "test3"
-title: "合同审批（条件会签）"
+title: "子公司审批"
 layout:
   - { id: "s", type: "start", title: "开始"}
   - { id: "n0", title: "发起人", meta: { role: "employee" } }
@@ -7,5 +7,5 @@ layout:
   - { id: "n2", title: "本部门经理批", meta: { role: "dm" } }
   - { id: "n3", title: "生产部经理批", meta: { role: "dm" } }
   - { id: "n4", title: "财务部经理批", meta: { role: "dm" } }
-  - { id: "n5", title: "发送邮件"}
+  - { id: "n5", title: "发送邮件", task: "test3_sub"}
   - { id: "e", type: "end" }

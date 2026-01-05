@@ -55,21 +55,21 @@ public class JumpFlowTest2 {
 
     @Test
     public void case1() {
-        WorkflowService statefulService = buildStatefulService();
+        WorkflowService workflow = buildStatefulService();
         FlowContext context = FlowContext.of(instanceId).put(actor, "admin");
 
-        statefulService.postTask(graphId, "n3", TaskAction.FORWARD_JUMP, context);
+        workflow.postTask(graphId, "n3", TaskAction.FORWARD_JUMP, context);
 
-        Task task = statefulService.getTask(graphId, context);
+        Task task = workflow.getTask(graphId, context);
 
         log.debug(task.toString());
         assert task.getState() == TaskState.WAITING;
         assert task.getNode().getId().equals("n4");
 
 
-        statefulService.postTask(graphId, "n1", TaskAction.BACK_JUMP, context);
+        workflow.postTask(graphId, "n1", TaskAction.BACK_JUMP, context);
 
-        task = statefulService.getTask(graphId, context);
+        task = workflow.getTask(graphId, context);
 
         log.debug(task.toString());
         assert task.getState() == TaskState.WAITING;
@@ -78,18 +78,18 @@ public class JumpFlowTest2 {
 
     @Test
     public void case2() {
-        WorkflowService statefulService = buildStatefulService();
+        WorkflowService workflow = buildStatefulService();
         FlowContext context = FlowContext.of(instanceId).put(actor, "admin");
 
-        Task task = statefulService.getTask(graphId, context);
+        Task task = workflow.getTask(graphId, context);
         log.debug(task.toString());
 
-        statefulService.postTask(task.getNode(), TaskAction.FORWARD, context);
-        Task task2 = statefulService.getTask(graphId, context);
+        workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
+        Task task2 = workflow.getTask(graphId, context);
         log.debug(task2.toString());
 
-        statefulService.postTask(task.getNode(), TaskAction.FORWARD, context);
-        Task task3 = statefulService.getTask(graphId, context);
+        workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
+        Task task3 = workflow.getTask(graphId, context);
         log.debug(task3.toString());
 
         //重复提交相同节点后，获取的任务仍是相同的（说明可以重复提交）
@@ -98,10 +98,10 @@ public class JumpFlowTest2 {
 
     @Test
     public void case3() throws Throwable {
-        WorkflowService statefulService = buildStatefulService();
+        WorkflowService workflow = buildStatefulService();
         FlowContext context = FlowContext.of(instanceId).put(actor, "admin");
 
-        Task task = statefulService.getTask(graphId, context);
+        Task task = workflow.getTask(graphId, context);
         log.debug(task.toString());
 
         task.run(context);

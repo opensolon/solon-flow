@@ -167,18 +167,18 @@ public class OaStatefulFlowTest {
         Task statefulNode;
 
         //初始化引擎
-        WorkflowService statefulService = buildStatefulService();
+        WorkflowService workflow = buildStatefulService();
 
-        statefulNode = statefulService.getTask(graphId, context);
+        statefulNode = workflow.getTask(graphId, context);
 
         assert "step2".equals(statefulNode.getNode().getId());
         assert TaskState.UNKNOWN == statefulNode.getState(); //没有权限启动任务（因为没有配置操作员）
 
         /// ////////////////
         //提交操作
-        statefulService.postTask(statefulNode.getNode(), TaskAction.FORWARD, context);
+        workflow.postTask(statefulNode.getNode(), TaskAction.FORWARD, context);
 
-        statefulNode = statefulService.getTask(graphId, context);
+        statefulNode = workflow.getTask(graphId, context);
 
         assert "step3".equals(statefulNode.getNode().getId());
         assert TaskState.WAITING == statefulNode.getState(); //等待当前用户处理（有权限操作）
