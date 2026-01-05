@@ -1,4 +1,4 @@
-package features.flow.steps;
+package features.flow.control;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,14 +13,14 @@ import org.noear.solon.test.SolonTest;
  *
  */
 @SolonTest
-public class StepBackflow2Test {
-    private String graphId = "backflow1";
-    private String graph2Id = "backflow2";
+public class StepFlowTest {
+    private String graphId = "stepflow";
+    private String graph2Id = "stepflow_sub";
 
     @Test
     public void case1() throws Throwable {
         FlowEngine flowEngine = FlowEngine.newInstance();
-        flowEngine.load("classpath:flow/stateless/*.yml");
+        flowEngine.load("classpath:flow/control/*.yml");
 
 
         FlowContext flowContext = FlowContext.of("x1")

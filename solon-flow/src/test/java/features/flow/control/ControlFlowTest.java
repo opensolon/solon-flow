@@ -1,4 +1,4 @@
-package features.flow.steps;
+package features.flow.control;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
