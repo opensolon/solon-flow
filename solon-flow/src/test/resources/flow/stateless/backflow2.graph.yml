@@ -2,16 +2,16 @@ id: backflow2
 layout:
   - id: node_1txlypkthu
     type: start
-    title: 开始
+    title: 开始b
     link:
       - nextId: node_ot8buxm6ac
   - id: node_ot8buxm6ac
-    title: 活动节点1
+    title: 活动节点1b
     link:
       - nextId: node_v1uc2rbtq
   - id: node_v1uc2rbtq
     type: exclusive
-    title: 排他网关1
+    title: 排他网关1b
     link:
       - nextId: node_focvfre5rq
         title: ''
@@ -19,20 +19,20 @@ layout:
         title: ''
         condition: a > 3
   - id: node_focvfre5rq
-    title: 活动节点2
+    title: 活动节点2b
     link:
       - nextId: node_taosvt7gh
   - id: node_pzf5u4xbv8
-    title: 活动节点3
+    title: 活动节点3b
     link:
       - nextId: node_xdntd2nsfe
   - id: node_xdntd2nsfe
     type: exclusive
-    title: 排他网关2
+    title: 排他网关2b
     link:
       - nextId: node_ot8buxm6ac
         condition: b > 5
       - nextId: node_taosvt7gh
   - id: node_taosvt7gh
     type: end
-    title: 结束
+    title: 结束b

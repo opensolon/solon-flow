@@ -185,11 +185,11 @@ public class WorkflowServiceDefault implements WorkflowService {
     @Override
     public Collection<Task> getTasks(Graph graph, FlowContext context) {
         FlowDriver driver = getDriver(graph);
+
         FlowExchanger exchanger = new FlowExchanger(engine, driver, context, -1, new AtomicInteger(0));
-
         exchanger.temporary().vars().put(WorkflowDriver.KEY_ACTIVITY_LIST_GET, true);
-
         exchanger.recordNode(graph, graph.getStart());
+
         engine.eval(graph, exchanger);
 
         Collection<Task> tmp = (Collection<Task>) exchanger.temporary().vars()
@@ -220,9 +220,10 @@ public class WorkflowServiceDefault implements WorkflowService {
     @Override
     public Task getTask(Graph graph, FlowContext context) {
         FlowDriver driver = getDriver(graph);
-        FlowExchanger exchanger = new FlowExchanger(engine, driver, context, -1, new AtomicInteger(0));
 
+        FlowExchanger exchanger = new FlowExchanger(engine, driver, context, -1, new AtomicInteger(0));
         exchanger.recordNode(graph, graph.getStart());
+
         engine.eval(graph, exchanger);
 
         return (Task) exchanger.temporary().vars().get(WorkflowDriver.KEY_ACTIVITY_NODE);

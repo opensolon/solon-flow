@@ -24,6 +24,7 @@ layout:
       - nextId: node_taosvt7gh
   - id: node_pzf5u4xbv8
     title: 活动节点3
+    task: "#backflow2"
     link:
       - nextId: node_xdntd2nsfe
   - id: node_xdntd2nsfe

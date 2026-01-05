@@ -125,6 +125,9 @@ public class FlowExchanger {
      * @param graph 图
      */
     public void runGraph(Graph graph) {
+        //回退节点走的步数（不然子图，会少一步）
+        prveSetp();
+
         engine.eval(graph, copy());
     }
 
@@ -173,14 +176,22 @@ public class FlowExchanger {
         return stepCount.get();
     }
 
+    public void prveSetp() {
+        if (steps < 0) {
+            return;
+        } else {
+            stepCount.decrementAndGet();
+        }
+    }
+
     /**
      * 下一步
      */
-    public boolean nextSetp() {
+    public boolean nextSetp(Node node) {
         if (steps < 0) {
             return true;
         } else {
-            return stepCount.addAndGet(1) <= steps;
+            return stepCount.incrementAndGet() <= steps;
         }
     }
 

@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Preview("3.8.1")
 public class FlowTrace implements Serializable {
-    private volatile boolean enabled = true;
+    private transient volatile boolean enabled = true;
     //根图id
     private volatile String rootGraphId;
     //每个图的最后一个节点记录

@@ -313,9 +313,10 @@ public class FlowEngineDefault implements FlowEngine {
             exchanger.context().trace().recordNode(node.getGraph(), node);
         }
 
-        //执行深度控制
-        if (exchanger.isReverting() == false){
-            if (exchanger.nextSetp() == false) {
+        //步进控制
+        if (exchanger.isReverting() == false) {
+            if (exchanger.nextSetp(node) == false) {
+                exchanger.stop();
                 return;
             }
         }
