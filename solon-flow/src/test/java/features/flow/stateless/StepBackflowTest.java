@@ -13,7 +13,7 @@ import org.noear.solon.test.SolonTest;
  */
 @SolonTest
 public class StepBackflowTest {
-    private String graphId = "backflow";
+    private String graphId = "backflow1";
 
     @Test
     public void case1() throws Throwable {
