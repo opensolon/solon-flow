@@ -68,7 +68,6 @@ public class WorkflowDriver implements FlowDriver {
      */
     @Override
     public void handleTask(FlowExchanger exchanger, TaskDesc task) throws Throwable {
-        //有关态的
         if (stateController.isAutoForward(exchanger.context(), task.getNode())) {
             //自动前进
             TaskState state = stateRepository.stateGet(exchanger.context(), task.getNode());
@@ -162,6 +161,6 @@ public class WorkflowDriver implements FlowDriver {
 
     @Override
     public void postHandleTask(FlowExchanger exchanger, TaskDesc task) throws Throwable {
-
+        driver.postHandleTask(exchanger, task);
     }
 }
