@@ -170,12 +170,8 @@ public class FlowExchanger {
     }
 
     /**
-     * 获取步进计数
+     * 上一步（有时要回退）
      */
-    public int getStepCount() {
-        return stepCount.get();
-    }
-
     public void prveSetp() {
         if (steps < 0) {
             return;
