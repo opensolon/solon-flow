@@ -150,4 +150,17 @@ public class FlowTrace implements Serializable {
             return tmp.getId();
         }
     }
+
+    /**
+     * 图是否已结束
+     */
+    public boolean isEnd(String graphId) {
+        NodeRecord tmp = lastRecord(graphId);
+
+        if (tmp == null) {
+            return false;
+        } else {
+            return tmp.isEnd();
+        }
+    }
 }
