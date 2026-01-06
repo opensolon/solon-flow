@@ -105,9 +105,7 @@ public class WorkflowDriver implements FlowDriver {
                 //终止
                 exchanger.stop();
             } else if (state == TaskState.COMPLETED) {
-                //完成
-                //Task task = new Task(exchanger, task.getNode(), StateType.COMPLETED);
-                //exchanger.temporary().vars().put(StateResult.KEY_ACTIVITY_NODE, task);
+                //完成，则跳过
             }
         } else {
             //控制前进
@@ -149,9 +147,7 @@ public class WorkflowDriver implements FlowDriver {
                     exchanger.stop();
                 }
             } else if (state == TaskState.COMPLETED) {
-                //完成
-                //Task task = new Task(exchanger, task.getNode(), TaskState.COMPLETED);
-                //exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, task);
+                //完成，则跳过
             }
         }
     }
