@@ -19,14 +19,25 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * 步进器(start <= x <end)
+ * 步进器迭代器 (区间：[start, end)，步长：step)
+ * <p>用于根据字符串描述或参数生成等差数列。例如：1, 3, 5, 7, 9</p>
  *
  * @author noear 2025/10/19 created
  * @since 3.6
  */
-public class Stepper implements Iterator {
-    public static Stepper from(String str) {
-        //"start:end:setp" || "1...9"
+public class Stepper implements Iterator<Integer> {
+
+    /**
+     * 从字符串解析并创建步进器
+     *
+     * @param str 支持两种格式:
+     *            1. "start...end" (步长默认为 1，例如 "1...9")
+     *            2. "start:end:step" (显式步长，例如 "1:10:2")
+     * @return 步进器实例
+     * @throws IllegalArgumentException 如果参数不是合法的整数或格式错误
+     */
+    public static Stepper from(String str) throws IllegalArgumentException {
+        // 优先尝试解析省略号模式 "start...end"
         int ellipsisIdx = str.indexOf("...");
 
         if (ellipsisIdx > 0) {
@@ -36,16 +47,17 @@ public class Stepper implements Iterator {
             try {
                 int start = Integer.parseInt(startStr);
                 int end = Integer.parseInt(endStr);
-
+                // 省略号模式固定步长为 1
                 return new Stepper(start, end, 1);
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("All parameters must be valid integers", e);
+                throw new IllegalArgumentException("Stepper parameters must be valid integers: " + str, e);
             }
         } else {
+            // 尝试解析冒号模式 "start:end:step"
             String[] terms = str.split(":", 3);
 
             if (terms.length != 3) {
-                throw new IllegalArgumentException("The '$in' stepper style must be: 'start:end:step'");
+                throw new IllegalArgumentException("The stepper style must be 'start...end' or 'start:end:step'");
             }
 
             try {
@@ -55,7 +67,7 @@ public class Stepper implements Iterator {
 
                 return new Stepper(start, end, step);
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("All parameters must be valid integers", e);
+                throw new IllegalArgumentException("Stepper parameters must be valid integers: " + str, e);
             }
         }
     }
@@ -64,7 +76,7 @@ public class Stepper implements Iterator {
     private final int end;
     private final int step;
     private int nextValue;
-    private final boolean hasElements;
+    private boolean hasMore;
 
     public Stepper(int start, int end, int step) {
         if (step <= 0) {
@@ -75,30 +87,26 @@ public class Stepper implements Iterator {
         this.end = end;
         this.step = step;
         this.nextValue = start;
-        this.hasElements = start < end; // 根据关系调整
+        this.hasMore = start < end;
     }
 
     @Override
     public boolean hasNext() {
-        if (!hasElements) {
-            return false;
-        }
-
-        // 直接检查下一个值是否在范围内
-        return nextValue < end;
+        return hasMore;
     }
 
     @Override
-    public Object next() {
+    public Integer next() {
         if (!hasNext()) {
             throw new NoSuchElementException("No more elements in stepper");
         }
 
         int result = nextValue;
 
-        // 检查并计算下一个值
-        if (nextValue <= end - step) {
+        if (nextValue < end - step) {
             nextValue += step;
+        } else {
+            hasMore = false;
         }
 
         return result;
