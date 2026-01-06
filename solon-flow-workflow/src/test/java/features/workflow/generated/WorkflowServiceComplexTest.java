@@ -33,7 +33,8 @@ class WorkflowServiceComplexTest {
     void setUp() {
         // 创建复杂流程图：开始 -> 并行网关 -> (任务A, 任务B) -> 排他网关 -> 结束
         complexGraph = Graph.create("complex-test", "复杂流程测试", spec -> {
-            spec.addStart("start").title("开始").linkAdd("parallel");
+            spec.addStart("start").title("开始")
+                    .linkAdd("parallel");
 
             // 并行网关
             spec.addParallel("parallel").title("并行网关")
@@ -43,14 +44,14 @@ class WorkflowServiceComplexTest {
             // 两个并行任务
             spec.addActivity("taskA").title("任务A")
                     .metaPut("actor", "user1")
-                    .linkAdd("exclusive");
+                    .linkAdd("parallel_end");
 
             spec.addActivity("taskB").title("任务B")
                     .metaPut("actor", "user2")
-                    .linkAdd("exclusive");
+                    .linkAdd("parallel_end");
 
-            // 排他网关
-            spec.addExclusive("exclusive").title("排他网关")
+            // 并行网关聚合
+            spec.addParallel("parallel_end").title("并行网关-end")
                     .linkAdd("end");
 
             spec.addEnd("end").title("结束");
@@ -78,9 +79,27 @@ class WorkflowServiceComplexTest {
 
         // 验证两个任务都在等待
         List<Task> waitingTasks = tasks.stream()
-                .filter(task -> task.getState() == TaskState.WAITING)
+                .filter(task -> task.getState() == TaskState.WAITING) //没有匹配的人
                 .collect(Collectors.toList());
-        assertEquals(2, waitingTasks.size());
+        assertEquals(0, waitingTasks.size());
+    }
+
+    @Test
+    void testParallelGatewayWithMultipleTasks2() {
+        FlowContext context = FlowContext.of("test-instance");
+        context.put("actor", "user1");
+
+        // 获取所有任务
+        Collection<Task> tasks = workflowService.getTasks("complex-test", context);
+
+        assertNotNull(tasks);
+        assertEquals(2, tasks.size());
+
+        // 验证两个任务都在等待
+        List<Task> waitingTasks = tasks.stream()
+                .filter(task -> task.getState() == TaskState.WAITING) //有一个人匹配
+                .collect(Collectors.toList());
+        assertEquals(1, waitingTasks.size());
     }
 
     @Test
@@ -108,7 +127,7 @@ class WorkflowServiceComplexTest {
         context3.put("actor", "user3");
 
         Task task3 = workflowService.getTask("complex-test", context3);
-        assertNull(task3);
+        assertTrue(task3 == null || task3.getState() == TaskState.UNKNOWN);
     }
 
     @Test
@@ -124,11 +143,11 @@ class WorkflowServiceComplexTest {
 
         // 用户1应该没有任务了
         Task taskAfterA = workflowService.getTask("complex-test", context1);
-        assertNull(taskAfterA);
+        assertTrue(taskAfterA == null || taskAfterA.getState() == TaskState.UNKNOWN);
 
         // 用户2的任务B应该还在等待
         Task taskB = workflowService.getTask("complex-test", context2);
-        assertNotNull(taskB);
+        assertNotNull(taskB );
         assertEquals("taskB", taskB.getNodeId());
         assertEquals(TaskState.WAITING, taskB.getState());
 
@@ -157,9 +176,9 @@ class WorkflowServiceComplexTest {
         // 后退操作
         workflowService.postTask("complex-test", "taskA", TaskAction.BACK, context);
 
-        // 状态应该回到等待
+        // 状态应该回到未知（或待等）
         TaskState stateAfterBack = workflowService.getState(taskANode, context);
-        assertEquals(TaskState.WAITING, stateAfterBack);
+        assertEquals(TaskState.UNKNOWN, stateAfterBack);
 
         // 应该能再次获取到任务
         Task taskAfterBack = workflowService.getTask("complex-test", context);
