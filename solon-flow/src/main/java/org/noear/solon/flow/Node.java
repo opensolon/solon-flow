@@ -47,7 +47,7 @@ public class Node {
      */
     public Object attachment;//如果做扩展解析，用作存储位；
 
-    protected Node(Graph graph, NodeSpec spec, List<Link> links) {
+    public Node(Graph graph, NodeSpec spec, List<Link> links) {
         this.graph = graph;
 
         this.id = spec.getId();
