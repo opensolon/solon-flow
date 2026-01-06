@@ -441,12 +441,14 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
             Task task = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
             assertNotNull(task);
             workflowService.postTask(task.getNode(), TaskAction.FORWARD, context);
+            task = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
 
             // 验证每个实例独立运行
-            FlowContext checkContext = FlowContext.of(instanceId);
+            FlowContext checkContext = FlowContext.fromJson(context.toJson());
             Task currentTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
-            assertNotNull(currentTask);
-            assertEquals(TaskState.WAITING, currentTask.getState());
+
+            assertEquals(task, currentTask);
+            assertEquals(context.lastNodeId(), checkContext.lastNodeId());
         }
     }
 

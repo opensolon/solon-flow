@@ -133,8 +133,8 @@ public class FlowExchanger {
         if (isStopped() == false) {
             //如果没停止，则检查子图是否已结束
             if (context.trace().isEnd(graph.getId()) == false) {
-                //子图没结束，则停止前进
-                stop();
+                //子图没结束，则当前分支中断
+                interrupt();
             }
         }
     }

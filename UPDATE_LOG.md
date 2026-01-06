@@ -24,7 +24,7 @@
 * 优化 `solon-flow` 在 onNodeEnd 时添加 FlowContext.lastNode 记录（跨流执行后再次恢复）
 * 优化 `solon-flow` 引擎的 reverting 处理（支持跨引擎多图场景）
 * 优化 `solon-flow` Node,Link toString 处理（加 whenComponent）
-* 优化 `solon-flow` FlowExchanger.runGraph 发果子图没有结束，则停止向前
+* 优化 `solon-flow` FlowExchanger.runGraph 如果子图没有结束，则当前分支中断
 * 调整 `solon-flow` FlowContext:executor 转移到 FlowDriver
 * 调整 `solon-flow` FlowInterceptor:doIntercept 更名为 doFlowInterceptor，并标为 default（扩展时语义清晰，且不需要强制实现）
 * 调整 `solon-flow` NodeTrace 更名为 NodeRecord，并增加 FlowTrace 类。支持跨图多引擎场景
