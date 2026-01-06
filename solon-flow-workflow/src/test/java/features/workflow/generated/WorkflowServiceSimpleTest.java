@@ -129,14 +129,14 @@ class WorkflowServiceSimpleTest {
         FlowContext context = FlowContext.of("test-instance");
 
         // 初始应该可以提交
-        boolean result1 = workflowService.postTaskIfWaiting(
-                "simple-test", "task1", TaskAction.FORWARD, context
+        Task task = workflowService.getTask("simple-test", context);
+        boolean result1 = workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, context
         );
         assertTrue(result1);
 
         // 再次尝试应该失败，因为状态已不是等待
-        boolean result2 = workflowService.postTaskIfWaiting(
-                "simple-test", "task1", TaskAction.FORWARD, context
+        task = workflowService.getTask("simple-test", context);
+        boolean result2 = workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, context
         );
         assertFalse(result2);
     }

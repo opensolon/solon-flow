@@ -267,7 +267,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 技术负责人完成技术评审
         for (Task task : techReviewTasks) {
-            workflowService.postTaskIfWaiting(task.getNode(), TaskAction.FORWARD, techLeaderContext);
+            workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, techLeaderContext);
         }
 
         //有多次评审
@@ -275,7 +275,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         assertFalse(techReviewTasks.isEmpty());
 
         for (Task task : techReviewTasks) {
-            workflowService.postTaskIfWaiting(task.getNode(), TaskAction.FORWARD, techLeaderContext);
+            workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, techLeaderContext);
         }
 
 
@@ -290,7 +290,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 财务负责人完成财务评审（由于金额较大，会触发额外审批路径）
         for (Task task : financeReviewTasks) {
-            workflowService.postTaskIfWaiting(task.getNode(), TaskAction.FORWARD, financeLeaderContext);
+            workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, financeLeaderContext);
         }
 
 
@@ -299,7 +299,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 预算评审
         for (Task task : financeReviewTasks) {
-            workflowService.postTaskIfWaiting(task.getNode(), TaskAction.FORWARD, financeLeaderContext);
+            workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, financeLeaderContext);
         }
 
 
@@ -382,12 +382,12 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 并行执行技术评审
         for (Task task : techTasks) {
-            workflowService.postTask(task.getNode(), TaskAction.FORWARD, techContext);
+            workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, techContext);
         }
 
         // 并行执行财务评审
         for (Task task : financeTasks) {
-            workflowService.postTask(task.getNode(), TaskAction.FORWARD, financeContext);
+            workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, financeContext);
         }
 
         // 验证主流程继续

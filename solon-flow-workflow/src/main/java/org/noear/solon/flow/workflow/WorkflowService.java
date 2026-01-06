@@ -60,36 +60,16 @@ public interface WorkflowService {
     /// ////////////////////////////////
 
     /**
-     * 提交操作（如果当前任务为等待介入）
+     * 提交任务（如果当前任务为等待介入）
      *
-     * @param graphId 图id
-     * @param nodeId  节点id
+     * @param task    任务
      * @param action  动作
      * @param context 流上下文
      */
-    boolean postTaskIfWaiting(String graphId, String nodeId, TaskAction action, FlowContext context);
+    boolean postTaskIfWaiting(Task task, TaskAction action, FlowContext context);
 
     /**
-     * 提交操作（如果当前任务为等待介入）
-     *
-     * @param graph   图
-     * @param nodeId  节点id
-     * @param action  动作
-     * @param context 流上下文
-     */
-    boolean postTaskIfWaiting(Graph graph, String nodeId, TaskAction action, FlowContext context);
-
-    /**
-     * 提交操作（如果当前任务为等待介入）
-     *
-     * @param node    节点
-     * @param action  动作
-     * @param context 流上下文
-     */
-    boolean postTaskIfWaiting(Node node, TaskAction action, FlowContext context);
-
-    /**
-     * 提交操作
+     * 提交任务
      *
      * @param graphId 图id
      * @param nodeId  节点id
@@ -99,7 +79,7 @@ public interface WorkflowService {
     void postTask(String graphId, String nodeId, TaskAction action, FlowContext context);
 
     /**
-     * 提交操作
+     * 提交任务
      *
      * @param graph   图
      * @param nodeId  节点id
@@ -109,7 +89,7 @@ public interface WorkflowService {
     void postTask(Graph graph, String nodeId, TaskAction action, FlowContext context);
 
     /**
-     * 提交操作
+     * 提交任务
      *
      * @param node    节点
      * @param action  动作

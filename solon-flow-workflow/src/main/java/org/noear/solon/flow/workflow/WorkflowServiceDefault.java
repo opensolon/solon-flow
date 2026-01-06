@@ -63,44 +63,18 @@ public class WorkflowServiceDefault implements WorkflowService {
      * 提交操作（如果当前节点为等待介入）
      */
     @Override
-    public boolean postTaskIfWaiting(String graphId, String nodeId, TaskAction action, FlowContext context) {
-        Node node = engine.getGraphOrThrow(graphId).getNodeOrThrow(nodeId);
-        return postTaskIfWaiting(node, action, context);
-    }
-
-    @Override
-    public boolean postTaskIfWaiting(Graph graph, String nodeId, TaskAction action, FlowContext context) {
-        Node node = graph.getNodeOrThrow(nodeId);
-        return postTaskIfWaiting(node, action, context);
-    }
-
-    @Override
-    public boolean postTaskIfWaiting(Node node, TaskAction action, FlowContext context) {
-        if (stateController.isOperatable(context, node) == false) {
+    public boolean postTaskIfWaiting(Task task, TaskAction action, FlowContext context) {
+        if (task == null || stateController.isOperatable(context, task.getNode()) == false) {
             //如果无权
             return false;
         }
 
-        if (stateRepository.stateGet(context, node) == TaskState.WAITING) {
-            //快捷查询
-            postTask(node, action, context);
-        } else {
-            //任务查询
-            Task task = getTask(node.getGraph(), context);
-            if (task == null) {
-                return false;
-            }
-
-            if (task.getState() != TaskState.WAITING) {
-                return false;
-            }
-
-            if (task.getNode().getId().equals(node.getId()) == false) {
-                return false;
-            }
-
-            postTask(node, action, context);
+        if (task.getState() != TaskState.WAITING || stateRepository.stateGet(context, task.getNode()) != TaskState.WAITING) {
+            //如果不是等待（双重确认）
+            return false;
         }
+
+        postTask(task.getNode(), action, context);
 
         return true;
     }
