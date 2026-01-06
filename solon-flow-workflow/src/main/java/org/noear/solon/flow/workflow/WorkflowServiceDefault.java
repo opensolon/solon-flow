@@ -266,9 +266,8 @@ public class WorkflowServiceDefault implements WorkflowService {
             stateRepository.statePut(exchanger.context(), node, newState);
 
             //重新查找下一个可执行节点（可能为自动前进）
-            Node nextNode = node.getNextNode();
-            if (nextNode != null) {
-                if (nextNode.getType() == NodeType.INCLUSIVE || nextNode.getType() == NodeType.PARALLEL) {
+            for (Node nextNode : node.getNextNodes()) {
+                if (NodeType.isGateway(nextNode.getType())) {
                     //如果是流入网关，要通过引擎计算获取下个活动节点（且以图做为参数，可能自动流转到网关外）
                     Task task = getTask(node.getGraph(), exchanger.context());
 

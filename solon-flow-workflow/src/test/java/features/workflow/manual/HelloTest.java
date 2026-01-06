@@ -1,5 +1,6 @@
 package features.workflow.manual;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
@@ -30,10 +31,11 @@ public class HelloTest {
             spec.addEnd("n4");
         });
 
+        FlowContext context = FlowContext.of("i-1");
         Task task = WorkflowService.of(engine, stateController, stateRepository)
-                .getTask(graph, FlowContext.of("i-1"));
+                .getTask(graph, context);
 
-        System.out.println(task.getNode().getId());
-        System.out.println(task.getState());
+        Assertions.assertNull(task);
+        Assertions.assertTrue(context.lastRecord().isEnd());
     }
 }

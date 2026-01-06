@@ -50,8 +50,8 @@ public class NotBlockStateFlowTest {
 
         task = workflow.getTask(graphId, context);
 
-        Assertions.assertEquals("n5", task.getNode().getId());
-        Assertions.assertEquals(TaskState.COMPLETED, task.getState());
+        Assertions.assertNull(task);
+        Assertions.assertTrue(context.lastRecord().isEnd());
     }
 
     @Test
@@ -74,7 +74,9 @@ public class NotBlockStateFlowTest {
 
         flowEngine.load("classpath:flow/workflow/*.yml");
 
-        WorkflowService workflow = WorkflowService.of(flowEngine, stateController, stateRepository);
+        WorkflowService workflow = WorkflowService.of(flowEngine,
+                stateController,
+                stateRepository);
 
 
         /// ////////////
@@ -93,6 +95,7 @@ public class NotBlockStateFlowTest {
         task = workflow.getTask(graphId, context);
 
         Assertions.assertNull(task); //提前中断，没有节点可取了
+        Assertions.assertFalse(context.lastRecord().isEnd());
 
         System.out.println("---------------------");
 
@@ -100,12 +103,7 @@ public class NotBlockStateFlowTest {
 
         task = workflow.getTask(graphId, context);
 
-        Assertions.assertEquals("n5", task.getNode().getId());
-        Assertions.assertEquals(TaskState.COMPLETED, task.getState());
-
-
-        task = workflow.getTask(graphId, context);
-
-        Assertions.assertNull(task); //全部完成，没有节点可取了
+        Assertions.assertNull(task); //跑完了
+        Assertions.assertTrue(context.lastRecord().isEnd());
     }
 }
