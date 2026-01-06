@@ -352,25 +352,28 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         context.put("actor", ROLE_APPLICANT);
         Task applicantTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
         workflowService.postTask(applicantTask.getNode(), TaskAction.FORWARD, context);
+        assertEquals("apply", applicantTask.getNodeId());
 
         // 2. 部门经理审批
         context.put("actor", ROLE_DEPT_MANAGER);
         Task deptTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
         workflowService.postTask(deptTask.getNode(), TaskAction.FORWARD, context);
+        assertEquals("dept_approval", deptTask.getNodeId());
 
         // 3. 模拟技术负责人和财务负责人并行审批
-        FlowContext techContext = FlowContext.of("test_instance_002")
+        FlowContext techContext = context //FlowContext.of("test_instance_002")
                 .put("actor", ROLE_TECH_LEADER);
 
-        FlowContext financeContext = FlowContext.of("test_instance_002")
+        FlowContext financeContext = context //FlowContext.of("test_instance_002")
                 .put("actor", ROLE_FINANCE_LEADER)
                 .put("amount", 50000);
 
         // 获取技术评审任务
         Collection<Task> techTasks = workflowService.getNextTasks(TECH_REVIEW_GRAPH_ID, techContext);
-
+        assertEquals(1, techTasks.size());
         // 获取财务评审任务
         Collection<Task> financeTasks = workflowService.getNextTasks(FINANCE_REVIEW_GRAPH_ID, financeContext);
+        assertEquals(1, financeTasks.size());
 
         // 并行执行技术评审
         for (Task task : techTasks) {
@@ -383,9 +386,10 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         }
 
         // 验证主流程继续
-        FlowContext checkContext = FlowContext.of("test_instance_002");
+        FlowContext checkContext = context; //FlowContext.of("test_instance_002");
         Task nextTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
         assertNotNull(nextTask);
+        assertEquals("mainApproval", nextTask.getNode().getGraph().getId());
     }
 
     @Test
