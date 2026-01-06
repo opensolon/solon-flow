@@ -18,9 +18,6 @@ package org.noear.solon.flow.workflow;
 import org.noear.solon.flow.*;
 import org.noear.solon.lang.Preview;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 工作流驱动器实现
  *
@@ -76,7 +73,7 @@ public class WorkflowDriver implements FlowDriver {
     public void handleTask(FlowExchanger exchanger, TaskDesc taskDesc) throws Throwable {
         WorkflowCommand command =  exchanger.temporary().varAs(WorkflowCommand.class.getSimpleName());
         if(command == null){
-            return;
+            command = new WorkflowCommand(WorkflowCommand.CommandType.UNKNOWN);
         }
 
         if (stateController.isAutoForward(exchanger.context(), taskDesc.getNode())) {

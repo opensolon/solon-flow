@@ -151,7 +151,7 @@ public class WorkflowServiceDefault implements WorkflowService {
             //跳转前进
             while (true) {
                 Task task = getTask(node.getGraph(), exchanger.context());
-                if(task != null) {
+                if (task != null) {
                     forwardHandle(task.getNode(), exchanger, newState);
 
                     //到目标节点了
@@ -199,13 +199,7 @@ public class WorkflowServiceDefault implements WorkflowService {
 
         engine.eval(graph, exchanger);
 
-        Collection<Task> tmp = command.nextTasks;
-
-        if (tmp == null) {
-            return Collections.emptyList();
-        } else {
-            return tmp;
-        }
+        return command.nextTasks;
     }
 
     /**
@@ -262,6 +256,7 @@ public class WorkflowServiceDefault implements WorkflowService {
     protected void forwardHandle(Node node, FlowExchanger exchanger, TaskState newState) {
         //如果是完成或跳过，则向前流动
         try {
+            exchanger.reverting(false);
             exchanger.driver().postHandleTask(exchanger, node.getTask());
             stateRepository.statePut(exchanger.context(), node, newState);
 
@@ -282,7 +277,7 @@ public class WorkflowServiceDefault implements WorkflowService {
                     if (stateController.isAutoForward(exchanger.context(), nextNode)) {
                         //如果要自动前进
                         exchanger.recordNode(nextNode.getGraph(), nextNode);
-                        engine.eval(nextNode.getGraph(), exchanger.copy(nextNode.getGraph()));
+                        engine.eval(nextNode.getGraph(), exchanger.copy(nextNode.getGraph()).reverting(false));
                     }
                 }
             }

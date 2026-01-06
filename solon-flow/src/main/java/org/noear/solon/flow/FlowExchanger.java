@@ -78,13 +78,6 @@ public class FlowExchanger {
         return new FlowExchanger(graphNew, engine, driver, contextNew, steps, stepCount);
     }
 
-    /**
-     * 浅度复制
-     */
-    public FlowExchanger copy(Graph graphNew, FlowEngine engineNew, FlowDriver driverNew, FlowContext contextNew) {
-        return new FlowExchanger(graphNew, engineNew, driverNew, contextNew, steps, stepCount);
-    }
-
     public Graph graph() {
         return graph;
     }
@@ -253,7 +246,8 @@ public class FlowExchanger {
     /**
      * 恢复状态重置
      */
-    public void reverting(boolean reverting) {
+    public FlowExchanger reverting(boolean reverting) {
         this.reverting = reverting;
+        return this;
     }
 }
