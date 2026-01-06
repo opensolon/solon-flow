@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * WorkflowService 多图多角色审批测试用例
@@ -160,14 +161,14 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
                     .task("#" + FINANCE_REVIEW_GRAPH_ID) // 调用子图
                     .linkAdd("merge_gateway");
 
-            // 包容网关：合并技术评审和财务评审结果
-            spec.addInclusive("merge_gateway").title("评审结果合并")
+            // 合并技术评审和财务评审结果
+            spec.addParallel("merge_gateway").title("评审结果合并")
                     .linkAdd("final_decision");
 
             // 最终决策（排他网关）
             spec.addExclusive("final_decision").title("最终决策")
                     .linkAdd("general_manager_approval", link -> link
-                            .when("budgetAmount > 100000 || requireExtraApproval == true")
+                            .when("budgetAmount > 100000") //|| requireExtraApproval == true
                             .title("需要总经理审批")
                             .priority(10))
                     .linkAdd("complete_approval", link -> link
@@ -386,7 +387,8 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 应该进入拒绝节点
         assertNotNull(finalTask);
-        assertEquals("reject", finalTask.getNodeId());
+        assertEquals(deptTask.getNodeId(), finalTask.getNodeId());
+        assertEquals(TaskState.TERMINATED, finalTask.getState());
     }
 
     @Test
@@ -411,16 +413,16 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         // 获取当前任务
         Task currentTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
 
-        if (currentTask != null) {
-            // 跳转到最终审批节点
-            Node finalApprovalNode = flowEngine.getGraph(MAIN_APPROVAL_GRAPH_ID).getNode("general_manager_approval");
-            workflowService.postTask(finalApprovalNode, TaskAction.FORWARD_JUMP, context);
-        }
+        // 跳转到最终审批节点
+        Node finalApprovalNode = flowEngine.getGraph(MAIN_APPROVAL_GRAPH_ID).getNode("general_manager_approval");
+        workflowService.postTask(finalApprovalNode, TaskAction.FORWARD_JUMP, context);
+        assertTrue(context.lastRecord().isEnd());
 
         // 验证状态
-        FlowContext checkContext = FlowContext.of("test_instance_004");
+        FlowContext checkContext = FlowContext.fromJson(context.toJson());
         Task finalTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
-        assertNotNull(finalTask);
+        assertNull(finalTask);
+        assertTrue(checkContext.lastRecord().isEnd());
     }
 
     @Test

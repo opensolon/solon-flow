@@ -27,7 +27,7 @@ import java.util.List;
  * @since 3.8.1
  */
 @Internal
-class WorkflowCommand {
+public class WorkflowCommand {
     public List<Task> nextTasks = new ArrayList<>();
     public Task task;
     public final CommandType type;
