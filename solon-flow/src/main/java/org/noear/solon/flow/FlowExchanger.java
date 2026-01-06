@@ -30,6 +30,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Preview("3.5")
 public class FlowExchanger {
+    //当前流程图
+    private transient final Graph graph;
     //当前流程引擎
     private transient final FlowEngine engine;
     //当前流驱动
@@ -49,11 +51,12 @@ public class FlowExchanger {
     //执行恢复中
     private transient volatile boolean reverting = true;
 
-    public FlowExchanger(FlowEngine engine, FlowDriver driver, FlowContext context, int steps, AtomicInteger stepCount) {
+    public FlowExchanger(Graph graph, FlowEngine engine, FlowDriver driver, FlowContext context, int steps, AtomicInteger stepCount) {
         Assert.notNull(engine, "The engine is null");
         Assert.notNull(driver, "The driver is null");
         Assert.notNull(context, "The context is null");
 
+        this.graph = graph;
         this.engine = engine;
         this.driver = driver;
         this.context = (FlowContextInternal) context;
@@ -64,22 +67,26 @@ public class FlowExchanger {
     /**
      * 浅度复制
      */
-    public FlowExchanger copy() {
-        return new FlowExchanger(engine, driver, context, steps, stepCount);
+    public FlowExchanger copy(Graph graphNew) {
+        return new FlowExchanger(graphNew, engine, driver, context, steps, stepCount);
     }
 
     /**
      * 浅度复制
      */
-    public FlowExchanger copy(FlowContext contextNew) {
-        return new FlowExchanger(engine, driver, contextNew, steps, stepCount);
+    public FlowExchanger copy(Graph graphNew, FlowContext contextNew) {
+        return new FlowExchanger(graphNew, engine, driver, contextNew, steps, stepCount);
     }
 
     /**
      * 浅度复制
      */
-    public FlowExchanger copy(FlowEngine engineNew, FlowDriver driverNew, FlowContext contextNew) {
-        return new FlowExchanger(engineNew, driverNew, contextNew, steps, stepCount);
+    public FlowExchanger copy(Graph graphNew, FlowEngine engineNew, FlowDriver driverNew, FlowContext contextNew) {
+        return new FlowExchanger(graphNew, engineNew, driverNew, contextNew, steps, stepCount);
+    }
+
+    public Graph graph() {
+        return graph;
     }
 
     /**
@@ -128,7 +135,7 @@ public class FlowExchanger {
         //回退节点走的步数（不然子图，会少一步）
         prveSetp();
 
-        engine.eval(graph, copy());
+        engine.eval(graph, copy(graph));
 
         if (isStopped() == false) {
             //如果没停止，则检查子图是否已结束

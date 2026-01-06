@@ -113,7 +113,7 @@ public class WorkflowServiceDefault implements WorkflowService {
         LOCKER.lock();
 
         try {
-            postTaskDo(new FlowExchanger(engine, driver, context, -1, new AtomicInteger(0)), node, action);
+            postTaskDo(new FlowExchanger(node.getGraph(), engine, driver, context, -1, new AtomicInteger(0)), node, action);
         } finally {
             LOCKER.unlock();
         }
@@ -191,7 +191,7 @@ public class WorkflowServiceDefault implements WorkflowService {
     public Collection<Task> getNextTasks(Graph graph, FlowContext context) {
         FlowDriver driver = getDriver(graph);
 
-        FlowExchanger exchanger = new FlowExchanger(engine, driver, context, -1, new AtomicInteger(0));
+        FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
         WorkflowCommand command  = new WorkflowCommand(WorkflowCommand.CommandType.GET_NEXT_TASKS);
 
         exchanger.temporary().vars().put(WorkflowCommand.class.getSimpleName(), command);
@@ -227,7 +227,7 @@ public class WorkflowServiceDefault implements WorkflowService {
     public Task getTask(Graph graph, FlowContext context) {
         FlowDriver driver = getDriver(graph);
 
-        FlowExchanger exchanger = new FlowExchanger(engine, driver, context, -1, new AtomicInteger(0));
+        FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
         exchanger.recordNode(graph, graph.getStart());
         WorkflowCommand command  = new WorkflowCommand(WorkflowCommand.CommandType.Get_TASK);
         exchanger.temporary().vars().put(WorkflowCommand.class.getSimpleName(), command);
@@ -283,7 +283,7 @@ public class WorkflowServiceDefault implements WorkflowService {
                     if (stateController.isAutoForward(exchanger.context(), nextNode)) {
                         //如果要自动前进
                         exchanger.recordNode(nextNode.getGraph(), nextNode);
-                        engine.eval(nextNode.getGraph(), exchanger.copy());
+                        engine.eval(nextNode.getGraph(), exchanger.copy(nextNode.getGraph()));
                     }
                 }
             }

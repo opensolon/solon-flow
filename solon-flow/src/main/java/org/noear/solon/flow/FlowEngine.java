@@ -238,7 +238,7 @@ public interface FlowEngine {
      */
     default void eval(Graph graph, int steps, FlowContext context) throws FlowException {
         FlowDriver driver = getDriver(graph);
-        eval(graph, new FlowExchanger(this, driver, context, steps, new AtomicInteger(0)));
+        eval(graph, new FlowExchanger(graph,this, driver, context, steps, new AtomicInteger(0)));
     }
 
     /**

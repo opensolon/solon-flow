@@ -243,6 +243,7 @@ class FlowContextTest {
         assertNull(internalCtx.exchanger());
 
         FlowExchanger mockExchanger = new FlowExchanger(
+                null,
                 FlowEngine.newInstance(),
                 SimpleFlowDriver.getInstance(),
                 context,

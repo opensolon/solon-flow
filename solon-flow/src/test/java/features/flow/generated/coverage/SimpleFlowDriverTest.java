@@ -80,7 +80,7 @@ class SimpleFlowDriverTest extends FlowTestBase {
 
         FlowContext context = FlowContext.of();
         FlowEngine engine = FlowEngine.newInstance(driver);
-        FlowExchanger exchanger = new FlowExchanger(engine, driver, context, -1, null);
+        FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, null);
 
         Node node = graph.getNode("a");
         TaskDesc task = node.getTask();
