@@ -17,7 +17,7 @@ package org.noear.solon.flow;
 
 import org.noear.solon.Utils;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -65,7 +65,7 @@ public class LinkSpec {
      */
     public LinkSpec metaPut(String key, Object value) {
         if (meta == null) {
-            meta = new HashMap<>();
+            meta = new LinkedHashMap<>();
         }
 
         meta.put(key, value);

@@ -113,6 +113,11 @@ public class GraphSpec {
 
     /// /////////////
 
+    public GraphSpec metaPut(String key, Object value) {
+        meta.put(key, value);
+        return this;
+    }
+
     /**
      * 构建开始节点
      *
