@@ -48,7 +48,7 @@ public class WorkflowDriver implements FlowDriver {
         driver.onNodeEnd(exchanger, node);
 
         if (node.getType() == NodeType.END) {
-            WorkflowCommand command =  exchanger.temporary().varAs(WorkflowCommand.class.getSimpleName());
+            WorkflowCommand command =  exchanger.context().getAs(WorkflowCommand.class.getSimpleName());
             if(command == null){
                 return;
             }
@@ -71,7 +71,7 @@ public class WorkflowDriver implements FlowDriver {
      */
     @Override
     public void handleTask(FlowExchanger exchanger, TaskDesc taskDesc) throws Throwable {
-        WorkflowCommand command =  exchanger.temporary().varAs(WorkflowCommand.class.getSimpleName());
+        WorkflowCommand command =  exchanger.context().getAs(WorkflowCommand.class.getSimpleName());
         if(command == null){
             command = new WorkflowCommand(WorkflowCommand.CommandType.UNKNOWN);
         }

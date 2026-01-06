@@ -192,14 +192,18 @@ public class WorkflowServiceDefault implements WorkflowService {
         FlowDriver driver = getDriver(graph);
 
         FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
-        WorkflowCommand command  = new WorkflowCommand(WorkflowCommand.CommandType.GET_NEXT_TASKS);
-
-        exchanger.temporary().vars().put(WorkflowCommand.class.getSimpleName(), command);
         exchanger.recordNode(graph, graph.getStart());
 
-        engine.eval(graph, exchanger);
+        try {
+            WorkflowCommand command = new WorkflowCommand(WorkflowCommand.CommandType.GET_NEXT_TASKS);
+            context.put(WorkflowCommand.class.getSimpleName(), command);
 
-        return command.nextTasks;
+            engine.eval(graph, exchanger);
+
+            return command.nextTasks;
+        } finally {
+            context.remove(WorkflowCommand.class.getSimpleName());
+        }
     }
 
     /**
@@ -223,12 +227,17 @@ public class WorkflowServiceDefault implements WorkflowService {
 
         FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
         exchanger.recordNode(graph, graph.getStart());
-        WorkflowCommand command  = new WorkflowCommand(WorkflowCommand.CommandType.Get_TASK);
-        exchanger.temporary().vars().put(WorkflowCommand.class.getSimpleName(), command);
 
-        engine.eval(graph, exchanger);
+        try {
+            WorkflowCommand command = new WorkflowCommand(WorkflowCommand.CommandType.Get_TASK);
+            context.put(WorkflowCommand.class.getSimpleName(), command);
 
-        return command.task;
+            engine.eval(graph, exchanger);
+
+            return command.task;
+        } finally {
+            context.remove(WorkflowCommand.class.getSimpleName());
+        }
     }
 
     @Override
