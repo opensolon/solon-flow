@@ -303,7 +303,6 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         }
 
 
-
         // 6. 验证需要总经理审批
         FlowContext checkContext = financeLeaderContext
                 .put("actor", ROLE_GENERAL_MANAGER)
@@ -480,7 +479,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
     }
 
     @Test
-    void testWorkflowWithConditionalBranches() {
+    void testWorkflowWithConditionalBranches() throws Throwable {
         // 测试条件分支工作流
 
         // 场景1：小金额项目，不需要总经理审批
@@ -505,7 +504,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         workflowService.postTask(task.getNode(), TaskAction.FORWARD, context);
 
         // 验证不会进入总经理审批节点
-        FlowContext checkContext = FlowContext.of("small_amount_instance");
+        FlowContext checkContext = context;//FlowContext.of("small_amount_instance");
         Collection<Task> tasks = workflowService.getNextTasks(MAIN_APPROVAL_GRAPH_ID, checkContext);
 
         boolean hasGeneralManagerTask = tasks.stream()
@@ -513,8 +512,9 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         assertFalse(hasGeneralManagerTask, "小金额项目不应需要总经理审批");
     }
 
-    private void testLargeAmountProject() {
+    private void testLargeAmountProject() throws Throwable {
         FlowContext context = FlowContext.of("large_amount_instance")
+                .put("amount", 200000)
                 .put("budgetAmount", 200000); // 20万，大金额
 
         // 提交申请
@@ -527,9 +527,22 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         task = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
         workflowService.postTask(task.getNode(), TaskAction.FORWARD, context);
 
+        //技术方案评审；预算评审
+        Collection<Task> tasks = workflowService.getNextTasks(MAIN_APPROVAL_GRAPH_ID, context);
+        for (Task task1 : tasks) {
+            workflowService.postTask(task1.getNode(), TaskAction.FORWARD, context);
+        }
+
+        //触发：额外评审
+        tasks = workflowService.getNextTasks(MAIN_APPROVAL_GRAPH_ID, context);
+        for (Task task1 : tasks) {
+            workflowService.postTask(task1.getNode(), TaskAction.FORWARD, context);
+        }
+
+
         // 验证会进入总经理审批节点
-        FlowContext checkContext = FlowContext.of("large_amount_instance");
-        Collection<Task> tasks = workflowService.getNextTasks(MAIN_APPROVAL_GRAPH_ID, checkContext);
+        FlowContext checkContext = context;//FlowContext.of("large_amount_instance");
+        tasks = workflowService.getNextTasks(MAIN_APPROVAL_GRAPH_ID, checkContext);
 
         boolean hasGeneralManagerTask = tasks.stream()
                 .anyMatch(t -> "general_manager_approval".equals(t.getNodeId()));
