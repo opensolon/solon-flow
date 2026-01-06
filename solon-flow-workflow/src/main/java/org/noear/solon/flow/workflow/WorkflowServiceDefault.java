@@ -85,7 +85,7 @@ public class WorkflowServiceDefault implements WorkflowService {
             //快捷查询
             postTask(node, action, context);
         } else {
-            //走任务查询
+            //任务查询
             Task task = getTask(node.getGraph(), context);
             if (task == null) {
                 return false;
