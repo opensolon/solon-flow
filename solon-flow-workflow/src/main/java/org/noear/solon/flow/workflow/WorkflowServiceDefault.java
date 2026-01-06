@@ -151,10 +151,15 @@ public class WorkflowServiceDefault implements WorkflowService {
             //跳转前进
             while (true) {
                 Task task = getTask(node.getGraph(), exchanger.context());
-                forwardHandle(task.getNode(), exchanger, newState);
+                if(task != null) {
+                    forwardHandle(task.getNode(), exchanger, newState);
 
-                //到目标节点了
-                if (task.getNode().getId().equals(node.getId())) {
+                    //到目标节点了
+                    if (task.getNode().getId().equals(node.getId())) {
+                        break;
+                    }
+                } else {
+                    //没有权限
                     break;
                 }
             }
@@ -173,8 +178,8 @@ public class WorkflowServiceDefault implements WorkflowService {
      * @param context 流上下文（不需要有参与者配置）
      */
     @Override
-    public Collection<Task> getTasks(String graphId, FlowContext context) {
-        return getTasks(engine.getGraphOrThrow(graphId), context);
+    public Collection<Task> getNextTasks(String graphId, FlowContext context) {
+        return getNextTasks(engine.getGraphOrThrow(graphId), context);
     }
 
     /**
@@ -183,7 +188,7 @@ public class WorkflowServiceDefault implements WorkflowService {
      * @param context 流上下文（不需要有参与者配置）
      */
     @Override
-    public Collection<Task> getTasks(Graph graph, FlowContext context) {
+    public Collection<Task> getNextTasks(Graph graph, FlowContext context) {
         FlowDriver driver = getDriver(graph);
 
         FlowExchanger exchanger = new FlowExchanger(engine, driver, context, -1, new AtomicInteger(0));

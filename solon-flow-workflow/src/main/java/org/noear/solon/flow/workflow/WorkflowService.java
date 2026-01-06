@@ -19,6 +19,7 @@ import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.Node;
+import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
 import java.util.Collection;
@@ -120,20 +121,47 @@ public interface WorkflowService {
     /// ////////////////////////////////
 
     /**
-     * 获取多个任务
+     * 获取后续任务列表
      *
      * @param graphId 图id
      * @param context 流上下文（不需要有人员配置）
      */
-    Collection<Task> getTasks(String graphId, FlowContext context);
+    Collection<Task> getNextTasks(String graphId, FlowContext context);
 
     /**
-     * 获取多个任务
+     * 获取后续任务列表
      *
      * @param graph   图
      * @param context 流上下文（不需要有人员配置）
      */
-    Collection<Task> getTasks(Graph graph, FlowContext context);
+    Collection<Task> getNextTasks(Graph graph, FlowContext context);
+
+
+    /**
+     * 获取后续任务列表
+     *
+     * @param graphId 图id
+     * @param context 流上下文（不需要有人员配置）
+     * @deprecated 3.8.1 {@link #getNextTasks(String, FlowContext)}
+     */
+    @Deprecated
+    default Collection<Task> getTasks(String graphId, FlowContext context){
+        return getNextTasks(graphId, context);
+    }
+
+    /**
+     * 获取后续任务列表
+     *
+     * @param graph   图
+     * @param context 流上下文（不需要有人员配置）
+     * @deprecated 3.8.1 {@link #getNextTasks(Graph, FlowContext)}
+     */
+    @Deprecated
+    default Collection<Task> getTasks(Graph graph, FlowContext context){
+        return getNextTasks(graph, context);
+    }
+
+
 
     /**
      * 获取当前任务
@@ -141,6 +169,7 @@ public interface WorkflowService {
      * @param graphId 图id
      * @param context 流上下文（要有人员配置）
      */
+    @Nullable
     Task getTask(String graphId, FlowContext context);
 
     /**
@@ -149,6 +178,7 @@ public interface WorkflowService {
      * @param graph   图
      * @param context 流上下文（要有人员配置）
      */
+    @Nullable
     Task getTask(Graph graph, FlowContext context);
 
     /// ////////////////////////////////
