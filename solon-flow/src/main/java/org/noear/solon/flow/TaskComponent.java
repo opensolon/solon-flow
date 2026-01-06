@@ -23,6 +23,7 @@ import org.noear.solon.lang.Preview;
  * @author noear
  * @since 3.0
  */
+@FunctionalInterface
 @Preview("3.0")
 public interface TaskComponent {
     /**

@@ -23,6 +23,7 @@ import org.noear.solon.lang.Preview;
  * @author noear
  * @since 3.7
  */
+@FunctionalInterface
 @Preview("3.7")
 public interface ConditionComponent {
     /**
