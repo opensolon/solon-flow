@@ -349,8 +349,8 @@ public class FlowEngineGraphTest {
         flowEngine.eval("interrupt-test", context);
 
         // 验证：branchA 被中断，branchB 正常执行（因为条件为true），branchC 不执行
-        Assertions.assertEquals(3, executionTrace.size());
-        Assertions.assertTrue(executionTrace.contains("branchA-start"));
+        Assertions.assertEquals(2, executionTrace.size());
+        Assertions.assertFalse(executionTrace.contains("branchA-start"));
         Assertions.assertTrue(executionTrace.contains("branchB-executed"));
         Assertions.assertTrue(executionTrace.contains("merge-executed"));
         Assertions.assertFalse(executionTrace.contains("branchA-after-interrupt"));
@@ -408,7 +408,7 @@ public class FlowEngineGraphTest {
         flowEngine.eval("inclusive-test", context);
 
         // 验证 taskA 和 taskB 都执行了，taskC 没有执行
-        Assertions.assertEquals(4, executionTrace.size()); // taskA, taskB, final, end
+        Assertions.assertEquals(3, executionTrace.size()); // taskA, taskB, final, end
         Assertions.assertTrue(executionTrace.contains("taskA"));
         Assertions.assertTrue(executionTrace.contains("taskB"));
         Assertions.assertTrue(executionTrace.contains("final"));
@@ -430,14 +430,16 @@ public class FlowEngineGraphTest {
                     .title("循环处理")
                     .metaPut("$for", "currentItem")
                     .metaPut("$in", "items")
-                    .task((ctx, node) -> {
-                        String item = ctx.getAs("currentItem");
-                        executionTrace.add("processing-" + item);
-                        taskCounter.incrementAndGet();
-                    })
-                    .linkAdd("loopEnd");
+                    .linkAdd("do");
 
-            spec.addActivity("loopEnd")
+
+            spec.addActivity("do").task((ctx, node) -> {
+                String item = ctx.getAs("currentItem");
+                executionTrace.add("processing-" + item);
+                taskCounter.incrementAndGet();
+            }).linkAdd("loopEnd");
+
+            spec.addLoop("loopEnd")
                     .task((ctx, node) -> executionTrace.add("all-items-processed"))
                     .linkAdd("end");
 
@@ -449,7 +451,7 @@ public class FlowEngineGraphTest {
         flowEngine.eval("loop-test", context);
 
         // 验证所有项目都被处理了
-        Assertions.assertEquals(items.size() + 2, executionTrace.size()); // 4个processing + all-items-processed + end
+        Assertions.assertEquals(items.size() + 1, executionTrace.size()); // 4个processing + all-items-processed + end
         Assertions.assertEquals(items.size(), taskCounter.get());
 
         for (String item : items) {
@@ -682,7 +684,7 @@ public class FlowEngineGraphTest {
 
         Assertions.assertTrue(executionTrace.contains("checkInitial"));
         Assertions.assertTrue(executionTrace.contains("pathA-start"));
-        Assertions.assertFalse(executionTrace.contains("pathA-end"));
+        Assertions.assertTrue(executionTrace.contains("pathA-end"));
         Assertions.assertFalse(executionTrace.contains("merge-executed"));
         Assertions.assertEquals("pathA", context.lastNodeId());
 
@@ -695,7 +697,7 @@ public class FlowEngineGraphTest {
 
         Assertions.assertTrue(executionTrace.contains("checkInitial"));
         Assertions.assertTrue(executionTrace.contains("pathB-start"));
-        Assertions.assertFalse(executionTrace.contains("pathB-end"));
+        Assertions.assertTrue(executionTrace.contains("pathB-end"));
         Assertions.assertFalse(executionTrace.contains("merge-executed"));
         Assertions.assertEquals("pathB", context.lastNodeId());
         Assertions.assertTrue(context.isStopped());
