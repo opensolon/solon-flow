@@ -1,5 +1,6 @@
 package features.workflow.manual;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.noear.redisx.RedisClient;
 import org.noear.solon.Solon;
@@ -99,9 +100,7 @@ public class OaFlowRedisTest {
         context = getContext("陈鑫");
         task = workflow.getTask(graphId, context);
         log.warn("{}", task);
-        assert task != null;
-        assert task.getNode().getId().startsWith("step4");
-        assert TaskState.UNKNOWN == task.getState(); //没有权限
+        Assertions.assertNull(task); //没有权限
 
 
         context = getContext("陈宇");

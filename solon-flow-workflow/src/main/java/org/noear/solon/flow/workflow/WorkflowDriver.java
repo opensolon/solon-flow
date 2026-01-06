@@ -135,7 +135,7 @@ public class WorkflowDriver implements FlowDriver {
                 } else {
                     //阻断当前分支（等待别的用户办理）
                     Task task = new Task(exchanger, taskDesc.getNode(), TaskState.UNKNOWN);
-                    exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, task);
+                    //exchanger.temporary().vars().put(KEY_ACTIVITY_NODE, task);
                     nodeList.add(task);
 
                     exchanger.interrupt();

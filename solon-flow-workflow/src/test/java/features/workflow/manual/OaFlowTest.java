@@ -1,6 +1,7 @@
 package features.workflow.manual;
 
 import demo.workflow.ExportUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.FlowContext;
@@ -97,12 +98,12 @@ public class OaFlowTest {
 
 
         context = getContext(null);
-        Collection<Task> nodes = workflow.getTasks(graphId, context);
+        Collection<Task> nodes = workflow.getNextTasks(graphId, context);
         assert nodes.size() == 2;
         assert 0 == nodes.stream().filter(n -> n.getState() == TaskState.WAITING).count();
 
         context = getContext("陈宇");
-        nodes = workflow.getTasks(graphId, context);
+        nodes = workflow.getNextTasks(graphId, context);
         assert nodes.size() == 2;
         assert 1 == nodes.stream().filter(n -> n.getState() == TaskState.WAITING).count();
 
@@ -110,9 +111,7 @@ public class OaFlowTest {
         context = getContext("陈鑫");
         task = workflow.getTask(graphId, context);
         log.warn("{}", task);
-        assert task != null;
-        assert task.getNode().getId().startsWith("step4");
-        assert TaskState.UNKNOWN == task.getState(); //没有权限
+        Assertions.assertNull(task); //没有权限
 
 
         /// ////////////////

@@ -64,10 +64,10 @@ class WorkflowServiceSimpleTest {
     }
 
     @Test
-    void testGetTasksReturnsCollection() {
+    void testGetNextTasksReturnsCollection() {
         FlowContext context = FlowContext.of("test-instance");
 
-        Collection<Task> tasks = workflowService.getTasks("simple-test", context);
+        Collection<Task> tasks = workflowService.getNextTasks("simple-test", context);
 
         assertNotNull(tasks);
         assertFalse(tasks.isEmpty());
