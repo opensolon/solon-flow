@@ -15,6 +15,7 @@
  */
 package org.noear.solon.flow.container;
 
+import org.noear.solon.flow.ConditionComponent;
 import org.noear.solon.flow.Container;
 import org.noear.solon.flow.TaskComponent;
 
@@ -28,12 +29,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 3.1
  */
 public class MapContainer implements Container {
-    private final Map<String, TaskComponent> components = new ConcurrentHashMap<>();
+    private final Map<String, Object> components = new ConcurrentHashMap<>();
 
     /**
      * 添加组件
      */
     public void putComponent(String key, TaskComponent component) {
+        components.put(key, component);
+    }
+
+    public void putComponent(String key, ConditionComponent component) {
         components.put(key, component);
     }
 
