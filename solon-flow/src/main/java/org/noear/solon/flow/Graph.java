@@ -348,6 +348,17 @@ public class Graph {
     }
 
     /**
+     * 创建
+     *
+     * @since 3.7
+     */
+    public static Graph create(String id, String title, String driver, Consumer<GraphSpec> definition) {
+        GraphSpec spec = new GraphSpec(id, title, driver);
+        definition.accept(spec);
+        return spec.create();
+    }
+
+    /**
      * 复制
      *
      * @since 3.7.4
