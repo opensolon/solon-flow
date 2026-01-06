@@ -15,12 +15,11 @@
  */
 package org.noear.solon.flow.util;
 
-import org.noear.solon.flow.FlowException;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
+ * 步进器(start <= x <end)
  *
  * @author noear 2025/10/19 created
  * @since 3.6
@@ -46,7 +45,7 @@ public class Stepper implements Iterator {
             String[] terms = str.split(":", 3);
 
             if (terms.length != 3) {
-                throw new FlowException("The '$in' stepper style must be: 'start:end:step'");
+                throw new IllegalArgumentException("The '$in' stepper style must be: 'start:end:step'");
             }
 
             try {
