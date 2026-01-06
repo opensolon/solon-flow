@@ -240,7 +240,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         workflowService.postTask(applicantTask.getNode(), TaskAction.FORWARD, applicantContext);
 
         // 2. 部门经理审批
-        FlowContext deptManagerContext = FlowContext.of("test_instance_001")
+        FlowContext deptManagerContext = applicantContext
                 .put("actor", ROLE_DEPT_MANAGER)
                 .put("managerId", "manager_001");
 
@@ -252,12 +252,12 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         workflowService.postTask(deptManagerTask.getNode(), TaskAction.FORWARD, deptManagerContext);
 
         // 3. 验证进入并行网关，获取并行任务
-        FlowContext systemContext = FlowContext.of("test_instance_001");
+        FlowContext systemContext = deptManagerContext;
         Collection<Task> parallelTasks = workflowService.getNextTasks(MAIN_APPROVAL_GRAPH_ID, systemContext);
         assertEquals(2, parallelTasks.size()); // 应该有技术评审和财务评审两个任务
 
         // 4. 技术负责人进行技术评审
-        FlowContext techLeaderContext = FlowContext.of("test_instance_001")
+        FlowContext techLeaderContext = systemContext
                 .put("actor", ROLE_TECH_LEADER)
                 .put("techLeaderId", "tech_001");
 
@@ -280,7 +280,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
 
         // 5. 财务负责人进行财务评审
-        FlowContext financeLeaderContext = FlowContext.of("test_instance_001")
+        FlowContext financeLeaderContext = techLeaderContext
                 .put("actor", ROLE_FINANCE_LEADER)
                 .put("financeLeaderId", "finance_001")
                 .put("amount", 150000); // 设置金额触发额外审批
@@ -305,21 +305,16 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
 
         // 6. 验证需要总经理审批
-        FlowContext checkContext = FlowContext.of("test_instance_001")
+        FlowContext checkContext = financeLeaderContext
                 .put("actor", ROLE_GENERAL_MANAGER)
-                .put("generalManagerId", "gm_001")
-                .put("amount", 150000)
-                .put("budgetAmount", 150000);
+                .put("generalManagerId", "gm_001");
+
         Task nextTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
 
         // 由于金额较大，应该需要总经理审批
         if (nextTask != null && "general_manager_approval".equals(nextTask.getNodeId())) {
             // 7. 总经理审批
-            FlowContext generalManagerContext = FlowContext.of("test_instance_001")
-                    .put("actor", ROLE_GENERAL_MANAGER)
-                    .put("generalManagerId", "gm_001")
-                    .put("amount", 150000)
-                    .put("budgetAmount", 150000);
+            FlowContext generalManagerContext = checkContext;
 
             Task gmTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, generalManagerContext);
             assertNotNull(gmTask);
@@ -330,10 +325,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         }
 
         // 8. 验证流程完成
-        systemContext = FlowContext.of("test_instance_001")
-                .put("generalManagerApproved", true)
-                .put("amount", 150000)
-                .put("budgetAmount", 150000);
+        systemContext = checkContext;
 
         Task finalTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, systemContext);
         if (finalTask != null) {
