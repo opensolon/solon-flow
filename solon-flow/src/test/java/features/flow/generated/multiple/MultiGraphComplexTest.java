@@ -119,6 +119,8 @@ public class MultiGraphComplexTest {
         engine.load(childgraph1);
         engine.load(childgraph2);
         engine.load(rootGraph);
+
+        System.out.println(rootGraph.toYaml());
     });
 
 
