@@ -11,7 +11,7 @@ import java.util.stream.Stream;
  */
 public class ClassAsOne {
     public static void main(String[] args) throws IOException {
-        //print("/solon-flow/src/main/java/");
+        print("/solon-flow/src/main/java/");
         print("/solon-flow-workflow/src/main/java/");
     }
 
