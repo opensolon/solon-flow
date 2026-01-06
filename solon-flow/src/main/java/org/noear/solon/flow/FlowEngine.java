@@ -22,6 +22,7 @@ import org.noear.solon.lang.Preview;
 
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * 流引擎（通用流程引擎）
@@ -64,6 +65,14 @@ public interface FlowEngine {
      */
     static FlowEngine newInstance(boolean simplified) {
         return new FlowEngineDefault(null, simplified);
+    }
+
+    /**
+     * 然后（构建自己）
+     */
+    default FlowEngine then(Consumer<FlowEngine> consumer) {
+        consumer.accept(this);
+        return this;
     }
 
     /**
