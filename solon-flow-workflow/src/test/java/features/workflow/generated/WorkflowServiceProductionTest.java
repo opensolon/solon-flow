@@ -21,6 +21,10 @@ class WorkflowServiceProductionTest {
 
     @Test
     void testSimpleLinearWorkflow() {
+        // 测试目的：验证最基本的线性工作流功能
+        // 测试场景：一个简单的线性流程（开始 -> 任务1 -> 任务2 -> 结束）
+        // 验证点：任务按顺序执行、状态正确转换、数据正确传递
+
         // 1. 创建独立的组件
         TaskComponent taskComponent = new TaskComponent() {
             @Override
@@ -93,6 +97,10 @@ class WorkflowServiceProductionTest {
 
     @Test
     void testApprovalProcessWithRealComponents() {
+        // 测试目的：验证完整的审批流程
+        // 测试场景：申请 -> 审批（通过/驳回）的标准审批流程
+        // 验证点：不同角色的任务分配、条件分支、审批结果传递
+
         // 1. 创建独立的任务组件
         TaskComponent applyTaskComponent = new TaskComponent() {
             @Override
@@ -185,6 +193,10 @@ class WorkflowServiceProductionTest {
 
     @Test
     void testRejectionAndResubmissionWorkflow() {
+        // 测试目的：验证驳回后重新提交的业务流程
+        // 测试场景：申请被驳回 -> 修改后重新提交 -> 审批通过的完整循环
+        // 验证点：状态回退、重新提交流程、多次执行计数
+
         // 3. 创建独立的工作流服务
         FlowEngine engine = FlowEngine.newInstance();
 
@@ -222,7 +234,7 @@ class WorkflowServiceProductionTest {
                     .linkAdd("apply", link -> link.when(c -> {
                         if ("reject".equals(c.getAs("reviewResult"))) {
                             // workflow 自动回流，需要清理状态
-                            Graph graph1 = engine.getGraph("rejection-process");
+                            Graph graph1 = c.exchanger().graph();
                             stateRepository.stateRemove(c, graph1.getNode("apply"));
                             stateRepository.stateRemove(c, graph1.getNode("review"));
                             //要暂停，不要自动前进
@@ -287,6 +299,10 @@ class WorkflowServiceProductionTest {
 
     @Test
     void testComplexParallelProcess() {
+        // 测试目的：验证复杂的并行处理流程
+        // 测试场景：并行网关分发任务 -> 多个用户并行处理 -> 汇总结果的完整并行流程
+        // 验证点：并行任务分配、用户角色权限、汇总节点执行
+
         // 1. 创建独立的任务组件
         TaskComponent taskComponent = new TaskComponent() {
             @Override
@@ -398,6 +414,10 @@ class WorkflowServiceProductionTest {
 
     @Test
     void testErrorHandlingWorkflow() {
+        // 测试目的：验证工作流中的错误处理机制
+        // 测试场景：正常任务执行 -> 可能失败的任务执行 -> 异常捕获 -> 重试机制
+        // 验证点：异常抛出、异常传播、重试机制、状态恢复
+
         // 1. 创建独立的任务组件（可能抛出异常）
         TaskComponent normalTaskComponent = new TaskComponent() {
             @Override
@@ -473,6 +493,10 @@ class WorkflowServiceProductionTest {
 
     @Test
     void testConditionalBranchingWorkflow() {
+        // 测试目的：验证条件分支工作流的正确执行
+        // 测试场景：根据申请金额自动选择审批路径（小额自动审批 vs 大额经理审批）
+        // 验证点：条件判断、分支选择、不同执行路径、权限控制
+
         // 1. 创建独立的组件
         TaskComponent taskComponent = new TaskComponent() {
             @Override
@@ -589,6 +613,10 @@ class WorkflowServiceProductionTest {
 
     @Test
     void testHighConcurrencyWorkflowAccess() throws InterruptedException {
+        // 测试目的：验证工作流在高并发场景下的稳定性和正确性
+        // 测试场景：多个线程同时创建和执行多个工作流实例
+        // 验证点：线程安全、状态隔离、并发性能、异常处理
+
         // 1. 创建独立的任务组件
         TaskComponent taskComponent = new TaskComponent() {
             @Override
@@ -689,6 +717,10 @@ class WorkflowServiceProductionTest {
 
     @Test
     void testMultipleInstanceIsolation() {
+        // 测试目的：验证多个工作流实例之间的数据隔离
+        // 测试场景：同时运行多个相同流程的实例，验证它们互不影响
+        // 验证点：实例ID隔离、上下文数据隔离、状态存储隔离
+
         // 1. 创建独立的任务组件
         TaskComponent taskComponent = new TaskComponent() {
             @Override
@@ -765,6 +797,10 @@ class WorkflowServiceProductionTest {
 
     @Test
     void testPerformanceBenchmark() {
+        // 测试目的：验证工作流性能基准
+        // 测试场景：批量执行大量工作流实例，测量执行时间和吞吐量
+        // 验证点：执行时间、吞吐量、内存使用、性能稳定性
+
         // 1. 创建轻量级的任务组件
         TaskComponent lightTaskComponent = new TaskComponent() {
             @Override
