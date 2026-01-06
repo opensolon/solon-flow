@@ -129,6 +129,14 @@ public class FlowExchanger {
         prveSetp();
 
         engine.eval(graph, copy());
+
+        if (isStopped() == false) {
+            //如果没停止，则检查子图是否已结束
+            if (context.trace().isEnd(graph.getId()) == false) {
+                //子图没结束，则停止前进
+                stop();
+            }
+        }
     }
 
     /**
