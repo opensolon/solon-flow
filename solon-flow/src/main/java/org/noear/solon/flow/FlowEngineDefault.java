@@ -384,6 +384,10 @@ public class FlowEngineDefault implements FlowEngine {
         }
 
         //::流出
+        activity_run_out(exchanger, node, startNode);
+    }
+
+    protected void activity_run_out(FlowExchanger exchanger, Node node, Node startNode){
         for (Link l : node.getNextLinks()) {
             if (condition_test(exchanger, l.getWhen(), true)) {
                 node_run(exchanger, l.getNextNode(), startNode);
@@ -575,7 +579,8 @@ public class FlowEngineDefault implements FlowEngine {
             }
 
             //流出
-            node_run(exchanger, node.getNextNode(), startNode);
+            //node_run(exchanger, node.getNextNode(), startNode);
+            activity_run_out(exchanger, node, startNode);
         } else {
             //尝试执行任务（可能为空）
             if (task_exec(exchanger, node) == false) {
@@ -644,7 +649,8 @@ public class FlowEngineDefault implements FlowEngine {
         while (inIter.hasNext()) {
             Object item = inIter.next();
             exchanger.context().put(forKey, item);
-            node_run(exchanger, node.getNextNode(), startNode);
+            //node_run(exchanger, node.getNextNode(), startNode);
+            activity_run_out(exchanger, node, startNode);
         }
     }
 }

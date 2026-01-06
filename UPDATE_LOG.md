@@ -18,6 +18,7 @@
 * 优化 `solon-flow` FlowContext 接口设计，并增加持久化辅助方法
 * 优化 `solon-flow` FlowContext.eventBus 内部实现改为字段模式
 * 优化 `solon-flow` start 类型节点改为自由流出像 activity 一样（只是没有任务）
+* 优化 `solon-flow` loop 类型节点改为自由流出像 activity 一样
 * 优化 `solon-flow` 引擎的 onNodeEnd 执行时机（改为任务执行之后，连接流出之前）
 * 优化 `solon-flow` 引擎的 onNodeStart 执行时机（改为任务执行之前，连接流入之后）
 * 优化 `solon-flow` 在 onNodeEnd 时添加 FlowContext.lastNode 记录（跨流执行后再次恢复）
