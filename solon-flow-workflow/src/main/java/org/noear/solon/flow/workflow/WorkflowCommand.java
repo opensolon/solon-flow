@@ -28,15 +28,15 @@ import java.util.List;
  */
 @Internal
 public class WorkflowCommand {
-    public List<Task> nextTasks = new ArrayList<>();
-    public Task task;
-    public final CommandType type;
+    protected List<Task> nextTasks = new ArrayList<>();
+    protected Task task;
+    protected final CommandType type;
 
-    public WorkflowCommand(CommandType type) {
+    protected WorkflowCommand(CommandType type) {
         this.type = type;
     }
 
-    public enum CommandType {
+    protected enum CommandType {
         UNKNOWN,
         Get_TASK,
         GET_NEXT_TASKS,
