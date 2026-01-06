@@ -85,8 +85,8 @@ public class Task {
     @Override
     public String toString() {
         return "Task{" +
-                "node=" + node +
-                ", state=" + state +
+                "state=" + state +
+                ", node=" + node +
                 '}';
     }
 }

@@ -89,4 +89,13 @@ public class NodeRecord implements Serializable {
     public long getTimestamp() {
         return timestamp;
     }
+
+    @Override
+    public String toString() {
+        return "NodeRecord{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", type=" + type +
+                '}';
+    }
 }
