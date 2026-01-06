@@ -315,6 +315,13 @@ public class Graph {
         return domRoot;
     }
 
+    @Override
+    public String toString() {
+        return "Graph{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                "}";
+    }
 
     /// ////////
 
