@@ -27,7 +27,7 @@ import java.util.List;
  * @since 3.8.1
  */
 @Internal
-public class WorkflowCommand {
+public class WorkflowCommand { //用 public 可以正常作为脚本参数
     protected List<Task> nextTasks = new ArrayList<>();
     protected Task task;
     protected final CommandType type;
