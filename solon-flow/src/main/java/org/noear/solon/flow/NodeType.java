@@ -47,7 +47,7 @@ public enum NodeType {
     ACTIVITY(11),
 
     /**
-     * 排他网关（单选）
+     * 排他网关（单选），最多只能有一个默认的无条件分支
      */
     EXCLUSIVE(21),
     /**
