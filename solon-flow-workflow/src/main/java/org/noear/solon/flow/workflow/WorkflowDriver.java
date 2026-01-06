@@ -49,6 +49,16 @@ public class WorkflowDriver implements FlowDriver {
     @Override
     public void onNodeEnd(FlowExchanger exchanger, Node node) {
         driver.onNodeEnd(exchanger, node);
+
+        if (node.getType() == NodeType.END) {
+            WorkflowCommand command =  exchanger.temporary().varAs(WorkflowCommand.class.getSimpleName());
+            if(command == null){
+                return;
+            }
+
+            //如果结束了，就没有任务了
+            command.task = null;
+        }
     }
 
     @Override

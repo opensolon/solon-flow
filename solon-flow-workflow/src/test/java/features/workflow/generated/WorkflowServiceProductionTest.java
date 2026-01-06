@@ -1,8 +1,11 @@
 package features.workflow.generated;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
 import org.noear.solon.flow.workflow.*;
+import org.noear.solon.flow.workflow.controller.ActorStateController;
+import org.noear.solon.flow.workflow.repository.InMemoryStateRepository;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -30,7 +33,7 @@ class WorkflowServiceProductionTest {
         };
 
         // 2. 创建独立的流程图
-        Graph graph = Graph.create("simple-linear-" + UUID.randomUUID(), "简单线性流程", spec -> {
+        Graph graph = Graph.create("simple-linear", "简单线性流程", spec -> {
             spec.addStart("start").title("开始").linkAdd("task1");
 
             spec.addActivity("task1").title("任务1")
@@ -48,43 +51,42 @@ class WorkflowServiceProductionTest {
 
         // 3. 创建独立的工作流服务
         FlowEngine engine = FlowEngine.newInstance();
-        engine.load(graph);
 
         WorkflowService workflowService = WorkflowService.of(
                 engine,
-                new org.noear.solon.flow.workflow.controller.ActorStateController("actor"),
-                new org.noear.solon.flow.workflow.repository.InMemoryStateRepository()
+                new ActorStateController("actor"),
+                new InMemoryStateRepository()
         );
 
         // 4. 测试执行
-        String instanceId = "test-simple-" + UUID.randomUUID().toString().substring(0, 6);
+        String instanceId = "test-simple-1";
         FlowContext context = FlowContext.of(instanceId);
         context.put("actor", "user");
 
         // 获取并完成任务1
-        Task task1 = workflowService.getTask(graph.getId(), context);
+        Task task1 = workflowService.getTask(graph, context);
         assertNotNull(task1);
         assertEquals("task1", task1.getNodeId());
         assertEquals(TaskState.WAITING, task1.getState());
 
         // 运行任务
         assertDoesNotThrow(() -> task1.run(context));
-        workflowService.postTask(graph.getId(), "task1", TaskAction.FORWARD, context);
+        workflowService.postTask(graph, "task1", TaskAction.FORWARD, context);
 
         // 获取并完成任务2
-        Task task2 = workflowService.getTask(graph.getId(), context);
+        Task task2 = workflowService.getTask(graph, context);
         assertNotNull(task2);
         assertEquals("task2", task2.getNodeId());
 
-        workflowService.postTask(graph.getId(), "task2", TaskAction.FORWARD, context);
+        workflowService.postTask(graph, "task2", TaskAction.FORWARD, context);
 
         // 验证流程完成
-        Task finalTask = workflowService.getTask(graph.getId(), context);
+        Task finalTask = workflowService.getTask(graph, context);
         assertNull(finalTask);
 
         // 验证执行效果
-        assertTrue(context.getAs("task1_executed"));
-        assertTrue(context.getAs("task2_executed"));
+        assertTrue(context.<Boolean>getAs("task1_executed"));
+        assertTrue(context.<Boolean>getAs("task2_executed"));
 
         System.out.println("简单线性流程测试完成: " + instanceId);
     }
@@ -103,7 +105,7 @@ class WorkflowServiceProductionTest {
         TaskComponent reviewTaskComponent = new TaskComponent() {
             @Override
             public void run(FlowContext context, Node node) throws Throwable {
-                String result = context.getOrDefault("reviewResult", "approve").toString();
+                String result = context.getOrDefault("reviewResult", "approve");
                 context.put("reviewResult", result);
                 context.put("reviewer", context.getOrDefault("reviewer", "system"));
                 context.put("review_executed", true);
@@ -111,8 +113,9 @@ class WorkflowServiceProductionTest {
         };
 
         // 2. 创建独立的流程图
-        Graph graph = Graph.create("approval-process-" + UUID.randomUUID(), "审批流程", spec -> {
-            spec.addStart("start").title("开始").linkAdd("apply");
+        Graph graph = Graph.create("approval-process", "审批流程", spec -> {
+            spec.addStart("start").title("开始")
+                    .linkAdd("apply");
 
             spec.addActivity("apply").title("提交申请")
                     .metaPut("actor", "applicant")
@@ -122,8 +125,8 @@ class WorkflowServiceProductionTest {
             spec.addExclusive("review").title("审批")
                     .metaPut("actor", "reviewer")
                     .task(reviewTaskComponent)
-                    .linkAdd("end", link -> link.when("${reviewResult} == 'approve'").title("通过"))
-                    .linkAdd("apply", link -> link.when("${reviewResult} == 'reject'").title("驳回"));
+                    .linkAdd("end", link -> link.when(c -> "approve".equals(c.getAs("reviewResult"))).title("通过")) //"${reviewResult} == 'approve'"
+                    .linkAdd("apply", link -> link.when(c -> "reject".equals(c.getAs("reviewResult"))).title("驳回"));//"${reviewResult} == 'reject'"
 
             spec.addEnd("end").title("审批完成");
         });
@@ -134,12 +137,12 @@ class WorkflowServiceProductionTest {
 
         WorkflowService workflowService = WorkflowService.of(
                 engine,
-                new org.noear.solon.flow.workflow.controller.ActorStateController("actor"),
-                new org.noear.solon.flow.workflow.repository.InMemoryStateRepository()
+                new ActorStateController("actor"),
+                new InMemoryStateRepository()
         );
 
         // 4. 测试执行
-        String instanceId = "approval-test-" + UUID.randomUUID().toString().substring(0, 6);
+        String instanceId = "approval-test-1";
 
         // 申请人提交申请
         FlowContext applicantContext = FlowContext.of(instanceId);
@@ -173,15 +176,26 @@ class WorkflowServiceProductionTest {
         assertNull(finalTask);
 
         // 验证执行效果
-        assertTrue(applicantContext.getAs("apply_executed"));
-        assertTrue(reviewerContext.getAs("review_executed"));
-        assertEquals("approve", reviewerContext.getAs("reviewResult"));
+        assertTrue(applicantContext.<Boolean>getAs("apply_executed"));
+        assertTrue(reviewerContext.<Boolean>getAs("review_executed"));
+        assertEquals("approve", reviewerContext.<String>getAs("reviewResult"));
 
         System.out.println("审批流程测试完成: " + instanceId);
     }
 
     @Test
     void testRejectionAndResubmissionWorkflow() {
+        // 3. 创建独立的工作流服务
+        FlowEngine engine = FlowEngine.newInstance();
+
+        StateRepository stateRepository = new InMemoryStateRepository();
+
+        WorkflowService workflowService = WorkflowService.of(
+                engine,
+                new ActorStateController("actor"),
+                stateRepository
+        );
+
         // 1. 创建独立的任务组件
         TaskComponent taskComponent = new TaskComponent() {
             @Override
@@ -193,7 +207,7 @@ class WorkflowServiceProductionTest {
         };
 
         // 2. 创建独立的流程图
-        Graph graph = Graph.create("rejection-process-" + UUID.randomUUID(), "驳回重提交流程", spec -> {
+        Graph graph = Graph.create("rejection-process", "驳回重提交流程", spec -> {
             spec.addStart("start").title("开始").linkAdd("apply");
 
             spec.addActivity("apply").title("提交申请")
@@ -204,21 +218,25 @@ class WorkflowServiceProductionTest {
             spec.addExclusive("review").title("审批")
                     .metaPut("actor", "reviewer")
                     .task(taskComponent)
-                    .linkAdd("end", link -> link.when("${reviewResult} == 'approve'").title("通过"))
-                    .linkAdd("apply", link -> link.when("${reviewResult} == 'reject'").title("驳回"));
+                    .linkAdd("end", link -> link.when(c -> "approve".equals(c.getAs("reviewResult"))).title("通过")) //"${reviewResult} == 'approve'"
+                    .linkAdd("apply", link -> link.when(c -> {
+                        if ("reject".equals(c.getAs("reviewResult"))) {
+                            // workflow 自动回流，需要清理状态
+                            Graph graph1 = engine.getGraph("rejection-process");
+                            stateRepository.stateRemove(c, graph1.getNode("apply"));
+                            stateRepository.stateRemove(c, graph1.getNode("review"));
+                            //要暂停，不要自动前进
+                            c.interrupt();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }).title("驳回")); //"${reviewResult} == 'reject'"
 
             spec.addEnd("end").title("完成");
         });
 
-        // 3. 创建独立的工作流服务
-        FlowEngine engine = FlowEngine.newInstance();
         engine.load(graph);
-
-        WorkflowService workflowService = WorkflowService.of(
-                engine,
-                new org.noear.solon.flow.workflow.controller.ActorStateController("actor"),
-                new org.noear.solon.flow.workflow.repository.InMemoryStateRepository()
-        );
 
         // 4. 测试执行
         String instanceId = "rejection-test-" + UUID.randomUUID().toString().substring(0, 6);
@@ -281,7 +299,7 @@ class WorkflowServiceProductionTest {
         };
 
         // 2. 创建独立的并行流程图
-        Graph graph = Graph.create("parallel-process-" + UUID.randomUUID(), "并行流程", spec -> {
+        Graph graph = Graph.create("parallel-process", "并行流程", spec -> {
             spec.addStart("start").title("开始").linkAdd("parallel-gateway");
 
             spec.addParallel("parallel-gateway").title("并行网关")
@@ -307,7 +325,7 @@ class WorkflowServiceProductionTest {
                     .task(taskComponent)
                     .linkAdd("consolidate");
 
-            spec.addActivity("consolidate").title("数据汇总")
+            spec.addParallel("consolidate").title("数据汇总")
                     .metaPut("actor", "admin")
                     .task(taskComponent)
                     .linkAdd("end");
@@ -321,8 +339,8 @@ class WorkflowServiceProductionTest {
 
         WorkflowService workflowService = WorkflowService.of(
                 engine,
-                new org.noear.solon.flow.workflow.controller.ActorStateController("actor"),
-                new org.noear.solon.flow.workflow.repository.InMemoryStateRepository()
+                new ActorStateController("actor"),
+                new InMemoryStateRepository()
         );
 
         // 4. 测试执行
@@ -400,7 +418,7 @@ class WorkflowServiceProductionTest {
         };
 
         // 2. 创建独立的错误处理流程图
-        Graph graph = Graph.create("error-process-" + UUID.randomUUID(), "错误处理流程", spec -> {
+        Graph graph = Graph.create("error-process", "错误处理流程", spec -> {
             spec.addStart("start").linkAdd("normalTask");
 
             spec.addActivity("normalTask").title("正常任务")
@@ -420,42 +438,37 @@ class WorkflowServiceProductionTest {
 
         WorkflowService workflowService = WorkflowService.of(
                 engine,
-                new org.noear.solon.flow.workflow.controller.ActorStateController(),
-                new org.noear.solon.flow.workflow.repository.InMemoryStateRepository()
+                new ActorStateController(),
+                new InMemoryStateRepository()
         );
 
         // 4. 测试执行
-        String instanceId = "error-test-" + UUID.randomUUID().toString().substring(0, 6);
-        FlowContext context = FlowContext.of(instanceId);
+        FlowContext context = FlowContext.of("error-test-1");
 
         // 执行正常任务
         Task normalTask = workflowService.getTask(graph.getId(), context);
-        assertNotNull(normalTask);
-        assertEquals("normalTask", normalTask.getNodeId());
-
-        assertDoesNotThrow(() -> normalTask.run(context));
-        workflowService.postTask(graph.getId(), "normalTask", TaskAction.FORWARD, context);
+        assertNull(normalTask); //（自动）直接完成了
 
         // 设置失败条件并测试错误任务
-        context.put("shouldFail", true);
-        Task errorTask = workflowService.getTask(graph.getId(), context);
-        assertNotNull(errorTask);
-        assertEquals("errorTask", errorTask.getNodeId());
+        FlowContext context2 = FlowContext.of("error-test-2");
+        context2.put("shouldFail", true);
 
         // 任务执行应该抛出异常
         Exception exception = assertThrows(RuntimeException.class,
-                () -> errorTask.run(context));
-        assertTrue(exception.getMessage().contains("模拟任务执行失败"));
+                () -> {
+                    workflowService.getTask(graph.getId(), context2);
+                });
+        assertTrue(exception.getCause().getMessage().contains("模拟任务执行失败"));
 
         // 清除失败条件后重试
-        context.put("shouldFail", false);
-        workflowService.postTask(graph.getId(), "errorTask", TaskAction.FORWARD, context);
+        context2.put("shouldFail", false);
+        workflowService.postTask(graph.getId(), "errorTask", TaskAction.FORWARD, context2);
 
         // 验证流程可以继续
-        Task finalTask = workflowService.getTask(graph.getId(), context);
+        Task finalTask = workflowService.getTask(graph.getId(), context2);
         assertNull(finalTask);
 
-        System.out.println("错误处理流程测试完成: " + instanceId);
+        System.out.println("错误处理流程测试完成: " + context2.getInstanceId());
     }
 
     @Test
@@ -486,8 +499,9 @@ class WorkflowServiceProductionTest {
         };
 
         // 2. 创建独立的条件分支流程图
-        Graph graph = Graph.create("conditional-process-" + UUID.randomUUID(), "条件分支流程", spec -> {
-            spec.addStart("start").linkAdd("apply");
+        Graph graph = Graph.create("conditional-process", "条件分支流程", spec -> {
+            spec.addStart("start")
+                    .linkAdd("apply");
 
             spec.addActivity("apply").title("申请")
                     .metaPut("actor", "applicant")
@@ -518,8 +532,8 @@ class WorkflowServiceProductionTest {
 
         WorkflowService workflowService = WorkflowService.of(
                 engine,
-                new org.noear.solon.flow.workflow.controller.ActorStateController("actor"),
-                new org.noear.solon.flow.workflow.repository.InMemoryStateRepository()
+                new ActorStateController("actor"),
+                new InMemoryStateRepository()
         );
 
         // 4. 测试小额申请（走自动审批分支）
@@ -552,12 +566,22 @@ class WorkflowServiceProductionTest {
         workflowService.getTask(graph.getId(), largeContext);
         workflowService.postTask(graph.getId(), "apply", TaskAction.FORWARD, largeContext);
 
+
+        FlowContext largeReviewerContext = FlowContext.of(largeInstanceId);
+        largeReviewerContext.put("actor", "reviewer");
+        largeReviewerContext.put("amount", 8000);
+
+        Task lastTask = workflowService.getTask(graph.getId(), largeReviewerContext);
+        System.out.println(lastTask);
+        workflowService.postTask(graph.getId(), "review", TaskAction.FORWARD, largeReviewerContext);
+        lastTask = workflowService.getTask(graph.getId(), largeReviewerContext);
+        Assertions.assertNull(lastTask);
+
         FlowContext managerContext = FlowContext.of(largeInstanceId);
         managerContext.put("actor", "manager");
         managerContext.put("amount", 8000);
 
-        workflowService.postTask(graph.getId(), "review", TaskAction.FORWARD, managerContext);
-
+        workflowService.postTask(graph.getId(), "manager-approve", TaskAction.FORWARD, managerContext);
         Task largeFinalTask = workflowService.getTask(graph.getId(), managerContext);
         assertNull(largeFinalTask);
         System.out.println("大额申请测试完成");
@@ -592,8 +616,8 @@ class WorkflowServiceProductionTest {
 
         WorkflowService workflowService = WorkflowService.of(
                 engine,
-                new org.noear.solon.flow.workflow.controller.ActorStateController("actor"),
-                new org.noear.solon.flow.workflow.repository.InMemoryStateRepository()
+                new ActorStateController("actor"),
+                new InMemoryStateRepository()
         );
 
         // 4. 并发测试
@@ -694,8 +718,8 @@ class WorkflowServiceProductionTest {
 
         WorkflowService workflowService = WorkflowService.of(
                 engine,
-                new org.noear.solon.flow.workflow.controller.ActorStateController("actor"),
-                new org.noear.solon.flow.workflow.repository.InMemoryStateRepository()
+                new ActorStateController("actor"),
+                new InMemoryStateRepository()
         );
 
         // 4. 测试多个实例隔离
@@ -733,7 +757,7 @@ class WorkflowServiceProductionTest {
 
             assertEquals(expectedData, context.getAs("customData"));
             assertEquals(expectedInstanceData, context.getAs("instanceData"));
-            assertTrue(context.getAs("processed"));
+            assertTrue(context.<Boolean>getAs("processed"));
         }
 
         System.out.println("多实例隔离测试完成，共测试 " + instanceCount + " 个实例");
@@ -773,8 +797,8 @@ class WorkflowServiceProductionTest {
 
         WorkflowService workflowService = WorkflowService.of(
                 engine,
-                new org.noear.solon.flow.workflow.controller.ActorStateController("actor"),
-                new org.noear.solon.flow.workflow.repository.InMemoryStateRepository()
+                new ActorStateController("actor"),
+                new InMemoryStateRepository()
         );
 
         // 4. 性能测试
