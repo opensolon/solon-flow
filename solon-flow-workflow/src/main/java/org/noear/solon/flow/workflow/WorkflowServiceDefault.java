@@ -76,20 +76,31 @@ public class WorkflowServiceDefault implements WorkflowService {
 
     @Override
     public boolean postTaskIfWaiting(Node node, TaskAction action, FlowContext context) {
-        Task task = getTask(node.getGraph(), context);
-        if (task == null) {
+        if (stateController.isOperatable(context, node) == false) {
+            //如果无权
             return false;
         }
 
-        if (task.getState() != TaskState.WAITING) {
-            return false;
-        }
+        if (stateRepository.stateGet(context, node) == TaskState.WAITING) {
+            //快捷查询
+            postTask(node, action, context);
+        } else {
+            //走任务查询
+            Task task = getTask(node.getGraph(), context);
+            if (task == null) {
+                return false;
+            }
 
-        if (task.getNode().getId().equals(node.getId()) == false) {
-            return false;
-        }
+            if (task.getState() != TaskState.WAITING) {
+                return false;
+            }
 
-        postTask(task.getNode(), action, context);
+            if (task.getNode().getId().equals(node.getId()) == false) {
+                return false;
+            }
+
+            postTask(node, action, context);
+        }
 
         return true;
     }
