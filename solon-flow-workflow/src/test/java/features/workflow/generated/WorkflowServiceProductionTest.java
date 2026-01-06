@@ -3,7 +3,6 @@ package features.workflow.generated;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
-import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.workflow.Task;
 import org.noear.solon.flow.workflow.TaskAction;
 import org.noear.solon.flow.workflow.TaskState;
@@ -89,8 +88,8 @@ class WorkflowServiceProductionTest {
             spec.addExclusive("review").title("审批节点")
                     .metaPut("actor", "reviewer")
                     .task(recordingTaskComponent)
-                    .linkAdd("end", link -> link.when("${reviewResult} == 'approve'").title("通过"))
-                    .linkAdd("apply", link -> link.when("${reviewResult} == 'reject'").title("驳回"));
+                    .linkAdd("end", link -> link.when(c->"approve".equals(c.getAs("reviewResult"))).title("通过")) //"reviewResult.equals(\"approve\")"
+                    .linkAdd("apply", link -> link.when(c->"reject".equals(c.getAs("reviewResult"))).title("驳回")); //"reviewResult.equals(\"reject\")"
 
             spec.addEnd("end").title("审批完成");
         });
