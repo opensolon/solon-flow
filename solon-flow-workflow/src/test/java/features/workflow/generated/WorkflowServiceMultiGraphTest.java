@@ -403,10 +403,12 @@ class WorkflowServiceMultiGraphTest {
                             System.out.println("执行处理决策: " + context.getInstanceId());
                         }
                     })
-                    .linkAdd("quick-process", link -> link.when(c ->
-                            Boolean.TRUE.equals(c.<Boolean>getAs("needQuickProcess"))).title("快速处理"))
-                    .linkAdd("detailed-process", link -> link.when(c ->
-                            Boolean.FALSE.equals(c.<Boolean>getAs("needQuickProcess"))).title("详细处理"));
+                    .linkAdd("quick-process", link -> link.when(c ->{
+                        return Boolean.TRUE.equals(c.<Boolean>getAs("needQuickProcess"));
+                    }).title("快速处理"))
+                    .linkAdd("detailed-process", link -> link.when(c ->{
+                        return Boolean.FALSE.equals(c.<Boolean>getAs("needQuickProcess"));
+                    }).title("详细处理"));
 
             // 快速处理分支
             spec.addActivity("quick-process").title("调用快速处理")
@@ -566,7 +568,7 @@ class WorkflowServiceMultiGraphTest {
                     })
                     .linkAdd("call-risky-process");
 
-            spec.addActivity("call-risky-process").title("调用风险流程")
+            spec.addExclusive("call-risky-process").title("调用风险流程")
                     .task(new TaskComponent() {
                         @Override
                         public void run(FlowContext context, Node node) throws Throwable {
@@ -574,16 +576,30 @@ class WorkflowServiceMultiGraphTest {
                             // 这里实际应该调用子流程，我们模拟调用
                         }
                     })
-                    .linkAdd("normal-continue", link -> link.when("${riskyProcessCompleted} == true").title("正常继续"))
+                    .linkAdd("normal-continue", link -> link.when(c->{
+                        if(c.getOrDefault("riskyProcessCompleted", false)){
+                            System.out.println("->normal-continue");
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }).title("正常继续")) //"${riskyProcessCompleted} == true"
                     .linkAdd("error-handle", link -> link.when(c -> {
                         // 检查是否有错误发生
-                        return c.getOrDefault("errorOccurred", false);
-                    }).title("错误处理"));
+                        if (c.getOrDefault("errorOccurred", false)) {
+                            System.out.println("->error-handle");
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }).title("错误处理"))
+                    .linkAdd("end");
 
             spec.addActivity("normal-continue").title("正常继续")
                     .task(new TaskComponent() {
                         @Override
                         public void run(FlowContext context, Node node) throws Throwable {
+                            System.out.println("normal-continue...");
                             context.put("normalPath", true);
                             context.put("completionTime", System.currentTimeMillis());
                         }
@@ -621,7 +637,7 @@ class WorkflowServiceMultiGraphTest {
 
         WorkflowService workflowService = WorkflowService.of(
                 engine,
-                new ActorStateController(),
+                new BlockStateController(),
                 new InMemoryStateRepository()
         );
 
@@ -641,7 +657,8 @@ class WorkflowServiceMultiGraphTest {
         // 调用风险流程（应该走正常分支）
         Task riskyProcessTask = workflowService.getTask(mainFlowWithErrorHandling.getId(), successContext);
         assertNotNull(riskyProcessTask);
-        workflowService.postTask(mainFlowWithErrorHandling.getId(), "call-risky-process", TaskAction.FORWARD, successContext);
+        workflowService.postTaskIfWaiting(mainFlowWithErrorHandling.getId(), "call-risky-process", TaskAction.FORWARD, successContext);
+        workflowService.postTaskIfWaiting(mainFlowWithErrorHandling.getId(), "normal-continue", TaskAction.FORWARD, successContext);
 
         // 验证走了正常路径
         assertTrue(successContext.<Boolean>getAs("normalPath"));
@@ -901,4 +918,5 @@ class WorkflowServiceMultiGraphTest {
         System.out.println("\n=== 图重用和模板模式测试完成 ===");
         System.out.println("验证模板被两个不同的流程重用");
     }
+
 }
