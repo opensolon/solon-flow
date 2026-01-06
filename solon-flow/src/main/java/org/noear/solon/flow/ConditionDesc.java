@@ -46,7 +46,11 @@ public class ConditionDesc {
      */
     public ConditionDesc(Graph graph, String description) {
         this.graph = graph;
-        this.description = description;
+        if (description != null) {
+            this.description = description.trim();
+        } else {
+            this.description = null;
+        }
         this.component = null;
     }
 
@@ -55,7 +59,11 @@ public class ConditionDesc {
      */
     public ConditionDesc(Graph graph, String description, ConditionComponent component) {
         this.graph = graph;
-        this.description = description;
+        if (description != null) {
+            this.description = description.trim();
+        } else {
+            this.description = null;
+        }
         this.component = component;
     }
 
