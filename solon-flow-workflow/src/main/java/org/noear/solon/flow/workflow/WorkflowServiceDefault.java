@@ -60,7 +60,7 @@ public class WorkflowServiceDefault implements WorkflowService {
     /// ////////////////////////
 
     /**
-     * 提交操作（如果当前节点为等待介入）
+     * 提交任务（如果当前任务为等待介入）
      */
     @Override
     public boolean postTaskIfWaiting(Task task, TaskAction action, FlowContext context) {
