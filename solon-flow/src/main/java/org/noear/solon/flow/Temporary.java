@@ -110,6 +110,13 @@ public class Temporary {
         return vars;
     }
 
+    /**
+     * 获取变量并转为
+     */
+    public <T> T varAs(String key) {
+        return (T) vars.get(key);
+    }
+
     @Override
     public String toString() {
         return "{" +

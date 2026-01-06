@@ -13,6 +13,8 @@
 * 添加 `solon-flow` FlowContext.isStopped 方法（用于外部检测）
 * 添加 `solon-flow` NamedTaskComponent 接口，方便智能体开发
 * 添加 `solon-flow` 多图多引擎状态记录与序列化支持
+* 添加 `solon-flow-workflow` WorkflowService.getNextTasks 替代 getTasks（后者标为弃用）
+* 添加 `solon-flow-workflow` WorkflowCommand 替代之前的临时变量（扩展更方便）
 * 优化 `solon-flow` FlowContext 接口设计，并增加持久化辅助方法
 * 优化 `solon-flow` FlowContext.eventBus 内部实现改为字段模式
 * 优化 `solon-flow` start 类型节点改为自由流出像 activity 一样（只是没有任务）
@@ -25,6 +27,7 @@
 * 调整 `solon-flow` FlowInterceptor:doIntercept 更名为 doFlowInterceptor，并标为 default（扩展时语义清晰，且不需要强制实现）
 * 调整 `solon-flow` NodeTrace 更名为 NodeRecord，并增加 FlowTrace 类。支持跨图多引擎场景
 * 调整 `solon-flow` “执行深度”改为“执行步数”（更符合实际需求）
+* 调整 `solon-flow-workflow` WorkflowService.getTask 没有权限时返回 null（之前返回一个未知状态的任务，容易误解）
 * 调整 `solon-flow` 移除 FlowContext:incrAdd,incrGet 弃用预览接口
 * 修复 `solon-flow` FlowContext 跨多引擎中转时 exchanger 的冲突问题
 * 修复 `solon-flow` 跨图单步执行时，步数传导会失效的问题

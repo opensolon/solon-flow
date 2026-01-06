@@ -192,13 +192,14 @@ public class WorkflowServiceDefault implements WorkflowService {
         FlowDriver driver = getDriver(graph);
 
         FlowExchanger exchanger = new FlowExchanger(engine, driver, context, -1, new AtomicInteger(0));
-        exchanger.temporary().vars().put(WorkflowDriver.KEY_ACTIVITY_LIST_GET, true);
+        WorkflowCommand command  = new WorkflowCommand(WorkflowCommand.CommandType.GET_NEXT_TASKS);
+
+        exchanger.temporary().vars().put(WorkflowCommand.class.getSimpleName(), command);
         exchanger.recordNode(graph, graph.getStart());
 
         engine.eval(graph, exchanger);
 
-        Collection<Task> tmp = (Collection<Task>) exchanger.temporary().vars()
-                .get(WorkflowDriver.KEY_ACTIVITY_LIST);
+        Collection<Task> tmp = command.nextTasks;
 
         if (tmp == null) {
             return Collections.emptyList();
@@ -228,10 +229,12 @@ public class WorkflowServiceDefault implements WorkflowService {
 
         FlowExchanger exchanger = new FlowExchanger(engine, driver, context, -1, new AtomicInteger(0));
         exchanger.recordNode(graph, graph.getStart());
+        WorkflowCommand command  = new WorkflowCommand(WorkflowCommand.CommandType.Get_TASK);
+        exchanger.temporary().vars().put(WorkflowCommand.class.getSimpleName(), command);
 
         engine.eval(graph, exchanger);
 
-        return (Task) exchanger.temporary().vars().get(WorkflowDriver.KEY_ACTIVITY_NODE);
+        return command.task;
     }
 
     @Override
