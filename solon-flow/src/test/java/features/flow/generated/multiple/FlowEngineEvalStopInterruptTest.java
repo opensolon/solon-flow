@@ -324,8 +324,8 @@ public class FlowEngineEvalStopInterruptTest {
                     })
                     .linkAdd("merge_gateway");
 
-            // 包容网关合并分支
-            spec.addInclusive("merge_gateway").title("合并网关")
+            // 合并分支
+            spec.addParallel("merge_gateway").title("合并网关")
                     .linkAdd("end");
 
             spec.addEnd("end").title("结束");
@@ -581,8 +581,8 @@ public class FlowEngineEvalStopInterruptTest {
                     })
                     .linkAdd("merge_gateway");
 
-            // 包容网关（等待所有未中断的分支）
-            spec.addInclusive("merge_gateway").title("合并网关")
+            // （等待所有未中断的分支）
+            spec.addParallel("merge_gateway").title("合并网关")
                     .task((context, node) -> {
                         System.out.println("合并网关执行: " + context.getInstanceId());
                     })

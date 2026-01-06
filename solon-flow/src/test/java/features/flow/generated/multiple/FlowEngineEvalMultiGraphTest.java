@@ -243,8 +243,8 @@ public class FlowEngineEvalMultiGraphTest {
                     .task("#parallel-sub-2")
                     .linkAdd("merge_gateway");
 
-            // 包容网关：等待两个子图都完成
-            spec.addInclusive("merge_gateway").title("合并网关")
+            // 等待两个子图都完成
+            spec.addParallel("merge_gateway").title("合并网关")
                     .task((context, node) -> {
                         System.out.println("合并网关执行，检查子图执行状态...");
                         boolean sub1Done = context.getOrDefault("subGraph1Executed", false);
