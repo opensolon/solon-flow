@@ -1,4 +1,4 @@
-package features.workflow;
+package features.workflow.manual;
 
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.FlowContext;

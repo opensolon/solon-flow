@@ -1,49 +1,38 @@
-package features.workflow;
+package features.workflow.manual;
 
+import demo.workflow.ExportUtil;
 import org.junit.jupiter.api.Test;
-import org.noear.redisx.RedisClient;
-import org.noear.solon.Solon;
 import org.noear.solon.Utils;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
+import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.container.MapContainer;
 import org.noear.solon.flow.driver.SimpleFlowDriver;
 import org.noear.solon.flow.workflow.*;
 import org.noear.solon.flow.workflow.controller.ActorStateController;
-import org.noear.solon.flow.workflow.repository.RedisStateRepository;
+import org.noear.solon.flow.workflow.repository.InMemoryStateRepository;
 import org.noear.solon.test.SolonTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 /**
  * @author noear 2025/3/27 created
  */
 @SolonTest
-public class OaFlowRedisTest {
-    static final Logger log = LoggerFactory.getLogger(OaFlowRedisTest.class);
+public class OaFlowTest {
+    static final Logger log = LoggerFactory.getLogger(OaFlowTest.class);
 
     final String graphId = "sf1";
     final String instanceId = Utils.uuid();
 
-    ActorStateController stateController;
-    RedisStateRepository stateRepository;
-
+    ActorStateController stateController = new ActorStateController();
+    InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
     private WorkflowService buildWorkflow() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
-
-
-        // 创建 Redis 客户端
-        RedisClient redisClient = Solon.cfg().getBean("solon.repo.redis", RedisClient.class);
-        if (redisClient == null) {
-            throw new IllegalStateException("Redis client configuration not found!");
-        }
-
-        if (stateController == null) {
-            stateController = new ActorStateController();
-            stateRepository = new RedisStateRepository(redisClient);
-        }
 
         FlowEngine fe = FlowEngine.newInstance(SimpleFlowDriver.builder()
                 .container(container)
@@ -59,9 +48,11 @@ public class OaFlowRedisTest {
     public void case1() throws Throwable {
         //初始化引擎
         WorkflowService workflow = buildWorkflow();
+        Graph graph = workflow.engine().getGraph(graphId);
 
         FlowContext context;
         Task task;
+
 
         context = getContext("刘涛");
         task = workflow.getTask(graphId, context);
@@ -72,6 +63,7 @@ public class OaFlowRedisTest {
 
         /// ////////////////
         //提交状态
+        context.put("oaState", 2); //用于扩展状态记录
         workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
 
 
@@ -92,8 +84,27 @@ public class OaFlowRedisTest {
 
 
         /// ////////////////
+
+        String yaml = ExportUtil.toYaml(ExportUtil.buildGraphDom1(workflow,graph, context));
+        System.out.println("------------");
+        System.out.println(yaml);
+        System.out.println("------------");
+
+
+        /// ////////////////
         //提交状态
         workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
+
+
+        context = getContext(null);
+        Collection<Task> nodes = workflow.getTasks(graphId, context);
+        assert nodes.size() == 2;
+        assert 0 == nodes.stream().filter(n -> n.getState() == TaskState.WAITING).count();
+
+        context = getContext("陈宇");
+        nodes = workflow.getTasks(graphId, context);
+        assert nodes.size() == 2;
+        assert 1 == nodes.stream().filter(n -> n.getState() == TaskState.WAITING).count();
 
 
         context = getContext("陈鑫");
@@ -102,6 +113,14 @@ public class OaFlowRedisTest {
         assert task != null;
         assert task.getNode().getId().startsWith("step4");
         assert TaskState.UNKNOWN == task.getState(); //没有权限
+
+
+        /// ////////////////
+
+        yaml = ExportUtil.toYaml(ExportUtil.buildGraphDom1(workflow,graph, context));
+        System.out.println("------------");
+        System.out.println(yaml);
+        System.out.println("------------");
 
 
         context = getContext("陈宇");
@@ -131,7 +150,7 @@ public class OaFlowRedisTest {
         context = getContext("吕方");
         task = workflow.getTask(graphId, context);
         log.warn("{}", task);
-        assert task == null; //抄送节点
+        assert task == null;
 
         workflow.clearState(graphId, context);
     }
@@ -149,7 +168,6 @@ public class OaFlowRedisTest {
 
         //初始化引擎
         WorkflowService workflow = buildWorkflow();
-
 
         task = workflow.getTask(graphId, context);
 

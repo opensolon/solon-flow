@@ -1,4 +1,4 @@
-package features.workflow;
+package features.workflow.manual;
 
 import org.noear.solon.Utils;
 import org.noear.solon.annotation.Component;
