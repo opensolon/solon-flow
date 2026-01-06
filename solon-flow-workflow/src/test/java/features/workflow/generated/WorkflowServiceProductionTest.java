@@ -578,8 +578,8 @@ class WorkflowServiceProductionTest {
                         spec.addExclusive("review").title("审批")
                                 .metaPut("actor", "reviewer")
                                 .task(recordingTaskComponent)
-                                .linkAdd("auto-approve", link -> link.when("${amount} <= 5000").title("自动审批"))
-                                .linkAdd("manager-approve", link -> link.when("${amount} > 5000").title("经理审批"));
+                                .linkAdd("auto-approve", link -> link.when(c->c.<Integer>getAs("amount") <= 5000).title("自动审批")) //"${amount} <= 5000"
+                                .linkAdd("manager-approve", link -> link.when(c->c.<Integer>getAs("amount") > 5000).title("经理审批")); //"${amount} > 5000"
 
                         spec.addActivity("auto-approve").title("自动审批")
                                 .task(recordingTaskComponent)
