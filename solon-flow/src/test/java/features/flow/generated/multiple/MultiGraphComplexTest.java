@@ -73,7 +73,11 @@ public class MultiGraphComplexTest {
     FlowEngine flowEngine = FlowEngine.newInstance().then(engine -> {
         Graph grandGraph1 = Graph.create(grandGraph1_id, spec -> {
             spec.addStart("start").linkAdd("node1");
-            spec.addActivity("node1").linkAdd("end");
+            spec.addActivity("node1").linkAdd("end").task((c, n) -> {
+                if (c.containsKey("stop_" + grandGraph1_id)) {
+                    c.stop();
+                }
+            });
             spec.addEnd("end");
         });
 
@@ -85,19 +89,29 @@ public class MultiGraphComplexTest {
 
         Graph childgraph2 = Graph.create(childgraph2_id, spec -> {
             spec.addStart("start").linkAdd("node1");
-            spec.addActivity("node1").linkAdd("end");
+            spec.addActivity("node1").linkAdd("end").task((c, n) -> {
+                if (c.containsKey("stop_" + childgraph2_id)) {
+                    c.stop();
+                }
+            });
             spec.addEnd("end");
         });
 
         Graph rootGraph = Graph.create(rootGraph_id, spec -> {
             spec.addStart("start").linkAdd("node1");
-            spec.addActivity("node1").linkAdd("p1_start");
+            spec.addActivity("node1").linkAdd("p1_start").task((c, n) -> {
+                if (c.containsKey("stop_" + rootGraph_id)) {
+                    c.stop();
+                }
+            });
+
             spec.addParallel("p1_start")
                     .linkAdd("node2")
                     .linkAdd("node3");
             spec.addActivity("node2").linkAdd("p1_end").task("#" + childgraph1_id);
             spec.addActivity("node3").linkAdd("p1_end").task("#" + childgraph2_id);
             spec.addParallel("p1_end").linkAdd("end");
+
             spec.addEnd("end");
         });
 
@@ -127,6 +141,65 @@ public class MultiGraphComplexTest {
         Assertions.assertTrue(context.trace().isEnd(rootGraph_id));
         Assertions.assertTrue(context.trace().isEnd(childgraph1_id));
         Assertions.assertTrue(context.trace().isEnd(childgraph2_id));
+        Assertions.assertTrue(context.trace().isEnd(grandGraph1_id));
+    }
+
+    /**
+     * 2. 停止（stop）相关测试
+     * 在主图中停止 (testStopInMainGraph)
+     * 在深层嵌套子图中停止 (testStopInNestedGraph)
+     * 条件停止 (testStopWithCondition)
+     * 停止传播 (testDeepNestedStopPropagation)
+     *
+     */
+    @Test
+    public void testStopInMainGraph() {
+        //testStopInMainGraph
+        FlowContext context = FlowContext.of();
+        context.put("stop_" + rootGraph_id, true);
+
+        flowEngine.eval(rootGraph_id, context);
+
+        Assertions.assertNotNull(context.trace().lastNodeId(rootGraph_id));
+        Assertions.assertNull(context.trace().lastNodeId(childgraph1_id));
+        Assertions.assertNull(context.trace().lastNodeId(childgraph2_id));
+        Assertions.assertNull(context.trace().lastNodeId(grandGraph1_id));
+
+        Assertions.assertFalse(context.trace().isEnd(rootGraph_id));
+        Assertions.assertFalse(context.trace().isEnd(childgraph1_id));
+        Assertions.assertFalse(context.trace().isEnd(childgraph2_id));
+        Assertions.assertFalse(context.trace().isEnd(grandGraph1_id));
+
+        //testStopInNestedGraph
+        context = FlowContext.of();
+        context.put("stop_" + grandGraph1_id, true);
+
+        flowEngine.eval(rootGraph_id, context);
+
+        Assertions.assertNotNull(context.trace().lastNodeId(rootGraph_id));
+        Assertions.assertNotNull(context.trace().lastNodeId(childgraph1_id));
+        Assertions.assertNull(context.trace().lastNodeId(childgraph2_id));
+        Assertions.assertNotNull(context.trace().lastNodeId(grandGraph1_id));
+
+        Assertions.assertFalse(context.trace().isEnd(rootGraph_id));
+        Assertions.assertFalse(context.trace().isEnd(childgraph1_id));
+        Assertions.assertFalse(context.trace().isEnd(childgraph2_id));
+        Assertions.assertFalse(context.trace().isEnd(grandGraph1_id));
+
+        //testStopInSubGraph
+        context = FlowContext.of();
+        context.put("stop_" + childgraph2_id, true);
+
+        flowEngine.eval(rootGraph_id, context);
+
+        Assertions.assertNotNull(context.trace().lastNodeId(rootGraph_id));
+        Assertions.assertNotNull(context.trace().lastNodeId(childgraph1_id));
+        Assertions.assertNotNull(context.trace().lastNodeId(childgraph2_id));
+        Assertions.assertNotNull(context.trace().lastNodeId(grandGraph1_id));
+
+        Assertions.assertFalse(context.trace().isEnd(rootGraph_id));
+        Assertions.assertTrue(context.trace().isEnd(childgraph1_id));
+        Assertions.assertFalse(context.trace().isEnd(childgraph2_id));
         Assertions.assertTrue(context.trace().isEnd(grandGraph1_id));
     }
 }
