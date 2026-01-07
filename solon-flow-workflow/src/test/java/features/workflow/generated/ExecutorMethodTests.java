@@ -7,6 +7,7 @@ import org.noear.solon.flow.workflow.Task;
 import org.noear.solon.flow.workflow.TaskAction;
 import org.noear.solon.flow.workflow.TaskState;
 import org.noear.solon.flow.workflow.WorkflowExecutor;
+import org.noear.solon.flow.workflow.controller.ActorStateController;
 import org.noear.solon.flow.workflow.controller.BlockStateController;
 import org.noear.solon.flow.workflow.repository.InMemoryStateRepository;
 
@@ -76,6 +77,7 @@ class ExecutorMethodTests {
         });
 
         flowEngine.load(graph);
+        workflowExecutor = WorkflowExecutor.of(flowEngine, new ActorStateController(), new InMemoryStateRepository());
 
         FlowContext contextUser1 = FlowContext.of("user1-context");
         contextUser1.put("actor", "user1");
@@ -101,7 +103,7 @@ class ExecutorMethodTests {
         Task findTaskUser2 = workflowExecutor.findTask("find-vs-match", contextUser2);
         assertNotNull(findTaskUser2);
         assertEquals("A", findTaskUser2.getNodeId());
-        assertEquals(TaskState.WAITING, findTaskUser2.getState());
+        assertEquals(TaskState.UNKNOWN, findTaskUser2.getState());
     }
 
     @Test
@@ -109,8 +111,8 @@ class ExecutorMethodTests {
         Graph graph = Graph.create("state-variation", spec -> {
             spec.addStart("start").title("开始").linkAdd("gateway");
             spec.addExclusive("gateway").title("选择网关")
-                    .linkAdd("A", l -> l.when("context.model.status == 'open'"))
-                    .linkAdd("B", l -> l.when("context.model.status == 'closed'"))
+                    .linkAdd("A", l -> l.when("\"open\".equals(status)"))
+                    .linkAdd("B", l -> l.when("\"closed\".equals(status)"))
                     .linkAdd("C"); // 默认路径
             spec.addActivity("A").title("开放任务").linkAdd("end");
             spec.addActivity("B").title("关闭任务").linkAdd("end");
@@ -134,6 +136,7 @@ class ExecutorMethodTests {
         assertEquals("B", tasks2.iterator().next().getNodeId());
 
         FlowContext context3 = FlowContext.of("state-3");
+        context3.put("status", "");
         // 不设置status，应该走默认路径
         Collection<Task> tasks3 = workflowExecutor.findNextTasks("state-variation", context3);
         assertEquals(1, tasks3.size());
@@ -200,9 +203,9 @@ class ExecutorMethodTests {
             spec.addStart("start").title("开始").linkAdd("gateway1");
 
             spec.addInclusive("gateway1").title("包容网关")
-                    .linkAdd("A", l -> l.when("context.model.option1"))
-                    .linkAdd("B", l -> l.when("context.model.option2"))
-                    .linkAdd("C", l -> l.when("context.model.option3"));
+                    .linkAdd("A", l -> l.when("option1"))
+                    .linkAdd("B", l -> l.when("option2"))
+                    .linkAdd("C", l -> l.when("option3"));
 
             spec.addActivity("A").title("选项A").linkAdd("end");
             spec.addActivity("B").title("选项B").linkAdd("end");

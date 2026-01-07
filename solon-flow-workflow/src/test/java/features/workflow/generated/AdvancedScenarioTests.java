@@ -157,8 +157,8 @@ class AdvancedScenarioTests {
             spec.addStart("start").title("开始").linkAdd("gateway");
 
             spec.addExclusive("gateway").title("选择网关")
-                    .linkAdd("path1", l -> l.when("context.model.path == 1"))
-                    .linkAdd("path2", l -> l.when("context.model.path == 2"));
+                    .linkAdd("path1", l -> l.when("path == 1"))
+                    .linkAdd("path2", l -> l.when("path == 2"));
 
             // 路径1
             spec.addActivity("path1").title("路径1-A").linkAdd("path1-B");
@@ -301,7 +301,7 @@ class AdvancedScenarioTests {
         Graph graph = Graph.create("gateway-auto", spec -> {
             spec.addStart("start").title("开始").linkAdd("exclusive");
             spec.addExclusive("exclusive").title("排他网关")
-                    .linkAdd("A", l -> l.when("context.model.choice == 'A'"))
+                    .linkAdd("A", l -> l.when("\"A\".equals(choice)"))
                     .linkAdd("B"); // 默认路径
             spec.addActivity("A").title("任务A").linkAdd("parallel");
             spec.addActivity("B").title("任务B").linkAdd("parallel");
