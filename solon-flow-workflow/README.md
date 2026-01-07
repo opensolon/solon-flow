@@ -11,18 +11,18 @@
 public class Demo {
     public void demo(FlowEngine engine, Graph graph) {
         //0. 初始化工作流
-        WorkflowService workflow = WorkflowService.of(engine, WorkflowDriver.builder()
+        workflowExecutor workflow = workflowExecutor.of(engine, WorkflowDriver.builder()
                 .stateController(new ActorStateController())
                 .stateRepository(new InMemoryStateRepository())
                 .build());
 
         FlowContext context = FlowContext.of("case1");
 
-        //1. 取出任务
-        Task task = workflow.getTask(graph, context);
+        //1. 匹配当前任务
+        Task current = workflow.matchTask(graph, context);
 
         //2. 提交任务
-        workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(current.getNode(), TaskAction.FORWARD, context);
     }
 }
 ```
@@ -33,7 +33,7 @@ public class Demo {
 
 ```java
 public class OaActionDemo {
-    WorkflowService workflow = WorkflowService.of(FlowEngine.newInstance(),
+    WorkflowExecutor workflow = WorkflowExecutor.of(FlowEngine.newInstance(),
             new ActorStateController(),
             new InMemoryStateRepository());
 
@@ -57,12 +57,12 @@ public class OaActionDemo {
 
         FlowContext context = FlowContext.of(instanceId);
         context.put("actor", "A");
-        Task task = workflow.getTask(graph, context);
+        Task current = workflow.matchTask(graph, context);
 
         //展示界面，操作。然后：
 
         context.put("op", "审批");//作为状态的一部分
-        workflow.postTask(graph, task.getNodeId(), TaskAction.FORWARD, context);
+        workflow.submitTask(graph, current.getNodeId(), TaskAction.FORWARD, context);
     }
 
     //回退
@@ -71,10 +71,10 @@ public class OaActionDemo {
 
         FlowContext context = FlowContext.of(instanceId);
         context.put("actor", "A");
-        Task task = workflow.getTask(graph, context);
+        Task current = workflow.matchTask(graph, context);
 
         context.put("op", "回退");//作为状态的一部分
-        workflow.postTask(graph, task.getNodeId(), TaskAction.BACK, context);
+        workflow.submitTask(graph, current.getNodeId(), TaskAction.BACK, context);
     }
 
     //任意跳转（通过）
@@ -85,8 +85,8 @@ public class OaActionDemo {
 
         String nodeId = "demo1";
 
-        workflow.postTask(graph, nodeId, TaskAction.FORWARD_JUMP, context);
-        Task task = workflow.getTask(graph, context);
+        workflow.submitTask(graph, nodeId, TaskAction.FORWARD_JUMP, context);
+        Task current = workflow.matchTask(graph, context);
     }
 
     //任意跳转（退回）
@@ -97,8 +97,8 @@ public class OaActionDemo {
 
         String nodeId = "demo1";
 
-        workflow.postTask(graph, nodeId, TaskAction.BACK_JUMP, context);
-        Task task = workflow.getTask(graph, context);
+        workflow.submitTask(graph, nodeId, TaskAction.BACK_JUMP, context);
+        Task current = workflow.matchTask(graph, context);
     }
 
     //委派
@@ -108,10 +108,10 @@ public class OaActionDemo {
         FlowContext context = FlowContext.of(instanceId);
         context.put("actor", "A");
         context.put("delegate", "B"); //需要定制下状态操作员（用A检测，但留下B的状态记录）
-        Task task = workflow.getTask(graph, context);
+        Task current = workflow.matchTask(graph, context);
 
         context.put("op", "委派");//作为状态的一部分
-        workflow.postTask(graph, task.getNodeId(), TaskAction.FORWARD, context);
+        workflow.submitTask(graph, current.getNodeId(), TaskAction.FORWARD, context);
     }
 
     //转办（与委派技术实现差不多）
@@ -121,10 +121,10 @@ public class OaActionDemo {
         FlowContext context = FlowContext.of(instanceId);
         context.put("actor", "A");
         context.put("transfer", "B"); //需要定制下状态操作员（用A检测，但留下B的状态记录）
-        Task task = workflow.getTask(graph, context);
+        Task current = workflow.matchTask(graph, context);
 
         context.put("op", "转办");//作为状态的一部分
-        workflow.postTask(graph, task.getNodeId(), TaskAction.FORWARD, context);
+        workflow.submitTask(graph, current.getNodeId(), TaskAction.FORWARD, context);
     }
 
     //催办
@@ -132,9 +132,9 @@ public class OaActionDemo {
         Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
-        Task task = workflow.getTask(graph, context);
+        Task current = workflow.matchTask(graph, context);
 
-        String actor = task.getNode().getMetaAs("actor");
+        String actor = current.getNode().getMetaAs("actor");
         //发邮件（或通知）
     }
 
@@ -143,11 +143,11 @@ public class OaActionDemo {
         Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
-        Task task = workflow.getTask(graph, context);
+        Task current = workflow.matchTask(graph, context);
 
         //回退到顶（给发起人）；相当于重新开始走流程
         context.put("op", "取回");//作为状态的一部分
-        workflow.postTask(graph, task.getNodeId(), TaskAction.RESTART, context);
+        workflow.submitTask(graph, current.getNodeId(), TaskAction.RESTART, context);
     }
 
     //撤销（和回退没啥区别）
@@ -155,10 +155,10 @@ public class OaActionDemo {
         Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
-        Task task = workflow.getTask(graph, context);
+        Task current = workflow.matchTask(graph, context);
 
         context.put("op", "撤销");//作为状态的一部分
-        workflow.postTask(graph, task.getNodeId(), TaskAction.BACK, context);
+        workflow.submitTask(graph, current.getNodeId(), TaskAction.BACK, context);
     }
 
     //中止
@@ -166,10 +166,10 @@ public class OaActionDemo {
         Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
-        Task task = workflow.getTask(graph, context);
+        Task current = workflow.matchTask(graph, context);
 
         context.put("op", "中止");//作为状态的一部分
-        workflow.postTask(graph, task.getNodeId(), TaskAction.TERMINATE, context);
+        workflow.submitTask(graph, current.getNodeId(), TaskAction.TERMINATE, context);
     }
 
     //抄送
@@ -177,9 +177,9 @@ public class OaActionDemo {
         Graph graph = getGraph(instanceId);
 
         FlowContext context = FlowContext.of(instanceId);
-        Task task = workflow.getTask(graph, context);
+        Task current = workflow.matchTask(graph, context);
 
-        workflow.postTask(graph, task.getNodeId(), TaskAction.FORWARD, context);
+        workflow.submitTask(graph, current.getNodeId(), TaskAction.FORWARD, context);
         //提交后，会自动触发任务（如果有抄送配置，自动执行）
     }
 
