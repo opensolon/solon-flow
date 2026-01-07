@@ -253,7 +253,7 @@ class TaskActionTests {
         // 跳转到C
         workflow.submitTask("action-test", "C", TaskAction.FORWARD_JUMP, context);
         assertEquals(TaskState.COMPLETED, workflow.getState(testGraph.getNode("B"), context));
-        assertEquals(TaskState.COMPLETED, workflow.getState(testGraph.getNode("C"), context));
+        assertEquals(TaskState.WAITING, workflow.getState(testGraph.getNode("C"), context));
 
         // 完成流程
         workflow.submitTask("action-test", "C", TaskAction.FORWARD, context);

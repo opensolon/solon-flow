@@ -250,7 +250,7 @@ class WorkflowComplexTest {
         Node taskBNode = complexGraph.getNode("taskB");
 
         assertEquals(TaskState.COMPLETED, workflowExecutor.getState(taskANode, context));
-        assertEquals(TaskState.COMPLETED, workflowExecutor.getState(taskBNode, context));
+        assertEquals(TaskState.WAITING, workflowExecutor.getState(taskBNode, context));
 
         // 流程应该结束
         Task finalTask = workflowExecutor.claimTask("complex-test", context);

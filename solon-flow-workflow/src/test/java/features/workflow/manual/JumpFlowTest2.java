@@ -64,7 +64,7 @@ public class JumpFlowTest2 {
 
         log.debug(task.toString());
         assert task.getState() == TaskState.WAITING;
-        assert task.getNode().getId().equals("n4");
+        assert task.getNode().getId().equals("n3");
 
 
         workflow.submitTask(graphId, "n1", TaskAction.BACK_JUMP, context);
@@ -73,7 +73,7 @@ public class JumpFlowTest2 {
 
         log.debug(task.toString());
         assert task.getState() == TaskState.WAITING;
-        assert task.getNode().getId().equals("n0");
+        assert task.getNode().getId().equals("n1");
     }
 
     @Test

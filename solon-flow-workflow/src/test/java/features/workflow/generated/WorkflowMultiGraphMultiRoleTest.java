@@ -473,7 +473,8 @@ public class WorkflowMultiGraphMultiRoleTest {
 
         // 跳转到总经理审批节点（FORWARD_JUMP跳过中间环节）
         Node finalApprovalNode = flowEngine.getGraph(MAIN_APPROVAL_GRAPH_ID).getNode("general_manager_approval");
-        workflowExecutor.submitTask(finalApprovalNode.getGraph(), finalApprovalNode, TaskAction.FORWARD_JUMP, context);
+        workflowExecutor.submitTask(finalApprovalNode.getGraph(), finalApprovalNode, TaskAction.FORWARD_JUMP, context); //跳到待办
+        workflowExecutor.submitTask(finalApprovalNode.getGraph(), finalApprovalNode, TaskAction.FORWARD, context); //办理
         System.out.println(context.lastRecord());
         assertTrue(context.lastRecord().isEnd());
 

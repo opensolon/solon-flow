@@ -201,11 +201,15 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
                     }
 
                     lastTask = task;
-                    backHandle(graph, task.getNode(), exchanger);
 
                     //到目标节点了
                     if (task.getNode().equals(node)) {
+                        //停到目标节点（让它成为待办）
+                        stateRepository.statePut(exchanger.context(), task.getNode(), TaskState.WAITING);
                         break;
+                    } else {
+                        //后退（自动完成）
+                        backHandle(graph, task.getNode(), exchanger);
                     }
                 } else {
                     break;
@@ -228,11 +232,16 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
                     }
 
                     lastTask = task;
-                    forwardHandle(graph, task.getNode(), newState, exchanger);
+
 
                     //到目标节点了
                     if (task.getNode().equals(node)) {
+                        //停到目标节点（让它成为待办）
+                        stateRepository.statePut(exchanger.context(), task.getNode(), TaskState.WAITING);
                         break;
+                    } else {
+                        //前进（自动完成）
+                        forwardHandle(graph, task.getNode(), newState, exchanger);
                     }
                 } else {
                     //没有权限
