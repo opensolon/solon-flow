@@ -203,6 +203,9 @@ class WorkflowComplexTest {
 
         // 获取任务应该返回终止状态的任务
         Task task = workflowExecutor.matchTask("complex-test", context);
+        assertNull(task);
+
+        task = workflowExecutor.findTask("complex-test", context);
         assertNotNull(task);
         assertEquals(TaskState.TERMINATED, task.getState());
     }

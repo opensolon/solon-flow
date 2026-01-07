@@ -103,7 +103,7 @@ public class WorkflowDriver implements FlowDriver {
                     stateRepository.statePut(exchanger.context(), taskDesc.getNode(), TaskState.COMPLETED);
                 }
             } else if (state == TaskState.TERMINATED) {
-                //终止（支持被查找，撤回时需要）
+                //终止（支持被查找，能看到状态）
                 if (intent.type == WorkflowIntent.IntentType.FINK_TASK) {
                     Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.TERMINATED);
                     intent.task = task;
@@ -143,23 +143,21 @@ public class WorkflowDriver implements FlowDriver {
                     intent.nextTasks.add(task);
 
                     if(intent.type == WorkflowIntent.IntentType.FINK_TASK){
-                        //没有权限，支持被查找
+                        //如果是查找，找到一个就可以停了
                         intent.task = task;
+                        exchanger.stop();
+                    } else {
+                        //不是查找（比如匹配），还可以试后续的可能
+                        exchanger.interrupt();
                     }
-
-                    exchanger.interrupt();
                 }
             } else if (state == TaskState.TERMINATED) {
-                //终止
-                Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.TERMINATED);
-                intent.task = task;
-                intent.nextTasks.add(task);
-
-                if (intent.type == WorkflowIntent.IntentType.FINK_NEXT_TASKS) {
-                    exchanger.interrupt();
-                } else {
-                    exchanger.stop();
+                //终止（支持被查找，能看到状态）
+                if (intent.type == WorkflowIntent.IntentType.FINK_TASK) {
+                    Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.TERMINATED);
+                    intent.task = task;
                 }
+                exchanger.stop();
             } else if (state == TaskState.COMPLETED) {
                 //完成（支持被查找，撤回时需要）
                 if (intent.type == WorkflowIntent.IntentType.FINK_TASK) {

@@ -439,6 +439,11 @@ public class WorkflowMultiGraphMultiRoleTest {
         Task finalTask = workflowExecutor.matchTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
 
         // 应该停留在终止节点
+        assertNull(finalTask);
+
+        finalTask = workflowExecutor.findTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
+
+        // 应该停留在终止节点
         assertNotNull(finalTask);
         assertEquals(deptTask.getNodeId(), finalTask.getNodeId());
         assertEquals(TaskState.TERMINATED, finalTask.getState());
@@ -469,6 +474,7 @@ public class WorkflowMultiGraphMultiRoleTest {
         // 跳转到总经理审批节点（FORWARD_JUMP跳过中间环节）
         Node finalApprovalNode = flowEngine.getGraph(MAIN_APPROVAL_GRAPH_ID).getNode("general_manager_approval");
         workflowExecutor.submitTask(finalApprovalNode.getGraph(), finalApprovalNode, TaskAction.FORWARD_JUMP, context);
+        System.out.println(context.lastRecord());
         assertTrue(context.lastRecord().isEnd());
 
         // 验证状态：流程应该已结束
