@@ -238,7 +238,7 @@ class ExecutorMethodTests {
         // 使用ActorStateController测试权限匹配
         WorkflowExecutor actorWorkflow = WorkflowExecutor.of(
                 flowEngine,
-                new org.noear.solon.flow.workflow.controller.ActorStateController("role", "department"),
+                new ActorStateController("role", "department"),
                 new InMemoryStateRepository()
         );
 
@@ -257,15 +257,16 @@ class ExecutorMethodTests {
         flowEngine.load(graph);
 
         // 测试管理员权限
-        FlowContext adminContext = FlowContext.of("admin-context");
+        FlowContext adminContext = FlowContext.of("1");
         adminContext.put("role", "admin");
         Task adminTask = actorWorkflow.claimTask("actor-test", adminContext);
         assertNotNull(adminTask);
         assertEquals("A", adminTask.getNodeId());
 
         // 测试部门权限（A还没完成，不能访问B）
-        FlowContext salesContext = FlowContext.of("sales-context");
+        FlowContext salesContext = FlowContext.of("1");
         salesContext.put("department", "sales");
+
         Task salesTask = actorWorkflow.claimTask("actor-test", salesContext);
         assertNull(salesTask); // 应该为null，因为A还没完成
 
