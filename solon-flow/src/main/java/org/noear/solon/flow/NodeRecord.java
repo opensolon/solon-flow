@@ -93,7 +93,8 @@ public class NodeRecord implements Serializable {
     @Override
     public String toString() {
         return "NodeRecord{" +
-                "id='" + id + '\'' +
+                "graphId='" + graphId + '\'' +
+                ", id='" + id + '\'' +
                 ", title='" + title + '\'' +
                 ", type=" + type +
                 '}';

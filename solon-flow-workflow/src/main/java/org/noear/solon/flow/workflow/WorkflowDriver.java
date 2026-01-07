@@ -69,17 +69,17 @@ public class WorkflowDriver implements FlowDriver {
      * 处理任务
      *
      * @param exchanger 流交换器
-     * @param taskDesc      任务
+     * @param taskDesc  任务
      */
     @Override
     public void handleTask(FlowExchanger exchanger, TaskDesc taskDesc) throws Throwable {
-        WorkflowIntent intent =  exchanger.context().getAs(WorkflowIntent.INTENT_KEY);
-        if(intent == null){
+        WorkflowIntent intent = exchanger.context().getAs(WorkflowIntent.INTENT_KEY);
+        if (intent == null) {
             intent = new WorkflowIntent(exchanger.graph(), WorkflowIntent.IntentType.UNKNOWN);
         }
 
         if (stateController.isAutoForward(exchanger.context(), taskDesc.getNode())) {
-            //自动前进
+            //自动前进（也表示不需要权限过滤）
             TaskState state = stateRepository.stateGet(exchanger.context(), taskDesc.getNode());
             if (state == TaskState.UNKNOWN || state == TaskState.WAITING) {
                 //确保任务只被执行一次
@@ -103,19 +103,15 @@ public class WorkflowDriver implements FlowDriver {
                     stateRepository.statePut(exchanger.context(), taskDesc.getNode(), TaskState.COMPLETED);
                 }
             } else if (state == TaskState.TERMINATED) {
-                //终止
-                Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.TERMINATED);
-                intent.task = task;
-                intent.nextTasks.add(task);
-
-                if (intent.type == WorkflowIntent.IntentType.FINK_NEXT_TASKS) {
-                    exchanger.interrupt();
-                } else {
-                    exchanger.stop();
+                //终止（支持被查找，撤回时需要）
+                if (intent.type == WorkflowIntent.IntentType.FINK_TASK) {
+                    Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.TERMINATED);
+                    intent.task = task;
                 }
+                exchanger.stop();
             } else if (state == TaskState.COMPLETED) {
                 //完成（支持被查找，撤回时需要）
-                if(intent.type == WorkflowIntent.IntentType.FINK_TASK){
+                if (intent.type == WorkflowIntent.IntentType.FINK_TASK) {
                     Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.COMPLETED);
                     intent.task = task;
                 }
@@ -166,7 +162,7 @@ public class WorkflowDriver implements FlowDriver {
                 }
             } else if (state == TaskState.COMPLETED) {
                 //完成（支持被查找，撤回时需要）
-                if(intent.type == WorkflowIntent.IntentType.FINK_TASK){
+                if (intent.type == WorkflowIntent.IntentType.FINK_TASK) {
                     Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.COMPLETED);
                     intent.task = task;
                 }

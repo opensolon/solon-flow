@@ -253,9 +253,13 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
             for (Node nextNode : node.getNextNodes()) {
                 if (NodeType.isGateway(nextNode.getType())) {
                     //如果是流入网关，要通过引擎计算获取下个活动节点（且以图做为参数，可能自动流转到网关外）
-                    Task task = matchTask(node.getGraph(), exchanger.context());
+                    Task task = findTask(graph, exchanger.context());
 
                     if (task != null) {
+                        if (task.getState() == TaskState.TERMINATED) {
+                            //终止的话，禁止前进了
+                            break;
+                        }
                         nextNode = task.getNode();
                     } else {
                         nextNode = null;
