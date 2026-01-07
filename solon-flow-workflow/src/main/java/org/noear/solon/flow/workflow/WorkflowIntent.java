@@ -45,8 +45,8 @@ public class WorkflowIntent { //用 public 可以正常作为脚本参数
     protected enum IntentType {
         UNKNOWN,
         MATCH_TASK,
-        FINK_TASK,
-        FINK_NEXT_TASKS,
+        FIND_TASK,
+        FIND_NEXT_TASKS,
         SUBMIT_TASK,
         SUBMIT_TASK_IF_WAITING,
     }

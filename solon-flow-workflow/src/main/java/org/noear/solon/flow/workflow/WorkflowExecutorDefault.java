@@ -76,7 +76,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
      */
     @Override
     public Collection<Task> findNextTasks(Graph graph, FlowContext context) {
-        WorkflowIntent intent = new WorkflowIntent(graph, WorkflowIntent.IntentType.FINK_NEXT_TASKS);
+        WorkflowIntent intent = new WorkflowIntent(graph, WorkflowIntent.IntentType.FIND_NEXT_TASKS);
 
         context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
             FlowDriver driver = getDriver(graph);
@@ -92,7 +92,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
 
     @Override
     public @Nullable Task findTask(Graph graph, FlowContext context) {
-        WorkflowIntent intent = new WorkflowIntent(graph, WorkflowIntent.IntentType.FINK_TASK);
+        WorkflowIntent intent = new WorkflowIntent(graph, WorkflowIntent.IntentType.FIND_TASK);
 
         context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
             FlowDriver driver = getDriver(graph);

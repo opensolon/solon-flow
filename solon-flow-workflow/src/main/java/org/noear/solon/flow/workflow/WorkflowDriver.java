@@ -104,14 +104,14 @@ public class WorkflowDriver implements FlowDriver {
                 }
             } else if (state == TaskState.TERMINATED) {
                 //终止（支持被查找，能看到状态）
-                if (intent.type == WorkflowIntent.IntentType.FINK_TASK) {
+                if (intent.type == WorkflowIntent.IntentType.FIND_TASK) {
                     Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.TERMINATED);
                     intent.task = task;
                 }
                 exchanger.stop();
             } else if (state == TaskState.COMPLETED) {
                 //完成（支持被查找，撤回时需要）
-                if (intent.type == WorkflowIntent.IntentType.FINK_TASK) {
+                if (intent.type == WorkflowIntent.IntentType.FIND_TASK) {
                     Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.COMPLETED);
                     intent.task = task;
                 }
@@ -132,7 +132,7 @@ public class WorkflowDriver implements FlowDriver {
                         stateRepository.statePut(exchanger.context(), taskDesc.getNode(), TaskState.WAITING);
                     }
 
-                    if (intent.type == WorkflowIntent.IntentType.FINK_NEXT_TASKS) {
+                    if (intent.type == WorkflowIntent.IntentType.FIND_NEXT_TASKS) {
                         exchanger.interrupt();
                     } else {
                         exchanger.stop();
@@ -142,7 +142,7 @@ public class WorkflowDriver implements FlowDriver {
                     Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.UNKNOWN);
                     intent.nextTasks.add(task);
 
-                    if(intent.type == WorkflowIntent.IntentType.FINK_TASK){
+                    if(intent.type == WorkflowIntent.IntentType.FIND_TASK){
                         //如果是查找，找到一个就可以停了
                         intent.task = task;
                         exchanger.stop();
@@ -153,14 +153,14 @@ public class WorkflowDriver implements FlowDriver {
                 }
             } else if (state == TaskState.TERMINATED) {
                 //终止（支持被查找，能看到状态）
-                if (intent.type == WorkflowIntent.IntentType.FINK_TASK) {
+                if (intent.type == WorkflowIntent.IntentType.FIND_TASK) {
                     Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.TERMINATED);
                     intent.task = task;
                 }
                 exchanger.stop();
             } else if (state == TaskState.COMPLETED) {
                 //完成（支持被查找，撤回时需要）
-                if (intent.type == WorkflowIntent.IntentType.FINK_TASK) {
+                if (intent.type == WorkflowIntent.IntentType.FIND_TASK) {
                     Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.COMPLETED);
                     intent.task = task;
                 }
