@@ -27,16 +27,18 @@ import java.util.List;
  * @since 3.8.1
  */
 @Internal
-public class WorkflowCommand { //用 public 可以正常作为脚本参数
+public class WorkflowIntent { //用 public 可以正常作为脚本参数
+    protected static final String INTENT_KEY = WorkflowIntent.class.getSimpleName();
+
     protected List<Task> nextTasks = new ArrayList<>();
     protected Task task;
-    protected final CommandType type;
+    protected final IntentType type;
 
-    protected WorkflowCommand(CommandType type) {
+    protected WorkflowIntent(IntentType type) {
         this.type = type;
     }
 
-    protected enum CommandType {
+    protected enum IntentType {
         UNKNOWN,
         Get_TASK,
         GET_NEXT_TASKS,

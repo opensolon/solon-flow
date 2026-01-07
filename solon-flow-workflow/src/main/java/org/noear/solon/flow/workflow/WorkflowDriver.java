@@ -48,13 +48,13 @@ public class WorkflowDriver implements FlowDriver {
         driver.onNodeEnd(exchanger, node);
 
         if (node.getType() == NodeType.END) {
-            WorkflowCommand command =  exchanger.context().getAs(WorkflowCommand.class.getSimpleName());
-            if(command == null){
+            WorkflowIntent intent =  exchanger.context().getAs(WorkflowIntent.INTENT_KEY);
+            if(intent == null){
                 return;
             }
 
             //如果结束了，就没有任务了
-            command.task = null;
+            intent.task = null;
         }
     }
 
@@ -71,9 +71,9 @@ public class WorkflowDriver implements FlowDriver {
      */
     @Override
     public void handleTask(FlowExchanger exchanger, TaskDesc taskDesc) throws Throwable {
-        WorkflowCommand command =  exchanger.context().getAs(WorkflowCommand.class.getSimpleName());
-        if(command == null){
-            command = new WorkflowCommand(WorkflowCommand.CommandType.UNKNOWN);
+        WorkflowIntent intent =  exchanger.context().getAs(WorkflowIntent.INTENT_KEY);
+        if(intent == null){
+            intent = new WorkflowIntent(WorkflowIntent.IntentType.UNKNOWN);
         }
 
         if (stateController.isAutoForward(exchanger.context(), taskDesc.getNode())) {
@@ -88,7 +88,7 @@ public class WorkflowDriver implements FlowDriver {
 
                     //记录当前流程节点（用于展示）
                     Task task = new Task(exchanger, taskDesc.getNode(), TaskState.WAITING);
-                    command.task = task;
+                    intent.task = task;
 
                     //添加状态
                     if (state != TaskState.WAITING) {
@@ -99,7 +99,7 @@ public class WorkflowDriver implements FlowDriver {
 
                     //记录当前流程节点（用于展示）
                     Task task = new Task(exchanger, taskDesc.getNode(), TaskState.COMPLETED);
-                    command.task = task;
+                    intent.task = task;
 
                     //添加状态
                     stateRepository.statePut(exchanger.context(), taskDesc.getNode(), TaskState.COMPLETED);
@@ -107,7 +107,7 @@ public class WorkflowDriver implements FlowDriver {
             } else if (state == TaskState.TERMINATED) {
                 //终止
                 Task task = new Task(exchanger, taskDesc.getNode(), TaskState.TERMINATED);
-                command.task = task;
+                intent.task = task;
 
                 //终止
                 exchanger.stop();
@@ -122,15 +122,15 @@ public class WorkflowDriver implements FlowDriver {
                 if (stateController.isOperatable(exchanger.context(), taskDesc.getNode())) {
                     //记录当前流程节点（用于展示）
                     Task task = new Task(exchanger, taskDesc.getNode(), TaskState.WAITING);
-                    command.task = task;
-                    command.nextTasks.add(task);
+                    intent.task = task;
+                    intent.nextTasks.add(task);
 
                     //添加状态
                     if (state != TaskState.WAITING) {
                         stateRepository.statePut(exchanger.context(), taskDesc.getNode(), TaskState.WAITING);
                     }
 
-                    if (command.type == WorkflowCommand.CommandType.GET_NEXT_TASKS) {
+                    if (intent.type == WorkflowIntent.IntentType.GET_NEXT_TASKS) {
                         exchanger.interrupt();
                     } else {
                         exchanger.stop();
@@ -138,17 +138,17 @@ public class WorkflowDriver implements FlowDriver {
                 } else {
                     //没有权限（不输出 task）。阻断当前分支（等待别的用户办理）
                     Task task = new Task(exchanger, taskDesc.getNode(), TaskState.UNKNOWN);
-                    command.nextTasks.add(task);
+                    intent.nextTasks.add(task);
 
                     exchanger.interrupt();
                 }
             } else if (state == TaskState.TERMINATED) {
                 //终止
                 Task task = new Task(exchanger, taskDesc.getNode(), TaskState.TERMINATED);
-                command.task = task;
-                command.nextTasks.add(task);
+                intent.task = task;
+                intent.nextTasks.add(task);
 
-                if (command.type == WorkflowCommand.CommandType.GET_NEXT_TASKS) {
+                if (intent.type == WorkflowIntent.IntentType.GET_NEXT_TASKS) {
                     exchanger.interrupt();
                 } else {
                     exchanger.stop();

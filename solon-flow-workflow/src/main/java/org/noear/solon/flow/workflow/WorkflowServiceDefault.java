@@ -189,14 +189,14 @@ public class WorkflowServiceDefault implements WorkflowService {
         exchanger.recordNode(graph, graph.getStart());
 
         try {
-            WorkflowCommand command = new WorkflowCommand(WorkflowCommand.CommandType.GET_NEXT_TASKS);
-            context.put(WorkflowCommand.class.getSimpleName(), command);
+            WorkflowIntent intent = new WorkflowIntent(WorkflowIntent.IntentType.GET_NEXT_TASKS);
+            context.put(WorkflowIntent.INTENT_KEY, intent);
 
             engine.eval(graph, exchanger);
 
-            return command.nextTasks;
+            return intent.nextTasks;
         } finally {
-            context.remove(WorkflowCommand.class.getSimpleName());
+            context.remove(WorkflowIntent.INTENT_KEY);
         }
     }
 
@@ -223,14 +223,14 @@ public class WorkflowServiceDefault implements WorkflowService {
         exchanger.recordNode(graph, graph.getStart());
 
         try {
-            WorkflowCommand command = new WorkflowCommand(WorkflowCommand.CommandType.Get_TASK);
-            context.put(WorkflowCommand.class.getSimpleName(), command);
+            WorkflowIntent intent = new WorkflowIntent(WorkflowIntent.IntentType.Get_TASK);
+            context.put(WorkflowIntent.INTENT_KEY, intent);
 
             engine.eval(graph, exchanger);
 
-            return command.task;
+            return intent.task;
         } finally {
-            context.remove(WorkflowCommand.class.getSimpleName());
+            context.remove(WorkflowIntent.INTENT_KEY);
         }
     }
 
