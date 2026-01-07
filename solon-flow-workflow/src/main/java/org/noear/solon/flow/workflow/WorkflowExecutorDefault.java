@@ -175,7 +175,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
             throw new IllegalArgumentException("StateOperation is UNKNOWN");
         }
 
-        TaskState newState = TaskState.fromAction(action);
+        TaskState newState = action.getTargetState();
 
         //更新状态
         if (action == TaskAction.BACK) {

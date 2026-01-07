@@ -64,22 +64,4 @@ public enum TaskState {
                 return UNKNOWN;
         }
     }
-
-    /**
-     * 根据代码构建
-     */
-    public static TaskState fromAction(TaskAction action) {
-        switch (action) {
-            case BACK:
-            case BACK_JUMP:
-                return WAITING;
-            case FORWARD:
-            case FORWARD_JUMP:
-                return COMPLETED;
-            case TERMINATE:
-                return TERMINATED;
-            default:
-                return UNKNOWN;
-        }
-    }
 }

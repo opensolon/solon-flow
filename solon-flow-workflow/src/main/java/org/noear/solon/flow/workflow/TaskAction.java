@@ -25,41 +25,47 @@ public enum TaskAction {
     /**
      * 未知
      */
-    UNKNOWN(0),
+    UNKNOWN(0, TaskState.UNKNOWN),
     /**
      * 后退（撤回）
      */
-    BACK(1010), //=>state: WAITING
+    BACK(1010, TaskState.WAITING), //=>state: WAITING
     /**
      * 跳转后退
      */
-    BACK_JUMP(1011), //=>state: WAITING
+    BACK_JUMP(1011, TaskState.WAITING), //=>state: WAITING
     /**
      * 前进（通过）
      */
-    FORWARD(1020), //=>state: COMPLETED
+    FORWARD(1020, TaskState.COMPLETED), //=>state: COMPLETED
     /**
      * 跳转前进
      */
-    FORWARD_JUMP(1021), //=>state: COMPLETED
+    FORWARD_JUMP(1021, TaskState.COMPLETED), //=>state: COMPLETED
     /**
      * 终止（取消）
      */
-    TERMINATE(1030), //=>state: TERMINATED
+    TERMINATE(1030, TaskState.TERMINATED), //=>state: TERMINATED
     /**
      * 重新开始
      */
-    RESTART(1040), //=>state: UNKNOWN
+    RESTART(1040, TaskState.UNKNOWN), //=>state: UNKNOWN
     ;
 
     private final int code;
+    private final TaskState targetState;
 
-    TaskAction(int code) {
+    TaskAction(int code, TaskState targetState) {
         this.code = code;
+        this.targetState = targetState;
     }
 
     public int getCode() {
         return code;
+    }
+
+    public TaskState getTargetState() {
+        return targetState;
     }
 
     /**
