@@ -139,18 +139,27 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
      */
     @Override
     public boolean submitTaskIfWaiting(Task task, TaskAction action, FlowContext context) {
-        if (task == null || stateController.isOperatable(context, task.getNode()) == false) {
+        if (task == null || task.getState() != TaskState.WAITING) {
             //如果无权
             return false;
         }
 
-        if (task.getState() != TaskState.WAITING || stateRepository.stateGet(context, task.getNode()) != TaskState.WAITING) {
-            //如果不是等待（双重确认）
-            return false;
+        LOCKER.lock();
+
+        try {
+            if (stateRepository.stateGet(context, task.getNode()) != TaskState.WAITING ||
+                    stateController.isOperatable(context, task.getNode()) == false) {
+                //如果不是等待（双重确认）
+                return false;
+            }
+
+            WorkflowIntent intent = new WorkflowIntent(task.getRootGraph(), WorkflowIntent.IntentType.SUBMIT_TASK);
+            context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
+                submitTaskDo(task.getRootGraph(), task.getNode(), action, context);
+            });
+        } finally {
+            LOCKER.unlock();
         }
-
-        submitTask(task.getRootGraph(), task.getNode(), action, context);
-
         return true;
     }
 
@@ -160,20 +169,20 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
 
         try {
             WorkflowIntent intent = new WorkflowIntent(graph, WorkflowIntent.IntentType.SUBMIT_TASK);
-
             context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
-                FlowDriver driver = getDriver(node.getGraph());
-                submitTaskDo(graph, node, action, new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0)));
+                submitTaskDo(graph, node, action, context);
             });
         } finally {
             LOCKER.unlock();
         }
     }
 
-    protected void submitTaskDo(Graph graph, Node node, TaskAction action, FlowExchanger exchanger) {
+    protected void submitTaskDo(Graph graph, Node node, TaskAction action, FlowContext context) {
         if (action == TaskAction.UNKNOWN) {
             throw new IllegalArgumentException("StateOperation is UNKNOWN");
         }
+        FlowDriver driver = getDriver(graph);
+        FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
 
         TaskState newState = action.getTargetState();
 
@@ -286,6 +295,22 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
      * @param exchanger 流交换器
      */
     protected void backHandle(Graph graph, Node node, FlowExchanger exchanger) {
+        backHandleDo(graph, node, exchanger, new HashSet<>());
+    }
+
+    /**
+     * 后退处理
+     *
+     * @param node      流程节点
+     * @param exchanger 流交换器
+     */
+    protected void backHandleDo(Graph graph, Node node, FlowExchanger exchanger, Set<Node> visited) {
+        if (visited.contains(node)) {
+            return;
+        } else {
+            visited.add(node);
+        }
+
         //撤回自己
         stateRepository.stateRemove(exchanger.context(), node);
 
@@ -302,7 +327,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
                     }
                 }
                 //再到前一级
-                backHandle(graph, n1, exchanger);
+                backHandleDo(graph, n1, exchanger, visited);
             }
         }
     }

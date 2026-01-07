@@ -278,11 +278,17 @@ public class Node {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, graph.getId());
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Node) {
             Node other = (Node) obj;
 
-            if (other.getId().equals(getId()) && other.getGraph().getId().equals(getGraph().getId())) {
+            if (other.getId().equals(getId()) &&
+                    other.getGraph().getId().equals(getGraph().getId())) {
                 return true;
             }
         }
@@ -305,7 +311,7 @@ public class Node {
             buf.append(", when='").append(when.getDescription()).append('\'');
         }
 
-        if(when.getComponent() != null) {
+        if (when.getComponent() != null) {
             buf.append(", whenComponent=").append(when.getComponent());
         }
 
