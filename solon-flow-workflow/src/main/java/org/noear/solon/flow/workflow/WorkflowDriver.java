@@ -130,7 +130,7 @@ public class WorkflowDriver implements FlowDriver {
                         stateRepository.statePut(exchanger.context(), taskDesc.getNode(), TaskState.WAITING);
                     }
 
-                    if (intent.type == WorkflowIntent.IntentType.GET_NEXT_TASKS) {
+                    if (intent.type == WorkflowIntent.IntentType.FINK_NEXT_TASKS) {
                         exchanger.interrupt();
                     } else {
                         exchanger.stop();
@@ -140,6 +140,10 @@ public class WorkflowDriver implements FlowDriver {
                     Task task = new Task(exchanger, taskDesc.getNode(), TaskState.UNKNOWN);
                     intent.nextTasks.add(task);
 
+                    if(intent.type == WorkflowIntent.IntentType.FINK_NEXT_TASK){
+                        intent.task = task;
+                    }
+
                     exchanger.interrupt();
                 }
             } else if (state == TaskState.TERMINATED) {
@@ -148,7 +152,7 @@ public class WorkflowDriver implements FlowDriver {
                 intent.task = task;
                 intent.nextTasks.add(task);
 
-                if (intent.type == WorkflowIntent.IntentType.GET_NEXT_TASKS) {
+                if (intent.type == WorkflowIntent.IntentType.FINK_NEXT_TASKS) {
                     exchanger.interrupt();
                 } else {
                     exchanger.stop();

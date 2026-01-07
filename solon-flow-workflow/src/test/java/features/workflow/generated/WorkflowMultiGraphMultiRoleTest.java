@@ -15,7 +15,7 @@ import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * WorkflowService 多图多角色审批测试用例
+ * workflowExecutor 多图多角色审批测试用例
  *
  * 本测试类验证复杂审批流程场景，包括：
  * 1. 多图嵌套架构：主审批流程 + 技术评审子图 + 财务评审子图

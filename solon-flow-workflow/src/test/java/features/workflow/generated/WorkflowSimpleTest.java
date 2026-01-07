@@ -46,7 +46,7 @@ class WorkflowSimpleTest {
     }
 
     @Test
-    void testWorkflowServiceCreation() {
+    void testworkflowExecutorCreation() {
         assertNotNull(workflowExecutor);
         assertNotNull(workflowExecutor.engine());
         assertEquals(flowEngine, workflowExecutor.engine());

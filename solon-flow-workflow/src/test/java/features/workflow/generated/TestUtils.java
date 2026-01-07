@@ -69,7 +69,7 @@ class TestUtils {
     /**
      * 创建测试用的工作流服务
      */
-    static WorkflowExecutor createTestWorkflowService(FlowEngine engine) {
+    static WorkflowExecutor createTestworkflowExecutor(FlowEngine engine) {
         return WorkflowExecutor.of(
                 engine,
                 new ActorStateController("actor"),

@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * WorkflowService 多图协同测试
+ * workflowExecutor 多图协同测试
  * 模拟生产环境中的复杂场景：多个流程图相互调用、嵌套执行
  */
 class WorkflowMultiGraphTest {
@@ -887,7 +887,7 @@ class WorkflowMultiGraphTest {
             simpleEngine.load(simpleSubGraph);
             simpleEngine.load(simpleMainGraph);
 
-            WorkflowExecutor simpleWorkflowService = WorkflowExecutor.of(
+            WorkflowExecutor simpleworkflowExecutor = WorkflowExecutor.of(
                     simpleEngine,
                     new BlockStateController(),
                     new InMemoryStateRepository()
@@ -897,9 +897,9 @@ class WorkflowMultiGraphTest {
             FlowContext simpleContext = FlowContext.of(simpleInstanceId);
 
             // 执行测试
-            Task simpleTask = simpleWorkflowService.matchTask("simple-main-graph", simpleContext);
+            Task simpleTask = simpleworkflowExecutor.matchTask("simple-main-graph", simpleContext);
             if (simpleTask != null) {
-                simpleWorkflowService.submitTask(simpleTask.getNode(), TaskAction.FORWARD, simpleContext);
+                simpleworkflowExecutor.submitTask(simpleTask.getNode(), TaskAction.FORWARD, simpleContext);
 
                 // 验证执行结果
                 assertTrue(simpleContext.<Boolean>getOrDefault("simpleSubDirectExecuted", false),
@@ -912,7 +912,7 @@ class WorkflowMultiGraphTest {
             // 不抛出，只记录
         }
 
-        // ===== 7. 使用WorkflowService的eval方法直接测试 =====
+        // ===== 7. 使用workflowExecutor的eval方法直接测试 =====
         System.out.println("\n=== 测试场景4：使用eval直接测试图执行 ===");
 
         try {

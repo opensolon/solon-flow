@@ -16,6 +16,7 @@
 package org.noear.solon.flow.workflow;
 
 import org.noear.solon.flow.*;
+import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
 import java.util.*;
@@ -107,13 +108,13 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
         LOCKER.lock();
 
         try {
-            postTaskDo(new FlowExchanger(node.getGraph(), engine, driver, context, -1, new AtomicInteger(0)), node, action);
+            submitTaskDo(new FlowExchanger(node.getGraph(), engine, driver, context, -1, new AtomicInteger(0)), node, action);
         } finally {
             LOCKER.unlock();
         }
     }
 
-    protected void postTaskDo(FlowExchanger exchanger, Node node, TaskAction action) {
+    protected void submitTaskDo(FlowExchanger exchanger, Node node, TaskAction action) {
         if (action == TaskAction.UNKNOWN) {
             throw new IllegalArgumentException("StateOperation is UNKNOWN");
         }
@@ -189,12 +190,36 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
         exchanger.recordNode(graph, graph.getStart());
 
         try {
-            WorkflowIntent intent = new WorkflowIntent(WorkflowIntent.IntentType.GET_NEXT_TASKS);
+            WorkflowIntent intent = new WorkflowIntent(WorkflowIntent.IntentType.FINK_NEXT_TASKS);
             context.put(WorkflowIntent.INTENT_KEY, intent);
 
             engine.eval(graph, exchanger);
 
             return intent.nextTasks;
+        } finally {
+            context.remove(WorkflowIntent.INTENT_KEY);
+        }
+    }
+
+    @Override
+    public @Nullable Task findNextTask(String graphId, FlowContext context) {
+        return findNextTask(engine.getGraphOrThrow(graphId), context);
+    }
+
+    @Override
+    public @Nullable Task findNextTask(Graph graph, FlowContext context) {
+        FlowDriver driver = getDriver(graph);
+
+        FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
+        exchanger.recordNode(graph, graph.getStart());
+
+        try {
+            WorkflowIntent intent = new WorkflowIntent(WorkflowIntent.IntentType.FINK_NEXT_TASK);
+            context.put(WorkflowIntent.INTENT_KEY, intent);
+
+            engine.eval(graph, exchanger);
+
+            return intent.task;
         } finally {
             context.remove(WorkflowIntent.INTENT_KEY);
         }
@@ -223,7 +248,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
         exchanger.recordNode(graph, graph.getStart());
 
         try {
-            WorkflowIntent intent = new WorkflowIntent(WorkflowIntent.IntentType.Get_TASK);
+            WorkflowIntent intent = new WorkflowIntent(WorkflowIntent.IntentType.MATCH_TASK);
             context.put(WorkflowIntent.INTENT_KEY, intent);
 
             engine.eval(graph, exchanger);
