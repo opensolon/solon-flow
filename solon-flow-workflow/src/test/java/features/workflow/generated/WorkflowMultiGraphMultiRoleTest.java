@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * - 测试子图调用的独立性和结果隔离
  * - 验证工作流状态的持久化和恢复机制
  */
-public class WorkflowServiceMultiGraphMultiRoleTest {
+public class WorkflowMultiGraphMultiRoleTest {
 
     private FlowEngine flowEngine;
     private WorkflowExecutor workflowService;

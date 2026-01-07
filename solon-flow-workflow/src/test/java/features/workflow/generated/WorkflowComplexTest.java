@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * 复杂测试 - 多分支、网关、参与者控制
  */
-class WorkflowServiceComplexTest {
+class WorkflowComplexTest {
 
     private FlowEngine flowEngine;
     private WorkflowExecutor workflowService;

@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * WorkflowService 多图协同测试
  * 模拟生产环境中的复杂场景：多个流程图相互调用、嵌套执行
  */
-class WorkflowServiceMultiGraphTest {
+class WorkflowMultiGraphTest {
 
     // 用于追踪跨图调用的执行记录
     private final Map<String, List<String>> crossGraphExecutionTrace = new ConcurrentHashMap<>();

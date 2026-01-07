@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * 模拟生产测试 - 复杂业务场景、状态持久化、异常处理
  * 每个测试方法都有自己完全独立的：工作流引擎、工作流服务、流程图定义、组件实现
  */
-class WorkflowServiceProductionTest {
+class WorkflowProductionTest {
 
     @Test
     void testSimpleLinearWorkflow() {

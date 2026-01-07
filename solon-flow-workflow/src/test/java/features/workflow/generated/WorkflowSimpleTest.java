@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * 简单测试 - 基础功能验证
  */
-class WorkflowServiceSimpleTest {
+class WorkflowSimpleTest {
 
     private FlowEngine flowEngine;
     private WorkflowExecutor workflowService;
