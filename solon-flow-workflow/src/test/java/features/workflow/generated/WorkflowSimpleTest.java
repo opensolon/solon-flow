@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class WorkflowSimpleTest {
 
     private FlowEngine flowEngine;
-    private WorkflowExecutor workflowService;
+    private WorkflowExecutor workflowExecutor;
     private Graph simpleGraph;
 
     @BeforeEach
@@ -38,7 +38,7 @@ class WorkflowSimpleTest {
         flowEngine = FlowEngine.newInstance();
         flowEngine.load(simpleGraph);
 
-        workflowService = WorkflowExecutor.of(
+        workflowExecutor = WorkflowExecutor.of(
                 flowEngine,
                 new BlockStateController(),
                 new InMemoryStateRepository()
@@ -47,16 +47,16 @@ class WorkflowSimpleTest {
 
     @Test
     void testWorkflowServiceCreation() {
-        assertNotNull(workflowService);
-        assertNotNull(workflowService.engine());
-        assertEquals(flowEngine, workflowService.engine());
+        assertNotNull(workflowExecutor);
+        assertNotNull(workflowExecutor.engine());
+        assertEquals(flowEngine, workflowExecutor.engine());
     }
 
     @Test
     void testGetTaskOnNewInstance() {
         FlowContext context = FlowContext.of("test-instance");
 
-        Task task = workflowService.findTask("simple-test", context);
+        Task task = workflowExecutor.matchTask("simple-test", context);
 
         assertNotNull(task);
         assertEquals("task1", task.getNodeId());
@@ -67,7 +67,7 @@ class WorkflowSimpleTest {
     void testFindNextTasksReturnsCollection() {
         FlowContext context = FlowContext.of("test-instance");
 
-        Collection<Task> tasks = workflowService.findNextTasks("simple-test", context);
+        Collection<Task> tasks = workflowExecutor.findNextTasks("simple-test", context);
 
         assertNotNull(tasks);
         assertFalse(tasks.isEmpty());
@@ -82,14 +82,14 @@ class WorkflowSimpleTest {
         FlowContext context = FlowContext.of("test-instance");
 
         // 初始状态应该是等待
-        Task initialTask = workflowService.findTask("simple-test", context);
+        Task initialTask = workflowExecutor.matchTask("simple-test", context);
         assertEquals(TaskState.WAITING, initialTask.getState());
 
         // 提交前进操作
-        workflowService.submitTask("simple-test", "task1", TaskAction.FORWARD, context);
+        workflowExecutor.submitTask("simple-test", "task1", TaskAction.FORWARD, context);
 
         // 流程应该已完成，没有等待的任务
-        Task taskAfterForward = workflowService.findTask("simple-test", context);
+        Task taskAfterForward = workflowExecutor.matchTask("simple-test", context);
         assertNull(taskAfterForward);
     }
 
@@ -98,13 +98,13 @@ class WorkflowSimpleTest {
         FlowContext context = FlowContext.of("test-instance");
         Node taskNode = simpleGraph.getNode("task1");
 
-        TaskState initialState = workflowService.getState(taskNode, context);
+        TaskState initialState = workflowExecutor.getState(taskNode, context);
         assertEquals(TaskState.UNKNOWN, initialState);
 
         // 获取任务后会设置状态为等待
-        workflowService.findTask("simple-test", context);
+        workflowExecutor.matchTask("simple-test", context);
 
-        TaskState stateAfterGet = workflowService.getState(taskNode, context);
+        TaskState stateAfterGet = workflowExecutor.getState(taskNode, context);
         assertEquals(TaskState.WAITING, stateAfterGet);
     }
 
@@ -113,13 +113,13 @@ class WorkflowSimpleTest {
         FlowContext context = FlowContext.of("test-instance");
 
         // 先获取任务，设置状态
-        workflowService.findTask("simple-test", context);
+        workflowExecutor.matchTask("simple-test", context);
 
         // 清除状态
-        workflowService.stateRepository().stateClear(context);
+        workflowExecutor.stateRepository().stateClear(context);
 
         // 再次获取应该重新开始
-        Task task = workflowService.findTask("simple-test", context);
+        Task task = workflowExecutor.matchTask("simple-test", context);
         assertNotNull(task);
         assertEquals(TaskState.WAITING, task.getState());
     }
@@ -129,14 +129,14 @@ class WorkflowSimpleTest {
         FlowContext context = FlowContext.of("test-instance");
 
         // 初始应该可以提交
-        Task task = workflowService.findTask("simple-test", context);
-        boolean result1 = workflowService.submitTaskIfWaiting(task, TaskAction.FORWARD, context
+        Task task = workflowExecutor.matchTask("simple-test", context);
+        boolean result1 = workflowExecutor.submitTaskIfWaiting(task, TaskAction.FORWARD, context
         );
         assertTrue(result1);
 
         // 再次尝试应该失败，因为状态已不是等待
-        task = workflowService.findTask("simple-test", context);
-        boolean result2 = workflowService.submitTaskIfWaiting(task, TaskAction.FORWARD, context
+        task = workflowExecutor.matchTask("simple-test", context);
+        boolean result2 = workflowExecutor.submitTaskIfWaiting(task, TaskAction.FORWARD, context
         );
         assertFalse(result2);
     }
@@ -146,7 +146,7 @@ class WorkflowSimpleTest {
         FlowContext context = FlowContext.of("test-instance");
         context.put("testValue", "initial");
 
-        Task task = workflowService.findTask("simple-test", context);
+        Task task = workflowExecutor.matchTask("simple-test", context);
         assertNotNull(task);
 
         // 测试运行任务（虽然简单图没有实际任务，但应该不会抛出异常）

@@ -25,25 +25,30 @@ import org.noear.solon.lang.Preview;
 import java.util.Collection;
 
 /**
- * 工作流服务（审批型工作流程服务）
+ * 工作流执行器
  *
+ * <p>提供工作流任务的执行框架能力，包括：
+ * 1. 任务提交执行（前进、后退、跳转等）
+ * 2. 当前活动任务匹配
+ * 3. 后续可达任务查找
+ *
+ * <p>典型使用场景：
  * <pre>{@code
- * WorkflowExecutor workflow = WorkflowExecutor.of(engine, WorkflowDriver.builder()
- *         .stateController(new ActorStateController())
- *         .stateRepository(new InMemoryStateRepository())
- *         .build());
+ * // 1. 创建执行器
+ * WorkflowExecutor workflow = WorkflowExecutor.of(engine, controller, repository);
  *
+ * // 2. 匹配当前任务（检查是否有待处理任务）
+ * Task current = workflow.matchTask(graph, context);
+ * if (current != null) {
+ *     // 3. 提交任务处理
+ *     workflow.submitTask(current, TaskAction.FORWARD, context);
+ * }
  *
- * //1. 获取任务
- * Task task = workflow.getTask(graph, context);
- *
- * //2. 提交任务
- * workflow.submitTaskIfWaiting(task, TaskAction.FORWARD, context);
+ * // 4. 查找后续可能任务
+ * Collection<Task> nextTasks = workflow.findNextTasks(graph, context);
  * }</pre>
  *
- * @author noear
- * @since 3.4
- * @since 3.8.1
+ * <p><b>注意：</b>本执行器专注于流程执行逻辑，不包含实例管理等业务功能。
  */
 @Preview("3.4")
 public interface WorkflowExecutor {
@@ -128,22 +133,22 @@ public interface WorkflowExecutor {
 
 
     /**
-     * 寻找当前活动任务
+     * 匹配当前活动任务
      *
      * @param graphId 图id
      * @param context 流上下文（要有人员配置）
      */
     @Nullable
-    Task findTask(String graphId, FlowContext context);
+    Task matchTask(String graphId, FlowContext context);
 
     /**
-     * 寻找当前活动任务
+     * 匹配当前活动任务
      *
      * @param graph   图
      * @param context 流上下文（要有人员配置）
      */
     @Nullable
-    Task findTask(Graph graph, FlowContext context);
+    Task matchTask(Graph graph, FlowContext context);
 
     /// ////////////////////////////////
 

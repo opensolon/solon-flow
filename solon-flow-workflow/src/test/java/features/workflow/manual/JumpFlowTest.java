@@ -60,7 +60,7 @@ public class JumpFlowTest {
 
         workflow.submitTask(graphId, "n3", TaskAction.FORWARD_JUMP, context);
 
-        Task task = workflow.findTask(graphId, context);
+        Task task = workflow.matchTask(graphId, context);
 
         log.debug(task.toString());
         assert task.getState() == TaskState.WAITING;
@@ -69,7 +69,7 @@ public class JumpFlowTest {
 
         workflow.submitTask(graphId, "n1", TaskAction.BACK_JUMP, context);
 
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
 
         log.debug(task.toString());
         assert task.getState() == TaskState.WAITING;

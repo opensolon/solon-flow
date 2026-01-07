@@ -56,7 +56,7 @@ class WorkflowProductionTest {
         // 3. 创建独立的工作流服务
         FlowEngine engine = FlowEngine.newInstance();
 
-        WorkflowExecutor workflowService = WorkflowExecutor.of(
+        WorkflowExecutor workflowExecutor = WorkflowExecutor.of(
                 engine,
                 new ActorStateController("actor"),
                 new InMemoryStateRepository()
@@ -68,24 +68,24 @@ class WorkflowProductionTest {
         context.put("actor", "user");
 
         // 获取并完成任务1
-        Task task1 = workflowService.findTask(graph, context);
+        Task task1 = workflowExecutor.matchTask(graph, context);
         assertNotNull(task1);
         assertEquals("task1", task1.getNodeId());
         assertEquals(TaskState.WAITING, task1.getState());
 
         // 运行任务
         assertDoesNotThrow(() -> task1.run(context));
-        workflowService.submitTask(graph, "task1", TaskAction.FORWARD, context);
+        workflowExecutor.submitTask(graph, "task1", TaskAction.FORWARD, context);
 
         // 获取并完成任务2
-        Task task2 = workflowService.findTask(graph, context);
+        Task task2 = workflowExecutor.matchTask(graph, context);
         assertNotNull(task2);
         assertEquals("task2", task2.getNodeId());
 
-        workflowService.submitTask(graph, "task2", TaskAction.FORWARD, context);
+        workflowExecutor.submitTask(graph, "task2", TaskAction.FORWARD, context);
 
         // 验证流程完成
-        Task finalTask = workflowService.findTask(graph, context);
+        Task finalTask = workflowExecutor.matchTask(graph, context);
         assertNull(finalTask);
 
         // 验证执行效果
@@ -143,7 +143,7 @@ class WorkflowProductionTest {
         FlowEngine engine = FlowEngine.newInstance();
         engine.load(graph);
 
-        WorkflowExecutor workflowService = WorkflowExecutor.of(
+        WorkflowExecutor workflowExecutor = WorkflowExecutor.of(
                 engine,
                 new ActorStateController("actor"),
                 new InMemoryStateRepository()
@@ -158,13 +158,13 @@ class WorkflowProductionTest {
         applicantContext.put("applicantName", "张三");
         applicantContext.put("reviewResult", "approve");
 
-        Task applyTask = workflowService.findTask(graph.getId(), applicantContext);
+        Task applyTask = workflowExecutor.matchTask(graph.getId(), applicantContext);
         assertNotNull(applyTask);
         assertEquals("apply", applyTask.getNodeId());
         assertEquals(TaskState.WAITING, applyTask.getState());
 
         assertDoesNotThrow(() -> applyTask.run(applicantContext));
-        workflowService.submitTask(graph.getId(), "apply", TaskAction.FORWARD, applicantContext);
+        workflowExecutor.submitTask(graph.getId(), "apply", TaskAction.FORWARD, applicantContext);
 
         // 审批人审批
         FlowContext reviewerContext = FlowContext.of(instanceId);
@@ -172,15 +172,15 @@ class WorkflowProductionTest {
         reviewerContext.put("reviewerName", "李审批员");
         reviewerContext.put("reviewResult", "approve");
 
-        Task reviewTask = workflowService.findTask(graph.getId(), reviewerContext);
+        Task reviewTask = workflowExecutor.matchTask(graph.getId(), reviewerContext);
         assertNotNull(reviewTask);
         assertEquals("review", reviewTask.getNodeId());
 
         assertDoesNotThrow(() -> reviewTask.run(reviewerContext));
-        workflowService.submitTask(graph.getId(), "review", TaskAction.FORWARD, reviewerContext);
+        workflowExecutor.submitTask(graph.getId(), "review", TaskAction.FORWARD, reviewerContext);
 
         // 验证流程完成
-        Task finalTask = workflowService.findTask(graph.getId(), reviewerContext);
+        Task finalTask = workflowExecutor.matchTask(graph.getId(), reviewerContext);
         assertNull(finalTask);
 
         // 验证执行效果
@@ -202,7 +202,7 @@ class WorkflowProductionTest {
 
         StateRepository stateRepository = new InMemoryStateRepository();
 
-        WorkflowExecutor workflowService = WorkflowExecutor.of(
+        WorkflowExecutor workflowExecutor = WorkflowExecutor.of(
                 engine,
                 new ActorStateController("actor"),
                 stateRepository
@@ -260,30 +260,30 @@ class WorkflowProductionTest {
         reviewerContext.put("actor", "reviewer");
 
         // 第一轮：提交申请
-        workflowService.findTask(graph.getId(), applicantContext);
-        workflowService.submitTask(graph.getId(), "apply", TaskAction.FORWARD, applicantContext);
+        workflowExecutor.matchTask(graph.getId(), applicantContext);
+        workflowExecutor.submitTask(graph.getId(), "apply", TaskAction.FORWARD, applicantContext);
 
         // 第一轮：审批驳回
         reviewerContext.put("reviewResult", "reject");
-        workflowService.findTask(graph.getId(), reviewerContext);
-        workflowService.submitTask(graph.getId(), "review", TaskAction.FORWARD, reviewerContext);
+        workflowExecutor.matchTask(graph.getId(), reviewerContext);
+        workflowExecutor.submitTask(graph.getId(), "review", TaskAction.FORWARD, reviewerContext);
 
         // 验证流程回到申请节点
-        Task taskAfterRejection = workflowService.findTask(graph.getId(), applicantContext);
+        Task taskAfterRejection = workflowExecutor.matchTask(graph.getId(), applicantContext);
         assertNotNull(taskAfterRejection);
         assertEquals("apply", taskAfterRejection.getNodeId());
         assertEquals(TaskState.WAITING, taskAfterRejection.getState());
 
         // 第二轮：修改后重新提交
         applicantContext.put("reviewResult", "approve");
-        workflowService.submitTask(graph.getId(), "apply", TaskAction.FORWARD, applicantContext);
+        workflowExecutor.submitTask(graph.getId(), "apply", TaskAction.FORWARD, applicantContext);
 
         // 第二轮：审批通过
         reviewerContext.put("reviewResult", "approve");
-        workflowService.submitTask(graph.getId(), "review", TaskAction.FORWARD, reviewerContext);
+        workflowExecutor.submitTask(graph.getId(), "review", TaskAction.FORWARD, reviewerContext);
 
         // 验证流程完成
-        Task finalTask = workflowService.findTask(graph.getId(), reviewerContext);
+        Task finalTask = workflowExecutor.matchTask(graph.getId(), reviewerContext);
         assertNull(finalTask);
 
         // 验证执行次数
@@ -353,7 +353,7 @@ class WorkflowProductionTest {
         FlowEngine engine = FlowEngine.newInstance();
         engine.load(graph);
 
-        WorkflowExecutor workflowService = WorkflowExecutor.of(
+        WorkflowExecutor workflowExecutor = WorkflowExecutor.of(
                 engine,
                 new ActorStateController("actor"),
                 new InMemoryStateRepository()
@@ -372,7 +372,7 @@ class WorkflowProductionTest {
             context.put("actor", user);
             contexts.put(user, context);
 
-            Task task = workflowService.findTask(graph.getId(), context);
+            Task task = workflowExecutor.matchTask(graph.getId(), context);
             tasks.put(user, task);
         }
 
@@ -386,27 +386,27 @@ class WorkflowProductionTest {
         for (String user : new String[]{"user1", "user2", "user3"}) {
             String nodeId = "task" + user.charAt(user.length() - 1);
             assertEquals(nodeId, tasks.get(user).getNodeId());
-            workflowService.submitTask(graph.getId(), nodeId, TaskAction.FORWARD, contexts.get(user));
+            workflowExecutor.submitTask(graph.getId(), nodeId, TaskAction.FORWARD, contexts.get(user));
         }
 
         // 检查管理员任务
-        Task adminTask = workflowService.findTask(graph.getId(), contexts.get("admin"));
+        Task adminTask = workflowExecutor.matchTask(graph.getId(), contexts.get("admin"));
         assertNotNull(adminTask);
         assertEquals("consolidate", adminTask.getNodeId());
 
         // 管理员完成任务
         contexts.get("admin").put("consolidatedData", "汇总完成的数据");
-        workflowService.submitTask(graph.getId(), "consolidate", TaskAction.FORWARD, contexts.get("admin"));
+        workflowExecutor.submitTask(graph.getId(), "consolidate", TaskAction.FORWARD, contexts.get("admin"));
 
         // 验证流程完成
-        Task finalTask = workflowService.findTask(graph.getId(), contexts.get("admin"));
+        Task finalTask = workflowExecutor.matchTask(graph.getId(), contexts.get("admin"));
         assertNull(finalTask);
 
         // 验证所有任务完成状态
         for (String user : users) {
             String nodeId = user.equals("admin") ? "consolidate" : "task" + user.charAt(user.length() - 1);
             Node node = graph.getNode(nodeId);
-            assertEquals(TaskState.COMPLETED, workflowService.getState(node, contexts.get(user)));
+            assertEquals(TaskState.COMPLETED, workflowExecutor.getState(node, contexts.get(user)));
         }
 
         System.out.println("并行流程测试完成: " + instanceId);
@@ -456,7 +456,7 @@ class WorkflowProductionTest {
         FlowEngine engine = FlowEngine.newInstance();
         engine.load(graph);
 
-        WorkflowExecutor workflowService = WorkflowExecutor.of(
+        WorkflowExecutor workflowExecutor = WorkflowExecutor.of(
                 engine,
                 new ActorStateController(),
                 new InMemoryStateRepository()
@@ -466,7 +466,7 @@ class WorkflowProductionTest {
         FlowContext context = FlowContext.of("error-test-1");
 
         // 执行正常任务
-        Task normalTask = workflowService.findTask(graph.getId(), context);
+        Task normalTask = workflowExecutor.matchTask(graph.getId(), context);
         assertNull(normalTask); //（自动）直接完成了
 
         // 设置失败条件并测试错误任务
@@ -476,16 +476,16 @@ class WorkflowProductionTest {
         // 任务执行应该抛出异常
         Exception exception = assertThrows(RuntimeException.class,
                 () -> {
-                    workflowService.findTask(graph.getId(), context2);
+                    workflowExecutor.matchTask(graph.getId(), context2);
                 });
         assertTrue(exception.getCause().getMessage().contains("模拟任务执行失败"));
 
         // 清除失败条件后重试
         context2.put("shouldFail", false);
-        workflowService.submitTask(graph.getId(), "errorTask", TaskAction.FORWARD, context2);
+        workflowExecutor.submitTask(graph.getId(), "errorTask", TaskAction.FORWARD, context2);
 
         // 验证流程可以继续
-        Task finalTask = workflowService.findTask(graph.getId(), context2);
+        Task finalTask = workflowExecutor.matchTask(graph.getId(), context2);
         assertNull(finalTask);
 
         System.out.println("错误处理流程测试完成: " + context2.getInstanceId());
@@ -554,7 +554,7 @@ class WorkflowProductionTest {
         FlowEngine engine = FlowEngine.newInstance();
         engine.load(graph);
 
-        WorkflowExecutor workflowService = WorkflowExecutor.of(
+        WorkflowExecutor workflowExecutor = WorkflowExecutor.of(
                 engine,
                 new ActorStateController("actor"),
                 new InMemoryStateRepository()
@@ -567,16 +567,16 @@ class WorkflowProductionTest {
         smallContext.put("actor", "applicant");
         smallContext.put("amount", 3000);
 
-        workflowService.findTask(graph.getId(), smallContext);
-        workflowService.submitTask(graph.getId(), "apply", TaskAction.FORWARD, smallContext);
+        workflowExecutor.matchTask(graph.getId(), smallContext);
+        workflowExecutor.submitTask(graph.getId(), "apply", TaskAction.FORWARD, smallContext);
 
         FlowContext smallReviewerContext = FlowContext.of(smallInstanceId);
         smallReviewerContext.put("actor", "reviewer");
         smallReviewerContext.put("amount", 3000);
 
-        workflowService.submitTask(graph.getId(), "review", TaskAction.FORWARD, smallReviewerContext);
+        workflowExecutor.submitTask(graph.getId(), "review", TaskAction.FORWARD, smallReviewerContext);
 
-        Task smallFinalTask = workflowService.findTask(graph.getId(), smallReviewerContext);
+        Task smallFinalTask = workflowExecutor.matchTask(graph.getId(), smallReviewerContext);
         assertNull(smallFinalTask);
         System.out.println("小额申请测试完成");
 
@@ -587,26 +587,26 @@ class WorkflowProductionTest {
         largeContext.put("actor", "applicant");
         largeContext.put("amount", 8000);
 
-        workflowService.findTask(graph.getId(), largeContext);
-        workflowService.submitTask(graph.getId(), "apply", TaskAction.FORWARD, largeContext);
+        workflowExecutor.matchTask(graph.getId(), largeContext);
+        workflowExecutor.submitTask(graph.getId(), "apply", TaskAction.FORWARD, largeContext);
 
 
         FlowContext largeReviewerContext = FlowContext.of(largeInstanceId);
         largeReviewerContext.put("actor", "reviewer");
         largeReviewerContext.put("amount", 8000);
 
-        Task lastTask = workflowService.findTask(graph.getId(), largeReviewerContext);
+        Task lastTask = workflowExecutor.matchTask(graph.getId(), largeReviewerContext);
         System.out.println(lastTask);
-        workflowService.submitTask(graph.getId(), "review", TaskAction.FORWARD, largeReviewerContext);
-        lastTask = workflowService.findTask(graph.getId(), largeReviewerContext);
+        workflowExecutor.submitTask(graph.getId(), "review", TaskAction.FORWARD, largeReviewerContext);
+        lastTask = workflowExecutor.matchTask(graph.getId(), largeReviewerContext);
         Assertions.assertNull(lastTask);
 
         FlowContext managerContext = FlowContext.of(largeInstanceId);
         managerContext.put("actor", "manager");
         managerContext.put("amount", 8000);
 
-        workflowService.submitTask(graph.getId(), "manager-approve", TaskAction.FORWARD, managerContext);
-        Task largeFinalTask = workflowService.findTask(graph.getId(), managerContext);
+        workflowExecutor.submitTask(graph.getId(), "manager-approve", TaskAction.FORWARD, managerContext);
+        Task largeFinalTask = workflowExecutor.matchTask(graph.getId(), managerContext);
         assertNull(largeFinalTask);
         System.out.println("大额申请测试完成");
     }
@@ -642,7 +642,7 @@ class WorkflowProductionTest {
         FlowEngine engine = FlowEngine.newInstance();
         engine.load(graph);
 
-        WorkflowExecutor workflowService = WorkflowExecutor.of(
+        WorkflowExecutor workflowExecutor = WorkflowExecutor.of(
                 engine,
                 new ActorStateController("actor"),
                 new InMemoryStateRepository()
@@ -669,10 +669,10 @@ class WorkflowProductionTest {
                         context.put("actor", "user");
 
                         // 获取并完成任务
-                        Task task = workflowService.findTask(graph.getId(), context);
+                        Task task = workflowExecutor.matchTask(graph.getId(), context);
                         if (task != null) {
                             task.run(context);
-                            workflowService.submitTask(graph.getId(), task.getNodeId(),
+                            workflowExecutor.submitTask(graph.getId(), task.getNodeId(),
                                     TaskAction.FORWARD, context);
                             successCount.incrementAndGet();
                         }
@@ -748,7 +748,7 @@ class WorkflowProductionTest {
         FlowEngine engine = FlowEngine.newInstance();
         engine.load(graph);
 
-        WorkflowExecutor workflowService = WorkflowExecutor.of(
+        WorkflowExecutor workflowExecutor = WorkflowExecutor.of(
                 engine,
                 new ActorStateController("actor"),
                 new InMemoryStateRepository()
@@ -773,12 +773,12 @@ class WorkflowProductionTest {
         for (int i = 0; i < instanceCount; i++) {
             FlowContext context = contexts.get(i);
 
-            Task task = workflowService.findTask(graph.getId(), context);
+            Task task = workflowExecutor.matchTask(graph.getId(), context);
             assertNotNull(task);
             assertEquals("process", task.getNodeId());
 
             assertDoesNotThrow(() -> task.run(context));
-            workflowService.submitTask(graph.getId(), "process", TaskAction.FORWARD, context);
+            workflowExecutor.submitTask(graph.getId(), "process", TaskAction.FORWARD, context);
         }
 
         // 验证实例间数据隔离
@@ -831,7 +831,7 @@ class WorkflowProductionTest {
         FlowEngine engine = FlowEngine.newInstance();
         engine.load(graph);
 
-        WorkflowExecutor workflowService = WorkflowExecutor.of(
+        WorkflowExecutor workflowExecutor = WorkflowExecutor.of(
                 engine,
                 new ActorStateController("actor"),
                 new InMemoryStateRepository()
@@ -847,15 +847,15 @@ class WorkflowProductionTest {
             context.put("actor", "user");
 
             // 执行完整流程
-            Task task1 = workflowService.findTask(graph.getId(), context);
+            Task task1 = workflowExecutor.matchTask(graph.getId(), context);
             if (task1 != null) {
                 task1.run(context);
-                workflowService.submitTask(graph.getId(), "task1", TaskAction.FORWARD, context);
+                workflowExecutor.submitTask(graph.getId(), "task1", TaskAction.FORWARD, context);
 
-                Task task2 = workflowService.findTask(graph.getId(), context);
+                Task task2 = workflowExecutor.matchTask(graph.getId(), context);
                 if (task2 != null) {
                     task2.run(context);
-                    workflowService.submitTask(graph.getId(), "task2", TaskAction.FORWARD, context);
+                    workflowExecutor.submitTask(graph.getId(), "task2", TaskAction.FORWARD, context);
                 }
             }
         }

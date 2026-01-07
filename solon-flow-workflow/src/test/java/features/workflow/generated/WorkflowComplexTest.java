@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class WorkflowComplexTest {
 
     private FlowEngine flowEngine;
-    private WorkflowExecutor workflowService;
+    private WorkflowExecutor workflowExecutor;
     private Graph complexGraph;
 
     @BeforeEach
@@ -59,7 +59,7 @@ class WorkflowComplexTest {
         flowEngine = FlowEngine.newInstance();
         flowEngine.load(complexGraph);
 
-        workflowService = WorkflowExecutor.of(
+        workflowExecutor = WorkflowExecutor.of(
                 flowEngine,
                 new ActorStateController("actor"),
                 new InMemoryStateRepository()
@@ -71,7 +71,7 @@ class WorkflowComplexTest {
         FlowContext context = FlowContext.of("test-instance");
 
         // 获取所有任务
-        Collection<Task> tasks = workflowService.findNextTasks("complex-test", context);
+        Collection<Task> tasks = workflowExecutor.findNextTasks("complex-test", context);
 
         assertNotNull(tasks);
         assertEquals(2, tasks.size());
@@ -89,7 +89,7 @@ class WorkflowComplexTest {
         context.put("actor", "user1");
 
         // 获取所有任务
-        Collection<Task> tasks = workflowService.findNextTasks("complex-test", context);
+        Collection<Task> tasks = workflowExecutor.findNextTasks("complex-test", context);
 
         assertNotNull(tasks);
         assertEquals(2, tasks.size());
@@ -107,7 +107,7 @@ class WorkflowComplexTest {
         FlowContext context1 = FlowContext.of("test-instance");
         context1.put("actor", "user1");
 
-        Task task1 = workflowService.findTask("complex-test", context1);
+        Task task1 = workflowExecutor.matchTask("complex-test", context1);
         assertNotNull(task1);
         assertEquals("taskA", task1.getNodeId());
         assertEquals(TaskState.WAITING, task1.getState());
@@ -116,7 +116,7 @@ class WorkflowComplexTest {
         FlowContext context2 = FlowContext.of("test-instance");
         context2.put("actor", "user2");
 
-        Task task2 = workflowService.findTask("complex-test", context2);
+        Task task2 = workflowExecutor.matchTask("complex-test", context2);
         assertNotNull(task2);
         assertEquals("taskB", task2.getNodeId());
         assertEquals(TaskState.WAITING, task2.getState());
@@ -125,7 +125,7 @@ class WorkflowComplexTest {
         FlowContext context3 = FlowContext.of("test-instance");
         context3.put("actor", "user3");
 
-        Task task3 = workflowService.findTask("complex-test", context3);
+        Task task3 = workflowExecutor.matchTask("complex-test", context3);
         assertNull(task3);
     }
 
@@ -138,23 +138,23 @@ class WorkflowComplexTest {
         context2.put("actor", "user2");
 
         // 用户1完成任务A
-        workflowService.submitTask("complex-test", "taskA", TaskAction.FORWARD, context1);
+        workflowExecutor.submitTask("complex-test", "taskA", TaskAction.FORWARD, context1);
 
         // 用户1应该没有任务了
-        Task taskAfterA = workflowService.findTask("complex-test", context1);
+        Task taskAfterA = workflowExecutor.matchTask("complex-test", context1);
         assertNull(taskAfterA);
 
         // 用户2的任务B应该还在等待
-        Task taskB = workflowService.findTask("complex-test", context2);
+        Task taskB = workflowExecutor.matchTask("complex-test", context2);
         assertNotNull(taskB );
         assertEquals("taskB", taskB.getNodeId());
         assertEquals(TaskState.WAITING, taskB.getState());
 
         // 用户2完成任务B
-        workflowService.submitTask("complex-test", "taskB", TaskAction.FORWARD, context2);
+        workflowExecutor.submitTask("complex-test", "taskB", TaskAction.FORWARD, context2);
 
         // 两个任务都完成后，流程应该结束
-        Task finalTask = workflowService.findTask("complex-test", context2);
+        Task finalTask = workflowExecutor.matchTask("complex-test", context2);
         assertNull(finalTask);
     }
 
@@ -164,23 +164,23 @@ class WorkflowComplexTest {
         context.put("actor", "user1");
 
         // 获取任务并前进
-        workflowService.findTask("complex-test", context);
-        workflowService.submitTask("complex-test", "taskA", TaskAction.FORWARD, context);
+        workflowExecutor.matchTask("complex-test", context);
+        workflowExecutor.submitTask("complex-test", "taskA", TaskAction.FORWARD, context);
 
         // 验证任务状态为完成
         Node taskANode = complexGraph.getNode("taskA");
-        TaskState stateAfterForward = workflowService.getState(taskANode, context);
+        TaskState stateAfterForward = workflowExecutor.getState(taskANode, context);
         assertEquals(TaskState.COMPLETED, stateAfterForward);
 
         // 后退操作
-        workflowService.submitTask("complex-test", "taskA", TaskAction.BACK, context);
+        workflowExecutor.submitTask("complex-test", "taskA", TaskAction.BACK, context);
 
         // 状态应该回到未知（或待等）
-        TaskState stateAfterBack = workflowService.getState(taskANode, context);
+        TaskState stateAfterBack = workflowExecutor.getState(taskANode, context);
         assertEquals(TaskState.UNKNOWN, stateAfterBack);
 
         // 应该能再次获取到任务
-        Task taskAfterBack = workflowService.findTask("complex-test", context);
+        Task taskAfterBack = workflowExecutor.matchTask("complex-test", context);
         assertNotNull(taskAfterBack);
         assertEquals("taskA", taskAfterBack.getNodeId());
     }
@@ -191,18 +191,18 @@ class WorkflowComplexTest {
         context.put("actor", "user1");
 
         // 获取任务
-        workflowService.findTask("complex-test", context);
+        workflowExecutor.matchTask("complex-test", context);
 
         // 终止任务
-        workflowService.submitTask("complex-test", "taskA", TaskAction.TERMINATE, context);
+        workflowExecutor.submitTask("complex-test", "taskA", TaskAction.TERMINATE, context);
 
         // 状态应该为终止
         Node taskANode = complexGraph.getNode("taskA");
-        TaskState stateAfterTerminate = workflowService.getState(taskANode, context);
+        TaskState stateAfterTerminate = workflowExecutor.getState(taskANode, context);
         assertEquals(TaskState.TERMINATED, stateAfterTerminate);
 
         // 获取任务应该返回终止状态的任务
-        Task task = workflowService.findTask("complex-test", context);
+        Task task = workflowExecutor.matchTask("complex-test", context);
         assertNotNull(task);
         assertEquals(TaskState.TERMINATED, task.getState());
     }
@@ -213,19 +213,19 @@ class WorkflowComplexTest {
         context.put("actor", "user1");
 
         // 前进任务
-        workflowService.findTask("complex-test", context);
-        workflowService.submitTask("complex-test", "taskA", TaskAction.FORWARD, context);
+        workflowExecutor.matchTask("complex-test", context);
+        workflowExecutor.submitTask("complex-test", "taskA", TaskAction.FORWARD, context);
 
         // 重启整个流程
-        workflowService.submitTask("complex-test", "taskA", TaskAction.RESTART, context);
+        workflowExecutor.submitTask("complex-test", "taskA", TaskAction.RESTART, context);
 
         // 状态应该被清除
         Node taskANode = complexGraph.getNode("taskA");
-        TaskState stateAfterRestart = workflowService.getState(taskANode, context);
+        TaskState stateAfterRestart = workflowExecutor.getState(taskANode, context);
         assertEquals(TaskState.UNKNOWN, stateAfterRestart);
 
         // 应该能重新获取任务
-        Task task = workflowService.findTask("complex-test", context);
+        Task task = workflowExecutor.matchTask("complex-test", context);
         assertNotNull(task);
         assertEquals(TaskState.WAITING, task.getState());
     }
@@ -236,21 +236,21 @@ class WorkflowComplexTest {
         context.put("actor", "user1");
 
         // 获取任务A
-        Task initialTask = workflowService.findTask("complex-test", context);
+        Task initialTask = workflowExecutor.matchTask("complex-test", context);
         assertEquals("taskA", initialTask.getNodeId());
 
         // 跳转前进到任务B（虽然是用户1的任务，但测试跳转功能）//跳跃不成功
-        workflowService.submitTask("complex-test", "taskB", TaskAction.FORWARD_JUMP, context);
+        workflowExecutor.submitTask("complex-test", "taskB", TaskAction.FORWARD_JUMP, context);
 
         // 两个任务都应该完成
         Node taskANode = complexGraph.getNode("taskA");
         Node taskBNode = complexGraph.getNode("taskB");
 
-        assertEquals(TaskState.COMPLETED, workflowService.getState(taskANode, context));
-        assertEquals(TaskState.UNKNOWN, workflowService.getState(taskBNode, context));
+        assertEquals(TaskState.COMPLETED, workflowExecutor.getState(taskANode, context));
+        assertEquals(TaskState.UNKNOWN, workflowExecutor.getState(taskBNode, context));
 
         // 流程应该结束
-        Task finalTask = workflowService.findTask("complex-test", context);
+        Task finalTask = workflowExecutor.matchTask("complex-test", context);
         assertNull(finalTask);
     }
 }

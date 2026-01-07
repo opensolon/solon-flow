@@ -60,7 +60,7 @@ public class JumpFlowTest2 {
 
         workflow.submitTask(graphId, "n3", TaskAction.FORWARD_JUMP, context);
 
-        Task task = workflow.findTask(graphId, context);
+        Task task = workflow.matchTask(graphId, context);
 
         log.debug(task.toString());
         assert task.getState() == TaskState.WAITING;
@@ -69,7 +69,7 @@ public class JumpFlowTest2 {
 
         workflow.submitTask(graphId, "n1", TaskAction.BACK_JUMP, context);
 
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
 
         log.debug(task.toString());
         assert task.getState() == TaskState.WAITING;
@@ -81,15 +81,15 @@ public class JumpFlowTest2 {
         WorkflowExecutor workflow = buildWorkflow();
         FlowContext context = FlowContext.of(instanceId).put(actor, "admin");
 
-        Task task = workflow.findTask(graphId, context);
+        Task task = workflow.matchTask(graphId, context);
         log.debug(task.toString());
 
         workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
-        Task task2 = workflow.findTask(graphId, context);
+        Task task2 = workflow.matchTask(graphId, context);
         log.debug(task2.toString());
 
         workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
-        Task task3 = workflow.findTask(graphId, context);
+        Task task3 = workflow.matchTask(graphId, context);
         log.debug(task3.toString());
 
         //重复提交相同节点后，获取的任务仍是相同的（说明可以重复提交）
@@ -101,7 +101,7 @@ public class JumpFlowTest2 {
         WorkflowExecutor workflow = buildWorkflow();
         FlowContext context = FlowContext.of(instanceId).put(actor, "admin");
 
-        Task task = workflow.findTask(graphId, context);
+        Task task = workflow.matchTask(graphId, context);
         log.debug(task.toString());
 
         task.run(context);

@@ -65,7 +65,7 @@ public class OaFlowRedisTest {
         Task task;
 
         context = getContext("刘涛");
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert "step1".equals(task.getNode().getId());
@@ -77,7 +77,7 @@ public class OaFlowRedisTest {
 
 
         context = getContext("陈鑫");
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert "step3".equals(task.getNode().getId());
@@ -85,7 +85,7 @@ public class OaFlowRedisTest {
 
         //二次测试
         context = getContext("陈鑫");
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert "step3".equals(task.getNode().getId());
@@ -98,13 +98,13 @@ public class OaFlowRedisTest {
 
 
         context = getContext("陈鑫");
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
         log.warn("{}", task);
         Assertions.assertNull(task); //没有权限
 
 
         context = getContext("陈宇");
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert task.getNode().getId().startsWith("step4_1");
@@ -116,7 +116,7 @@ public class OaFlowRedisTest {
 
 
         context = getContext("吕方");
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert task.getNode().getId().startsWith("step4_2");
@@ -128,7 +128,7 @@ public class OaFlowRedisTest {
 
 
         context = getContext("吕方");
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
         log.warn("{}", task);
         assert task == null; //抄送节点
 
@@ -150,7 +150,7 @@ public class OaFlowRedisTest {
         WorkflowExecutor workflow = buildWorkflow();
 
 
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
 
         assert "step2".equals(task.getNode().getId());
         assert TaskState.UNKNOWN == task.getState(); //没有权限启动任务（因为没有配置操作员）
@@ -159,7 +159,7 @@ public class OaFlowRedisTest {
         //提交操作
         workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
 
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
 
         assert "step3".equals(task.getNode().getId());
         assert TaskState.WAITING == task.getState(); //等待当前用户处理（有权限操作）

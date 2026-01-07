@@ -127,7 +127,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
         } else if (action == TaskAction.BACK_JUMP) {
             //跳转后退
             while (true) {
-                Task task = findTask(node.getGraph(), exchanger.context());
+                Task task = matchTask(node.getGraph(), exchanger.context());
                 backHandle(task.getNode(), exchanger);
 
                 //到目标节点了
@@ -144,7 +144,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
         } else if (action == TaskAction.FORWARD_JUMP) {
             //跳转前进
             while (true) {
-                Task task = findTask(node.getGraph(), exchanger.context());
+                Task task = matchTask(node.getGraph(), exchanger.context());
                 if (task != null) {
                     forwardHandle(task.getNode(), exchanger, newState);
 
@@ -206,8 +206,8 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
      * @param context 流上下文（要有参与者配置）
      */
     @Override
-    public Task findTask(String graphId, FlowContext context) {
-        return findTask(engine.getGraphOrThrow(graphId), context);
+    public Task matchTask(String graphId, FlowContext context) {
+        return matchTask(engine.getGraphOrThrow(graphId), context);
     }
 
     /**
@@ -216,7 +216,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
      * @param context 流上下文（要有参与者配置）
      */
     @Override
-    public Task findTask(Graph graph, FlowContext context) {
+    public Task matchTask(Graph graph, FlowContext context) {
         FlowDriver driver = getDriver(graph);
 
         FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
@@ -256,7 +256,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
             for (Node nextNode : node.getNextNodes()) {
                 if (NodeType.isGateway(nextNode.getType())) {
                     //如果是流入网关，要通过引擎计算获取下个活动节点（且以图做为参数，可能自动流转到网关外）
-                    Task task = findTask(node.getGraph(), exchanger.context());
+                    Task task = matchTask(node.getGraph(), exchanger.context());
 
                     if (task != null) {
                         nextNode = task.getNode();

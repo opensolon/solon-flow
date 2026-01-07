@@ -42,7 +42,7 @@ public class NotBlockStateFlowDemo2 {
         FlowContext context = FlowContext.of("3")
                 .put("tag", "");
 
-        Task task = workflow.findTask(graph, context);
+        Task task = workflow.matchTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n3", task.getNode().getId());
@@ -51,14 +51,14 @@ public class NotBlockStateFlowDemo2 {
         context = FlowContext.of("4")
                 .put("tag", "n1");
 
-        task = workflow.findTask(graph, context);
+        task = workflow.matchTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n1", task.getNode().getId());
         Assertions.assertEquals(TaskState.WAITING, task.getState());
 
         //再跑（仍在原位、原状态）
-        task = workflow.findTask(graph, context);
+        task = workflow.matchTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n1", task.getNode().getId());
@@ -67,7 +67,7 @@ public class NotBlockStateFlowDemo2 {
 
         context.put("tag", "n2");
 
-        task = workflow.findTask(graph, context);
+        task = workflow.matchTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n2", task.getNode().getId());
@@ -75,7 +75,7 @@ public class NotBlockStateFlowDemo2 {
 
         context.put("tag", "");
 
-        task = workflow.findTask(graph, context);
+        task = workflow.matchTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n3", task.getNode().getId());

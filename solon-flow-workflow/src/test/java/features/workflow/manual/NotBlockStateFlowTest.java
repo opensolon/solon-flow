@@ -48,7 +48,7 @@ public class NotBlockStateFlowTest {
         Task task;
 
 
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
 
         Assertions.assertNull(task);
         Assertions.assertTrue(context.lastRecord().isEnd());
@@ -86,13 +86,13 @@ public class NotBlockStateFlowTest {
         Task task;
 
 
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
 
         Assertions.assertEquals("n0", task.getNode().getId());
         Assertions.assertEquals(TaskState.COMPLETED, task.getState());
 
 
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
 
         Assertions.assertNull(task); //提前中断，没有节点可取了
         Assertions.assertFalse(context.lastRecord().isEnd());
@@ -101,7 +101,7 @@ public class NotBlockStateFlowTest {
 
         flowEngine.removeInterceptor(interceptor);
 
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
 
         Assertions.assertNull(task); //跑完了
         Assertions.assertTrue(context.lastRecord().isEnd());

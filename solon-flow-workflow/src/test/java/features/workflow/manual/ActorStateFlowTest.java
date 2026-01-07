@@ -50,14 +50,14 @@ public class ActorStateFlowTest {
 
 
         context = getFlowContext("employee");
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
         Assertions.assertEquals("n0", task.getNode().getId());
         Assertions.assertEquals(TaskState.WAITING, task.getState());
         workflow.submitTask(graphId, task.getNodeId(), TaskAction.FORWARD, context);
 
 
         context = getFlowContext("tl");
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
         Assertions.assertEquals("n1", task.getNode().getId());
         Assertions.assertEquals(TaskState.WAITING, task.getState());
         workflow.submitTask(graphId, task.getNodeId(), TaskAction.FORWARD, context);
@@ -72,7 +72,7 @@ public class ActorStateFlowTest {
         }
 
         context = getFlowContext("oa");
-        task = workflow.findTask(graphId, context);
+        task = workflow.matchTask(graphId, context);
         Assertions.assertNull(task, "必须为End节点");
 
     }
