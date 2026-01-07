@@ -51,7 +51,7 @@ public class ActorStateController implements StateController {
             String valOfMeta = node.getMetaAsString(key);
             String valOfCtx = context.getAs(key);
 
-            if (Objects.equals(valOfMeta, valOfCtx)) {
+            if (valOfMeta != null && Objects.equals(valOfMeta, valOfCtx)) {
                 return true;
             }
         }
