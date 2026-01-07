@@ -112,8 +112,8 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
      * @param context 流上下文（要有参与者配置）
      */
     @Override
-    public Task matchTask(Graph graph, FlowContext context) {
-        WorkflowIntent intent = new WorkflowIntent(graph, WorkflowIntent.IntentType.MATCH_TASK);
+    public Task claimTask(Graph graph, FlowContext context) {
+        WorkflowIntent intent = new WorkflowIntent(graph, WorkflowIntent.IntentType.CLAIM_TASK);
 
         context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
             FlowDriver driver = getDriver(graph);

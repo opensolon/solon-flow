@@ -54,7 +54,7 @@ public class WorkflowDriver implements FlowDriver {
             }
 
             //如果结束了，就没有任务匹配了（查找可以输出）
-            if (intent.type == WorkflowIntent.IntentType.MATCH_TASK) {
+            if (intent.type == WorkflowIntent.IntentType.CLAIM_TASK) {
                 intent.task = null;
             }
         }

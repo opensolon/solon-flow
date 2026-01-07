@@ -76,24 +76,24 @@ public interface WorkflowExecutor {
 
 
     /**
-     * 匹配当前活动任务（权限匹配）
+     * 认领当前活动任务（权限匹配，并锁定状态为等待）
      *
      * @param graphId 图id
      * @param context 流上下文（要有人员配置）
      */
     @Nullable
-    default Task matchTask(String graphId, FlowContext context) {
-        return matchTask(engine().getGraphOrThrow(graphId), context);
+    default Task claimTask(String graphId, FlowContext context) {
+        return claimTask(engine().getGraphOrThrow(graphId), context);
     }
 
     /**
-     * 匹配当前活动任务（权限匹配）
+     * 认领当前活动任务（权限匹配，并锁定状态为等待）
      *
      * @param graph   图
      * @param context 流上下文（要有人员配置）
      */
     @Nullable
-    Task matchTask(Graph graph, FlowContext context);
+    Task claimTask(Graph graph, FlowContext context);
 
     /**
      * 寻找当前确定的任务（逻辑探测）

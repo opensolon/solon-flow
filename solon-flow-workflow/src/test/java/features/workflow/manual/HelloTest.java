@@ -33,7 +33,7 @@ public class HelloTest {
 
         FlowContext context = FlowContext.of("i-1");
         Task task = WorkflowExecutor.of(engine, stateController, stateRepository)
-                .matchTask(graph, context);
+                .claimTask(graph, context);
 
         Assertions.assertNull(task);
         Assertions.assertTrue(context.lastRecord().isEnd());

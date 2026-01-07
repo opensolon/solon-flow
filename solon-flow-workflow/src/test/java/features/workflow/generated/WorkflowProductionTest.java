@@ -68,7 +68,7 @@ class WorkflowProductionTest {
         context.put("actor", "user");
 
         // 获取并完成任务1
-        Task task1 = workflowExecutor.matchTask(graph, context);
+        Task task1 = workflowExecutor.claimTask(graph, context);
         assertNotNull(task1);
         assertEquals("task1", task1.getNodeId());
         assertEquals(TaskState.WAITING, task1.getState());
@@ -78,14 +78,14 @@ class WorkflowProductionTest {
         workflowExecutor.submitTask(graph, "task1", TaskAction.FORWARD, context);
 
         // 获取并完成任务2
-        Task task2 = workflowExecutor.matchTask(graph, context);
+        Task task2 = workflowExecutor.claimTask(graph, context);
         assertNotNull(task2);
         assertEquals("task2", task2.getNodeId());
 
         workflowExecutor.submitTask(graph, "task2", TaskAction.FORWARD, context);
 
         // 验证流程完成
-        Task finalTask = workflowExecutor.matchTask(graph, context);
+        Task finalTask = workflowExecutor.claimTask(graph, context);
         assertNull(finalTask);
 
         // 验证执行效果
@@ -158,7 +158,7 @@ class WorkflowProductionTest {
         applicantContext.put("applicantName", "张三");
         applicantContext.put("reviewResult", "approve");
 
-        Task applyTask = workflowExecutor.matchTask(graph.getId(), applicantContext);
+        Task applyTask = workflowExecutor.claimTask(graph.getId(), applicantContext);
         assertNotNull(applyTask);
         assertEquals("apply", applyTask.getNodeId());
         assertEquals(TaskState.WAITING, applyTask.getState());
@@ -172,7 +172,7 @@ class WorkflowProductionTest {
         reviewerContext.put("reviewerName", "李审批员");
         reviewerContext.put("reviewResult", "approve");
 
-        Task reviewTask = workflowExecutor.matchTask(graph.getId(), reviewerContext);
+        Task reviewTask = workflowExecutor.claimTask(graph.getId(), reviewerContext);
         assertNotNull(reviewTask);
         assertEquals("review", reviewTask.getNodeId());
 
@@ -180,7 +180,7 @@ class WorkflowProductionTest {
         workflowExecutor.submitTask(graph.getId(), "review", TaskAction.FORWARD, reviewerContext);
 
         // 验证流程完成
-        Task finalTask = workflowExecutor.matchTask(graph.getId(), reviewerContext);
+        Task finalTask = workflowExecutor.claimTask(graph.getId(), reviewerContext);
         assertNull(finalTask);
 
         // 验证执行效果
@@ -260,16 +260,16 @@ class WorkflowProductionTest {
         reviewerContext.put("actor", "reviewer");
 
         // 第一轮：提交申请
-        workflowExecutor.matchTask(graph.getId(), applicantContext);
+        workflowExecutor.claimTask(graph.getId(), applicantContext);
         workflowExecutor.submitTask(graph.getId(), "apply", TaskAction.FORWARD, applicantContext);
 
         // 第一轮：审批驳回
         reviewerContext.put("reviewResult", "reject");
-        workflowExecutor.matchTask(graph.getId(), reviewerContext);
+        workflowExecutor.claimTask(graph.getId(), reviewerContext);
         workflowExecutor.submitTask(graph.getId(), "review", TaskAction.FORWARD, reviewerContext);
 
         // 验证流程回到申请节点
-        Task taskAfterRejection = workflowExecutor.matchTask(graph.getId(), applicantContext);
+        Task taskAfterRejection = workflowExecutor.claimTask(graph.getId(), applicantContext);
         assertNotNull(taskAfterRejection);
         assertEquals("apply", taskAfterRejection.getNodeId());
         assertEquals(TaskState.WAITING, taskAfterRejection.getState());
@@ -283,7 +283,7 @@ class WorkflowProductionTest {
         workflowExecutor.submitTask(graph.getId(), "review", TaskAction.FORWARD, reviewerContext);
 
         // 验证流程完成
-        Task finalTask = workflowExecutor.matchTask(graph.getId(), reviewerContext);
+        Task finalTask = workflowExecutor.claimTask(graph.getId(), reviewerContext);
         assertNull(finalTask);
 
         // 验证执行次数
@@ -372,7 +372,7 @@ class WorkflowProductionTest {
             context.put("actor", user);
             contexts.put(user, context);
 
-            Task task = workflowExecutor.matchTask(graph.getId(), context);
+            Task task = workflowExecutor.claimTask(graph.getId(), context);
             tasks.put(user, task);
         }
 
@@ -390,7 +390,7 @@ class WorkflowProductionTest {
         }
 
         // 检查管理员任务
-        Task adminTask = workflowExecutor.matchTask(graph.getId(), contexts.get("admin"));
+        Task adminTask = workflowExecutor.claimTask(graph.getId(), contexts.get("admin"));
         assertNotNull(adminTask);
         assertEquals("consolidate", adminTask.getNodeId());
 
@@ -399,7 +399,7 @@ class WorkflowProductionTest {
         workflowExecutor.submitTask(graph.getId(), "consolidate", TaskAction.FORWARD, contexts.get("admin"));
 
         // 验证流程完成
-        Task finalTask = workflowExecutor.matchTask(graph.getId(), contexts.get("admin"));
+        Task finalTask = workflowExecutor.claimTask(graph.getId(), contexts.get("admin"));
         assertNull(finalTask);
 
         // 验证所有任务完成状态
@@ -466,7 +466,7 @@ class WorkflowProductionTest {
         FlowContext context = FlowContext.of("error-test-1");
 
         // 执行正常任务
-        Task normalTask = workflowExecutor.matchTask(graph.getId(), context);
+        Task normalTask = workflowExecutor.claimTask(graph.getId(), context);
         assertNull(normalTask); //（自动）直接完成了
 
         // 设置失败条件并测试错误任务
@@ -476,7 +476,7 @@ class WorkflowProductionTest {
         // 任务执行应该抛出异常
         Exception exception = assertThrows(RuntimeException.class,
                 () -> {
-                    workflowExecutor.matchTask(graph.getId(), context2);
+                    workflowExecutor.claimTask(graph.getId(), context2);
                 });
         assertTrue(exception.getCause().getMessage().contains("模拟任务执行失败"));
 
@@ -485,7 +485,7 @@ class WorkflowProductionTest {
         workflowExecutor.submitTask(graph.getId(), "errorTask", TaskAction.FORWARD, context2);
 
         // 验证流程可以继续
-        Task finalTask = workflowExecutor.matchTask(graph.getId(), context2);
+        Task finalTask = workflowExecutor.claimTask(graph.getId(), context2);
         assertNull(finalTask);
 
         System.out.println("错误处理流程测试完成: " + context2.getInstanceId());
@@ -567,7 +567,7 @@ class WorkflowProductionTest {
         smallContext.put("actor", "applicant");
         smallContext.put("amount", 3000);
 
-        workflowExecutor.matchTask(graph.getId(), smallContext);
+        workflowExecutor.claimTask(graph.getId(), smallContext);
         workflowExecutor.submitTask(graph.getId(), "apply", TaskAction.FORWARD, smallContext);
 
         FlowContext smallReviewerContext = FlowContext.of(smallInstanceId);
@@ -576,7 +576,7 @@ class WorkflowProductionTest {
 
         workflowExecutor.submitTask(graph.getId(), "review", TaskAction.FORWARD, smallReviewerContext);
 
-        Task smallFinalTask = workflowExecutor.matchTask(graph.getId(), smallReviewerContext);
+        Task smallFinalTask = workflowExecutor.claimTask(graph.getId(), smallReviewerContext);
         assertNull(smallFinalTask);
         System.out.println("小额申请测试完成");
 
@@ -587,7 +587,7 @@ class WorkflowProductionTest {
         largeContext.put("actor", "applicant");
         largeContext.put("amount", 8000);
 
-        workflowExecutor.matchTask(graph.getId(), largeContext);
+        workflowExecutor.claimTask(graph.getId(), largeContext);
         workflowExecutor.submitTask(graph.getId(), "apply", TaskAction.FORWARD, largeContext);
 
 
@@ -595,10 +595,10 @@ class WorkflowProductionTest {
         largeReviewerContext.put("actor", "reviewer");
         largeReviewerContext.put("amount", 8000);
 
-        Task lastTask = workflowExecutor.matchTask(graph.getId(), largeReviewerContext);
+        Task lastTask = workflowExecutor.claimTask(graph.getId(), largeReviewerContext);
         System.out.println(lastTask);
         workflowExecutor.submitTask(graph.getId(), "review", TaskAction.FORWARD, largeReviewerContext);
-        lastTask = workflowExecutor.matchTask(graph.getId(), largeReviewerContext);
+        lastTask = workflowExecutor.claimTask(graph.getId(), largeReviewerContext);
         Assertions.assertNull(lastTask);
 
         FlowContext managerContext = FlowContext.of(largeInstanceId);
@@ -606,7 +606,7 @@ class WorkflowProductionTest {
         managerContext.put("amount", 8000);
 
         workflowExecutor.submitTask(graph.getId(), "manager-approve", TaskAction.FORWARD, managerContext);
-        Task largeFinalTask = workflowExecutor.matchTask(graph.getId(), managerContext);
+        Task largeFinalTask = workflowExecutor.claimTask(graph.getId(), managerContext);
         assertNull(largeFinalTask);
         System.out.println("大额申请测试完成");
     }
@@ -669,7 +669,7 @@ class WorkflowProductionTest {
                         context.put("actor", "user");
 
                         // 获取并完成任务
-                        Task task = workflowExecutor.matchTask(graph.getId(), context);
+                        Task task = workflowExecutor.claimTask(graph.getId(), context);
                         if (task != null) {
                             task.run(context);
                             workflowExecutor.submitTask(graph.getId(), task.getNodeId(),
@@ -773,7 +773,7 @@ class WorkflowProductionTest {
         for (int i = 0; i < instanceCount; i++) {
             FlowContext context = contexts.get(i);
 
-            Task task = workflowExecutor.matchTask(graph.getId(), context);
+            Task task = workflowExecutor.claimTask(graph.getId(), context);
             assertNotNull(task);
             assertEquals("process", task.getNodeId());
 
@@ -847,12 +847,12 @@ class WorkflowProductionTest {
             context.put("actor", "user");
 
             // 执行完整流程
-            Task task1 = workflowExecutor.matchTask(graph.getId(), context);
+            Task task1 = workflowExecutor.claimTask(graph.getId(), context);
             if (task1 != null) {
                 task1.run(context);
                 workflowExecutor.submitTask(graph.getId(), "task1", TaskAction.FORWARD, context);
 
-                Task task2 = workflowExecutor.matchTask(graph.getId(), context);
+                Task task2 = workflowExecutor.claimTask(graph.getId(), context);
                 if (task2 != null) {
                     task2.run(context);
                     workflowExecutor.submitTask(graph.getId(), "task2", TaskAction.FORWARD, context);

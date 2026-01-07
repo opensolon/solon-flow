@@ -71,12 +71,12 @@ public interface WorkflowService extends WorkflowExecutor {
      *
      * @param graphId 图id
      * @param context 流上下文（要有人员配置）
-     * @deprecated 3.8.1 {@link #matchTask(String, FlowContext)}
+     * @deprecated 3.8.1 {@link #claimTask(String, FlowContext)}
      */
     @Deprecated
     @Nullable
     default Task getTask(String graphId, FlowContext context) {
-        return matchTask(graphId, context);
+        return claimTask(graphId, context);
     }
 
     /**
@@ -84,12 +84,12 @@ public interface WorkflowService extends WorkflowExecutor {
      *
      * @param graph   图
      * @param context 流上下文（要有人员配置）
-     * @deprecated 3.8.1 {@link #matchTask(Graph, FlowContext)}
+     * @deprecated 3.8.1 {@link #claimTask(Graph, FlowContext)}
      */
     @Deprecated
     @Nullable
     default Task getTask(Graph graph, FlowContext context) {
-        return matchTask(graph, context);
+        return claimTask(graph, context);
     }
 
     /**

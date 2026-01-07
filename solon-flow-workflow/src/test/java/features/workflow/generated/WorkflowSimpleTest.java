@@ -56,7 +56,7 @@ class WorkflowSimpleTest {
     void testGetTaskOnNewInstance() {
         FlowContext context = FlowContext.of("test-instance");
 
-        Task task = workflowExecutor.matchTask("simple-test", context);
+        Task task = workflowExecutor.claimTask("simple-test", context);
 
         assertNotNull(task);
         assertEquals("task1", task.getNodeId());
@@ -82,14 +82,14 @@ class WorkflowSimpleTest {
         FlowContext context = FlowContext.of("test-instance");
 
         // 初始状态应该是等待
-        Task initialTask = workflowExecutor.matchTask("simple-test", context);
+        Task initialTask = workflowExecutor.claimTask("simple-test", context);
         assertEquals(TaskState.WAITING, initialTask.getState());
 
         // 提交前进操作
         workflowExecutor.submitTask("simple-test", "task1", TaskAction.FORWARD, context);
 
         // 流程应该已完成，没有等待的任务
-        Task taskAfterForward = workflowExecutor.matchTask("simple-test", context);
+        Task taskAfterForward = workflowExecutor.claimTask("simple-test", context);
         assertNull(taskAfterForward);
     }
 
@@ -102,7 +102,7 @@ class WorkflowSimpleTest {
         assertEquals(TaskState.UNKNOWN, initialState);
 
         // 获取任务后会设置状态为等待
-        workflowExecutor.matchTask("simple-test", context);
+        workflowExecutor.claimTask("simple-test", context);
 
         TaskState stateAfterGet = workflowExecutor.getState(taskNode, context);
         assertEquals(TaskState.WAITING, stateAfterGet);
@@ -113,13 +113,13 @@ class WorkflowSimpleTest {
         FlowContext context = FlowContext.of("test-instance");
 
         // 先获取任务，设置状态
-        workflowExecutor.matchTask("simple-test", context);
+        workflowExecutor.claimTask("simple-test", context);
 
         // 清除状态
         workflowExecutor.stateRepository().stateClear(context);
 
         // 再次获取应该重新开始
-        Task task = workflowExecutor.matchTask("simple-test", context);
+        Task task = workflowExecutor.claimTask("simple-test", context);
         assertNotNull(task);
         assertEquals(TaskState.WAITING, task.getState());
     }
@@ -129,13 +129,13 @@ class WorkflowSimpleTest {
         FlowContext context = FlowContext.of("test-instance");
 
         // 初始应该可以提交
-        Task task = workflowExecutor.matchTask("simple-test", context);
+        Task task = workflowExecutor.claimTask("simple-test", context);
         boolean result1 = workflowExecutor.submitTaskIfWaiting(task, TaskAction.FORWARD, context
         );
         assertTrue(result1);
 
         // 再次尝试应该失败，因为状态已不是等待
-        task = workflowExecutor.matchTask("simple-test", context);
+        task = workflowExecutor.claimTask("simple-test", context);
         boolean result2 = workflowExecutor.submitTaskIfWaiting(task, TaskAction.FORWARD, context
         );
         assertFalse(result2);
@@ -146,7 +146,7 @@ class WorkflowSimpleTest {
         FlowContext context = FlowContext.of("test-instance");
         context.put("testValue", "initial");
 
-        Task task = workflowExecutor.matchTask("simple-test", context);
+        Task task = workflowExecutor.claimTask("simple-test", context);
         assertNotNull(task);
 
         // 测试运行任务（虽然简单图没有实际任务，但应该不会抛出异常）

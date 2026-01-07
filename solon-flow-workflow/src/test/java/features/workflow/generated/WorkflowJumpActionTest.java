@@ -55,7 +55,7 @@ class WorkflowJumpActionTest {
         FlowContext context = FlowContext.of("forward-jump-test-1");
 
         // 初始状态应该是 task1 等待
-        Task initialTask = workflowExecutor.matchTask("jump-test", context);
+        Task initialTask = workflowExecutor.claimTask("jump-test", context);
         assertNotNull(initialTask);
         assertEquals("task1", initialTask.getNodeId());
         assertEquals(TaskState.WAITING, initialTask.getState());
@@ -70,7 +70,7 @@ class WorkflowJumpActionTest {
         assertEquals(TaskState.COMPLETED, workflowExecutor.getState(task2Node, context));
 
         // 当前任务应该是 task3，并且是 WAITING 状态
-        Task currentTask = workflowExecutor.matchTask("jump-test", context);
+        Task currentTask = workflowExecutor.claimTask("jump-test", context);
         assertNotNull(currentTask);
         assertEquals("task3", currentTask.getNodeId());
         assertEquals(TaskState.WAITING, currentTask.getState());
@@ -79,7 +79,7 @@ class WorkflowJumpActionTest {
         workflowExecutor.submitTask("jump-test", "task3", TaskAction.FORWARD, context);
 
         // 流程应该已完成
-        Task finalTask = workflowExecutor.matchTask("jump-test", context);
+        Task finalTask = workflowExecutor.claimTask("jump-test", context);
         assertNull(finalTask);
     }
 
@@ -90,13 +90,13 @@ class WorkflowJumpActionTest {
         FlowContext context = FlowContext.of("back-jump-test-1");
 
         // 先前进到 task3
-        workflowExecutor.matchTask("jump-test", context);
+        workflowExecutor.claimTask("jump-test", context);
         workflowExecutor.submitTask("jump-test", "task1", TaskAction.FORWARD, context);
         workflowExecutor.submitTask("jump-test", "task2", TaskAction.FORWARD, context);
         workflowExecutor.submitTask("jump-test", "task3", TaskAction.FORWARD, context);
 
         // 验证当前没有任务（流程应该已经结束）
-        Task taskAfterForward = workflowExecutor.matchTask("jump-test", context);
+        Task taskAfterForward = workflowExecutor.claimTask("jump-test", context);
         assertNull(taskAfterForward);
 
         workflowExecutor.findTask("jump-test", context);
@@ -111,7 +111,7 @@ class WorkflowJumpActionTest {
         assertEquals(TaskState.UNKNOWN, workflowExecutor.getState(task3Node, context));
 
         // 当前任务应该是 task1，并且是 WAITING 状态
-        Task currentTask = workflowExecutor.matchTask("jump-test", context);
+        Task currentTask = workflowExecutor.claimTask("jump-test", context);
         assertNotNull(currentTask);
         assertEquals("task1", currentTask.getNodeId());
         assertEquals(TaskState.WAITING, currentTask.getState());
@@ -124,7 +124,7 @@ class WorkflowJumpActionTest {
         FlowContext context = FlowContext.of("forward-jump-partial-test");
 
         // 手动完成 task1
-        workflowExecutor.matchTask("jump-test", context);
+        workflowExecutor.claimTask("jump-test", context);
         workflowExecutor.submitTask("jump-test", "task1", TaskAction.FORWARD, context);
 
         // 验证 task1 已完成
@@ -132,7 +132,7 @@ class WorkflowJumpActionTest {
         assertEquals(TaskState.COMPLETED, workflowExecutor.getState(task1Node, context));
 
         // 当前任务应该是 task2
-        Task taskBeforeJump = workflowExecutor.matchTask("jump-test", context);
+        Task taskBeforeJump = workflowExecutor.claimTask("jump-test", context);
         assertNotNull(taskBeforeJump);
         assertEquals("task2", taskBeforeJump.getNodeId());
 
@@ -144,7 +144,7 @@ class WorkflowJumpActionTest {
         assertEquals(TaskState.COMPLETED, workflowExecutor.getState(task2Node, context));
 
         // 当前任务应该是 task3
-        Task currentTask = workflowExecutor.matchTask("jump-test", context);
+        Task currentTask = workflowExecutor.claimTask("jump-test", context);
         assertNotNull(currentTask);
         assertEquals("task3", currentTask.getNodeId());
         assertEquals(TaskState.WAITING, currentTask.getState());
@@ -157,7 +157,7 @@ class WorkflowJumpActionTest {
         FlowContext context = FlowContext.of("back-jump-completed-test");
 
         // 前进到 task3
-        workflowExecutor.matchTask("jump-test", context);
+        workflowExecutor.claimTask("jump-test", context);
         workflowExecutor.submitTask("jump-test", "task1", TaskAction.FORWARD, context);
         workflowExecutor.submitTask("jump-test", "task2", TaskAction.FORWARD, context);
         workflowExecutor.submitTask("jump-test", "task3", TaskAction.FORWARD, context);
@@ -175,7 +175,7 @@ class WorkflowJumpActionTest {
         assertEquals(TaskState.UNKNOWN, workflowExecutor.getState(task3Node, context));
 
         // 当前任务应该是 task1
-        Task currentTask = workflowExecutor.matchTask("jump-test", context);
+        Task currentTask = workflowExecutor.claimTask("jump-test", context);
         assertNotNull(currentTask);
         assertEquals("task1", currentTask.getNodeId());
         assertEquals(TaskState.WAITING, currentTask.getState());
@@ -188,7 +188,7 @@ class WorkflowJumpActionTest {
         FlowContext context = FlowContext.of("forward-jump-same-test");
 
         // 获取初始任务
-        Task initialTask = workflowExecutor.matchTask("jump-test", context);
+        Task initialTask = workflowExecutor.claimTask("jump-test", context);
         assertNotNull(initialTask);
         assertEquals("task1", initialTask.getNodeId());
 
@@ -200,7 +200,7 @@ class WorkflowJumpActionTest {
         assertEquals(TaskState.COMPLETED, workflowExecutor.getState(task1Node, context));
 
         // 当前任务应该还是 task1
-        Task currentTask = workflowExecutor.matchTask("jump-test", context);
+        Task currentTask = workflowExecutor.claimTask("jump-test", context);
         assertNotNull(currentTask);
         assertEquals("task2", currentTask.getNodeId());
         assertEquals(TaskState.WAITING, currentTask.getState());
@@ -213,11 +213,11 @@ class WorkflowJumpActionTest {
         FlowContext context = FlowContext.of("back-jump-same-test");
 
         // 前进到 task2
-        workflowExecutor.matchTask("jump-test", context);
+        workflowExecutor.claimTask("jump-test", context);
         workflowExecutor.submitTask("jump-test", "task1", TaskAction.FORWARD, context);
 
         // 当前任务应该是 task2
-        Task taskBeforeJump = workflowExecutor.matchTask("jump-test", context);
+        Task taskBeforeJump = workflowExecutor.claimTask("jump-test", context);
         assertNotNull(taskBeforeJump);
         assertEquals("task2", taskBeforeJump.getNodeId());
 
@@ -229,7 +229,7 @@ class WorkflowJumpActionTest {
         assertEquals(TaskState.UNKNOWN, workflowExecutor.getState(task1Node, context));
 
         // 当前任务应该是 task1（回退到 task2 会导致前置节点重置）
-        Task currentTask = workflowExecutor.matchTask("jump-test", context);
+        Task currentTask = workflowExecutor.claimTask("jump-test", context);
         assertNotNull(currentTask);
         assertEquals("task1", currentTask.getNodeId());
         assertEquals(TaskState.WAITING, currentTask.getState());
@@ -261,16 +261,16 @@ class WorkflowJumpActionTest {
         FlowContext context2 = FlowContext.of("jump-instance-2");
 
         // 在实例1中执行 FORWARD_JUMP 到 task2
-        workflowExecutor.matchTask("jump-test", context1);
+        workflowExecutor.claimTask("jump-test", context1);
         workflowExecutor.submitTask("jump-test", "task2", TaskAction.FORWARD_JUMP, context1);
 
         // 实例1的当前任务应该是 task3
-        Task task1 = workflowExecutor.matchTask("jump-test", context1);
+        Task task1 = workflowExecutor.claimTask("jump-test", context1);
         assertNotNull(task1);
         assertEquals("task3", task1.getNodeId());
 
         // 实例2的当前任务应该是 task1（未受实例1影响）
-        Task task2 = workflowExecutor.matchTask("jump-test", context2);
+        Task task2 = workflowExecutor.claimTask("jump-test", context2);
         assertNotNull(task2);
         assertEquals("task1", task2.getNodeId());
 
@@ -278,7 +278,7 @@ class WorkflowJumpActionTest {
         workflowExecutor.submitTask("jump-test", "task1", TaskAction.BACK_JUMP, context2);
 
         // 实例2的状态应该不变（因为没有前进过）
-        Task task2After = workflowExecutor.matchTask("jump-test", context2);
+        Task task2After = workflowExecutor.claimTask("jump-test", context2);
         assertNotNull(task2After);
         assertEquals("task1", task2After.getNodeId());
     }
@@ -289,7 +289,7 @@ class WorkflowJumpActionTest {
         FlowContext context = FlowContext.of("forward-jump-complete-test");
 
         // 直接跳转到最后一个任务节点
-        workflowExecutor.matchTask("jump-test", context);
+        workflowExecutor.claimTask("jump-test", context);
         workflowExecutor.submitTask("jump-test", "task3", TaskAction.FORWARD_JUMP, context);
 
         // 验证中间节点状态
@@ -302,7 +302,7 @@ class WorkflowJumpActionTest {
         workflowExecutor.submitTask("jump-test", "task3", TaskAction.FORWARD, context);
 
         // 验证流程完成
-        Task finalTask = workflowExecutor.matchTask("jump-test", context);
+        Task finalTask = workflowExecutor.claimTask("jump-test", context);
         assertNull(finalTask);
 
         // 所有节点都应该是 COMPLETED 状态
@@ -316,7 +316,7 @@ class WorkflowJumpActionTest {
         FlowContext context = FlowContext.of("jump-combination-test");
 
         // 前进到 task3
-        workflowExecutor.matchTask("jump-test", context);
+        workflowExecutor.claimTask("jump-test", context);
         workflowExecutor.submitTask("jump-test", "task1", TaskAction.FORWARD, context);
         workflowExecutor.submitTask("jump-test", "task2", TaskAction.FORWARD, context);
         workflowExecutor.submitTask("jump-test", "task3", TaskAction.FORWARD, context);
@@ -344,7 +344,7 @@ class WorkflowJumpActionTest {
         // 完成流程
         workflowExecutor.submitTask("jump-test", "task3", TaskAction.FORWARD, context);
 
-        Task finalTask = workflowExecutor.matchTask("jump-test", context);
+        Task finalTask = workflowExecutor.claimTask("jump-test", context);
         assertNull(finalTask);
     }
 }
