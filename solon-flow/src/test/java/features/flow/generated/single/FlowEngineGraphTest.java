@@ -470,7 +470,7 @@ public class FlowEngineGraphTest {
         // 创建拦截器
         FlowInterceptor interceptor = new FlowInterceptor() {
             @Override
-            public void doFlowIntercept(FlowInvocation invocation) {
+            public void interceptFlow(FlowInvocation invocation) {
                 interceptorTrace.add("before-flow");
                 invocation.invoke();
                 interceptorTrace.add("after-flow");

@@ -113,7 +113,7 @@ class FlowEngineTest extends FlowTestBase {
 
         FlowInterceptor interceptor = new FlowInterceptor() {
             @Override
-            public void doFlowIntercept(org.noear.solon.flow.intercept.FlowInvocation invocation) {
+            public void interceptFlow(org.noear.solon.flow.intercept.FlowInvocation invocation) {
                 intercepted[0] = true;
                 invocation.invoke();
             }
@@ -134,7 +134,7 @@ class FlowEngineTest extends FlowTestBase {
 
         FlowInterceptor interceptor1 = new FlowInterceptor() {
             @Override
-            public void doFlowIntercept(org.noear.solon.flow.intercept.FlowInvocation invocation) {
+            public void interceptFlow(org.noear.solon.flow.intercept.FlowInvocation invocation) {
                 counter[0]++;
                 invocation.invoke();
             }
@@ -142,7 +142,7 @@ class FlowEngineTest extends FlowTestBase {
 
         FlowInterceptor interceptor2 = new FlowInterceptor() {
             @Override
-            public void doFlowIntercept(org.noear.solon.flow.intercept.FlowInvocation invocation) {
+            public void interceptFlow(org.noear.solon.flow.intercept.FlowInvocation invocation) {
                 counter[0]++;
                 invocation.invoke();
             }
@@ -163,7 +163,7 @@ class FlowEngineTest extends FlowTestBase {
 
         FlowInterceptor interceptor = new FlowInterceptor() {
             @Override
-            public void doFlowIntercept(org.noear.solon.flow.intercept.FlowInvocation invocation) {
+            public void interceptFlow(org.noear.solon.flow.intercept.FlowInvocation invocation) {
                 intercepted[0] = true;
                 invocation.invoke();
             }

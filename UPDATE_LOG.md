@@ -26,7 +26,7 @@
 * 优化 `solon-flow` Node,Link toString 处理（加 whenComponent）
 * 优化 `solon-flow` FlowExchanger.runGraph 如果子图没有结束，则当前分支中断
 * 调整 `solon-flow` FlowContext:executor 转移到 FlowDriver
-* 调整 `solon-flow` FlowInterceptor:doIntercept 更名为 doFlowInterceptor，并标为 default（扩展时语义清晰，且不需要强制实现）
+* 调整 `solon-flow` FlowInterceptor:doIntercept 更名为 interceptFlow，并标为 default（扩展时语义清晰，且不需要强制实现）
 * 调整 `solon-flow` NodeTrace 更名为 NodeRecord，并增加 FlowTrace 类。支持跨图多引擎场景
 * 调整 `solon-flow` “执行深度”改为“执行步数”（更符合实际需求）
 * 调整 `solon-flow-workflow` WorkflowService.getTask 没有权限时返回 null（之前返回一个未知状态的任务，容易误解）

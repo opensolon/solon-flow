@@ -15,9 +15,7 @@
  */
 package org.noear.solon.flow.intercept;
 
-import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowException;
-import org.noear.solon.flow.Node;
+import org.noear.solon.flow.*;
 import org.noear.solon.lang.Preview;
 
 /**
@@ -31,11 +29,12 @@ import org.noear.solon.lang.Preview;
 @Preview("3.1")
 public interface FlowInterceptor {
     /**
-     * 拦截执行
+     * 拦截流程执行, eval(graph)
      *
      * @param invocation 调用者
+     * @see org.noear.solon.flow.FlowEngine#eval(Graph, FlowExchanger)
      */
-    default void doFlowIntercept(FlowInvocation invocation) throws FlowException {
+    default void interceptFlow(FlowInvocation invocation) throws FlowException {
         invocation.invoke();
     }
 

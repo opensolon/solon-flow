@@ -81,7 +81,7 @@ public class FlowInvocation {
      */
     public void invoke() throws FlowException {
         if (index < interceptorList.size()) {
-            interceptorList.get(index++).target.doFlowIntercept(this);
+            interceptorList.get(index++).target.interceptFlow(this);
         } else {
             lastHandler.accept(this);
         }

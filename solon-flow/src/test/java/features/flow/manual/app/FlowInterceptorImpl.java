@@ -12,7 +12,7 @@ import org.noear.solon.flow.intercept.FlowInvocation;
 @Component
 public class FlowInterceptorImpl implements FlowInterceptor {
     @Override
-    public void doFlowIntercept(FlowInvocation invocation)  {
+    public void interceptFlow(FlowInvocation invocation)  {
         System.out.println("doIntercept---------------");
         invocation.invoke();
     }
