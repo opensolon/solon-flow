@@ -117,7 +117,7 @@ public interface WorkflowExecutor {
 
 
     /**
-     * 匹配当前活动任务（匹配现在）
+     * 匹配当前活动任务（权限匹配）
      *
      * @param graphId 图id
      * @param context 流上下文（要有人员配置）
@@ -126,7 +126,7 @@ public interface WorkflowExecutor {
     Task matchTask(String graphId, FlowContext context);
 
     /**
-     * 匹配当前活动任务（匹配现在）
+     * 匹配当前活动任务（权限匹配）
      *
      * @param graph   图
      * @param context 流上下文（要有人员配置）
@@ -135,25 +135,25 @@ public interface WorkflowExecutor {
     Task matchTask(Graph graph, FlowContext context);
 
     /**
-     * 寻找后续可达任务（预测下一步）
+     * 寻找当前确定的任务（逻辑探测）
      *
      * @param graphId 图id
      * @param context 流上下文（要有人员配置）
      */
     @Nullable
-    Task findNextTask(String graphId, FlowContext context);
+    Task findTask(String graphId, FlowContext context);
 
     /**
-     * 寻找后续可达任务（预测下一步）
+     * 寻找当前确定的任务（逻辑探测）
      *
      * @param graph   图
      * @param context 流上下文（要有人员配置）
      */
     @Nullable
-    Task findNextTask(Graph graph, FlowContext context);
+    Task findTask(Graph graph, FlowContext context);
 
     /**
-     * 寻找后续可达任务列表（寻找所有可能性）
+     * 寻找下一步可能的任务列表（逻辑探测）
      *
      * @param graphId 图id
      * @param context 流上下文（不需要有人员配置）
@@ -161,10 +161,10 @@ public interface WorkflowExecutor {
     Collection<Task> findNextTasks(String graphId, FlowContext context);
 
     /**
-     * 寻找后续可达任务列表（寻找所有可能性）
+     * 寻找下一步可能的任务列表（寻找所有可能性）
      *
      * @param graph   图
-     * @param context 流上下文（不需要有人员配置）
+     * @param context 流上下文（逻辑探测）
      */
     Collection<Task> findNextTasks(Graph graph, FlowContext context);
 

@@ -140,7 +140,7 @@ public class WorkflowDriver implements FlowDriver {
                     Task task = new Task(exchanger, taskDesc.getNode(), TaskState.UNKNOWN);
                     intent.nextTasks.add(task);
 
-                    if(intent.type == WorkflowIntent.IntentType.FINK_NEXT_TASK){
+                    if(intent.type == WorkflowIntent.IntentType.FINK_TASK){
                         intent.task = task;
                     }
 

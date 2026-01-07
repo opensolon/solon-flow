@@ -128,7 +128,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
         } else if (action == TaskAction.BACK_JUMP) {
             //跳转后退
             while (true) {
-                Task task = matchTask(node.getGraph(), exchanger.context());
+                Task task = findTask(node.getGraph(), exchanger.context());
                 backHandle(task.getNode(), exchanger);
 
                 //到目标节点了
@@ -145,7 +145,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
         } else if (action == TaskAction.FORWARD_JUMP) {
             //跳转前进
             while (true) {
-                Task task = matchTask(node.getGraph(), exchanger.context());
+                Task task = findTask(node.getGraph(), exchanger.context());
                 if (task != null) {
                     forwardHandle(task.getNode(), exchanger, newState);
 
@@ -202,19 +202,19 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
     }
 
     @Override
-    public @Nullable Task findNextTask(String graphId, FlowContext context) {
-        return findNextTask(engine.getGraphOrThrow(graphId), context);
+    public @Nullable Task findTask(String graphId, FlowContext context) {
+        return findTask(engine.getGraphOrThrow(graphId), context);
     }
 
     @Override
-    public @Nullable Task findNextTask(Graph graph, FlowContext context) {
+    public @Nullable Task findTask(Graph graph, FlowContext context) {
         FlowDriver driver = getDriver(graph);
 
         FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
         exchanger.recordNode(graph, graph.getStart());
 
         try {
-            WorkflowIntent intent = new WorkflowIntent(WorkflowIntent.IntentType.FINK_NEXT_TASK);
+            WorkflowIntent intent = new WorkflowIntent(WorkflowIntent.IntentType.FINK_TASK);
             context.put(WorkflowIntent.INTENT_KEY, intent);
 
             engine.eval(graph, exchanger);
