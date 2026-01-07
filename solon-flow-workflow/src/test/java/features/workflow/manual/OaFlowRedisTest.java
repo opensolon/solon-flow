@@ -132,7 +132,7 @@ public class OaFlowRedisTest {
         log.warn("{}", task);
         assert task == null; //抄送节点
 
-        workflow.clearState(graphId, context);
+        workflow.stateRepository().stateClear(context);
     }
 
     private FlowContext getContext(String actor) throws Throwable {

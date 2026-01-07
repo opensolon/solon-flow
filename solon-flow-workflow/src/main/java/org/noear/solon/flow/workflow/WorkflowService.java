@@ -52,9 +52,19 @@ public interface WorkflowService {
     }
 
     /**
-     * 当前流程引擎
+     * 流程引擎
      */
     FlowEngine engine();
+
+    /**
+     * 状态控制器
+     */
+    StateController stateController();
+
+    /**
+     * 状态仓库
+     */
+    StateRepository stateRepository();
 
 
     /// ////////////////////////////////
@@ -118,32 +128,6 @@ public interface WorkflowService {
 
 
     /**
-     * 获取后续任务列表
-     *
-     * @param graphId 图id
-     * @param context 流上下文（不需要有人员配置）
-     * @deprecated 3.8.1 {@link #findNextTasks(String, FlowContext)}
-     */
-    @Deprecated
-    default Collection<Task> getTasks(String graphId, FlowContext context){
-        return findNextTasks(graphId, context);
-    }
-
-    /**
-     * 获取后续任务列表
-     *
-     * @param graph   图
-     * @param context 流上下文（不需要有人员配置）
-     * @deprecated 3.8.1 {@link #findNextTasks(Graph, FlowContext)}
-     */
-    @Deprecated
-    default Collection<Task> getTasks(Graph graph, FlowContext context){
-        return findNextTasks(graph, context);
-    }
-
-
-
-    /**
      * 获取当前任务
      *
      * @param graphId 图id
@@ -168,19 +152,32 @@ public interface WorkflowService {
      */
     TaskState getState(Node node, FlowContext context);
 
-    /**
-     * 清空状态（主要方便测试）
-     *
-     * @param graphId 图id
-     * @param context 流上下文
-     */
-    void clearState(String graphId, FlowContext context);
+
+    /// ////////////////////////////////
+
 
     /**
-     * 清空状态（主要方便测试）
+     * 获取后续任务列表
+     *
+     * @param graphId 图id
+     * @param context 流上下文（不需要有人员配置）
+     * @deprecated 3.8.1 {@link #findNextTasks(String, FlowContext)}
+     */
+    @Deprecated
+    default Collection<Task> getTasks(String graphId, FlowContext context) {
+        return findNextTasks(graphId, context);
+    }
+
+    /**
+     * 获取后续任务列表
      *
      * @param graph   图
-     * @param context 流上下文
+     * @param context 流上下文（不需要有人员配置）
+     * @deprecated 3.8.1 {@link #findNextTasks(Graph, FlowContext)}
      */
-    void clearState(Graph graph, FlowContext context);
+    @Deprecated
+    default Collection<Task> getTasks(Graph graph, FlowContext context) {
+        return findNextTasks(graph, context);
+    }
+
 }

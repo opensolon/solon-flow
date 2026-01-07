@@ -116,7 +116,7 @@ class WorkflowServiceSimpleTest {
         workflowService.getTask("simple-test", context);
 
         // 清除状态
-        workflowService.clearState("simple-test", context);
+        workflowService.stateRepository().stateClear(context);
 
         // 再次获取应该重新开始
         Task task = workflowService.getTask("simple-test", context);

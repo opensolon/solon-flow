@@ -51,6 +51,15 @@ public class WorkflowServiceDefault implements WorkflowService {
         return engine;
     }
 
+    @Override
+    public StateController stateController() {
+        return stateController;
+    }
+
+    @Override
+    public StateRepository stateRepository() {
+        return stateRepository;
+    }
 
     private FlowDriver getDriver(Graph graph) {
         return new WorkflowDriver(engine.getDriver(graph), stateController, stateRepository);
@@ -228,17 +237,6 @@ public class WorkflowServiceDefault implements WorkflowService {
     @Override
     public TaskState getState(Node node, FlowContext context) {
         return stateRepository.stateGet(context, node);
-    }
-
-    @Override
-    public void clearState(String graphId, FlowContext context) {
-        this.clearState(engine.getGraphOrThrow(graphId), context);
-    }
-
-
-    @Override
-    public void clearState(Graph graph, FlowContext context) {
-        stateRepository.stateClear(context);
     }
 
     /// ////////////////////////////////
