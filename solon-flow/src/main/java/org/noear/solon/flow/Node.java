@@ -278,6 +278,18 @@ public class Node {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Node) {
+            Node other = (Node) obj;
+
+            if (other.getId().equals(getId()) && other.getGraph().getId().equals(getGraph().getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
 

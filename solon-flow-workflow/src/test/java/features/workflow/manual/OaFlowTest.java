@@ -65,7 +65,7 @@ public class OaFlowTest {
         /// ////////////////
         //提交状态
         context.put("oaState", 2); //用于扩展状态记录
-        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task, TaskAction.FORWARD, context);
 
 
         context = getContext("陈鑫");
@@ -94,7 +94,7 @@ public class OaFlowTest {
 
         /// ////////////////
         //提交状态
-        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task, TaskAction.FORWARD, context);
 
 
         context = getContext(null);
@@ -131,7 +131,7 @@ public class OaFlowTest {
 
         /// ////////////////
         //提交状态
-        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task, TaskAction.FORWARD, context);
 
 
         context = getContext("吕方");
@@ -143,7 +143,7 @@ public class OaFlowTest {
 
         /// ////////////////
         //提交状态
-        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task, TaskAction.FORWARD, context);
 
 
         context = getContext("吕方");
@@ -175,7 +175,7 @@ public class OaFlowTest {
 
         /// ////////////////
         //提交操作
-        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task, TaskAction.FORWARD, context);
 
         task = workflow.matchTask(graphId, context);
 

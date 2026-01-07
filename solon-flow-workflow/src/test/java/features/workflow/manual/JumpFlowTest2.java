@@ -84,11 +84,11 @@ public class JumpFlowTest2 {
         Task task = workflow.matchTask(graphId, context);
         log.debug(task.toString());
 
-        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task, TaskAction.FORWARD, context);
         Task task2 = workflow.matchTask(graphId, context);
         log.debug(task2.toString());
 
-        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task, TaskAction.FORWARD, context);
         Task task3 = workflow.matchTask(graphId, context);
         log.debug(task3.toString());
 

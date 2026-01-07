@@ -73,7 +73,7 @@ public class OaFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task, TaskAction.FORWARD, context);
 
 
         context = getContext("陈鑫");
@@ -94,7 +94,7 @@ public class OaFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task, TaskAction.FORWARD, context);
 
 
         context = getContext("陈鑫");
@@ -112,7 +112,7 @@ public class OaFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task, TaskAction.FORWARD, context);
 
 
         context = getContext("吕方");
@@ -124,7 +124,7 @@ public class OaFlowRedisTest {
 
         /// ////////////////
         //提交状态
-        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task, TaskAction.FORWARD, context);
 
 
         context = getContext("吕方");
@@ -157,7 +157,7 @@ public class OaFlowRedisTest {
 
         /// ////////////////
         //提交操作
-        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task, TaskAction.FORWARD, context);
 
         task = workflow.matchTask(graphId, context);
 

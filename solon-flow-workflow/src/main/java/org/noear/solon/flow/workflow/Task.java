@@ -16,10 +16,7 @@
 package org.noear.solon.flow.workflow;
 
 import org.noear.solon.core.util.Assert;
-import org.noear.solon.flow.FlowContext;
-import org.noear.solon.flow.FlowException;
-import org.noear.solon.flow.FlowExchanger;
-import org.noear.solon.flow.Node;
+import org.noear.solon.flow.*;
 import org.noear.solon.lang.Preview;
 
 /**
@@ -30,11 +27,13 @@ import org.noear.solon.lang.Preview;
  */
 public class Task {
     private transient final FlowExchanger exchanger;
+    private transient final Graph rootGraph;
     private transient final Node node;
     private transient final TaskState state;
 
-    public Task(FlowExchanger exchanger, Node node, TaskState state) {
+    public Task(FlowExchanger exchanger, Graph rootGraph, Node node, TaskState state) {
         this.exchanger = exchanger;
+        this.rootGraph = rootGraph;
         this.node = node;
         this.state = state;
     }
@@ -55,6 +54,10 @@ public class Task {
         } catch (Throwable e) {
             throw new FlowException("The task handle failed: " + node.getGraph().getId() + " / " + node.getId(), e);
         }
+    }
+
+    public Graph getRootGraph() {
+        return rootGraph;
     }
 
     /**

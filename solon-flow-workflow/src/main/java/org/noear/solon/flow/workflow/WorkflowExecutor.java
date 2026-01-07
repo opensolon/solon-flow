@@ -74,47 +74,6 @@ public interface WorkflowExecutor {
 
     /// ////////////////////////////////
 
-    /**
-     * 提交任务（如果当前任务为等待介入）
-     *
-     * @param task    任务
-     * @param action  动作
-     * @param context 流上下文
-     */
-    boolean submitTaskIfWaiting(Task task, TaskAction action, FlowContext context);
-
-    /**
-     * 提交任务
-     *
-     * @param graphId 图id
-     * @param nodeId  节点id
-     * @param action  动作
-     * @param context 流上下文
-     */
-    void submitTask(String graphId, String nodeId, TaskAction action, FlowContext context);
-
-    /**
-     * 提交任务
-     *
-     * @param graph   图
-     * @param nodeId  节点id
-     * @param action  动作
-     * @param context 流上下文
-     */
-    void submitTask(Graph graph, String nodeId, TaskAction action, FlowContext context);
-
-    /**
-     * 提交任务
-     *
-     * @param node    节点
-     * @param action  动作
-     * @param context 流上下文
-     */
-    void submitTask(Node node, TaskAction action, FlowContext context);
-
-
-    /// ////////////////////////////////
-
 
     /**
      * 匹配当前活动任务（权限匹配）
@@ -123,7 +82,9 @@ public interface WorkflowExecutor {
      * @param context 流上下文（要有人员配置）
      */
     @Nullable
-    Task matchTask(String graphId, FlowContext context);
+    default Task matchTask(String graphId, FlowContext context) {
+        return matchTask(engine().getGraphOrThrow(graphId), context);
+    }
 
     /**
      * 匹配当前活动任务（权限匹配）
@@ -141,7 +102,9 @@ public interface WorkflowExecutor {
      * @param context 流上下文（要有人员配置）
      */
     @Nullable
-    Task findTask(String graphId, FlowContext context);
+    default Task findTask(String graphId, FlowContext context) {
+        return findTask(engine().getGraphOrThrow(graphId), context);
+    }
 
     /**
      * 寻找当前确定的任务（逻辑探测）
@@ -158,7 +121,9 @@ public interface WorkflowExecutor {
      * @param graphId 图id
      * @param context 流上下文（不需要有人员配置）
      */
-    Collection<Task> findNextTasks(String graphId, FlowContext context);
+    default Collection<Task> findNextTasks(String graphId, FlowContext context) {
+        return findNextTasks(engine().getGraphOrThrow(graphId), context);
+    }
 
     /**
      * 寻找下一步可能的任务列表（寻找所有可能性）
@@ -168,10 +133,67 @@ public interface WorkflowExecutor {
      */
     Collection<Task> findNextTasks(Graph graph, FlowContext context);
 
+
     /// ////////////////////////////////
 
     /**
      * 获取状态
      */
     TaskState getState(Node node, FlowContext context);
+
+    /// ////////////////////////////////
+
+    /**
+     * 提交任务（如果当前任务为等待介入）
+     *
+     * @param task    任务
+     * @param action  动作
+     * @param context 流上下文
+     */
+    boolean submitTaskIfWaiting(Task task, TaskAction action, FlowContext context);
+
+    /**
+     * 提交任务
+     *
+     * @param task    任务
+     * @param action  动作
+     * @param context 流上下文
+     */
+    default void submitTask(Task task, TaskAction action, FlowContext context) {
+        submitTask(task.getRootGraph(), task.getNode(), action, context);
+    }
+
+    /**
+     * 提交任务
+     *
+     * @param graphId 图id
+     * @param nodeId  节点id
+     * @param action  动作
+     * @param context 流上下文
+     */
+    default void submitTask(String graphId, String nodeId, TaskAction action, FlowContext context) {
+        submitTask(engine().getGraphOrThrow(graphId), nodeId, action, context);
+    }
+
+    /**
+     * 提交任务
+     *
+     * @param graph   图
+     * @param nodeId  节点id
+     * @param action  动作
+     * @param context 流上下文
+     */
+    default void submitTask(Graph graph, String nodeId, TaskAction action, FlowContext context) {
+        submitTask(graph, graph.getNodeOrThrow(nodeId), action, context);
+    }
+
+    /**
+     * 提交任务
+     *
+     * @param graph   图
+     * @param node    节点
+     * @param action  动作
+     * @param context 流上下文
+     */
+    void submitTask(Graph graph, Node node, TaskAction action, FlowContext context);
 }

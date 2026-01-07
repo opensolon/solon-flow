@@ -48,13 +48,15 @@ public class WorkflowDriver implements FlowDriver {
         driver.onNodeEnd(exchanger, node);
 
         if (node.getType() == NodeType.END) {
-            WorkflowIntent intent =  exchanger.context().getAs(WorkflowIntent.INTENT_KEY);
-            if(intent == null){
+            WorkflowIntent intent = exchanger.context().getAs(WorkflowIntent.INTENT_KEY);
+            if (intent == null) {
                 return;
             }
 
-            //如果结束了，就没有任务了
-            intent.task = null;
+            //如果结束了，就没有任务匹配了（查找可以输出）
+            if (intent.type == WorkflowIntent.IntentType.MATCH_TASK) {
+                intent.task = null;
+            }
         }
     }
 
@@ -73,7 +75,7 @@ public class WorkflowDriver implements FlowDriver {
     public void handleTask(FlowExchanger exchanger, TaskDesc taskDesc) throws Throwable {
         WorkflowIntent intent =  exchanger.context().getAs(WorkflowIntent.INTENT_KEY);
         if(intent == null){
-            intent = new WorkflowIntent(WorkflowIntent.IntentType.UNKNOWN);
+            intent = new WorkflowIntent(exchanger.graph(), WorkflowIntent.IntentType.UNKNOWN);
         }
 
         if (stateController.isAutoForward(exchanger.context(), taskDesc.getNode())) {
@@ -84,10 +86,8 @@ public class WorkflowDriver implements FlowDriver {
                 postHandleTask(exchanger, taskDesc);
 
                 if ((exchanger.isStopped() || exchanger.isInterrupted())) {
-                    //中断或停止，表示处理中
-
-                    //记录当前流程节点（用于展示）
-                    Task task = new Task(exchanger, taskDesc.getNode(), TaskState.WAITING);
+                    //中断或停止，表示处理中（记录当前流程节点，用于展示）
+                    Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.WAITING);
                     intent.task = task;
 
                     //添加状态
@@ -95,10 +95,8 @@ public class WorkflowDriver implements FlowDriver {
                         stateRepository.statePut(exchanger.context(), taskDesc.getNode(), TaskState.WAITING);
                     }
                 } else {
-                    //没有中断或停止，表示已完成
-
-                    //记录当前流程节点（用于展示）
-                    Task task = new Task(exchanger, taskDesc.getNode(), TaskState.COMPLETED);
+                    //没有中断或停止，表示已完成（记录当前流程节点，用于展示）
+                    Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.COMPLETED);
                     intent.task = task;
 
                     //添加状态
@@ -106,13 +104,21 @@ public class WorkflowDriver implements FlowDriver {
                 }
             } else if (state == TaskState.TERMINATED) {
                 //终止
-                Task task = new Task(exchanger, taskDesc.getNode(), TaskState.TERMINATED);
+                Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.TERMINATED);
                 intent.task = task;
+                intent.nextTasks.add(task);
 
-                //终止
-                exchanger.stop();
+                if (intent.type == WorkflowIntent.IntentType.FINK_NEXT_TASKS) {
+                    exchanger.interrupt();
+                } else {
+                    exchanger.stop();
+                }
             } else if (state == TaskState.COMPLETED) {
-                //完成，则跳过
+                //完成（支持被查找，撤回时需要）
+                if(intent.type == WorkflowIntent.IntentType.FINK_TASK){
+                    Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.COMPLETED);
+                    intent.task = task;
+                }
             }
         } else {
             //控制前进
@@ -121,7 +127,7 @@ public class WorkflowDriver implements FlowDriver {
                 //检查是否为当前用户的任务
                 if (stateController.isOperatable(exchanger.context(), taskDesc.getNode())) {
                     //记录当前流程节点（用于展示）
-                    Task task = new Task(exchanger, taskDesc.getNode(), TaskState.WAITING);
+                    Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.WAITING);
                     intent.task = task;
                     intent.nextTasks.add(task);
 
@@ -137,10 +143,11 @@ public class WorkflowDriver implements FlowDriver {
                     }
                 } else {
                     //没有权限（不输出 task）。阻断当前分支（等待别的用户办理）
-                    Task task = new Task(exchanger, taskDesc.getNode(), TaskState.UNKNOWN);
+                    Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.UNKNOWN);
                     intent.nextTasks.add(task);
 
                     if(intent.type == WorkflowIntent.IntentType.FINK_TASK){
+                        //没有权限，支持被查找
                         intent.task = task;
                     }
 
@@ -148,7 +155,7 @@ public class WorkflowDriver implements FlowDriver {
                 }
             } else if (state == TaskState.TERMINATED) {
                 //终止
-                Task task = new Task(exchanger, taskDesc.getNode(), TaskState.TERMINATED);
+                Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.TERMINATED);
                 intent.task = task;
                 intent.nextTasks.add(task);
 
@@ -158,7 +165,11 @@ public class WorkflowDriver implements FlowDriver {
                     exchanger.stop();
                 }
             } else if (state == TaskState.COMPLETED) {
-                //完成，则跳过
+                //完成（支持被查找，撤回时需要）
+                if(intent.type == WorkflowIntent.IntentType.FINK_TASK){
+                    Task task = new Task(exchanger, intent.rootGraph, taskDesc.getNode(), TaskState.COMPLETED);
+                    intent.task = task;
+                }
             }
         }
     }

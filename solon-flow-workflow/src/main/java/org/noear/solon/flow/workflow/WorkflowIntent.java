@@ -15,6 +15,7 @@
  */
 package org.noear.solon.flow.workflow;
 
+import org.noear.solon.flow.Graph;
 import org.noear.solon.lang.Internal;
 
 import java.util.ArrayList;
@@ -30,11 +31,14 @@ import java.util.List;
 public class WorkflowIntent { //用 public 可以正常作为脚本参数
     protected static final String INTENT_KEY = WorkflowIntent.class.getSimpleName();
 
-    protected List<Task> nextTasks = new ArrayList<>();
-    protected Task task;
+    protected final Graph rootGraph;
     protected final IntentType type;
 
-    protected WorkflowIntent(IntentType type) {
+    protected List<Task> nextTasks = new ArrayList<>();
+    protected Task task;
+
+    protected WorkflowIntent(Graph rootGraph, IntentType type) {
+        this.rootGraph = rootGraph;
         this.type = type;
     }
 

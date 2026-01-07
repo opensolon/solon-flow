@@ -164,11 +164,11 @@ public interface WorkflowService extends WorkflowExecutor {
      * @param node    节点
      * @param action  动作
      * @param context 流上下文
-     * @deprecated 3.8.1 {@link #submitTask(Node, TaskAction, FlowContext)}
+     * @deprecated 3.8.1 {@link #submitTask(Graph, String, TaskAction, FlowContext)}
      */
     @Deprecated
     default void postTask(Node node, TaskAction action, FlowContext context) {
-        submitTask(node, action, context);
+        submitTask(node.getGraph(), node.getId(), action, context);
     }
 
 

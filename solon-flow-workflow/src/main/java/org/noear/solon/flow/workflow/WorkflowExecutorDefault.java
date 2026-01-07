@@ -70,6 +70,71 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
     /// ////////////////////////
 
     /**
+     * 获取多个活动节点
+     *
+     * @param context 流上下文（不需要有参与者配置）
+     */
+    @Override
+    public Collection<Task> findNextTasks(Graph graph, FlowContext context) {
+        WorkflowIntent intent = new WorkflowIntent(graph, WorkflowIntent.IntentType.FINK_NEXT_TASKS);
+
+        context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
+            FlowDriver driver = getDriver(graph);
+
+            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
+            exchanger.recordNode(graph, graph.getStart());
+
+            engine.eval(graph, exchanger);
+        });
+
+        return intent.nextTasks;
+    }
+
+    @Override
+    public @Nullable Task findTask(Graph graph, FlowContext context) {
+        WorkflowIntent intent = new WorkflowIntent(graph, WorkflowIntent.IntentType.FINK_TASK);
+
+        context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
+            FlowDriver driver = getDriver(graph);
+
+            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
+            exchanger.recordNode(graph, graph.getStart());
+
+            engine.eval(graph, exchanger);
+        });
+
+        return intent.task;
+    }
+
+    /**
+     * 获取当前活动节点
+     *
+     * @param context 流上下文（要有参与者配置）
+     */
+    @Override
+    public Task matchTask(Graph graph, FlowContext context) {
+        WorkflowIntent intent = new WorkflowIntent(graph, WorkflowIntent.IntentType.MATCH_TASK);
+
+        context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
+            FlowDriver driver = getDriver(graph);
+
+            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
+            exchanger.recordNode(graph, graph.getStart());
+
+            engine.eval(graph, exchanger);
+        });
+
+        return intent.task;
+    }
+
+    @Override
+    public TaskState getState(Node node, FlowContext context) {
+        return stateRepository.stateGet(context, node);
+    }
+
+    /// ////////////////////////////////
+
+    /**
      * 提交任务（如果当前任务为等待介入）
      */
     @Override
@@ -84,37 +149,28 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
             return false;
         }
 
-        submitTask(task.getNode(), action, context);
+        submitTask(task.getRootGraph(), task.getNode(), action, context);
 
         return true;
     }
 
     @Override
-    public void submitTask(String graphId, String nodeId, TaskAction action, FlowContext context) {
-        Node node = engine.getGraphOrThrow(graphId).getNodeOrThrow(nodeId);
-        submitTask(node, action, context);
-    }
-
-    @Override
-    public void submitTask(Graph graph, String nodeId, TaskAction action, FlowContext context) {
-        Node node = graph.getNodeOrThrow(nodeId);
-        submitTask(node, action, context);
-    }
-
-    @Override
-    public void submitTask(Node node, TaskAction action, FlowContext context) {
-        FlowDriver driver = getDriver(node.getGraph());
-
+    public void submitTask(Graph graph, Node node, TaskAction action, FlowContext context) {
         LOCKER.lock();
 
         try {
-            submitTaskDo(new FlowExchanger(node.getGraph(), engine, driver, context, -1, new AtomicInteger(0)), node, action);
+            WorkflowIntent intent = new WorkflowIntent(graph, WorkflowIntent.IntentType.SUBMIT_TASK);
+
+            context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
+                FlowDriver driver = getDriver(node.getGraph());
+                submitTaskDo(graph, node, action, new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0)));
+            });
         } finally {
             LOCKER.unlock();
         }
     }
 
-    protected void submitTaskDo(FlowExchanger exchanger, Node node, TaskAction action) {
+    protected void submitTaskDo(Graph graph, Node node, TaskAction action, FlowExchanger exchanger) {
         if (action == TaskAction.UNKNOWN) {
             throw new IllegalArgumentException("StateOperation is UNKNOWN");
         }
@@ -124,15 +180,25 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
         //更新状态
         if (action == TaskAction.BACK) {
             //后退
-            backHandle(node, exchanger);
+            backHandle(graph, node, exchanger);
         } else if (action == TaskAction.BACK_JUMP) {
             //跳转后退
+            Task lastTask = null;
             while (true) {
-                Task task = findTask(node.getGraph(), exchanger.context());
-                backHandle(task.getNode(), exchanger);
+                Task task = findTask(graph, exchanger.context());
+                if (task != null) {
+                    if (lastTask != null && lastTask.getNode().equals(task.getNode())) {
+                        break;
+                    }
 
-                //到目标节点了
-                if (task.getNode().getId().equals(node.getId())) {
+                    lastTask = task;
+                    backHandle(graph, task.getNode(), exchanger);
+
+                    //到目标节点了
+                    if (task.getNode().equals(node)) {
+                        break;
+                    }
+                } else {
                     break;
                 }
             }
@@ -141,16 +207,22 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
             stateRepository.stateClear(exchanger.context());
         } else if (action == TaskAction.FORWARD) {
             //前进
-            forwardHandle(node, exchanger, newState);
+            forwardHandle(graph, node, newState, exchanger);
         } else if (action == TaskAction.FORWARD_JUMP) {
             //跳转前进
+            Task lastTask = null;
             while (true) {
-                Task task = findTask(node.getGraph(), exchanger.context());
+                Task task = findTask(graph, exchanger.context());
                 if (task != null) {
-                    forwardHandle(task.getNode(), exchanger, newState);
+                    if (lastTask != null && lastTask.getNode().equals(task.getNode())) {
+                        break;
+                    }
+
+                    lastTask = task;
+                    forwardHandle(graph, task.getNode(), newState, exchanger);
 
                     //到目标节点了
-                    if (task.getNode().getId().equals(node.getId())) {
+                    if (task.getNode().equals(node)) {
                         break;
                     }
                 } else {
@@ -165,112 +237,12 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
     }
 
 
-    /// ////////////////////////
-
-    /**
-     * 获取多个活动节点
-     *
-     * @param context 流上下文（不需要有参与者配置）
-     */
-    @Override
-    public Collection<Task> findNextTasks(String graphId, FlowContext context) {
-        return findNextTasks(engine.getGraphOrThrow(graphId), context);
-    }
-
-    /**
-     * 获取多个活动节点
-     *
-     * @param context 流上下文（不需要有参与者配置）
-     */
-    @Override
-    public Collection<Task> findNextTasks(Graph graph, FlowContext context) {
-        FlowDriver driver = getDriver(graph);
-
-        FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
-        exchanger.recordNode(graph, graph.getStart());
-
-        try {
-            WorkflowIntent intent = new WorkflowIntent(WorkflowIntent.IntentType.FINK_NEXT_TASKS);
-            context.put(WorkflowIntent.INTENT_KEY, intent);
-
-            engine.eval(graph, exchanger);
-
-            return intent.nextTasks;
-        } finally {
-            context.remove(WorkflowIntent.INTENT_KEY);
-        }
-    }
-
-    @Override
-    public @Nullable Task findTask(String graphId, FlowContext context) {
-        return findTask(engine.getGraphOrThrow(graphId), context);
-    }
-
-    @Override
-    public @Nullable Task findTask(Graph graph, FlowContext context) {
-        FlowDriver driver = getDriver(graph);
-
-        FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
-        exchanger.recordNode(graph, graph.getStart());
-
-        try {
-            WorkflowIntent intent = new WorkflowIntent(WorkflowIntent.IntentType.FINK_TASK);
-            context.put(WorkflowIntent.INTENT_KEY, intent);
-
-            engine.eval(graph, exchanger);
-
-            return intent.task;
-        } finally {
-            context.remove(WorkflowIntent.INTENT_KEY);
-        }
-    }
-
-    /**
-     * 获取当前活动节点
-     *
-     * @param context 流上下文（要有参与者配置）
-     */
-    @Override
-    public Task matchTask(String graphId, FlowContext context) {
-        return matchTask(engine.getGraphOrThrow(graphId), context);
-    }
-
-    /**
-     * 获取当前活动节点
-     *
-     * @param context 流上下文（要有参与者配置）
-     */
-    @Override
-    public Task matchTask(Graph graph, FlowContext context) {
-        FlowDriver driver = getDriver(graph);
-
-        FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
-        exchanger.recordNode(graph, graph.getStart());
-
-        try {
-            WorkflowIntent intent = new WorkflowIntent(WorkflowIntent.IntentType.MATCH_TASK);
-            context.put(WorkflowIntent.INTENT_KEY, intent);
-
-            engine.eval(graph, exchanger);
-
-            return intent.task;
-        } finally {
-            context.remove(WorkflowIntent.INTENT_KEY);
-        }
-    }
-
-    @Override
-    public TaskState getState(Node node, FlowContext context) {
-        return stateRepository.stateGet(context, node);
-    }
-
-    /// ////////////////////////////////
-
+    /// /////////////////
 
     /**
      * 前进处理
      */
-    protected void forwardHandle(Node node, FlowExchanger exchanger, TaskState newState) {
+    protected void forwardHandle(Graph graph, Node node, TaskState newState, FlowExchanger exchanger) {
         //如果是完成或跳过，则向前流动
         try {
             exchanger.reverting(false);
@@ -309,7 +281,10 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
      * @param node      流程节点
      * @param exchanger 流交换器
      */
-    protected void backHandle(Node node, FlowExchanger exchanger) {
+    protected void backHandle(Graph graph, Node node, FlowExchanger exchanger) {
+        //撤回自己
+        stateRepository.stateRemove(exchanger.context(), node);
+
         //撤回之前的节点
         for (Node n1 : node.getPrevNodes()) {
             //移除状态（要求重来）
@@ -323,7 +298,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
                     }
                 }
                 //再到前一级
-                backHandle(n1, exchanger);
+                backHandle(graph, n1, exchanger);
             }
         }
     }

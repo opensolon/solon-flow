@@ -68,7 +68,7 @@ public class ActorStateFlowTest {
         for (Task task1 : tasks) {
             context = getFlowContext("dm");
             context.put("amount", amount);
-            workflow.submitTask(task1.getNode(), TaskAction.FORWARD, context);
+            workflow.submitTask(task1, TaskAction.FORWARD, context);
         }
 
         context = getFlowContext("oa");
