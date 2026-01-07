@@ -2,6 +2,17 @@
 
 # solon-flow-workflow
 
+| 动作 (Action)  | 中间节点处理 (A, B)  | 目标节点 C 的最终状态 | 流程停留在哪里？ | 业务语义                |
+|--------------|----------------|--------------|----------|---------------------|
+| FORWARD      | /              | COMPLETED    | C 的下一步   | 正常办理。               |
+| FORWARD_JUMP | 标记为 COMPLETED  | WAITING      | 停在 C     | 跨级指派：跳过中间，指派 C 办理。  |
+| BACK         | /              | REMOVED(无状态)      | C 的前一步   | 常规退回。               |
+| BACK_JUMP    | 状态被 REMOVED    | WAITING      | 停在 C     | 指定驳回：撤销中间，要求 C 重办。  |
+| RESTART      | 全部 REMOVED     | REMOVED      | 流程起点     | 清空所有状态，回到初始位置。      |
+
+
+
+
 轻量级审批型工作流引擎
 
 
