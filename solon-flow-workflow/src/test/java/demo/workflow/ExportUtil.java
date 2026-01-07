@@ -5,7 +5,7 @@ import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.Node;
 import org.noear.solon.flow.workflow.TaskState;
-import org.noear.solon.flow.workflow.WorkflowService;
+import org.noear.solon.flow.workflow.WorkflowExecutor;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.LinkedHashMap;
@@ -32,7 +32,7 @@ public class ExportUtil {
     }
 
 
-    public static Map<String, Object> buildGraphDom1(WorkflowService workflow, Graph graph, FlowContext context) {
+    public static Map<String, Object> buildGraphDom1(WorkflowExecutor workflow, Graph graph, FlowContext context) {
         Map<String, Object> domRoot = graph.toMap();
 
         if (context != null) {
@@ -50,7 +50,7 @@ public class ExportUtil {
         return domRoot;
     }
 
-    public static Map<String, Object> buildGraphDom2(WorkflowService workflow, Graph graph, FlowContext context) {
+    public static Map<String, Object> buildGraphDom2(WorkflowExecutor workflow, Graph graph, FlowContext context) {
         return Graph.copy(graph, spec -> {
             for (Map.Entry<String, Node> entry : graph.getNodes().entrySet()) {
                 TaskState type = workflow.getState(entry.getValue(), context);

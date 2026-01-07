@@ -13,7 +13,7 @@ import org.noear.solon.flow.workflow.TaskState;
 import org.noear.solon.flow.workflow.Task;
 import org.noear.solon.flow.workflow.controller.NotBlockStateController;
 import org.noear.solon.flow.workflow.repository.InMemoryStateRepository;
-import org.noear.solon.flow.workflow.WorkflowService;
+import org.noear.solon.flow.workflow.WorkflowExecutor;
 
 @Slf4j
 public class NotBlockStateFlowTest {
@@ -38,7 +38,7 @@ public class NotBlockStateFlowTest {
 
         flowEngine.load("classpath:flow/workflow/*.yml");
 
-        WorkflowService workflow = WorkflowService.of(flowEngine, stateController, stateRepository);
+        WorkflowExecutor workflow = WorkflowExecutor.of(flowEngine, stateController, stateRepository);
 
 
         /// ////////////
@@ -48,7 +48,7 @@ public class NotBlockStateFlowTest {
         Task task;
 
 
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
 
         Assertions.assertNull(task);
         Assertions.assertTrue(context.lastRecord().isEnd());
@@ -74,7 +74,7 @@ public class NotBlockStateFlowTest {
 
         flowEngine.load("classpath:flow/workflow/*.yml");
 
-        WorkflowService workflow = WorkflowService.of(flowEngine,
+        WorkflowExecutor workflow = WorkflowExecutor.of(flowEngine,
                 stateController,
                 stateRepository);
 
@@ -86,13 +86,13 @@ public class NotBlockStateFlowTest {
         Task task;
 
 
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
 
         Assertions.assertEquals("n0", task.getNode().getId());
         Assertions.assertEquals(TaskState.COMPLETED, task.getState());
 
 
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
 
         Assertions.assertNull(task); //提前中断，没有节点可取了
         Assertions.assertFalse(context.lastRecord().isEnd());
@@ -101,7 +101,7 @@ public class NotBlockStateFlowTest {
 
         flowEngine.removeInterceptor(interceptor);
 
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
 
         Assertions.assertNull(task); //跑完了
         Assertions.assertTrue(context.lastRecord().isEnd());

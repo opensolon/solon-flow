@@ -12,7 +12,7 @@ import org.noear.solon.flow.workflow.TaskState;
 import org.noear.solon.flow.workflow.Task;
 import org.noear.solon.flow.workflow.controller.ActorStateController;
 import org.noear.solon.flow.workflow.repository.InMemoryStateRepository;
-import org.noear.solon.flow.workflow.WorkflowService;
+import org.noear.solon.flow.workflow.WorkflowExecutor;
 
 import java.util.Collection;
 
@@ -40,7 +40,7 @@ public class ActorStateFlowTest {
 
         flowEngine.load("classpath:flow/workflow/*.yml");
 
-        WorkflowService workflow = WorkflowService.of(flowEngine, stateController, stateRepository);
+        WorkflowExecutor workflow = WorkflowExecutor.of(flowEngine, stateController, stateRepository);
 
 
         /// ////////////
@@ -50,17 +50,17 @@ public class ActorStateFlowTest {
 
 
         context = getFlowContext("employee");
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
         Assertions.assertEquals("n0", task.getNode().getId());
         Assertions.assertEquals(TaskState.WAITING, task.getState());
-        workflow.postTask(graphId, task.getNodeId(), TaskAction.FORWARD, context);
+        workflow.submitTask(graphId, task.getNodeId(), TaskAction.FORWARD, context);
 
 
         context = getFlowContext("tl");
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
         Assertions.assertEquals("n1", task.getNode().getId());
         Assertions.assertEquals(TaskState.WAITING, task.getState());
-        workflow.postTask(graphId, task.getNodeId(), TaskAction.FORWARD, context);
+        workflow.submitTask(graphId, task.getNodeId(), TaskAction.FORWARD, context);
 
 
         context = getFlowContext("dm");
@@ -68,11 +68,11 @@ public class ActorStateFlowTest {
         for (Task task1 : tasks) {
             context = getFlowContext("dm");
             context.put("amount", amount);
-            workflow.postTask(task1.getNode(), TaskAction.FORWARD, context);
+            workflow.submitTask(task1.getNode(), TaskAction.FORWARD, context);
         }
 
         context = getFlowContext("oa");
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
         Assertions.assertNull(task, "必须为End节点");
 
     }
@@ -81,7 +81,7 @@ public class ActorStateFlowTest {
         return FlowContext.of(instanceId).put("role", role).put("amount", amount);
     }
 
-    private Collection<Task> getEmailNode(WorkflowService flowEngine) {
+    private Collection<Task> getEmailNode(WorkflowExecutor flowEngine) {
         FlowContext flowContext = getFlowContext("oa");
         return flowEngine.findNextTasks(graphId, flowContext);
     }

@@ -31,7 +31,7 @@ public class OaFlowTest {
     ActorStateController stateController = new ActorStateController();
     InMemoryStateRepository stateRepository = new InMemoryStateRepository();
 
-    private WorkflowService buildWorkflow() {
+    private WorkflowExecutor buildWorkflow() {
         MapContainer container = new MapContainer();
         container.putComponent("OaMetaProcessCom", new OaMetaProcessCom());
 
@@ -42,13 +42,13 @@ public class OaFlowTest {
 
         fe.load("classpath:flow/*.yml");
 
-        return WorkflowService.of(fe, stateController, stateRepository);
+        return WorkflowExecutor.of(fe, stateController, stateRepository);
     }
 
     @Test
     public void case1() throws Throwable {
         //初始化引擎
-        WorkflowService workflow = buildWorkflow();
+        WorkflowExecutor workflow = buildWorkflow();
         Graph graph = workflow.engine().getGraph(graphId);
 
         FlowContext context;
@@ -56,7 +56,7 @@ public class OaFlowTest {
 
 
         context = getContext("刘涛");
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert "step1".equals(task.getNode().getId());
@@ -65,11 +65,11 @@ public class OaFlowTest {
         /// ////////////////
         //提交状态
         context.put("oaState", 2); //用于扩展状态记录
-        workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
 
 
         context = getContext("陈鑫");
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert "step3".equals(task.getNode().getId());
@@ -77,7 +77,7 @@ public class OaFlowTest {
 
         //二次测试
         context = getContext("陈鑫");
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert "step3".equals(task.getNode().getId());
@@ -94,7 +94,7 @@ public class OaFlowTest {
 
         /// ////////////////
         //提交状态
-        workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
 
 
         context = getContext(null);
@@ -109,7 +109,7 @@ public class OaFlowTest {
 
 
         context = getContext("陈鑫");
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
         log.warn("{}", task);
         Assertions.assertNull(task); //没有权限
 
@@ -123,7 +123,7 @@ public class OaFlowTest {
 
 
         context = getContext("陈宇");
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert task.getNode().getId().startsWith("step4_1");
@@ -131,11 +131,11 @@ public class OaFlowTest {
 
         /// ////////////////
         //提交状态
-        workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
 
 
         context = getContext("吕方");
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
         log.warn("{}", task);
         assert task != null;
         assert task.getNode().getId().startsWith("step4_2");
@@ -143,11 +143,11 @@ public class OaFlowTest {
 
         /// ////////////////
         //提交状态
-        workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
 
 
         context = getContext("吕方");
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
         log.warn("{}", task);
         assert task == null;
 
@@ -166,18 +166,18 @@ public class OaFlowTest {
         Task task;
 
         //初始化引擎
-        WorkflowService workflow = buildWorkflow();
+        WorkflowExecutor workflow = buildWorkflow();
 
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
 
         assert "step2".equals(task.getNode().getId());
         assert TaskState.UNKNOWN == task.getState(); //没有权限启动任务（因为没有配置操作员）
 
         /// ////////////////
         //提交操作
-        workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
+        workflow.submitTask(task.getNode(), TaskAction.FORWARD, context);
 
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
 
         assert "step3".equals(task.getNode().getId());
         assert TaskState.WAITING == task.getState(); //等待当前用户处理（有权限操作）

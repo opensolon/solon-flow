@@ -10,7 +10,7 @@ import org.noear.solon.flow.workflow.StateRepository;
 import org.noear.solon.flow.workflow.Task;
 import org.noear.solon.flow.workflow.controller.NotBlockStateController;
 import org.noear.solon.flow.workflow.repository.InMemoryStateRepository;
-import org.noear.solon.flow.workflow.WorkflowService;
+import org.noear.solon.flow.workflow.WorkflowExecutor;
 
 /**
  *
@@ -32,8 +32,8 @@ public class HelloTest {
         });
 
         FlowContext context = FlowContext.of("i-1");
-        Task task = WorkflowService.of(engine, stateController, stateRepository)
-                .getTask(graph, context);
+        Task task = WorkflowExecutor.of(engine, stateController, stateRepository)
+                .findTask(graph, context);
 
         Assertions.assertNull(task);
         Assertions.assertTrue(context.lastRecord().isEnd());

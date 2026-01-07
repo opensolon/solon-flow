@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class WorkflowServiceMultiGraphMultiRoleTest {
 
     private FlowEngine flowEngine;
-    private WorkflowService workflowService;
+    private WorkflowExecutor workflowService;
 
     // ==================== 角色定义常量 ====================
     /** 申请人角色：提交审批申请 */
@@ -237,7 +237,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         flowEngine.load(mainApprovalGraph);
 
         // 6. 创建工作流服务
-        workflowService = WorkflowService.of(
+        workflowService = WorkflowExecutor.of(
                 flowEngine,
                 new ActorStateController("actor"), // 基于角色的状态控制器
                 new InMemoryStateRepository()     // 内存状态仓库（测试用）
@@ -258,25 +258,25 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
                 .put("applicantId", "user_001");
 
         // 获取申请人的当前任务
-        Task applicantTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, applicantContext);
+        Task applicantTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, applicantContext);
         assertNotNull(applicantTask);
         assertEquals("apply", applicantTask.getNodeId());
         assertEquals(TaskState.WAITING, applicantTask.getState());
 
         // 申请人执行任务
-        workflowService.postTask(applicantTask.getNode(), TaskAction.FORWARD, applicantContext);
+        workflowService.submitTask(applicantTask.getNode(), TaskAction.FORWARD, applicantContext);
 
         // 2. 部门经理审批
         FlowContext deptManagerContext = applicantContext
                 .put("actor", ROLE_DEPT_MANAGER)
                 .put("managerId", "manager_001");
 
-        Task deptManagerTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, deptManagerContext);
+        Task deptManagerTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, deptManagerContext);
         assertNotNull(deptManagerTask);
         assertEquals("dept_approval", deptManagerTask.getNodeId());
 
         // 部门经理审批通过
-        workflowService.postTask(deptManagerTask.getNode(), TaskAction.FORWARD, deptManagerContext);
+        workflowService.submitTask(deptManagerTask.getNode(), TaskAction.FORWARD, deptManagerContext);
 
         // 3. 验证进入并行网关，获取并行任务
         FlowContext systemContext = deptManagerContext;
@@ -294,14 +294,14 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 技术负责人完成技术评审
         for (Task task : techReviewTasks) {
-            workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, techLeaderContext);
+            workflowService.submitTaskIfWaiting(task, TaskAction.FORWARD, techLeaderContext);
         }
 
         // 技术评审有多个阶段，继续执行剩余任务
         techReviewTasks = workflowService.findNextTasks(TECH_REVIEW_GRAPH_ID, techLeaderContext);
         assertFalse(techReviewTasks.isEmpty());
         for (Task task : techReviewTasks) {
-            workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, techLeaderContext);
+            workflowService.submitTaskIfWaiting(task, TaskAction.FORWARD, techLeaderContext);
         }
 
         // 5. 财务负责人进行财务评审
@@ -315,13 +315,13 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 财务负责人完成财务评审（由于金额较大，会触发额外审批路径）
         for (Task task : financeReviewTasks) {
-            workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, financeLeaderContext);
+            workflowService.submitTaskIfWaiting(task, TaskAction.FORWARD, financeLeaderContext);
         }
 
         // 子图预算评审（仍由财务负责人执行）
         financeReviewTasks = workflowService.findNextTasks(FINANCE_REVIEW_GRAPH_ID, financeLeaderContext);
         for (Task task : financeReviewTasks) {
-            workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, financeLeaderContext);
+            workflowService.submitTaskIfWaiting(task, TaskAction.FORWARD, financeLeaderContext);
         }
 
         // 6. 验证需要总经理审批（金额>10万触发）
@@ -329,27 +329,27 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
                 .put("actor", ROLE_GENERAL_MANAGER)
                 .put("generalManagerId", "gm_001");
 
-        Task nextTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
+        Task nextTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
 
         // 由于金额较大，应该需要总经理审批
         if (nextTask != null && "general_manager_approval".equals(nextTask.getNodeId())) {
             // 7. 总经理审批
             FlowContext generalManagerContext = checkContext;
 
-            Task gmTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, generalManagerContext);
+            Task gmTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, generalManagerContext);
             assertNotNull(gmTask);
             assertEquals("general_manager_approval", gmTask.getNodeId());
 
             // 总经理审批通过
-            workflowService.postTask(gmTask.getNode(), TaskAction.FORWARD, generalManagerContext);
+            workflowService.submitTask(gmTask.getNode(), TaskAction.FORWARD, generalManagerContext);
         }
 
         // 8. 验证流程完成
         systemContext = checkContext;
-        Task finalTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, systemContext);
+        Task finalTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, systemContext);
         if (finalTask != null) {
             assertEquals("complete_approval", finalTask.getNodeId());
-            workflowService.postTask(finalTask.getNode(), TaskAction.FORWARD, systemContext);
+            workflowService.submitTask(finalTask.getNode(), TaskAction.FORWARD, systemContext);
         }
 
         // 9. 验证最终状态
@@ -372,14 +372,14 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 1. 申请人提交
         context.put("actor", ROLE_APPLICANT);
-        Task applicantTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
-        workflowService.postTask(applicantTask.getNode(), TaskAction.FORWARD, context);
+        Task applicantTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, context);
+        workflowService.submitTask(applicantTask.getNode(), TaskAction.FORWARD, context);
         assertEquals("apply", applicantTask.getNodeId());
 
         // 2. 部门经理审批
         context.put("actor", ROLE_DEPT_MANAGER);
-        Task deptTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
-        workflowService.postTask(deptTask.getNode(), TaskAction.FORWARD, context);
+        Task deptTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, context);
+        workflowService.submitTask(deptTask.getNode(), TaskAction.FORWARD, context);
         assertEquals("dept_approval", deptTask.getNodeId());
 
         // 3. 模拟技术负责人和财务负责人并行审批
@@ -400,17 +400,17 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 并行执行技术评审
         for (Task task : techTasks) {
-            workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, techContext);
+            workflowService.submitTaskIfWaiting(task, TaskAction.FORWARD, techContext);
         }
 
         // 并行执行财务评审
         for (Task task : financeTasks) {
-            workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, financeContext);
+            workflowService.submitTaskIfWaiting(task, TaskAction.FORWARD, financeContext);
         }
 
         // 验证主流程继续执行
         FlowContext checkContext = context;
-        Task nextTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
+        Task nextTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
         assertNotNull(nextTask);
         assertEquals("mainApproval", nextTask.getNode().getGraph().getId());
     }
@@ -426,17 +426,17 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 1. 提交申请
         context.put("actor", ROLE_APPLICANT);
-        Task applicantTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
-        workflowService.postTask(applicantTask.getNode(), TaskAction.FORWARD, context);
+        Task applicantTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, context);
+        workflowService.submitTask(applicantTask.getNode(), TaskAction.FORWARD, context);
 
         // 2. 部门经理拒绝（终止审批）
         context.put("actor", ROLE_DEPT_MANAGER);
-        Task deptTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
-        workflowService.postTask(deptTask.getNode(), TaskAction.TERMINATE, context);
+        Task deptTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, context);
+        workflowService.submitTask(deptTask.getNode(), TaskAction.TERMINATE, context);
 
         // 3. 验证流程终止状态
         FlowContext checkContext = FlowContext.of("test_instance_003");
-        Task finalTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
+        Task finalTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
 
         // 应该停留在终止节点
         assertNotNull(finalTask);
@@ -455,25 +455,25 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 提交申请
         context.put("actor", ROLE_APPLICANT);
-        Task applicantTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
-        workflowService.postTask(applicantTask.getNode(), TaskAction.FORWARD, context);
+        Task applicantTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, context);
+        workflowService.submitTask(applicantTask.getNode(), TaskAction.FORWARD, context);
 
         // 部门经理审批
         context.put("actor", ROLE_DEPT_MANAGER);
-        Task deptTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
-        workflowService.postTask(deptTask.getNode(), TaskAction.FORWARD, context);
+        Task deptTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, context);
+        workflowService.submitTask(deptTask.getNode(), TaskAction.FORWARD, context);
 
         // 模拟总经理直接跳转到最终审批（跳过技术评审和财务评审）
         context.put("actor", ROLE_GENERAL_MANAGER);
 
         // 跳转到总经理审批节点（FORWARD_JUMP跳过中间环节）
         Node finalApprovalNode = flowEngine.getGraph(MAIN_APPROVAL_GRAPH_ID).getNode("general_manager_approval");
-        workflowService.postTask(finalApprovalNode, TaskAction.FORWARD_JUMP, context);
+        workflowService.submitTask(finalApprovalNode, TaskAction.FORWARD_JUMP, context);
         assertTrue(context.lastRecord().isEnd());
 
         // 验证状态：流程应该已结束
         FlowContext checkContext = FlowContext.fromJson(context.toJson());
-        Task finalTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
+        Task finalTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
         assertNull(finalTask);
         assertTrue(checkContext.lastRecord().isEnd());
     }
@@ -494,14 +494,14 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
                     .put("budgetAmount", i * 50000);
 
             // 启动每个实例
-            Task task = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
+            Task task = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, context);
             assertNotNull(task);
-            workflowService.postTask(task.getNode(), TaskAction.FORWARD, context);
-            task = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
+            workflowService.submitTask(task.getNode(), TaskAction.FORWARD, context);
+            task = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, context);
 
             // 验证每个实例独立运行
             FlowContext checkContext = FlowContext.fromJson(context.toJson());
-            Task currentTask = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
+            Task currentTask = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, checkContext);
 
             assertEquals(task, currentTask);
             assertEquals(context.lastNodeId(), checkContext.lastNodeId());
@@ -534,13 +534,13 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 提交申请
         context.put("actor", ROLE_APPLICANT);
-        Task task = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
-        workflowService.postTask(task.getNode(), TaskAction.FORWARD, context);
+        Task task = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, context);
+        workflowService.submitTask(task.getNode(), TaskAction.FORWARD, context);
 
         // 部门经理审批
         context.put("actor", ROLE_DEPT_MANAGER);
-        task = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
-        workflowService.postTask(task.getNode(), TaskAction.FORWARD, context);
+        task = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, context);
+        workflowService.submitTask(task.getNode(), TaskAction.FORWARD, context);
 
         // 验证不会进入总经理审批节点
         FlowContext checkContext = context;
@@ -562,24 +562,24 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 提交申请
         context.put("actor", ROLE_APPLICANT);
-        Task task = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
-        workflowService.postTask(task.getNode(), TaskAction.FORWARD, context);
+        Task task = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, context);
+        workflowService.submitTask(task.getNode(), TaskAction.FORWARD, context);
 
         // 部门经理审批
         context.put("actor", ROLE_DEPT_MANAGER);
-        task = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context);
-        workflowService.postTask(task.getNode(), TaskAction.FORWARD, context);
+        task = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, context);
+        workflowService.submitTask(task.getNode(), TaskAction.FORWARD, context);
 
         // 执行技术方案评审和预算评审
         Collection<Task> tasks = workflowService.findNextTasks(MAIN_APPROVAL_GRAPH_ID, context);
         for (Task task1 : tasks) {
-            workflowService.postTask(task1.getNode(), TaskAction.FORWARD, context);
+            workflowService.submitTask(task1.getNode(), TaskAction.FORWARD, context);
         }
 
         // 触发额外评审路径
         tasks = workflowService.findNextTasks(MAIN_APPROVAL_GRAPH_ID, context);
         for (Task task1 : tasks) {
-            workflowService.postTask(task1.getNode(), TaskAction.FORWARD, context);
+            workflowService.submitTask(task1.getNode(), TaskAction.FORWARD, context);
         }
 
         // 验证会进入总经理审批节点
@@ -604,8 +604,8 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         FlowContext context1 = FlowContext.of(instanceId)
                 .put("actor", ROLE_APPLICANT);
 
-        Task task1 = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context1);
-        workflowService.postTask(task1.getNode(), TaskAction.FORWARD, context1);
+        Task task1 = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, context1);
+        workflowService.submitTask(task1.getNode(), TaskAction.FORWARD, context1);
 
         // 保存当前状态（模拟持久化）
         String stateJson = context1.toJson();
@@ -614,12 +614,12 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         FlowContext context2 = FlowContext.fromJson(stateJson);
         context2.put("actor", ROLE_DEPT_MANAGER);
 
-        Task task2 = workflowService.getTask(MAIN_APPROVAL_GRAPH_ID, context2);
+        Task task2 = workflowService.findTask(MAIN_APPROVAL_GRAPH_ID, context2);
         assertNotNull(task2);
         assertEquals("dept_approval", task2.getNodeId());
 
         // 继续执行
-        workflowService.postTask(task2.getNode(), TaskAction.FORWARD, context2);
+        workflowService.submitTask(task2.getNode(), TaskAction.FORWARD, context2);
 
         // 验证流程可以继续执行
         FlowContext checkContext = FlowContext.of(instanceId);

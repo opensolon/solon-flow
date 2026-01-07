@@ -13,7 +13,7 @@ import org.noear.solon.flow.workflow.TaskState;
 import org.noear.solon.flow.workflow.Task;
 import org.noear.solon.flow.workflow.controller.ActorStateController;
 import org.noear.solon.flow.workflow.repository.InMemoryStateRepository;
-import org.noear.solon.flow.workflow.WorkflowService;
+import org.noear.solon.flow.workflow.WorkflowExecutor;
 import org.noear.solon.test.SolonTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public class JumpFlowTest {
         }
     };
 
-    private WorkflowService buildWorkflow() {
+    private WorkflowExecutor buildWorkflow() {
         MapContainer container = new MapContainer();
         FlowEngine fe = FlowEngine.newInstance(SimpleFlowDriver.builder()
                 .container(container)
@@ -50,26 +50,26 @@ public class JumpFlowTest {
 
         fe.load("classpath:flow/workflow/*.yml");
 
-        return WorkflowService.of(fe, stateController, stateRepository);
+        return WorkflowExecutor.of(fe, stateController, stateRepository);
     }
 
     @Test
     public void case1() {
-        WorkflowService workflow = buildWorkflow();
+        WorkflowExecutor workflow = buildWorkflow();
         FlowContext context = FlowContext.of(instanceId).put(actor, "admin");
 
-        workflow.postTask(graphId, "n3", TaskAction.FORWARD_JUMP, context);
+        workflow.submitTask(graphId, "n3", TaskAction.FORWARD_JUMP, context);
 
-        Task task = workflow.getTask(graphId, context);
+        Task task = workflow.findTask(graphId, context);
 
         log.debug(task.toString());
         assert task.getState() == TaskState.WAITING;
         assert task.getNode().getId().equals("n4");
 
 
-        workflow.postTask(graphId, "n1", TaskAction.BACK_JUMP, context);
+        workflow.submitTask(graphId, "n1", TaskAction.BACK_JUMP, context);
 
-        task = workflow.getTask(graphId, context);
+        task = workflow.findTask(graphId, context);
 
         log.debug(task.toString());
         assert task.getState() == TaskState.WAITING;

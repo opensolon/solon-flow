@@ -3,8 +3,7 @@ package features.workflow.generated;
 import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Graph;
-import org.noear.solon.flow.NodeType;
-import org.noear.solon.flow.workflow.WorkflowService;
+import org.noear.solon.flow.workflow.WorkflowExecutor;
 import org.noear.solon.flow.workflow.controller.ActorStateController;
 import org.noear.solon.flow.workflow.repository.InMemoryStateRepository;
 
@@ -70,8 +69,8 @@ class TestUtils {
     /**
      * 创建测试用的工作流服务
      */
-    static WorkflowService createTestWorkflowService(FlowEngine engine) {
-        return WorkflowService.of(
+    static WorkflowExecutor createTestWorkflowService(FlowEngine engine) {
+        return WorkflowExecutor.of(
                 engine,
                 new ActorStateController("actor"),
                 new InMemoryStateRepository()

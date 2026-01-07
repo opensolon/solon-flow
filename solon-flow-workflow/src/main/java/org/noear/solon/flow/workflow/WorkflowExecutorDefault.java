@@ -31,14 +31,14 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 3.8
  */
 @Preview("3.4")
-public class WorkflowServiceDefault implements WorkflowService {
+public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowService {
     private final transient FlowEngine engine;
     private final StateController stateController;
     private final StateRepository stateRepository;
 
     private final transient ReentrantLock LOCKER = new ReentrantLock();
 
-    public WorkflowServiceDefault(FlowEngine engine, StateController stateController, StateRepository stateRepository) {
+    public WorkflowExecutorDefault(FlowEngine engine, StateController stateController, StateRepository stateRepository) {
         this.engine = engine;
         this.stateController = stateController;
         this.stateRepository = stateRepository;
@@ -72,7 +72,7 @@ public class WorkflowServiceDefault implements WorkflowService {
      * 提交任务（如果当前任务为等待介入）
      */
     @Override
-    public boolean postTaskIfWaiting(Task task, TaskAction action, FlowContext context) {
+    public boolean submitTaskIfWaiting(Task task, TaskAction action, FlowContext context) {
         if (task == null || stateController.isOperatable(context, task.getNode()) == false) {
             //如果无权
             return false;
@@ -83,25 +83,25 @@ public class WorkflowServiceDefault implements WorkflowService {
             return false;
         }
 
-        postTask(task.getNode(), action, context);
+        submitTask(task.getNode(), action, context);
 
         return true;
     }
 
     @Override
-    public void postTask(String graphId, String nodeId, TaskAction action, FlowContext context) {
+    public void submitTask(String graphId, String nodeId, TaskAction action, FlowContext context) {
         Node node = engine.getGraphOrThrow(graphId).getNodeOrThrow(nodeId);
-        postTask(node, action, context);
+        submitTask(node, action, context);
     }
 
     @Override
-    public void postTask(Graph graph, String nodeId, TaskAction action, FlowContext context) {
+    public void submitTask(Graph graph, String nodeId, TaskAction action, FlowContext context) {
         Node node = graph.getNodeOrThrow(nodeId);
-        postTask(node, action, context);
+        submitTask(node, action, context);
     }
 
     @Override
-    public void postTask(Node node, TaskAction action, FlowContext context) {
+    public void submitTask(Node node, TaskAction action, FlowContext context) {
         FlowDriver driver = getDriver(node.getGraph());
 
         LOCKER.lock();
@@ -127,7 +127,7 @@ public class WorkflowServiceDefault implements WorkflowService {
         } else if (action == TaskAction.BACK_JUMP) {
             //跳转后退
             while (true) {
-                Task task = getTask(node.getGraph(), exchanger.context());
+                Task task = findTask(node.getGraph(), exchanger.context());
                 backHandle(task.getNode(), exchanger);
 
                 //到目标节点了
@@ -144,7 +144,7 @@ public class WorkflowServiceDefault implements WorkflowService {
         } else if (action == TaskAction.FORWARD_JUMP) {
             //跳转前进
             while (true) {
-                Task task = getTask(node.getGraph(), exchanger.context());
+                Task task = findTask(node.getGraph(), exchanger.context());
                 if (task != null) {
                     forwardHandle(task.getNode(), exchanger, newState);
 
@@ -206,8 +206,8 @@ public class WorkflowServiceDefault implements WorkflowService {
      * @param context 流上下文（要有参与者配置）
      */
     @Override
-    public Task getTask(String graphId, FlowContext context) {
-        return getTask(engine.getGraphOrThrow(graphId), context);
+    public Task findTask(String graphId, FlowContext context) {
+        return findTask(engine.getGraphOrThrow(graphId), context);
     }
 
     /**
@@ -216,7 +216,7 @@ public class WorkflowServiceDefault implements WorkflowService {
      * @param context 流上下文（要有参与者配置）
      */
     @Override
-    public Task getTask(Graph graph, FlowContext context) {
+    public Task findTask(Graph graph, FlowContext context) {
         FlowDriver driver = getDriver(graph);
 
         FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
@@ -256,7 +256,7 @@ public class WorkflowServiceDefault implements WorkflowService {
             for (Node nextNode : node.getNextNodes()) {
                 if (NodeType.isGateway(nextNode.getType())) {
                     //如果是流入网关，要通过引擎计算获取下个活动节点（且以图做为参数，可能自动流转到网关外）
-                    Task task = getTask(node.getGraph(), exchanger.context());
+                    Task task = findTask(node.getGraph(), exchanger.context());
 
                     if (task != null) {
                         nextNode = task.getNode();

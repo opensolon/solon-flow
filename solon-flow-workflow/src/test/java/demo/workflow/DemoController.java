@@ -10,7 +10,7 @@ import org.noear.solon.flow.workflow.StateController;
 import org.noear.solon.flow.workflow.TaskAction;
 import org.noear.solon.flow.workflow.StateRepository;
 import org.noear.solon.flow.workflow.Task;
-import org.noear.solon.flow.workflow.WorkflowService;
+import org.noear.solon.flow.workflow.WorkflowExecutor;
 
 /**
  * @author noear 2025/3/27 created
@@ -18,7 +18,7 @@ import org.noear.solon.flow.workflow.WorkflowService;
 @Controller
 public class DemoController {
     @Inject
-    WorkflowService workflow;
+    WorkflowExecutor workflow;
     @Inject
     StateRepository stateRepository;
     @Inject
@@ -31,7 +31,7 @@ public class DemoController {
         context.put("actor", ctx.param("actor"));
 
         //获取展示节点及装态
-        Task task = workflow.getTask(graphId, context);// if null: 界面显示只读; no null: 界面显示操作：同意，拒绝，撤回到上一节点，撤回到起始节点（给发起人）
+        Task task = workflow.findTask(graphId, context);// if null: 界面显示只读; no null: 界面显示操作：同意，拒绝，撤回到上一节点，撤回到起始节点（给发起人）
         return null;
     }
 
@@ -41,6 +41,6 @@ public class DemoController {
         FlowContext context = FlowContext.of(instanceId);
         context.put("actor", ctx.param("actor"));
 
-        workflow.postTask(graphId, nodeId, TaskAction.codeOf(action), context);
+        workflow.submitTask(graphId, nodeId, TaskAction.codeOf(action), context);
     }
 }

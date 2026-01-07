@@ -219,7 +219,7 @@ class WorkflowServiceMultiGraphTest {
         engine.load(approvalGraph);
         engine.load(mainGraph);
 
-        WorkflowService workflowService = WorkflowService.of(
+        WorkflowExecutor workflowService = WorkflowExecutor.of(
                 engine,
                 new ActorStateController("actor"),
                 new InMemoryStateRepository()
@@ -238,14 +238,14 @@ class WorkflowServiceMultiGraphTest {
         mainContext.put("traceId", traceId);
 
         // 获取并执行主流程任务
-        Task initTask = workflowService.getTask(mainGraph.getId(), mainContext);
+        Task initTask = workflowService.findTask(mainGraph.getId(), mainContext);
         assertNotNull(initTask);
         assertEquals("init", initTask.getNodeId());
         assertEquals(TaskState.WAITING, initTask.getState());
 
         // 执行初始化任务
         assertDoesNotThrow(() -> initTask.run(mainContext));
-        workflowService.postTask(mainGraph.getId(), "init", TaskAction.FORWARD, mainContext);
+        workflowService.submitTask(mainGraph.getId(), "init", TaskAction.FORWARD, mainContext);
 
         // 验证主流程状态
         assertNotNull(mainContext.getAs("businessId"));
@@ -262,16 +262,16 @@ class WorkflowServiceMultiGraphTest {
         approvalInitiatorContext.put("traceId", traceId);
 
         // 数据收集分支
-        Task dataCollectionTask = workflowService.getTask(mainGraph.getId(), dataCollectorContext);
+        Task dataCollectionTask = workflowService.findTask(mainGraph.getId(), dataCollectorContext);
         assertNotNull(dataCollectionTask);
         assertEquals("data-collection", dataCollectionTask.getNodeId());
-        workflowService.postTask(mainGraph.getId(), "data-collection", TaskAction.FORWARD, dataCollectorContext);
+        workflowService.submitTask(mainGraph.getId(), "data-collection", TaskAction.FORWARD, dataCollectorContext);
 
         // 审批分支
-        Task approvalProcessTask = workflowService.getTask(mainGraph.getId(), approvalInitiatorContext);
+        Task approvalProcessTask = workflowService.findTask(mainGraph.getId(), approvalInitiatorContext);
         assertNotNull(approvalProcessTask);
         assertEquals("approval-process", approvalProcessTask.getNodeId());
-        workflowService.postTask(mainGraph.getId(), "approval-process", TaskAction.FORWARD, approvalInitiatorContext);
+        workflowService.submitTask(mainGraph.getId(), "approval-process", TaskAction.FORWARD, approvalInitiatorContext);
 
         // 验证两个分支都触发了子流程调用
         List<String> traceLog = crossGraphExecutionTrace.get(traceId);
@@ -285,16 +285,16 @@ class WorkflowServiceMultiGraphTest {
         checkerContext.put("checker", "李检查员");
         checkerContext.put("traceId", traceId);
 
-        Task finalCheckTask = workflowService.getTask(mainGraph.getId(), checkerContext);
+        Task finalCheckTask = workflowService.findTask(mainGraph.getId(), checkerContext);
         assertNotNull(finalCheckTask);
         assertEquals("final-check", finalCheckTask.getNodeId());
 
         // 执行最终检查
         assertDoesNotThrow(() -> finalCheckTask.run(checkerContext));
-        workflowService.postTask(mainGraph.getId(), "final-check", TaskAction.FORWARD, checkerContext);
+        workflowService.submitTask(mainGraph.getId(), "final-check", TaskAction.FORWARD, checkerContext);
 
         // 验证主流程完成
-        Task finalTask = workflowService.getTask(mainGraph.getId(), checkerContext);
+        Task finalTask = workflowService.findTask(mainGraph.getId(), checkerContext);
         assertNull(finalTask);
 
         // 验证执行跟踪
@@ -455,7 +455,7 @@ class WorkflowServiceMultiGraphTest {
 
         StateRepository stateRepository = new InMemoryStateRepository();
 
-        WorkflowService workflowService = WorkflowService.of(
+        WorkflowExecutor workflowService = WorkflowExecutor.of(
                 engine,
                 new BlockStateController(),
                 stateRepository
@@ -469,20 +469,20 @@ class WorkflowServiceMultiGraphTest {
         context1.put("priority", 2); // 优先级较低
 
         // 执行分析
-        Task analyzeTask1 = workflowService.getTask(decisionGraph.getId(), context1);
+        Task analyzeTask1 = workflowService.findTask(decisionGraph.getId(), context1);
         assertNotNull(analyzeTask1);
         assertEquals("analyze", analyzeTask1.getNodeId());
-        workflowService.postTask(decisionGraph.getId(), "analyze", TaskAction.FORWARD, context1);
+        workflowService.submitTask(decisionGraph.getId(), "analyze", TaskAction.FORWARD, context1);
 
         // 验证分析结果
         assertTrue(context1.<Boolean>getAs("analyzed"));
         assertTrue(context1.<Boolean>getAs("needQuickProcess"));
 
         // 执行决策（应该选择快速处理）
-        Task decisionTask1 = workflowService.getTask(decisionGraph.getId(), context1);
+        Task decisionTask1 = workflowService.findTask(decisionGraph.getId(), context1);
         assertNotNull(decisionTask1);
         assertEquals("quick-process", decisionTask1.getNodeId());
-        workflowService.postTask(decisionGraph.getId(), "quick-process", TaskAction.FORWARD, context1);
+        workflowService.submitTask(decisionGraph.getId(), "quick-process", TaskAction.FORWARD, context1);
 
         // 验证选择了快速流程
         assertEquals("quick", context1.getAs("selectedFlow"));
@@ -496,22 +496,22 @@ class WorkflowServiceMultiGraphTest {
         context2.put("priority", 5); // 优先级较高
 
         // 执行分析
-        Task analyzeTask2 = workflowService.getTask(decisionGraph.getId(), context2);
+        Task analyzeTask2 = workflowService.findTask(decisionGraph.getId(), context2);
         assertNotNull(analyzeTask2);
-        workflowService.postTask(decisionGraph.getId(), "analyze", TaskAction.FORWARD, context2);
+        workflowService.submitTask(decisionGraph.getId(), "analyze", TaskAction.FORWARD, context2);
 
         // 验证分析结果
         assertTrue(context2.<Boolean>getAs("analyzed"));
         assertFalse(context2.<Boolean>getAs("needQuickProcess"));
 
-        workflowService = WorkflowService.of(
+        workflowService = WorkflowExecutor.of(
                 engine,
                 new ActorStateController(),
                 stateRepository
         );
 
         // 执行决策（应该选择详细处理）
-        workflowService.postTask(decisionGraph.getId(), "process-decision", TaskAction.FORWARD, context2);
+        workflowService.submitTask(decisionGraph.getId(), "process-decision", TaskAction.FORWARD, context2);
 
         // 验证选择了详细流程
         assertEquals("detailed", context2.getAs("selectedFlow"));
@@ -684,7 +684,7 @@ class WorkflowServiceMultiGraphTest {
         engine.load(riskyProcessGraph);
         engine.load(mainFlowWithErrorHandling);
 
-        WorkflowService workflowService = WorkflowService.of(
+        WorkflowExecutor workflowService = WorkflowExecutor.of(
                 engine,
                 new BlockStateController(),
                 new InMemoryStateRepository()
@@ -701,23 +701,23 @@ class WorkflowServiceMultiGraphTest {
 
         try {
             // 1.1 执行预处理任务
-            Task preProcessTask = workflowService.getTask(mainFlowWithErrorHandling.getId(), successContext);
+            Task preProcessTask = workflowService.findTask(mainFlowWithErrorHandling.getId(), successContext);
             assertNotNull(preProcessTask, "预处理任务应该存在");
             assertEquals("main_preprocess", preProcessTask.getNodeId(), "应该是预处理节点");
 
             System.out.println("执行预处理任务...");
-            workflowService.postTask(preProcessTask.getNode(), TaskAction.FORWARD, successContext);
+            workflowService.submitTask(preProcessTask.getNode(), TaskAction.FORWARD, successContext);
 
             // 验证预处理完成
             assertTrue(successContext.<Boolean>getAs("preProcessed"), "预处理应该完成");
 
             // 1.2 执行调用风险子流程任务
-            Task riskyTask = workflowService.getTask(mainFlowWithErrorHandling.getId(), successContext);
+            Task riskyTask = workflowService.findTask(mainFlowWithErrorHandling.getId(), successContext);
             assertNotNull(riskyTask, "调用风险子流程任务应该存在");
             assertEquals("main_call_risky", riskyTask.getNodeId(), "应该是调用风险子流程节点");
 
             System.out.println("执行风险子流程调用...");
-            workflowService.postTask(riskyTask.getNode(), TaskAction.FORWARD, successContext);
+            workflowService.submitTask(riskyTask.getNode(), TaskAction.FORWARD, successContext);
 
             // 给子流程执行时间
             Thread.sleep(100);
@@ -728,19 +728,19 @@ class WorkflowServiceMultiGraphTest {
             System.out.println("  subProcessError: " + successContext.getAs("subProcessError"));
 
             // 1.3 继续执行决策网关
-            Task currentTask = workflowService.getTask(mainFlowWithErrorHandling.getId(), successContext);
+            Task currentTask = workflowService.findTask(mainFlowWithErrorHandling.getId(), successContext);
             assertNotNull(currentTask, "应该有当前任务");
 
             if ("main_decision".equals(currentTask.getNodeId())) {
                 System.out.println("执行决策网关...");
-                workflowService.postTask(currentTask.getNode(), TaskAction.FORWARD, successContext);
+                workflowService.submitTask(currentTask.getNode(), TaskAction.FORWARD, successContext);
             }
 
             // 1.4 检查执行路径
-            currentTask = workflowService.getTask(mainFlowWithErrorHandling.getId(), successContext);
+            currentTask = workflowService.findTask(mainFlowWithErrorHandling.getId(), successContext);
             if (currentTask != null) {
                 System.out.println("执行当前任务: " + currentTask.getNodeId());
-                workflowService.postTask(currentTask.getNode(), TaskAction.FORWARD, successContext);
+                workflowService.submitTask(currentTask.getNode(), TaskAction.FORWARD, successContext);
             }
 
             // 1.5 验证最终结果
@@ -775,17 +775,17 @@ class WorkflowServiceMultiGraphTest {
 
         try {
             // 2.1 执行预处理
-            Task errorPreProcessTask = workflowService.getTask(mainFlowWithErrorHandling.getId(), errorContext);
+            Task errorPreProcessTask = workflowService.findTask(mainFlowWithErrorHandling.getId(), errorContext);
             assertNotNull(errorPreProcessTask);
-            workflowService.postTask(errorPreProcessTask.getNode(), TaskAction.FORWARD, errorContext);
+            workflowService.submitTask(errorPreProcessTask.getNode(), TaskAction.FORWARD, errorContext);
 
             // 2.2 执行风险子流程（应该会失败）
-            Task errorRiskyTask = workflowService.getTask(mainFlowWithErrorHandling.getId(), errorContext);
+            Task errorRiskyTask = workflowService.findTask(mainFlowWithErrorHandling.getId(), errorContext);
             assertNotNull(errorRiskyTask);
 
             System.out.println("执行会失败的风险子流程...");
             try {
-                workflowService.postTask(errorRiskyTask.getNode(), TaskAction.FORWARD, errorContext);
+                workflowService.submitTask(errorRiskyTask.getNode(), TaskAction.FORWARD, errorContext);
                 Thread.sleep(100);
 
                 // 检查错误状态
@@ -801,17 +801,17 @@ class WorkflowServiceMultiGraphTest {
             }
 
             // 2.3 继续执行决策网关
-            Task currentErrorTask = workflowService.getTask(mainFlowWithErrorHandling.getId(), errorContext);
+            Task currentErrorTask = workflowService.findTask(mainFlowWithErrorHandling.getId(), errorContext);
             if (currentErrorTask != null && "main_decision".equals(currentErrorTask.getNodeId())) {
                 System.out.println("执行决策网关（错误场景）...");
-                workflowService.postTask(currentErrorTask.getNode(), TaskAction.FORWARD, errorContext);
+                workflowService.submitTask(currentErrorTask.getNode(), TaskAction.FORWARD, errorContext);
             }
 
             // 2.4 继续执行后续任务
-            currentErrorTask = workflowService.getTask(mainFlowWithErrorHandling.getId(), errorContext);
+            currentErrorTask = workflowService.findTask(mainFlowWithErrorHandling.getId(), errorContext);
             if (currentErrorTask != null) {
                 System.out.println("执行后续任务: " + currentErrorTask.getNodeId());
-                workflowService.postTask(currentErrorTask.getNode(), TaskAction.FORWARD, errorContext);
+                workflowService.submitTask(currentErrorTask.getNode(), TaskAction.FORWARD, errorContext);
             }
 
             // 2.5 验证错误处理路径
@@ -887,7 +887,7 @@ class WorkflowServiceMultiGraphTest {
             simpleEngine.load(simpleSubGraph);
             simpleEngine.load(simpleMainGraph);
 
-            WorkflowService simpleWorkflowService = WorkflowService.of(
+            WorkflowExecutor simpleWorkflowService = WorkflowExecutor.of(
                     simpleEngine,
                     new BlockStateController(),
                     new InMemoryStateRepository()
@@ -897,9 +897,9 @@ class WorkflowServiceMultiGraphTest {
             FlowContext simpleContext = FlowContext.of(simpleInstanceId);
 
             // 执行测试
-            Task simpleTask = simpleWorkflowService.getTask("simple-main-graph", simpleContext);
+            Task simpleTask = simpleWorkflowService.findTask("simple-main-graph", simpleContext);
             if (simpleTask != null) {
-                simpleWorkflowService.postTask(simpleTask.getNode(), TaskAction.FORWARD, simpleContext);
+                simpleWorkflowService.submitTask(simpleTask.getNode(), TaskAction.FORWARD, simpleContext);
 
                 // 验证执行结果
                 assertTrue(simpleContext.<Boolean>getOrDefault("simpleSubDirectExecuted", false),
@@ -1362,7 +1362,7 @@ class WorkflowServiceMultiGraphTest {
         engine.load(userRegistrationFlow);    // 3. 用户图
 
         // 使用BlockStateController简化测试
-        WorkflowService workflowService = WorkflowService.of(
+        WorkflowExecutor workflowService = WorkflowExecutor.of(
                 engine,
                 new BlockStateController(), // 对所有节点都可操作
                 new InMemoryStateRepository()
@@ -1377,14 +1377,14 @@ class WorkflowServiceMultiGraphTest {
         orderContext.put("actor", "order_operator");
 
         // 5.1 获取并执行订单录入任务
-        Task orderInputTask = workflowService.getTask(orderProcessingFlow.getId(), orderContext);
+        Task orderInputTask = workflowService.findTask(orderProcessingFlow.getId(), orderContext);
         System.out.println("订单录入任务: " + (orderInputTask != null ? orderInputTask.getNodeId() : "null"));
 
         assertNotNull(orderInputTask, "订单录入任务应该存在");
         assertEquals("order_input", orderInputTask.getNodeId(), "应该是订单录入节点");
 
         System.out.println("执行订单录入...");
-        workflowService.postTask(orderInputTask.getNode(), TaskAction.FORWARD, orderContext);
+        workflowService.submitTask(orderInputTask.getNode(), TaskAction.FORWARD, orderContext);
 
         // 验证数据已正确设置
         assertNotNull(orderContext.getAs("orderData"), "应该有订单数据");
@@ -1392,7 +1392,7 @@ class WorkflowServiceMultiGraphTest {
         assertEquals("order-rules", orderContext.getAs("businessRules"), "业务规则应该是订单规则");
 
         // 5.2 获取并执行验证调用任务
-        Task orderValidationTask = workflowService.getTask(orderProcessingFlow.getId(), orderContext);
+        Task orderValidationTask = workflowService.findTask(orderProcessingFlow.getId(), orderContext);
         System.out.println("验证调用任务: " + (orderValidationTask != null ? orderValidationTask.getNodeId() : "null"));
 
         // 如果任务不存在，流程可能已经自动推进了
@@ -1406,7 +1406,7 @@ class WorkflowServiceMultiGraphTest {
                 System.out.println("验证已执行，继续下一步");
             } else {
                 // 尝试获取当前任务
-                Task currentTask = workflowService.getTask(orderProcessingFlow.getId(), orderContext);
+                Task currentTask = workflowService.findTask(orderProcessingFlow.getId(), orderContext);
                 if (currentTask != null) {
                     System.out.println("当前任务: " + currentTask.getNodeId());
                     orderValidationTask = currentTask;
@@ -1416,7 +1416,7 @@ class WorkflowServiceMultiGraphTest {
 
         if (orderValidationTask != null && "call_validation".equals(orderValidationTask.getNodeId())) {
             System.out.println("调用验证模板...");
-            workflowService.postTask(orderValidationTask.getNode(), TaskAction.FORWARD, orderContext);
+            workflowService.submitTask(orderValidationTask.getNode(), TaskAction.FORWARD, orderContext);
         }
 
         // 5.3 检查验证结果
@@ -1428,7 +1428,7 @@ class WorkflowServiceMultiGraphTest {
             System.out.println("验证结果为空，检查当前任务...");
 
             // 获取当前任务
-            Task currentTask = workflowService.getTask(orderProcessingFlow.getId(), orderContext);
+            Task currentTask = workflowService.findTask(orderProcessingFlow.getId(), orderContext);
             if (currentTask == null) {
                 System.out.println("当前任务为空，尝试获取后续任务...");
                 Collection<Task> nextTasks = workflowService.findNextTasks(orderProcessingFlow.getId(), orderContext);
@@ -1439,7 +1439,7 @@ class WorkflowServiceMultiGraphTest {
 
             if (currentTask != null) {
                 System.out.println("执行当前任务: " + currentTask.getNodeId());
-                workflowService.postTask(currentTask.getNode(), TaskAction.FORWARD, orderContext);
+                workflowService.submitTask(currentTask.getNode(), TaskAction.FORWARD, orderContext);
 
                 // 再次检查验证结果
                 validationResult = orderContext.getAs("validationResult");
@@ -1458,7 +1458,7 @@ class WorkflowServiceMultiGraphTest {
                 System.out.println("订单尚未处理，继续执行...");
 
                 // 获取并执行处理订单任务
-                Task processTask = workflowService.getTask(orderProcessingFlow.getId(), orderContext);
+                Task processTask = workflowService.findTask(orderProcessingFlow.getId(), orderContext);
                 if (processTask == null) {
                     Collection<Task> nextTasks = workflowService.findNextTasks(orderProcessingFlow.getId(), orderContext);
                     if (!nextTasks.isEmpty()) {
@@ -1468,7 +1468,7 @@ class WorkflowServiceMultiGraphTest {
 
                 if (processTask != null && "process_order".equals(processTask.getNodeId())) {
                     System.out.println("处理订单...");
-                    workflowService.postTask(processTask.getNode(), TaskAction.FORWARD, orderContext);
+                    workflowService.submitTask(processTask.getNode(), TaskAction.FORWARD, orderContext);
                 }
             }
 
@@ -1484,7 +1484,7 @@ class WorkflowServiceMultiGraphTest {
                 System.out.println("订单尚未拒绝，继续执行...");
 
                 // 获取并执行拒绝订单任务
-                Task rejectTask = workflowService.getTask(orderProcessingFlow.getId(), orderContext);
+                Task rejectTask = workflowService.findTask(orderProcessingFlow.getId(), orderContext);
                 if (rejectTask == null) {
                     Collection<Task> nextTasks = workflowService.findNextTasks(orderProcessingFlow.getId(), orderContext);
                     if (!nextTasks.isEmpty()) {
@@ -1494,7 +1494,7 @@ class WorkflowServiceMultiGraphTest {
 
                 if (rejectTask != null && "reject_order".equals(rejectTask.getNodeId())) {
                     System.out.println("拒绝订单...");
-                    workflowService.postTask(rejectTask.getNode(), TaskAction.FORWARD, orderContext);
+                    workflowService.submitTask(rejectTask.getNode(), TaskAction.FORWARD, orderContext);
                 }
             }
 
@@ -1519,21 +1519,21 @@ class WorkflowServiceMultiGraphTest {
         userContext.put("inputData", "ab"); // 长度只有2，应该失败
 
         // 6.1 获取并执行用户输入任务
-        Task userInputTask = workflowService.getTask(userRegistrationFlow.getId(), userContext);
+        Task userInputTask = workflowService.findTask(userRegistrationFlow.getId(), userContext);
         System.out.println("用户输入任务: " + (userInputTask != null ? userInputTask.getNodeId() : "null"));
 
         assertNotNull(userInputTask, "用户输入任务应该存在");
         assertEquals("user_input", userInputTask.getNodeId(), "应该是用户输入节点");
 
         System.out.println("执行用户输入...");
-        workflowService.postTask(userInputTask.getNode(), TaskAction.FORWARD, userContext);
+        workflowService.submitTask(userInputTask.getNode(), TaskAction.FORWARD, userContext);
 
         // 检查inputData是否被正确保留
         String currentInputData = userContext.getAs("inputData");
         System.out.println("用户输入后inputData: '" + currentInputData + "' (长度: " + (currentInputData != null ? currentInputData.length() : 0) + ")");
 
         // 6.2 获取并执行验证调用任务
-        Task userValidationTask = workflowService.getTask(userRegistrationFlow.getId(), userContext);
+        Task userValidationTask = workflowService.findTask(userRegistrationFlow.getId(), userContext);
         System.out.println("用户验证任务: " + (userValidationTask != null ? userValidationTask.getNodeId() : "null"));
 
         if (userValidationTask == null) {
@@ -1541,7 +1541,7 @@ class WorkflowServiceMultiGraphTest {
             String existingResult = userContext.getAs("validationResult");
             if (existingResult == null) {
                 // 获取当前任务
-                Task currentTask = workflowService.getTask(userRegistrationFlow.getId(), userContext);
+                Task currentTask = workflowService.findTask(userRegistrationFlow.getId(), userContext);
                 if (currentTask != null) {
                     userValidationTask = currentTask;
                 }
@@ -1550,10 +1550,10 @@ class WorkflowServiceMultiGraphTest {
 
         if (userValidationTask != null && "call_validation".equals(userValidationTask.getNodeId())) {
             System.out.println("调用验证模板（预期失败）...");
-            workflowService.postTask(userValidationTask.getNode(), TaskAction.FORWARD, userContext);
+            workflowService.submitTask(userValidationTask.getNode(), TaskAction.FORWARD, userContext);
         } else if (userValidationTask != null) {
             System.out.println("当前任务不是call_validation，执行它: " + userValidationTask.getNodeId());
-            workflowService.postTask(userValidationTask.getNode(), TaskAction.FORWARD, userContext);
+            workflowService.submitTask(userValidationTask.getNode(), TaskAction.FORWARD, userContext);
         }
 
         // 6.3 检查验证结果
@@ -1562,10 +1562,10 @@ class WorkflowServiceMultiGraphTest {
 
         // 如果验证结果为空，继续执行
         if (userValidationResult == null) {
-            Task currentTask = workflowService.getTask(userRegistrationFlow.getId(), userContext);
+            Task currentTask = workflowService.findTask(userRegistrationFlow.getId(), userContext);
             if (currentTask != null) {
                 System.out.println("执行当前任务: " + currentTask.getNodeId());
-                workflowService.postTask(currentTask.getNode(), TaskAction.FORWARD, userContext);
+                workflowService.submitTask(currentTask.getNode(), TaskAction.FORWARD, userContext);
                 userValidationResult = userContext.getAs("validationResult");
                 System.out.println("执行后验证结果: " + userValidationResult);
             } else {
@@ -1599,7 +1599,7 @@ class WorkflowServiceMultiGraphTest {
         if ("FAILURE".equals(userValidationResult)) {
             // 验证用户注册被拒绝
             if (!Boolean.TRUE.equals(userContext.<Boolean>getAs("registrationRejected"))) {
-                Task rejectTask = workflowService.getTask(userRegistrationFlow.getId(), userContext);
+                Task rejectTask = workflowService.findTask(userRegistrationFlow.getId(), userContext);
                 if (rejectTask == null) {
                     Collection<Task> nextTasks = workflowService.findNextTasks(userRegistrationFlow.getId(), userContext);
                     if (!nextTasks.isEmpty()) {
@@ -1609,7 +1609,7 @@ class WorkflowServiceMultiGraphTest {
 
                 if (rejectTask != null && "reject_user".equals(rejectTask.getNodeId())) {
                     System.out.println("拒绝用户注册...");
-                    workflowService.postTask(rejectTask.getNode(), TaskAction.FORWARD, userContext);
+                    workflowService.submitTask(rejectTask.getNode(), TaskAction.FORWARD, userContext);
                 }
             }
 
@@ -1619,10 +1619,10 @@ class WorkflowServiceMultiGraphTest {
         } else if ("SUCCESS".equals(userValidationResult)) {
             // 如果验证成功，应该创建用户
             if (!Boolean.TRUE.equals(userContext.<Boolean>getAs("userCreated"))) {
-                Task createTask = workflowService.getTask(userRegistrationFlow.getId(), userContext);
+                Task createTask = workflowService.findTask(userRegistrationFlow.getId(), userContext);
                 if (createTask != null && "create_user".equals(createTask.getNodeId())) {
                     System.out.println("创建用户...");
-                    workflowService.postTask(createTask.getNode(), TaskAction.FORWARD, userContext);
+                    workflowService.submitTask(createTask.getNode(), TaskAction.FORWARD, userContext);
                 }
             }
 

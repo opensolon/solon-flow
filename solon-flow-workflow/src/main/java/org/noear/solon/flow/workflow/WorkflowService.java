@@ -25,7 +25,7 @@ import org.noear.solon.lang.Preview;
 import java.util.Collection;
 
 /**
- * 工作流服务（审批型工作流程服务）
+ * 工作流执行器
  *
  * <pre>{@code
  * WorkflowService workflow = WorkflowService.of(engine, WorkflowDriver.builder()
@@ -34,118 +34,29 @@ import java.util.Collection;
  *         .build());
  *
  *
- * //1. 取出任务
+ * //1. 获取任务
  * Task task = workflow.getTask(graph, context);
  *
  * //2. 提交任务
- * workflow.postTask(task.getNode(), TaskAction.FORWARD, context);
+ * workflow.submitTaskIfWaiting(task, TaskAction.FORWARD, context);
  * }</pre>
  *
  * @author noear
  * @since 3.4
  * @since 3.8
+ * @deprecated 3.8.1 {@link WorkflowExecutor}
  */
+@Deprecated
 @Preview("3.4")
-public interface WorkflowService {
+public interface WorkflowService extends WorkflowExecutor {
     static WorkflowService of(FlowEngine engine, StateController stateController, StateRepository stateRepository) {
-        return new WorkflowServiceDefault(engine, stateController, stateRepository);
+        return new WorkflowExecutorDefault(engine, stateController, stateRepository);
     }
 
     /**
      * 流程引擎
      */
     FlowEngine engine();
-
-    /**
-     * 状态控制器
-     */
-    StateController stateController();
-
-    /**
-     * 状态仓库
-     */
-    StateRepository stateRepository();
-
-
-    /// ////////////////////////////////
-
-    /**
-     * 提交任务（如果当前任务为等待介入）
-     *
-     * @param task    任务
-     * @param action  动作
-     * @param context 流上下文
-     */
-    boolean postTaskIfWaiting(Task task, TaskAction action, FlowContext context);
-
-    /**
-     * 提交任务
-     *
-     * @param graphId 图id
-     * @param nodeId  节点id
-     * @param action  动作
-     * @param context 流上下文
-     */
-    void postTask(String graphId, String nodeId, TaskAction action, FlowContext context);
-
-    /**
-     * 提交任务
-     *
-     * @param graph   图
-     * @param nodeId  节点id
-     * @param action  动作
-     * @param context 流上下文
-     */
-    void postTask(Graph graph, String nodeId, TaskAction action, FlowContext context);
-
-    /**
-     * 提交任务
-     *
-     * @param node    节点
-     * @param action  动作
-     * @param context 流上下文
-     */
-    void postTask(Node node, TaskAction action, FlowContext context);
-
-
-    /// ////////////////////////////////
-
-    /**
-     * 获取后续任务列表
-     *
-     * @param graphId 图id
-     * @param context 流上下文（不需要有人员配置）
-     */
-    Collection<Task> findNextTasks(String graphId, FlowContext context);
-
-    /**
-     * 获取后续任务列表
-     *
-     * @param graph   图
-     * @param context 流上下文（不需要有人员配置）
-     */
-    Collection<Task> findNextTasks(Graph graph, FlowContext context);
-
-
-    /**
-     * 获取当前任务
-     *
-     * @param graphId 图id
-     * @param context 流上下文（要有人员配置）
-     */
-    @Nullable
-    Task getTask(String graphId, FlowContext context);
-
-    /**
-     * 获取当前任务
-     *
-     * @param graph   图
-     * @param context 流上下文（要有人员配置）
-     */
-    @Nullable
-    Task getTask(Graph graph, FlowContext context);
-
-    /// ////////////////////////////////
 
     /**
      * 获取状态
@@ -155,9 +66,34 @@ public interface WorkflowService {
 
     /// ////////////////////////////////
 
+    /**
+     * 寻找当前活动任务
+     *
+     * @param graphId 图id
+     * @param context 流上下文（要有人员配置）
+     * @deprecated 3.8.1 {@link #findTask(String, FlowContext)}
+     */
+    @Deprecated
+    @Nullable
+    default Task getTask(String graphId, FlowContext context) {
+        return findTask(graphId, context);
+    }
 
     /**
-     * 获取后续任务列表
+     * 寻找当前活动任务
+     *
+     * @param graph   图
+     * @param context 流上下文（要有人员配置）
+     * @deprecated 3.8.1 {@link #findTask(Graph, FlowContext)}
+     */
+    @Deprecated
+    @Nullable
+    default Task getTask(Graph graph, FlowContext context) {
+        return findTask(graph, context);
+    }
+
+    /**
+     * 寻找后续可达任务列表
      *
      * @param graphId 图id
      * @param context 流上下文（不需要有人员配置）
@@ -169,7 +105,7 @@ public interface WorkflowService {
     }
 
     /**
-     * 获取后续任务列表
+     * 寻找后续可达任务列表
      *
      * @param graph   图
      * @param context 流上下文（不需要有人员配置）
@@ -180,4 +116,83 @@ public interface WorkflowService {
         return findNextTasks(graph, context);
     }
 
+
+    /**
+     * 提交任务（如果当前任务为等待介入）
+     *
+     * @param task    任务
+     * @param action  动作
+     * @param context 流上下文
+     * @deprecated 3.8.1 {@link #submitTaskIfWaiting(Task, TaskAction, FlowContext)}
+     */
+    @Deprecated
+    default boolean postTaskIfWaiting(Task task, TaskAction action, FlowContext context) {
+        return submitTaskIfWaiting(task, action, context);
+    }
+
+    /**
+     * 提交任务
+     *
+     * @param graphId 图id
+     * @param nodeId  节点id
+     * @param action  动作
+     * @param context 流上下文
+     * @deprecated 3.8.1 {@link #submitTask(String, String, TaskAction, FlowContext)}
+     */
+    @Deprecated
+    default void postTask(String graphId, String nodeId, TaskAction action, FlowContext context) {
+        submitTask(graphId, nodeId, action, context);
+    }
+
+    /**
+     * 提交任务
+     *
+     * @param graph   图
+     * @param nodeId  节点id
+     * @param action  动作
+     * @param context 流上下文
+     * @deprecated 3.8.1 {@link #submitTask(Graph, String, TaskAction, FlowContext)}
+     */
+    @Deprecated
+    default void postTask(Graph graph, String nodeId, TaskAction action, FlowContext context) {
+        submitTask(graph, nodeId, action, context);
+    }
+
+    /**
+     * 提交任务
+     *
+     * @param node    节点
+     * @param action  动作
+     * @param context 流上下文
+     * @deprecated 3.8.1 {@link #submitTask(Node, TaskAction, FlowContext)}
+     */
+    @Deprecated
+    default void postTask(Node node, TaskAction action, FlowContext context) {
+        submitTask(node, action, context);
+    }
+
+
+    /**
+     * 清空状态（主要方便测试）
+     *
+     * @param graphId 图id
+     * @param context 流上下文
+     * @deprecated 3.8.1 {@link #stateRepository()}
+     */
+    @Deprecated
+    default void clearState(String graphId, FlowContext context) {
+        stateRepository().stateClear(context);
+    }
+
+    /**
+     * 清空状态（主要方便测试）
+     *
+     * @param graph   图
+     * @param context 流上下文
+     * @deprecated 3.8.1 {@link #stateRepository()}
+     */
+    @Deprecated
+    default void clearState(Graph graph, FlowContext context) {
+        stateRepository().stateClear(context);
+    }
 }

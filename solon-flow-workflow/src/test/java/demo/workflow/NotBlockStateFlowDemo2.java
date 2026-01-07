@@ -11,7 +11,7 @@ import org.noear.solon.flow.workflow.TaskState;
 import org.noear.solon.flow.workflow.Task;
 import org.noear.solon.flow.workflow.controller.NotBlockStateController;
 import org.noear.solon.flow.workflow.repository.InMemoryStateRepository;
-import org.noear.solon.flow.workflow.WorkflowService;
+import org.noear.solon.flow.workflow.WorkflowExecutor;
 
 /**
  *
@@ -36,13 +36,13 @@ public class NotBlockStateFlowDemo2 {
     public void case1() {
         //计算后，可获取最新状态
 
-        WorkflowService workflow = WorkflowService.of(FlowEngine.newInstance(), stateController, stateRepository);
+        WorkflowExecutor workflow = WorkflowExecutor.of(FlowEngine.newInstance(), stateController, stateRepository);
         Graph graph = getGraph();
 
         FlowContext context = FlowContext.of("3")
                 .put("tag", "");
 
-        Task task = workflow.getTask(graph, context);
+        Task task = workflow.findTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n3", task.getNode().getId());
@@ -51,14 +51,14 @@ public class NotBlockStateFlowDemo2 {
         context = FlowContext.of("4")
                 .put("tag", "n1");
 
-        task = workflow.getTask(graph, context);
+        task = workflow.findTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n1", task.getNode().getId());
         Assertions.assertEquals(TaskState.WAITING, task.getState());
 
         //再跑（仍在原位、原状态）
-        task = workflow.getTask(graph, context);
+        task = workflow.findTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n1", task.getNode().getId());
@@ -67,7 +67,7 @@ public class NotBlockStateFlowDemo2 {
 
         context.put("tag", "n2");
 
-        task = workflow.getTask(graph, context);
+        task = workflow.findTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n2", task.getNode().getId());
@@ -75,7 +75,7 @@ public class NotBlockStateFlowDemo2 {
 
         context.put("tag", "");
 
-        task = workflow.getTask(graph, context);
+        task = workflow.findTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n3", task.getNode().getId());
