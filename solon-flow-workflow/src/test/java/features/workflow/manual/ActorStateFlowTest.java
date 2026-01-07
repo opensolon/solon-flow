@@ -64,7 +64,7 @@ public class ActorStateFlowTest {
 
 
         context = getFlowContext("dm");
-        Collection<Task> tasks = workflow.getNextTasks(graphId, context);
+        Collection<Task> tasks = workflow.findNextTasks(graphId, context);
         for (Task task1 : tasks) {
             context = getFlowContext("dm");
             context.put("amount", amount);
@@ -83,6 +83,6 @@ public class ActorStateFlowTest {
 
     private Collection<Task> getEmailNode(WorkflowService flowEngine) {
         FlowContext flowContext = getFlowContext("oa");
-        return flowEngine.getNextTasks(graphId, flowContext);
+        return flowEngine.findNextTasks(graphId, flowContext);
     }
 }

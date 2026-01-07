@@ -2,10 +2,6 @@ package features.workflow.generated;
 
 import org.junit.jupiter.api.Test;
 import org.noear.solon.flow.*;
-import org.noear.solon.flow.container.MapContainer;
-import org.noear.solon.flow.driver.SimpleFlowDriver;
-import org.noear.solon.flow.intercept.FlowInterceptor;
-import org.noear.solon.flow.intercept.FlowInvocation;
 import org.noear.solon.flow.workflow.*;
 import org.noear.solon.flow.workflow.controller.ActorStateController;
 import org.noear.solon.flow.workflow.controller.BlockStateController;
@@ -1435,7 +1431,7 @@ class WorkflowServiceMultiGraphTest {
             Task currentTask = workflowService.getTask(orderProcessingFlow.getId(), orderContext);
             if (currentTask == null) {
                 System.out.println("当前任务为空，尝试获取后续任务...");
-                Collection<Task> nextTasks = workflowService.getNextTasks(orderProcessingFlow.getId(), orderContext);
+                Collection<Task> nextTasks = workflowService.findNextTasks(orderProcessingFlow.getId(), orderContext);
                 if (!nextTasks.isEmpty()) {
                     currentTask = nextTasks.iterator().next();
                 }
@@ -1464,7 +1460,7 @@ class WorkflowServiceMultiGraphTest {
                 // 获取并执行处理订单任务
                 Task processTask = workflowService.getTask(orderProcessingFlow.getId(), orderContext);
                 if (processTask == null) {
-                    Collection<Task> nextTasks = workflowService.getNextTasks(orderProcessingFlow.getId(), orderContext);
+                    Collection<Task> nextTasks = workflowService.findNextTasks(orderProcessingFlow.getId(), orderContext);
                     if (!nextTasks.isEmpty()) {
                         processTask = nextTasks.iterator().next();
                     }
@@ -1490,7 +1486,7 @@ class WorkflowServiceMultiGraphTest {
                 // 获取并执行拒绝订单任务
                 Task rejectTask = workflowService.getTask(orderProcessingFlow.getId(), orderContext);
                 if (rejectTask == null) {
-                    Collection<Task> nextTasks = workflowService.getNextTasks(orderProcessingFlow.getId(), orderContext);
+                    Collection<Task> nextTasks = workflowService.findNextTasks(orderProcessingFlow.getId(), orderContext);
                     if (!nextTasks.isEmpty()) {
                         rejectTask = nextTasks.iterator().next();
                     }
@@ -1605,7 +1601,7 @@ class WorkflowServiceMultiGraphTest {
             if (!Boolean.TRUE.equals(userContext.<Boolean>getAs("registrationRejected"))) {
                 Task rejectTask = workflowService.getTask(userRegistrationFlow.getId(), userContext);
                 if (rejectTask == null) {
-                    Collection<Task> nextTasks = workflowService.getNextTasks(userRegistrationFlow.getId(), userContext);
+                    Collection<Task> nextTasks = workflowService.findNextTasks(userRegistrationFlow.getId(), userContext);
                     if (!nextTasks.isEmpty()) {
                         rejectTask = nextTasks.iterator().next();
                     }

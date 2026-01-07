@@ -98,12 +98,12 @@ public class OaFlowTest {
 
 
         context = getContext(null);
-        Collection<Task> nodes = workflow.getNextTasks(graphId, context);
+        Collection<Task> nodes = workflow.findNextTasks(graphId, context);
         assert nodes.size() == 2;
         assert 0 == nodes.stream().filter(n -> n.getState() == TaskState.WAITING).count();
 
         context = getContext("陈宇");
-        nodes = workflow.getNextTasks(graphId, context);
+        nodes = workflow.findNextTasks(graphId, context);
         assert nodes.size() == 2;
         assert 1 == nodes.stream().filter(n -> n.getState() == TaskState.WAITING).count();
 

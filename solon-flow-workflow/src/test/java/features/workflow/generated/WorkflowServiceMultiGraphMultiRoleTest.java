@@ -4,7 +4,6 @@ import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.Node;
-import org.noear.solon.flow.NodeType;
 import org.noear.solon.flow.workflow.*;
 import org.noear.solon.flow.workflow.controller.ActorStateController;
 import org.noear.solon.flow.workflow.repository.InMemoryStateRepository;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -282,7 +280,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 3. 验证进入并行网关，获取并行任务
         FlowContext systemContext = deptManagerContext;
-        Collection<Task> parallelTasks = workflowService.getNextTasks(MAIN_APPROVAL_GRAPH_ID, systemContext);
+        Collection<Task> parallelTasks = workflowService.findNextTasks(MAIN_APPROVAL_GRAPH_ID, systemContext);
         assertEquals(2, parallelTasks.size()); // 应该有技术评审和财务评审两个任务
 
         // 4. 技术负责人进行技术评审
@@ -291,7 +289,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
                 .put("techLeaderId", "tech_001");
 
         // 获取技术评审子图中的任务
-        Collection<Task> techReviewTasks = workflowService.getNextTasks(TECH_REVIEW_GRAPH_ID, techLeaderContext);
+        Collection<Task> techReviewTasks = workflowService.findNextTasks(TECH_REVIEW_GRAPH_ID, techLeaderContext);
         assertFalse(techReviewTasks.isEmpty());
 
         // 技术负责人完成技术评审
@@ -300,7 +298,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         }
 
         // 技术评审有多个阶段，继续执行剩余任务
-        techReviewTasks = workflowService.getNextTasks(TECH_REVIEW_GRAPH_ID, techLeaderContext);
+        techReviewTasks = workflowService.findNextTasks(TECH_REVIEW_GRAPH_ID, techLeaderContext);
         assertFalse(techReviewTasks.isEmpty());
         for (Task task : techReviewTasks) {
             workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, techLeaderContext);
@@ -313,7 +311,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
                 .put("amount", 150000); // 设置金额触发额外审批
 
         // 获取财务评审子图中的任务
-        Collection<Task> financeReviewTasks = workflowService.getNextTasks(FINANCE_REVIEW_GRAPH_ID, financeLeaderContext);
+        Collection<Task> financeReviewTasks = workflowService.findNextTasks(FINANCE_REVIEW_GRAPH_ID, financeLeaderContext);
 
         // 财务负责人完成财务评审（由于金额较大，会触发额外审批路径）
         for (Task task : financeReviewTasks) {
@@ -321,7 +319,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         }
 
         // 子图预算评审（仍由财务负责人执行）
-        financeReviewTasks = workflowService.getNextTasks(FINANCE_REVIEW_GRAPH_ID, financeLeaderContext);
+        financeReviewTasks = workflowService.findNextTasks(FINANCE_REVIEW_GRAPH_ID, financeLeaderContext);
         for (Task task : financeReviewTasks) {
             workflowService.postTaskIfWaiting(task, TaskAction.FORWARD, financeLeaderContext);
         }
@@ -393,11 +391,11 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
                 .put("amount", 50000);
 
         // 获取技术评审任务
-        Collection<Task> techTasks = workflowService.getNextTasks(TECH_REVIEW_GRAPH_ID, techContext);
+        Collection<Task> techTasks = workflowService.findNextTasks(TECH_REVIEW_GRAPH_ID, techContext);
         assertEquals(1, techTasks.size());
 
         // 获取财务评审任务
-        Collection<Task> financeTasks = workflowService.getNextTasks(FINANCE_REVIEW_GRAPH_ID, financeContext);
+        Collection<Task> financeTasks = workflowService.findNextTasks(FINANCE_REVIEW_GRAPH_ID, financeContext);
         assertEquals(1, financeTasks.size());
 
         // 并行执行技术评审
@@ -546,7 +544,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 验证不会进入总经理审批节点
         FlowContext checkContext = context;
-        Collection<Task> tasks = workflowService.getNextTasks(MAIN_APPROVAL_GRAPH_ID, checkContext);
+        Collection<Task> tasks = workflowService.findNextTasks(MAIN_APPROVAL_GRAPH_ID, checkContext);
 
         boolean hasGeneralManagerTask = tasks.stream()
                 .anyMatch(t -> "general_manager_approval".equals(t.getNodeId()));
@@ -573,20 +571,20 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
         workflowService.postTask(task.getNode(), TaskAction.FORWARD, context);
 
         // 执行技术方案评审和预算评审
-        Collection<Task> tasks = workflowService.getNextTasks(MAIN_APPROVAL_GRAPH_ID, context);
+        Collection<Task> tasks = workflowService.findNextTasks(MAIN_APPROVAL_GRAPH_ID, context);
         for (Task task1 : tasks) {
             workflowService.postTask(task1.getNode(), TaskAction.FORWARD, context);
         }
 
         // 触发额外评审路径
-        tasks = workflowService.getNextTasks(MAIN_APPROVAL_GRAPH_ID, context);
+        tasks = workflowService.findNextTasks(MAIN_APPROVAL_GRAPH_ID, context);
         for (Task task1 : tasks) {
             workflowService.postTask(task1.getNode(), TaskAction.FORWARD, context);
         }
 
         // 验证会进入总经理审批节点
         FlowContext checkContext = context;
-        tasks = workflowService.getNextTasks(MAIN_APPROVAL_GRAPH_ID, checkContext);
+        tasks = workflowService.findNextTasks(MAIN_APPROVAL_GRAPH_ID, checkContext);
 
         boolean hasGeneralManagerTask = tasks.stream()
                 .anyMatch(t -> "general_manager_approval".equals(t.getNodeId()));
@@ -625,7 +623,7 @@ public class WorkflowServiceMultiGraphMultiRoleTest {
 
         // 验证流程可以继续执行
         FlowContext checkContext = FlowContext.of(instanceId);
-        Collection<Task> tasks = workflowService.getNextTasks(MAIN_APPROVAL_GRAPH_ID, checkContext);
+        Collection<Task> tasks = workflowService.findNextTasks(MAIN_APPROVAL_GRAPH_ID, checkContext);
         assertFalse(tasks.isEmpty());
     }
 }

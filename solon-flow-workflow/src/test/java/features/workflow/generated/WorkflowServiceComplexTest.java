@@ -71,7 +71,7 @@ class WorkflowServiceComplexTest {
         FlowContext context = FlowContext.of("test-instance");
 
         // 获取所有任务
-        Collection<Task> tasks = workflowService.getNextTasks("complex-test", context);
+        Collection<Task> tasks = workflowService.findNextTasks("complex-test", context);
 
         assertNotNull(tasks);
         assertEquals(2, tasks.size());
@@ -89,7 +89,7 @@ class WorkflowServiceComplexTest {
         context.put("actor", "user1");
 
         // 获取所有任务
-        Collection<Task> tasks = workflowService.getNextTasks("complex-test", context);
+        Collection<Task> tasks = workflowService.findNextTasks("complex-test", context);
 
         assertNotNull(tasks);
         assertEquals(2, tasks.size());

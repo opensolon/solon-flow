@@ -163,8 +163,8 @@ public class WorkflowServiceDefault implements WorkflowService {
      * @param context 流上下文（不需要有参与者配置）
      */
     @Override
-    public Collection<Task> getNextTasks(String graphId, FlowContext context) {
-        return getNextTasks(engine.getGraphOrThrow(graphId), context);
+    public Collection<Task> findNextTasks(String graphId, FlowContext context) {
+        return findNextTasks(engine.getGraphOrThrow(graphId), context);
     }
 
     /**
@@ -173,7 +173,7 @@ public class WorkflowServiceDefault implements WorkflowService {
      * @param context 流上下文（不需要有参与者配置）
      */
     @Override
-    public Collection<Task> getNextTasks(Graph graph, FlowContext context) {
+    public Collection<Task> findNextTasks(Graph graph, FlowContext context) {
         FlowDriver driver = getDriver(graph);
 
         FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));

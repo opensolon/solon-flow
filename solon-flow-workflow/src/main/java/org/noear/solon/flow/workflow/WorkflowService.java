@@ -106,7 +106,7 @@ public interface WorkflowService {
      * @param graphId 图id
      * @param context 流上下文（不需要有人员配置）
      */
-    Collection<Task> getNextTasks(String graphId, FlowContext context);
+    Collection<Task> findNextTasks(String graphId, FlowContext context);
 
     /**
      * 获取后续任务列表
@@ -114,7 +114,7 @@ public interface WorkflowService {
      * @param graph   图
      * @param context 流上下文（不需要有人员配置）
      */
-    Collection<Task> getNextTasks(Graph graph, FlowContext context);
+    Collection<Task> findNextTasks(Graph graph, FlowContext context);
 
 
     /**
@@ -122,11 +122,11 @@ public interface WorkflowService {
      *
      * @param graphId 图id
      * @param context 流上下文（不需要有人员配置）
-     * @deprecated 3.8.1 {@link #getNextTasks(String, FlowContext)}
+     * @deprecated 3.8.1 {@link #findNextTasks(String, FlowContext)}
      */
     @Deprecated
     default Collection<Task> getTasks(String graphId, FlowContext context){
-        return getNextTasks(graphId, context);
+        return findNextTasks(graphId, context);
     }
 
     /**
@@ -134,11 +134,11 @@ public interface WorkflowService {
      *
      * @param graph   图
      * @param context 流上下文（不需要有人员配置）
-     * @deprecated 3.8.1 {@link #getNextTasks(Graph, FlowContext)}
+     * @deprecated 3.8.1 {@link #findNextTasks(Graph, FlowContext)}
      */
     @Deprecated
     default Collection<Task> getTasks(Graph graph, FlowContext context){
-        return getNextTasks(graph, context);
+        return findNextTasks(graph, context);
     }
 
 

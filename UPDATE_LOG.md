@@ -13,7 +13,7 @@
 * 添加 `solon-flow` FlowContext.isStopped 方法（用于外部检测）
 * 添加 `solon-flow` NamedTaskComponent 接口，方便智能体开发
 * 添加 `solon-flow` 多图多引擎状态记录与序列化支持
-* 添加 `solon-flow-workflow` WorkflowService.getNextTasks 替代 getTasks（后者标为弃用）
+* 添加 `solon-flow-workflow` WorkflowService.findNextTasks 替代 getTasks（后者标为弃用）
 * 添加 `solon-flow-workflow` WorkflowCommand 替代之前的临时变量（扩展更方便）
 * 优化 `solon-flow` FlowContext 接口设计，并增加持久化辅助方法
 * 优化 `solon-flow` FlowContext.eventBus 内部实现改为字段模式
