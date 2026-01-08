@@ -53,14 +53,14 @@
 
 WorkflowExecutor （更清晰的）接口对照表：
 
-| WorkflowExecutor 新接口 | WorkflowService 旧接口 | 备注                                 |
-|----------------------|---------------------|------------------------------------|
-| claimTask            | getTask             | 认领任务：权限匹配 + 状态激活                   |
-| findTask             | getTask             | 查询任务                               |
-|                      | getTask             | 原来的功能混优，新的拆解成 claimTask 和 findTask |
-| findNextTasks        | getTasks            | 查询下一步任务列表                          |
-| getState             | getState            | 获取状态                               |
-| submitTask           | postTask            | 提交任务                               |
+| WorkflowService 旧接口  | WorkflowExecutor 新接口   | 备注                                 |
+|----------------------|------------------------|------------------------------------|
+| getTask              | claimTask              | 认领任务：权限匹配 + 状态激活                   |
+| getTask              | findTask               | 查询任务                               |
+| getTask              | /                      | 原来的功能混优，新的拆解成 claimTask 和 findTask |
+| getTasks             | findNextTasks          | 查询下一步任务列表                          |
+| getState             | getState               | 获取状态                               |
+| postTask             | submitTask             | 提交任务                               |
 
 
 
