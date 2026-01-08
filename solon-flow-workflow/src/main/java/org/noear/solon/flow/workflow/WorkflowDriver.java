@@ -91,7 +91,7 @@ public class WorkflowDriver implements FlowDriver {
                     intent.task = task;
 
                     //添加状态
-                    if (state != TaskState.WAITING) {
+                    if (state == TaskState.UNKNOWN) {
                         stateRepository.statePut(exchanger.context(), taskDesc.getNode(), TaskState.WAITING);
                     }
                 } else {
@@ -128,7 +128,7 @@ public class WorkflowDriver implements FlowDriver {
                     intent.nextTasks.add(task);
 
                     //添加状态
-                    if (state != TaskState.WAITING) {
+                    if (state == TaskState.UNKNOWN) {
                         stateRepository.statePut(exchanger.context(), taskDesc.getNode(), TaskState.WAITING);
                     }
 
