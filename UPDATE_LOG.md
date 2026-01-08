@@ -8,6 +8,7 @@
 * 添加 `solon-flow` FlowContext:toJson,fromJson 序列化方法（方便持久化和恢复）
 * 添加 `solon-flow` NodeTrace 类
 * 添加 `solon-flow` NodeSpec.then 方法
+* 添加 `solon-flow` FlowEngine.then 方法
 * 添加 `solon-flow` FlowContext.with 方法（强调方法域内的变量）
 * 添加 `solon-flow` FlowContext.containsKey 方法
 * 添加 `solon-flow` FlowContext.isStopped 方法（用于外部检测）
@@ -22,7 +23,6 @@
 * 优化 `solon-flow` loop 类型节点改为自由流出像 activity 一样
 * 优化 `solon-flow` 引擎的 onNodeEnd 执行时机（改为任务执行之后，连接流出之前）
 * 优化 `solon-flow` 引擎的 onNodeStart 执行时机（改为任务执行之前，连接流入之后）
-* 优化 `solon-flow` 在 onNodeEnd 时添加 FlowContext.lastNode 记录（跨流执行后再次恢复）
 * 优化 `solon-flow` 引擎的 reverting 处理（支持跨引擎多图场景）
 * 优化 `solon-flow` Node,Link toString 处理（加 whenComponent）
 * 优化 `solon-flow` FlowExchanger.runGraph 如果子图没有结束，则当前分支中断

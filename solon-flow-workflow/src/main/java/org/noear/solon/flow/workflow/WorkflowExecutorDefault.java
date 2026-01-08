@@ -82,7 +82,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
             FlowDriver driver = getDriver(graph);
 
             FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
-            exchanger.recordNode(graph, graph.getStart());
+            exchanger.recordClear();
 
             engine.eval(graph, exchanger);
         });
@@ -98,7 +98,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
             FlowDriver driver = getDriver(graph);
 
             FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
-            exchanger.recordNode(graph, graph.getStart());
+            exchanger.recordClear();
 
             engine.eval(graph, exchanger);
         });
@@ -119,7 +119,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
             FlowDriver driver = getDriver(graph);
 
             FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
-            exchanger.recordNode(graph, graph.getStart());
+            exchanger.recordClear();
 
             engine.eval(graph, exchanger);
         });
@@ -287,7 +287,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowServic
                 if (nextNode != null) {
                     if (stateController.isAutoForward(exchanger.context(), nextNode)) {
                         //如果要自动前进
-                        exchanger.recordNode(nextNode.getGraph(), nextNode);
+                        exchanger.recordClear();
                         engine.eval(nextNode.getGraph(), exchanger.copy(nextNode.getGraph()).reverting(false));
                     }
                 }

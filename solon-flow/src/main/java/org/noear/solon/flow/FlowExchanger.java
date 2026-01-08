@@ -120,6 +120,13 @@ public class FlowExchanger {
     }
 
     /**
+     * 记录清理
+     */
+    public void recordClear() {
+        context.trace().clear();
+    }
+
+    /**
      * 运行图
      *
      * @param graph 图

@@ -310,7 +310,7 @@ public class FlowEngineDefault implements FlowEngine {
             }
         } else {
             //提前记录，方便下次进来
-            exchanger.context().trace().recordNode(node.getGraph(), node);
+            exchanger.recordNode(node.getGraph(), node);
         }
 
         //步进控制
