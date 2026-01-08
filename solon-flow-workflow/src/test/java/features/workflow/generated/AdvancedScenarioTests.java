@@ -167,7 +167,7 @@ class AdvancedScenarioTests {
             spec.addActivity("path2").title("路径2-A").linkAdd("path2-B");
             spec.addActivity("path2-B").title("路径2-B").linkAdd("merge");
 
-            spec.addParallel("merge").title("合并网关").linkAdd("final");
+            spec.addExclusive("merge").title("合并网关").linkAdd("final");
             spec.addActivity("final").title("最终任务").linkAdd("end");
             spec.addEnd("end").title("结束");
         });
@@ -182,13 +182,13 @@ class AdvancedScenarioTests {
         Task task1 = workflow.claimTask("complex-jump", context1);
         assertEquals("path1", task1.getNodeId());
 
-        // 跳转到路径2-B
+        // 跳转到路径2-B（跳不过去的）
         workflow.submitTask("complex-jump", "path2-B", TaskAction.FORWARD_JUMP, context1);
 
         // 验证：path1和path1-B应该自动完成，当前在path2-B
         assertEquals(TaskState.COMPLETED, workflow.getState(graph.getNode("path1"), context1));
         assertEquals(TaskState.COMPLETED, workflow.getState(graph.getNode("path1-B"), context1));
-        assertEquals(TaskState.UNKNOWN, workflow.getState(graph.getNode("path2-B"), context1));
+        assertEquals(TaskState.UNKNOWN, workflow.getState(graph.getNode("path2-B"), context1)); //（分支条件不符）跳不过去的
 
         // 测试场景2：跨网关跳转
         FlowContext context2 = FlowContext.of("jump-scenario-2");
