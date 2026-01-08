@@ -4,24 +4,25 @@
 
 Action 效果说明：
 
-| 动作 (Action)  | 中间节点处理 (A, B) | 目标节点 C 的最终状态 | 流程停留在哪里？ | 业务语义               |
-|--------------|---------------|--------------|----------|--------------------|
-| FORWARD      | /             | COMPLETED    | C 的下一步   | 正常办理。              |
-| FORWARD_JUMP | 标记为 COMPLETED | WAITING      | 停在 C     | 跨级指派：跳过中间，指派 C 办理。 |
-| BACK         | /             | REMOVED(无状态)      | C 的前一步   | 常规退回。              |
-| BACK_JUMP    | 状态被 REMOVED   | WAITING      | 停在 C     | 指定驳回：撤销中间，要求 C 重办。 |
-| RESTART      | 全部 REMOVED    | REMOVED      | 流程起点     | 清空所有状态，回到初始位置。     |
-| TERMINATE      | /             | TERMINATE      | 停在 C      | 之后，流程不能再前进。        |
+| 动作 (Action)  | 中间节点处理 (A, B) | 目标节点 C 的最终状态   | 流程停留在哪里？ | 业务语义                                 |
+|--------------|---------------|----------------|----------|--------------------------------------|
+| FORWARD      | /             | COMPLETED      | C 的下一步   | 正常办理：完成当前节点并流转。                      |
+| FORWARD_JUMP | 标记为 COMPLETED | WAITING        | 停在 C     | 跨级指派：跳过中间环节，直接让 C 变为待办。              |
+| BACK         | /             | REMOVED(无状态)   | C 的前一步   | 常规退回：撤销当前步，使前驱节点重新激活。                |
+| BACK_JUMP    | 状态被 REMOVED   | WAITING        | 停在 C     | 指定驳回：撤销中间节点状态，要求 C 重办。               |
+| RESTART      | 全部 REMOVED    | REMOVED        | 流程起点     | 全线撤回：清空所有状态，回到 StartNode。            |
+| TERMINATE    | /             | TERMINATE      | 停在 C     | 终止流程：之后 forwardHandle 会检测到该状态并停止。    |
 
 WorkflowExecutor 方法说明：
 
 
-| 方法名           | 核心行为      | 副作用        | 业务语义                                                                           |
-|---------------|-----------|------------|--------------------------------------------------------------------------------|
-| claimTask     | 权限匹配+激活   | 写入 WAITING | 认领：如果节点是可操作的且状态是 UNKNOWN 或 WAITING 则认领成功，该节点在 StateRepository 中会变为 WAITING 状态。 |
-| findTask      | 逻辑探测      | /          | 查询：如果节点状态是 UNKNOWN 或 WAITING 或 TERMINATE 则查找成功（或者返回最后一个节点。BACK_JUMP 时会用到）      |
-| findNextTasks | 全量路径探测    |            | 查询下一步：多分支查询，如果节点状态是 UNKNOWN 或 WAITING。                                         |
-| getState      | 快照查询      | /          | 获取指定节点在 StateRepository 中的当前状态。                                                |
+| 方法名                 | 核心行为        | 副作用        | 开发者视角语义                                                              |
+|---------------------|-------------|------------|----------------------------------------------------------------------|
+| claimTask           | 权限匹配 + 状态激活 | 写入 WAITING | 认领：从起点开始 eval。若碰撞到 UNKNOWN 节点且 isOperatable 为真，则通过 statePut 将其激活为 WAITING。它是任务从“理论存在”变为“数据库待办”的转折点。              |
+| findTask            | 逻辑位置探测      | /          | 查询：模拟执行流程图。返回当前路径上第一个活跃节点（状态为 WAITING/COMPLETED/TERMINATED）。它不校验权限，只负责告诉调用者“流程逻辑上现在停在哪”。 |
+| findNextTasks       | 全量路径扫描      |            | 预测下一步：深度遍历所有可能的分支。忽略权限和当前停顿，扫描所有 UNKNOWN 或 WAITING 的任务点。常用于渲染流程图的“预测轨迹”或处理并行网关（Join/Fork）的探测。                               |
+| getState            | 仓库快照查询      | /          | 查看状态：直接根据 context 和 nodeId 从 StateRepository 中拉取状态枚举。它是最轻量级的检查手段。                                   |
+| submitTask          | 状态机驱动       | 写入最新状态     | 流程推进：流转的唯一入口。根据 TaskAction 执行 forwardHandle 或 backHandle。它会触发 postHandleTask 业务钩子，并持久化新状态，从而改变后续 findTask 的探测结果。                                                        |
 
 
 
