@@ -37,14 +37,14 @@ import java.util.Collection;
  * // 1. 创建执行器
  * WorkflowExecutor workflow = WorkflowExecutor.of(engine, controller, repository);
  *
- * // 2. 匹配当前任务（检查是否有待处理任务）
- * Task current = workflow.matchTask(graph, context);
+ * // 2. 认领任务（检查是否有可操作的待处理任务）
+ * Task current = workflow.claimTask(graph, context);
  * if (current != null) {
  *     // 3. 提交任务处理
  *     workflow.submitTask(current, TaskAction.FORWARD, context);
  * }
  *
- * // 4. 查找后续可能任务
+ * // 4. 查找后续可能任务（下一步）
  * Collection<Task> nextTasks = workflow.findNextTasks(graph, context);
  * }</pre>
  *

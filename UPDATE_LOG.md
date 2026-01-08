@@ -13,7 +13,8 @@
 * 添加 `solon-flow` FlowContext.isStopped 方法（用于外部检测）
 * 添加 `solon-flow` NamedTaskComponent 接口，方便智能体开发
 * 添加 `solon-flow` 多图多引擎状态记录与序列化支持
-* 添加 `solon-flow-workflow` WorkflowService.findNextTasks 替代 getTasks（后者标为弃用）
+* 添加 `solon-flow-workflow` findNextTasks 替代 getTasks（后者标为弃用）
+* 添加 `solon-flow-workflow` claimTask、findTask 替代 getTask（后者标为弃用，逻辑转为新的 claimTask）
 * 添加 `solon-flow-workflow` WorkflowIntent 替代之前的临时变量（扩展更方便）
 * 优化 `solon-flow` FlowContext 接口设计，并增加持久化辅助方法
 * 优化 `solon-flow` FlowContext.eventBus 内部实现改为字段模式
@@ -25,25 +26,42 @@
 * 优化 `solon-flow` 引擎的 reverting 处理（支持跨引擎多图场景）
 * 优化 `solon-flow` Node,Link toString 处理（加 whenComponent）
 * 优化 `solon-flow` FlowExchanger.runGraph 如果子图没有结束，则当前分支中断
+* 调整 `solon-flow` 移除 FlowContext:incrAdd,incrGet 弃用预览接口
 * 调整 `solon-flow` FlowContext:executor 转移到 FlowDriver
 * 调整 `solon-flow` FlowInterceptor:doIntercept 更名为 interceptFlow，并标为 default（扩展时语义清晰，且不需要强制实现）
 * 调整 `solon-flow` NodeTrace 更名为 NodeRecord，并增加 FlowTrace 类。支持跨图多引擎场景
 * 调整 `solon-flow` “执行深度”改为“执行步数”（更符合实际需求）
-* 调整 `solon-flow-workflow` WorkflowService.getTask 没有权限时返回 null（之前返回一个未知状态的任务，容易误解）
-* 调整 `solon-flow` 移除 FlowContext:incrAdd,incrGet 弃用预览接口
+* 调整 `solon-flow-workflow` Action Jump 规范，目标节点设为 WAITING（之前为 COMPLETED）
+* 调整 `solon-flow-workflow` getTask（由新名 claimTask 替代） 没有权限时返回 null（之前返回一个未知状态的任务，容易误解）
+* 调整 `solon-flow-workflow` WorkflowService 改为 WorkflowExecutor，缩小概念范围（前者仍可用但标为弃用）
 * 修复 `solon-flow` FlowContext 跨多引擎中转时 exchanger 的冲突问题
 * 修复 `solon-flow` 跨图单步执行时，步数传导会失效的问题
-* 修复 `solon-flow-workflow` 跨图单步执行时，步数传导会失效的问题？？
+* 修复 `solon-flow` ActorStateController 没有对应的元信息会失效的问题
+* 修复 `solon-flow-workflow` 跨图单步执行时，步数传导会失效的问题
 
 兼容变化对照表：
 
-| 旧名称                         | 新名称                    | 备注          |
-|-----------------------------|------------------------|-------------|
-| FlowInterceptor:doIntercept | doFlowIntercept        | 扩展时语义清晰     |
-| FlowContext:executor        | FlowDriver:getExecutor | 上下文不适合配置线程池 |
-| FlowContext:incrAdd,incrGet | /                      | 移除          |
-| NodeTrace                   | NodeRecord             | 支持跨图多引擎场景          |
-| /                           | FlowTrace              | 支持跨图多引擎场景          |
+| 旧名称                         | 新名称                    | 备注                                |
+|-----------------------------|------------------------|-----------------------------------|
+| WorkflowService             | WorkflowExecutor       | 缩小概念范围（前者标为弃用）                    |
+| FlowInterceptor:doIntercept | interceptFlow          | 扩展时语义清晰（方便与 ToolInterceptor 合到一起） |
+| FlowContext:executor        | FlowDriver:getExecutor | 上下文不适合配置线程池                       |
+| FlowContext:incrAdd,incrGet | /                      | 移除                                |
+| NodeTrace                   | NodeRecord             | 支持跨图多引擎场景                         |
+| /                           | FlowTrace              | 支持跨图多引擎场景                         |
+
+
+WorkflowExecutor （更清晰的）接口对照表：
+
+| WorkflowExecutor 新接口 | WorkflowService 旧接口 | 备注                                 |
+|----------------------|---------------------|------------------------------------|
+| claimTask            | getTask             | 认领任务：权限匹配 + 状态激活                   |
+| findTask             | getTask             | 查询任务                               |
+|                      | getTask             | 原来的功能混优，新的拆解成 claimTask 和 findTask |
+| findNextTasks        | getTasks            | 查询下一步任务列表                          |
+| getState             | getState            | 获取状态                               |
+| submitTask           | postTask            | 提交任务                               |
+
 
 
 新特性预览：上下文序列化与持久化
@@ -60,6 +78,23 @@ flowEngine.eval(graph, context);
 
 //转为 json（方便持久化）
 json = context.toJson();
+```
+
+新特性预览：WorkflowExecutor
+
+```java
+// 1. 创建执行器
+WorkflowExecutor workflow = WorkflowExecutor.of(engine, controller, repository);
+
+// 2. 认领任务（检查是否有可操作的待处理任务）
+Task current = workflow.claimTask(graph, context);
+if (current != null) {
+    // 3. 提交任务处理
+    workflow.submitTask(current, TaskAction.FORWARD, context);
+}
+
+// 4. 查找后续可能任务（下一步）
+Collection<Task> nextTasks = workflow.findNextTasks(graph, context);
 ```
 
 

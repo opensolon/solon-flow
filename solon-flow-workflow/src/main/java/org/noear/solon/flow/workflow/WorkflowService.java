@@ -38,7 +38,7 @@ import java.util.Collection;
  * Task task = workflow.getTask(graph, context);
  *
  * //2. 提交任务
- * workflow.submitTaskIfWaiting(task, TaskAction.FORWARD, context);
+ * workflow.postTaskIfWaiting(task, TaskAction.FORWARD, context);
  * }</pre>
  *
  * @author noear
