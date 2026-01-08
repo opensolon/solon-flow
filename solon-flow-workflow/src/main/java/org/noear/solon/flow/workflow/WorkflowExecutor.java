@@ -49,6 +49,8 @@ import java.util.Collection;
  * }</pre>
  *
  * <p><b>注意：</b>本执行器专注于流程执行逻辑，不包含实例管理等业务功能。
+ *
+ * @since 3.8.1
  */
 @Preview("3.4")
 public interface WorkflowExecutor {
