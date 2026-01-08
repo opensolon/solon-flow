@@ -20,6 +20,7 @@ import org.noear.dami2.bus.DamiBus;
 import org.noear.snack4.Feature;
 import org.noear.snack4.ONode;
 import org.noear.snack4.Options;
+import org.noear.solon.core.util.Assert;
 import org.noear.solon.lang.NonSerializable;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
@@ -65,14 +66,17 @@ public class FlowContextDefault implements FlowContextInternal {
 
     protected static FlowContext fromJson(String json) {
         FlowContextDefault tmp = new FlowContextDefault();
-        ONode oNode = ONode.ofJson(json, OPTIONS);
 
-        if (oNode.hasKey("model")) {
-            tmp.model.putAll(oNode.get("model").toBean(Map.class));
-        }
+        if (Assert.isNotEmpty(json)) {
+            ONode oNode = ONode.ofJson(json, OPTIONS);
 
-        if (oNode.hasKey("trace")) {
-            tmp.trace = oNode.get("trace").toBean(FlowTrace.class);
+            if (oNode.hasKey("model")) {
+                tmp.model.putAll(oNode.get("model").toBean(Map.class));
+            }
+
+            if (oNode.hasKey("trace")) {
+                tmp.trace = oNode.get("trace").toBean(FlowTrace.class);
+            }
         }
 
         return tmp;
