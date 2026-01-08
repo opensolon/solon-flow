@@ -20,6 +20,7 @@ import org.noear.dami2.bus.DamiBus;
 import org.noear.snack4.Feature;
 import org.noear.snack4.ONode;
 import org.noear.snack4.Options;
+import org.noear.solon.lang.NonSerializable;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 import org.noear.solon.util.RunnableTx;
@@ -36,8 +37,6 @@ import java.util.function.Function;
  */
 @Preview("3.5")
 public class FlowContextDefault implements FlowContextInternal {
-    static final String TAG = "context";
-
     //存放数据模型
     private transient final Map<String, Object> model = new ConcurrentHashMap<>();
     //痕迹
@@ -84,7 +83,7 @@ public class FlowContextDefault implements FlowContextInternal {
         ONode oNode = new ONode(OPTIONS).asObject();
         oNode.getOrNew("model").then(n -> {
             model.forEach((k, v) -> {
-                if (TAG.equals(k)) {
+                if (v instanceof NonSerializable) {
                     return;
                 }
 

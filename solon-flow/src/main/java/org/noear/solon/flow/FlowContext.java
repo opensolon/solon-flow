@@ -16,6 +16,7 @@
 package org.noear.solon.flow;
 
 import org.noear.dami2.bus.DamiBus;
+import org.noear.solon.lang.NonSerializable;
 import org.noear.solon.lang.Internal;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
@@ -33,7 +34,7 @@ import java.util.function.Function;
  * @since 3.5
  */
 @Preview("3.0")
-public interface FlowContext {
+public interface FlowContext extends NonSerializable {
     static FlowContext of() {
         return new FlowContextDefault();
     }
