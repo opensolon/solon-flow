@@ -32,7 +32,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 3.8
  */
 @Preview("3.4")
-public class WorkflowExecutorDefault implements WorkflowExecutor, WorkflowService {
+public class WorkflowExecutorDefault implements WorkflowExecutor {
     private final transient FlowEngine engine;
     private final StateController stateController;
     private final StateRepository stateRepository;
