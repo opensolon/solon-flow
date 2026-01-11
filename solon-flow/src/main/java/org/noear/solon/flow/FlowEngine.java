@@ -263,7 +263,7 @@ public interface FlowEngine {
     default void eval(Graph graph, int steps, FlowContext context, FlowOptions options) throws FlowException {
         FlowDriver driver = getDriver(graph);
 
-        eval(graph, new FlowExchanger(graph, this, driver, context, options, steps, new AtomicInteger(0)));
+        eval(graph, new FlowExchanger(graph, this, driver, context, steps, new AtomicInteger(0)), options);
     }
 
     /**
@@ -273,5 +273,5 @@ public interface FlowEngine {
      * @param exchanger 交换器
      */
     @Internal
-    void eval(Graph graph, FlowExchanger exchanger) throws FlowException;
+    void eval(Graph graph, FlowExchanger exchanger, FlowOptions options) throws FlowException;
 }

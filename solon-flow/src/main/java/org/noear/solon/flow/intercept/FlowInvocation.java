@@ -33,46 +33,50 @@ import java.util.function.Consumer;
  */
 public class FlowInvocation {
     private final FlowExchanger exchanger;
+    private final FlowOptions options;
     private final Node startNode;
 
     private final List<RankEntity<FlowInterceptor>> interceptorList;
     private final Consumer<FlowInvocation> lastHandler;
     private int index;
 
-    public FlowInvocation(FlowExchanger exchanger, Node startNode, List<RankEntity<FlowInterceptor>> interceptors, Consumer<FlowInvocation> lastHandler) {
+    public FlowInvocation(FlowExchanger exchanger, FlowOptions options, Node startNode, Consumer<FlowInvocation> lastHandler) {
         this.exchanger = exchanger;
+        this.options = options;
         this.startNode = startNode;
 
-        this.interceptorList = new ArrayList<>(interceptors);
-
-        if (exchanger.options() != null && exchanger.options().getInterceptorList().size() > 0) {
-            this.interceptorList.addAll(exchanger.options().getInterceptorList());
-
-            if (interceptorList.size() > 0) {
-                Collections.sort(interceptorList);
-            }
-        }
-
+        this.interceptorList = options.getInterceptorList();
         this.lastHandler = lastHandler;
+
         this.index = 0;
     }
 
     /**
-     * 交换器
+     * 获取选项
+     *
+     * @since 3.8.1
+     */
+    public FlowOptions getOptions() {
+        return options;
+    }
+
+    /**
+     * 获取交换器
      */
     public FlowExchanger getExchanger() {
         return exchanger;
     }
 
+
     /**
-     * 上下文
+     * 获取上下文
      */
     public FlowContext getContext() {
         return exchanger.context();
     }
 
     /**
-     * 图
+     * 获取图
      *
      * @since 3.8
      */
@@ -81,7 +85,7 @@ public class FlowInvocation {
     }
 
     /**
-     * 开始节点
+     * 获取开始节点
      */
     public Node getStartNode() {
         return startNode;

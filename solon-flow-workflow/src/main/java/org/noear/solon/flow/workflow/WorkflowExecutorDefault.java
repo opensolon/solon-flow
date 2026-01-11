@@ -81,10 +81,10 @@ public class WorkflowExecutorDefault implements WorkflowExecutor {
         context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
             FlowDriver driver = getDriver(graph);
 
-            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, null, -1, new AtomicInteger(0));
+            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
             exchanger.recordClear();
 
-            engine.eval(graph, exchanger);
+            engine.eval(graph, exchanger, null);
         });
 
         return intent.nextTasks;
@@ -97,10 +97,10 @@ public class WorkflowExecutorDefault implements WorkflowExecutor {
         context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
             FlowDriver driver = getDriver(graph);
 
-            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, null, -1, new AtomicInteger(0));
+            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
             exchanger.recordClear();
 
-            engine.eval(graph, exchanger);
+            engine.eval(graph, exchanger, null);
         });
 
         return intent.task;
@@ -118,10 +118,10 @@ public class WorkflowExecutorDefault implements WorkflowExecutor {
         context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
             FlowDriver driver = getDriver(graph);
 
-            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, null, -1, new AtomicInteger(0));
+            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
             exchanger.recordClear();
 
-            engine.eval(graph, exchanger);
+            engine.eval(graph, exchanger, null);
         });
 
         return intent.task;
@@ -182,7 +182,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor {
             throw new IllegalArgumentException("StateOperation is UNKNOWN");
         }
         FlowDriver driver = getDriver(graph);
-        FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, null, -1, new AtomicInteger(0));
+        FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
 
         TaskState newState = action.getTargetState();
 
@@ -288,7 +288,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor {
                     if (stateController.isAutoForward(exchanger.context(), nextNode)) {
                         //如果要自动前进
                         exchanger.recordClear();
-                        engine.eval(nextNode.getGraph(), exchanger.copy(nextNode.getGraph()).reverting(false));
+                        engine.eval(nextNode.getGraph(), exchanger.copy(nextNode.getGraph()).reverting(false), null);
                     }
                 }
             }

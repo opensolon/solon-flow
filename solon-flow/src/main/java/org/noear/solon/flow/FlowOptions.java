@@ -19,6 +19,7 @@ import org.noear.solon.core.util.RankEntity;
 import org.noear.solon.flow.intercept.FlowInterceptor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,10 +29,18 @@ import java.util.List;
  * @since 3.8.1
  */
 public class FlowOptions {
-    protected final List<RankEntity<FlowInterceptor>> interceptorList = new ArrayList<>();
+    private final List<RankEntity<FlowInterceptor>> interceptorList = new ArrayList<>();
 
     public List<RankEntity<FlowInterceptor>> getInterceptorList() {
         return interceptorList;
+    }
+
+    protected void interceptorAdd(List<RankEntity<FlowInterceptor>> interceptors) {
+        interceptorList.addAll(interceptors);
+
+        if (interceptorList.size() > 0) {
+            Collections.sort(interceptorList);
+        }
     }
 
     /**
@@ -46,6 +55,10 @@ public class FlowOptions {
      */
     public FlowOptions interceptorAdd(FlowInterceptor interceptor, int index) {
         interceptorList.add(new RankEntity<>(interceptor, index));
+
+        if (interceptorList.size() > 0) {
+            Collections.sort(interceptorList);
+        }
         return this;
     }
 }
