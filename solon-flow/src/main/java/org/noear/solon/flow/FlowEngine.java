@@ -211,14 +211,14 @@ public interface FlowEngine {
     /**
      * 运行
      *
-     * @param graphId         图Id
-     * @param steps           步数
-     * @param context         上下文
-     * @param optionsAdjustor 选项调整器
+     * @param graphId 图Id
+     * @param steps   步数
+     * @param context 上下文
+     * @param options 选项
      */
-    default void eval(String graphId, int steps, FlowContext context, Consumer<FlowOptions> optionsAdjustor) throws FlowException {
+    default void eval(String graphId, int steps, FlowContext context, FlowOptions options) throws FlowException {
         Graph graph = getGraphOrThrow(graphId);
-        eval(graph, steps, context, optionsAdjustor);
+        eval(graph, steps, context, options);
     }
 
 
@@ -258,15 +258,10 @@ public interface FlowEngine {
      * @param graph   图
      * @param steps   步数
      * @param context 上下文
+     * @param options 选项
      */
-    default void eval(Graph graph, int steps, FlowContext context, Consumer<FlowOptions> optionsAdjustor) throws FlowException {
+    default void eval(Graph graph, int steps, FlowContext context, FlowOptions options) throws FlowException {
         FlowDriver driver = getDriver(graph);
-
-        FlowOptions options = null;
-        if (optionsAdjustor != null) {
-            options = new FlowOptions();
-            optionsAdjustor.accept(options);
-        }
 
         eval(graph, new FlowExchanger(graph, this, driver, context, options, steps, new AtomicInteger(0)));
     }
