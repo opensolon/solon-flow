@@ -81,7 +81,10 @@ public class FlowEngineDefault implements FlowEngine {
     @Override
     public void addInterceptor(FlowInterceptor interceptor, int index) {
         interceptorList.add(new RankEntity<>(interceptor, index));
-        Collections.sort(interceptorList);
+
+        if (interceptorList.size() > 0) {
+            Collections.sort(interceptorList);
+        }
     }
 
     @Override

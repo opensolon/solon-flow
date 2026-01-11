@@ -17,6 +17,7 @@ package org.noear.solon.flow;
 
 import org.noear.liquor.eval.Scripts;
 import org.noear.solon.core.util.Assert;
+import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,6 +39,8 @@ public class FlowExchanger {
     private transient final FlowDriver driver;
     //当前流程上下文
     private transient final FlowContextInternal context;
+    //当前流程选项
+    private transient final FlowOptions options;
     //执行步进
     private transient final int steps;
     private transient final AtomicInteger stepCount;
@@ -51,7 +54,7 @@ public class FlowExchanger {
     //执行恢复中
     private transient volatile boolean reverting = true;
 
-    public FlowExchanger(Graph graph, FlowEngine engine, FlowDriver driver, FlowContext context, int steps, AtomicInteger stepCount) {
+    public FlowExchanger(Graph graph, FlowEngine engine, FlowDriver driver, FlowContext context, FlowOptions options, int steps, AtomicInteger stepCount) {
         Assert.notNull(engine, "The engine is null");
         Assert.notNull(driver, "The driver is null");
         Assert.notNull(context, "The context is null");
@@ -60,6 +63,7 @@ public class FlowExchanger {
         this.engine = engine;
         this.driver = driver;
         this.context = (FlowContextInternal) context;
+        this.options = options;
         this.steps = steps;
         this.stepCount = stepCount;
     }
@@ -68,14 +72,14 @@ public class FlowExchanger {
      * 浅度复制
      */
     public FlowExchanger copy(Graph graphNew) {
-        return new FlowExchanger(graphNew, engine, driver, context, steps, stepCount);
+        return new FlowExchanger(graphNew, engine, driver, context, options, steps, stepCount);
     }
 
     /**
      * 浅度复制
      */
     public FlowExchanger copy(Graph graphNew, FlowContext contextNew) {
-        return new FlowExchanger(graphNew, engine, driver, contextNew, steps, stepCount);
+        return new FlowExchanger(graphNew, engine, driver, contextNew, options, steps, stepCount);
     }
 
     public Graph graph() {
@@ -101,6 +105,13 @@ public class FlowExchanger {
      */
     public FlowContextInternal context() {
         return context;
+    }
+
+    /**
+     * 当前选项
+     */
+    public @Nullable FlowOptions options() {
+        return options;
     }
 
     /**

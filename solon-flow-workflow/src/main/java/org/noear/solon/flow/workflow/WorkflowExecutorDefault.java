@@ -81,7 +81,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor {
         context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
             FlowDriver driver = getDriver(graph);
 
-            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
+            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, null, -1, new AtomicInteger(0));
             exchanger.recordClear();
 
             engine.eval(graph, exchanger);
@@ -97,7 +97,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor {
         context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
             FlowDriver driver = getDriver(graph);
 
-            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
+            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, null, -1, new AtomicInteger(0));
             exchanger.recordClear();
 
             engine.eval(graph, exchanger);
@@ -118,7 +118,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor {
         context.with(WorkflowIntent.INTENT_KEY, intent, () -> {
             FlowDriver driver = getDriver(graph);
 
-            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
+            FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, null, -1, new AtomicInteger(0));
             exchanger.recordClear();
 
             engine.eval(graph, exchanger);
@@ -182,7 +182,7 @@ public class WorkflowExecutorDefault implements WorkflowExecutor {
             throw new IllegalArgumentException("StateOperation is UNKNOWN");
         }
         FlowDriver driver = getDriver(graph);
-        FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, -1, new AtomicInteger(0));
+        FlowExchanger exchanger = new FlowExchanger(graph, engine, driver, context, null, -1, new AtomicInteger(0));
 
         TaskState newState = action.getTargetState();
 

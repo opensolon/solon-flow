@@ -18,6 +18,8 @@ package org.noear.solon.flow.intercept;
 import org.noear.solon.core.util.RankEntity;
 import org.noear.solon.flow.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -37,11 +39,20 @@ public class FlowInvocation {
     private final Consumer<FlowInvocation> lastHandler;
     private int index;
 
-    public FlowInvocation(FlowExchanger exchanger, Node startNode, List<RankEntity<FlowInterceptor>> interceptorList, Consumer<FlowInvocation> lastHandler) {
+    public FlowInvocation(FlowExchanger exchanger, Node startNode, List<RankEntity<FlowInterceptor>> interceptors, Consumer<FlowInvocation> lastHandler) {
         this.exchanger = exchanger;
         this.startNode = startNode;
 
-        this.interceptorList = interceptorList;
+        this.interceptorList = new ArrayList<>(interceptors);
+
+        if (exchanger.options() != null && exchanger.options().getInterceptorList().size() > 0) {
+            this.interceptorList.addAll(exchanger.options().getInterceptorList());
+
+            if (interceptorList.size() > 0) {
+                Collections.sort(interceptorList);
+            }
+        }
+
         this.lastHandler = lastHandler;
         this.index = 0;
     }

@@ -247,6 +247,7 @@ class FlowContextTest {
                 FlowEngine.newInstance(),
                 SimpleFlowDriver.getInstance(),
                 context,
+                null,
                 -1,
                 null
         );
