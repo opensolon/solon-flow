@@ -115,6 +115,11 @@ public class NodeSpec {
         return this;
     }
 
+    public NodeSpec linkClear() {
+        this.links.clear();
+        return this;
+    }
+
     /**
      * 配置任务条件
      */
