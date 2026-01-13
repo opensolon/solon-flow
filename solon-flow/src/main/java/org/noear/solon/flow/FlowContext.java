@@ -129,7 +129,7 @@ public interface FlowContext extends NonSerializable {
     FlowContext enableTrace(boolean enable);
 
     /**
-     * 根图最后运行的节点
+     * 根图最后运行的记录
      */
     @Preview("3.8.0")
     @Nullable
