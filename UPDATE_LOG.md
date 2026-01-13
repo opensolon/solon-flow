@@ -55,8 +55,8 @@ WorkflowExecutor （更清晰的）接口对照表：
 
 | WorkflowService 旧接口  | WorkflowExecutor 新接口 | 备注                                 |
 |----------------------|----------------------|------------------------------------|
-| getTask              | claimTask            | 认领任务：权限匹配 + 状态激活                   |
-| getTask              | findTask             | 查询任务                               |
+| getTask              | claimTask            | 认领任务：权限匹配 + 状态激活（自动前进的会跳过）         |
+| getTask              | findTask             | 查询任务：查找下一个待处理节点，或者完结的节点            |
 | getTask              | /                    | 原来的功能混乱，新的拆解成 claimTask 和 findTask |
 | getTasks             | findNextTasks        | 查询下一步任务列表                          |
 | getState             | getState             | 获取状态                               |
