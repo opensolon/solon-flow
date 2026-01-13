@@ -109,7 +109,7 @@ Solon-Flow
 
 ### 1、采用 yaml 或 json 偏平式编排格式
 
-偏平式编排，没有深度结构（所有节点平铺，使用 link 描述连接关系）。配置简洁，关系清晰
+偏平式编排，没有深度结构（所有节点平铺，使用 link 描述连接关系）。配置简洁，逻辑一目了然
 
 ```yaml
 # c1.yml
@@ -120,18 +120,9 @@ layout:
   - { id: "n3", type: "end"}
 ```
 
-还支持简化模式（能自动推断的，都会自动处理），具体参考相关说明
-
-```yaml
-# c1.yml
-id: "c1"
-layout: 
-  - { type: "start"}
-  - { task: ""}
-  - { type: "end"}
-```
-
 ### 2、表达式与脚本自由
+
+支持内置表达式引擎，动态控制流程逻辑。
 
 ```yaml
 # c2.yml
@@ -144,7 +135,7 @@ layout:
   - { type: "end"}
 ```
 
-### 3、元数据配置，为扩展提供了无限空间
+### 3、元数据配置，无限扩展空间
 
 元数据主要有两个作用：（1）为任务运行提供配置支持（2）为视图编辑提供配置支持
 
@@ -157,48 +148,39 @@ layout:
   - { id: "n3", type: "end"}
 ```
 
-通过组件方式，实现元数据的抄送配置效果
+### 4、上下文快照持久化：中断与恢复
+
+支持输出快照（Snapshot）。对于需要人工审批、等待回调或长达数天的长流程，可将当前运行状态序列化保存，待触发后随时恢复运行。
 
 ```java
-@Component("MetaProcessCom")
-public class MetaProcessCom implements TaskComponent {
-    @Override
-    public void run(FlowContext context, Node node) throws Throwable {
-       String cc = node.getMeta("cc");
-       if(Utils.isNotEmpty(cc)){
-           //发送邮件...
-       }
-    }
-}
+// 1. 在节点执行中中断并保存状态
+String snapshotJson = context.toJson(); 
+db.save(instanceId, json);
+
+// 2. 经过一段时间后，从中断处恢复
+String snapshotJson = db.get(instanceId);
+FlowContext context = FlowContext.fromJson(snapshotJson);
+flowEngine.eval(graph, context);
+```
+
+### 5、事件广播与回调支持
+
+内置 EventBus，支持组件间的异步解耦或同步调用。
+
+```java
+//发送事件
+context.eventBus().send("demo.topic", "hello");  //支持泛型（类型按需指定，不指定时为 object）
+
+//调用事件（就是要给答复）
+String rst = context.eventBus().<String, String>call("demo.topic.get", "hello").get();
+System.out.println(rst);
 ```
 
 
-### 4、事件广播与回调支持
 
-广播（即只需要发送），回调（即发送后要求给答复）
+### 6、支持驱动定制（就像 jdbc 的驱动机制）
 
-```yaml
-id: f4
-layout:
-  - task: |
-      //发送事件
-      context.eventBus().send("demo.topic", "hello");  //支持泛型（类型按需指定，不指定时为 object）
-  - task: |
-      //调用事件（就是要给答复）
-      String rst = context.eventBus().<String, String>call("demo.topic.get", "hello").get();
-      System.out.println(rst);
-```
-
-### 5、支持驱动定制（就像 jdbc 的驱动机制）
-
-通过驱动定制，可方便实现：
-
-* 工作流（workflow）， 用于办公审批型的编排场景
-* 规则流（ruleflow）
-* 数据流（dataflow）
-* AI流（aiflow）
-* 等...
-
+通过驱动定制，可快速实现：工作流（Workflow）、规则流（RuleFlow）、数据流（DataFlow）及 AI 智能流。
 
 
 ## Solon 项目相关代码仓库
