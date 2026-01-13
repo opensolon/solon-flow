@@ -18,7 +18,7 @@ public class EventCom implements TaskComponent {
             //如果未支付成功，则停止当前流程，并监听支付成功事件
             context.stop();
 
-            Dami.bus().listen("pay.success", event -> {
+            context.eventBus().listen("pay.success", event -> {
                 FlowExchanger exchanger = context.exchanger();
                 context.put("pay.succeeded", true);
 
