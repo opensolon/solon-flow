@@ -153,11 +153,14 @@ layout:
 支持输出快照（Snapshot）。对于需要人工审批、等待回调或长达数天的长流程，可将当前运行状态序列化保存，待触发后随时恢复运行。
 
 ```java
-// 1. 在节点执行中中断并保存状态
+// 1. 在任务内根据情况停止执行
+context.stop();
+
+// 2. 在节点执行停止后，保存状态
 String snapshotJson = context.toJson(); 
 db.save(instanceId, json);
 
-// 2. 经过一段时间后，从中断处恢复
+// 3. 经过一段时间后，从中断处恢复（继续执行）
 String snapshotJson = db.get(instanceId);
 FlowContext context = FlowContext.fromJson(snapshotJson);
 flowEngine.eval(graph, context);
