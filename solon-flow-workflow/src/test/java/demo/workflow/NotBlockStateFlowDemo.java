@@ -13,13 +13,8 @@ import org.noear.solon.flow.workflow.controller.NotBlockStateController;
 import org.noear.solon.flow.workflow.repository.InMemoryStateRepository;
 import org.noear.solon.flow.workflow.WorkflowExecutor;
 
-/**
- *
- * @author noear 2025/12/20 created
- *
- */
 @Slf4j
-public class NotBlockStateFlowDemo2 {
+public class NotBlockStateFlowDemo {
     NotBlockStateController stateController = new NotBlockStateController();
     InMemoryStateRepository stateRepository = new InMemoryStateRepository() {
         @Override
@@ -42,7 +37,7 @@ public class NotBlockStateFlowDemo2 {
         FlowContext context = FlowContext.of("3")
                 .put("tag", "");
 
-        Task task = workflow.claimTask(graph, context);
+        Task task = workflow.findTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n3", task.getNode().getId());
@@ -51,14 +46,14 @@ public class NotBlockStateFlowDemo2 {
         context = FlowContext.of("4")
                 .put("tag", "n1");
 
-        task = workflow.claimTask(graph, context);
+        task = workflow.findTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n1", task.getNode().getId());
         Assertions.assertEquals(TaskState.WAITING, task.getState());
 
         //再跑（仍在原位、原状态）
-        task = workflow.claimTask(graph, context);
+        task = workflow.findTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n1", task.getNode().getId());
@@ -67,7 +62,7 @@ public class NotBlockStateFlowDemo2 {
 
         context.put("tag", "n2");
 
-        task = workflow.claimTask(graph, context);
+        task = workflow.findTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n2", task.getNode().getId());
@@ -75,7 +70,7 @@ public class NotBlockStateFlowDemo2 {
 
         context.put("tag", "");
 
-        task = workflow.claimTask(graph, context);
+        task = workflow.findTask(graph, context);
         System.out.println("--------------------");
         Assertions.assertNotNull(task);
         Assertions.assertEquals("n3", task.getNode().getId());
@@ -83,7 +78,7 @@ public class NotBlockStateFlowDemo2 {
     }
 
     private Graph getGraph() {
-        String task = "if(tag.equals(node.getId())){exchanger.interrupt();}";
+        String task = "if(tag.equals(node.getId())){context.interrupt();}";
 
         Graph graph = Graph.create("tmp-" + System.currentTimeMillis(),spec->{
             spec.addStart("s").linkAdd("n0");
