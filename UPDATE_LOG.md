@@ -33,7 +33,7 @@
 * 调整 `solon-flow` “执行深度”改为“执行步数”（更符合实际需求）
 * 调整 `solon-flow-workflow` Action Jump 规范，目标节点设为 WAITING（之前为 COMPLETED）
 * 调整 `solon-flow-workflow` getTask（由新名 claimTask 替代） 没有权限时返回 null（之前返回一个未知状态的任务，容易误解）
-* 调整 `solon-flow-workflow` WorkflowService 改为 WorkflowExecutor，缩小概念范围（前者仍可用但标为弃用）
+* 调整 `solon-flow-workflow` WorkflowService 改为 WorkflowExecutor，缩小概念范围并调整接口
 * 修复 `solon-flow` FlowContext 跨多引擎中转时 exchanger 的冲突问题
 * 修复 `solon-flow` 跨图单步执行时，步数传导会失效的问题
 * 修复 `solon-flow` ActorStateController 没有对应的元信息会失效的问题
