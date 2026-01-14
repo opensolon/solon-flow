@@ -24,6 +24,7 @@ import org.noear.solon.core.util.Assert;
 import org.noear.solon.lang.NonSerializable;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
+import org.noear.solon.util.CallableTx;
 import org.noear.solon.util.RunnableTx;
 
 import java.util.*;
@@ -199,6 +200,22 @@ public class FlowContextDefault implements FlowContextInternal {
         try {
             put(key, value);
             runnable.run();
+        } finally {
+            if (bak == null) {
+                remove(key);
+            } else {
+                put(key, bak);
+            }
+        }
+    }
+
+    @Override
+    public <R, X extends Throwable> R with(String key, Object value, CallableTx<R, X> callable) throws X {
+        Object bak = get(key);
+
+        try {
+            put(key, value);
+            return callable.call();
         } finally {
             if (bak == null) {
                 remove(key);

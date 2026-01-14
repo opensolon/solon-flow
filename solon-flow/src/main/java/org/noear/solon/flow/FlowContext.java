@@ -20,6 +20,7 @@ import org.noear.solon.lang.NonSerializable;
 import org.noear.solon.lang.Internal;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
+import org.noear.solon.util.CallableTx;
 import org.noear.solon.util.RunnableTx;
 
 import java.util.Map;
@@ -162,6 +163,11 @@ public interface FlowContext extends NonSerializable {
      * 临时域变量
      */
     <X extends Throwable> void with(String key, Object value, RunnableTx<X> runnable) throws X;
+
+    /**
+     * 临时域变量
+     */
+    <R, X extends Throwable> R with(String key, Object value, CallableTx<R, X> callable) throws X;
 
 
     /**
