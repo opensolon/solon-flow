@@ -2,6 +2,11 @@
 
 * 优化 solon-flow （有包含结构的）网关的流入流出架构，使不再需要记录栈和计数器???
 
+### 3.8.4
+
+* 添加 GraphSpec.clearNodes 方法（清空所有节点）
+* 添加 FlowContext.with(key,val,callable) 方法
+
 
 ### 3.8.1
 
