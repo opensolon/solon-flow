@@ -64,7 +64,6 @@ public class GraphSpec {
 
     /**
      * 移除节点
-     *
      */
     public NodeSpec removeNode(String nodeId) {
         return nodes.remove(nodeId);
@@ -109,6 +108,10 @@ public class GraphSpec {
 
     public Map<String, NodeSpec> getNodes() {
         return Collections.unmodifiableMap(nodes);
+    }
+
+    public void clearNodes(){
+        nodes.clear();
     }
 
     /// /////////////
