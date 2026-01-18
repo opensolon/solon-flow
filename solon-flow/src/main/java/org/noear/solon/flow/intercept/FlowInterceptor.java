@@ -32,7 +32,7 @@ public interface FlowInterceptor {
      * 拦截流程执行, eval(graph)
      *
      * @param invocation 调用者
-     * @see org.noear.solon.flow.FlowEngine#eval(Graph, FlowExchanger)
+     * @see org.noear.solon.flow.FlowEngine#eval(Graph, FlowExchanger, FlowOptions)
      */
     default void interceptFlow(FlowInvocation invocation) throws FlowException {
         invocation.invoke();
