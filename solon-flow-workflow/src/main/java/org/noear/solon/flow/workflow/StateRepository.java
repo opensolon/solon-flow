@@ -30,9 +30,9 @@ import java.util.Map;
 @Preview("3.1")
 public interface StateRepository {
     /**
-     * 数据模型获取
+     * 变量获取（作为上下文变量的增量）
      */
-    default Map<String,Object> modelGet(FlowContext context, Node node) {
+    default Map<String,Object> varsGet(FlowContext context, Node node) {
         return null;
     }
 

@@ -4,9 +4,10 @@
 
 ### 3.8.4
 
-* 添加 GraphSpec.clearNodes 方法（清空所有节点）
-* 添加 FlowContext.with(key,val,callable) 方法
-* 优化 FlowOptions 的写安全控制
+* 添加 `solon-flow` GraphSpec.clearNodes 方法（清空所有节点）
+* 添加 `solon-flow` FlowContext.with(key,val,callable) 方法
+* 添加 `solon-flow` FlowContext.vars 概念 替代 model （后者标为弃用）
+* 优化 `solon-flow` FlowOptions 的写安全控制
 
 
 ### 3.8.1

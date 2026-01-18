@@ -55,14 +55,14 @@ public class BeetlEvaluation implements Evaluation, Closeable {
     @Override
     public boolean runCondition(FlowContext context, String code) {
         Writer writer = new EmptyWriter();
-        Map values = engine.runScript("return " + code + ";", context.model(), writer, templateLoader);
+        Map values = engine.runScript("return " + code + ";", context.vars(), writer, templateLoader);
         return (Boolean) values.get("return");
     }
 
     @Override
     public void runTask(FlowContext context, String code) {
         Writer writer = new EmptyWriter();
-        engine.runScript(code, context.model(), writer, templateLoader);
+        engine.runScript(code, context.vars(), writer, templateLoader);
     }
 
     @Override

@@ -32,7 +32,7 @@ public class MagicEvaluation implements Evaluation {
     @Override
     public boolean runCondition(FlowContext context, String code) {
         MagicScriptContext scriptContext = new MagicScriptContext();
-        for (Map.Entry<String, Object> entry : context.model().entrySet()) {
+        for (Map.Entry<String, Object> entry : context.vars().entrySet()) {
             scriptContext.set(entry.getKey(), entry.getValue());
         }
 
@@ -44,7 +44,7 @@ public class MagicEvaluation implements Evaluation {
     @Override
     public void runTask(FlowContext context, String code) {
         MagicScriptContext scriptContext = new MagicScriptContext();
-        for (Map.Entry<String, Object> entry : context.model().entrySet()) {
+        for (Map.Entry<String, Object> entry : context.vars().entrySet()) {
             scriptContext.set(entry.getKey(), entry.getValue());
         }
 

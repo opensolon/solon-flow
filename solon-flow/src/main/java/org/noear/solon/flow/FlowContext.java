@@ -148,9 +148,19 @@ public interface FlowContext extends NonSerializable {
     /// ////////////
 
     /**
-     * 数据模型
+     * 变量
      */
-    Map<String, Object> model();
+    Map<String, Object> vars();
+
+    /**
+     * 变量
+     *
+     * @deprecated 3.8.4 {@link #vars()}
+     */
+    @Deprecated
+    default Map<String, Object> model(){
+        return vars();
+    }
 
     /**
      * 获取流实例id
@@ -175,7 +185,7 @@ public interface FlowContext extends NonSerializable {
      */
     default FlowContext put(String key, Object value) {
         if (value != null) {
-            model().put(key, value);
+            vars().put(key, value);
         }
         return this;
     }
@@ -185,7 +195,7 @@ public interface FlowContext extends NonSerializable {
      */
     default FlowContext putIfAbsent(String key, Object value) {
         if (value != null) {
-            model().putIfAbsent(key, value);
+            vars().putIfAbsent(key, value);
         }
         return this;
     }
@@ -194,7 +204,7 @@ public interface FlowContext extends NonSerializable {
      * 推入全部
      */
     default FlowContext putAll(Map<String, Object> model) {
-        this.model().putAll(model);
+        this.vars().putAll(model);
         return this;
     }
 
@@ -202,7 +212,7 @@ public interface FlowContext extends NonSerializable {
      * 尝试完成
      */
     default <T> T computeIfAbsent(String key, Function<String, T> mappingFunction) {
-        return (T) model().computeIfAbsent(key, mappingFunction);
+        return (T) vars().computeIfAbsent(key, mappingFunction);
     }
 
     /**
@@ -210,34 +220,34 @@ public interface FlowContext extends NonSerializable {
      *
      */
     default boolean containsKey(String key) {
-        return model().containsKey(key);
+        return vars().containsKey(key);
     }
 
     /**
      * 获取
      */
     default Object get(String key) {
-        return model().get(key);
+        return vars().get(key);
     }
 
     /**
      * 获取
      */
     default <T> T getAs(String key) {
-        return (T) model().get(key);
+        return (T) vars().get(key);
     }
 
     /**
      * 获取或默认
      */
     default <T> T getOrDefault(String key, T def) {
-        return (T) model().getOrDefault(key, def);
+        return (T) vars().getOrDefault(key, def);
     }
 
     /**
      * 移除
      */
     default void remove(String key) {
-        model().remove(key);
+        vars().remove(key);
     }
 }

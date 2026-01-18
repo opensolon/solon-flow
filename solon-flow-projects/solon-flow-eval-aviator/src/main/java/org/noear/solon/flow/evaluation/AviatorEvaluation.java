@@ -28,11 +28,11 @@ import org.noear.solon.flow.FlowContext;
 public class AviatorEvaluation implements Evaluation {
     @Override
     public boolean runCondition(FlowContext context, String code) {
-        return (Boolean) AviatorEvaluator.execute(code, context.model());
+        return (Boolean) AviatorEvaluator.execute(code, context.vars());
     }
 
     @Override
     public void runTask(FlowContext context, String code) {
-        AviatorEvaluator.execute(code, context.model());
+        AviatorEvaluator.execute(code, context.vars());
     }
 }

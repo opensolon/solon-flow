@@ -29,11 +29,11 @@ import org.noear.solon.flow.FlowContext;
 public class LiquorEvaluation implements Evaluation {
     @Override
     public boolean runCondition(FlowContext context, String code) {
-        return (boolean) Exprs.eval(code, context.model());
+        return (boolean) Exprs.eval(code, context.vars());
     }
 
     @Override
     public void runTask(FlowContext context, String code) {
-        Scripts.eval(code, context.model());
+        Scripts.eval(code, context.vars());
     }
 }

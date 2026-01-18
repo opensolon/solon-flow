@@ -43,7 +43,7 @@ public class WorkflowDriver implements FlowDriver {
 
     @Override
     public void onNodeStart(FlowExchanger exchanger, Node node) {
-        Map<String, Object> model = stateRepository.modelGet(exchanger.context(), node);
+        Map<String, Object> model = stateRepository.varsGet(exchanger.context(), node);
         if(Assert.isNotEmpty(model)) {
             exchanger.context().putAll(model);
         }

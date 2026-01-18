@@ -171,7 +171,7 @@ public class FlowExchanger {
      */
     public Object runScript(String script) throws FlowException {
         //按脚本运行
-        return Scripts.eval(script, context().model());
+        return Scripts.eval(script, context().vars());
     }
 
     /// ///////////////////////////
