@@ -19,6 +19,7 @@ import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.FlowEngine;
 import org.noear.solon.flow.Graph;
 import org.noear.solon.flow.Node;
+import org.noear.solon.lang.NonSerializable;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
@@ -53,7 +54,7 @@ import java.util.Collection;
  * @since 3.8.1
  */
 @Preview("3.4")
-public interface WorkflowExecutor {
+public interface WorkflowExecutor extends NonSerializable {
     static WorkflowExecutor of(FlowEngine engine, StateController stateController, StateRepository stateRepository) {
         return new WorkflowExecutorDefault(engine, stateController, stateRepository);
     }

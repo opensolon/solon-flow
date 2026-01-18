@@ -15,6 +15,7 @@
  */
 package org.noear.solon.flow;
 
+import org.noear.solon.lang.NonSerializable;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
@@ -27,7 +28,7 @@ import java.util.concurrent.ExecutorService;
  * @since 3.0
  * */
 @Preview("3.0")
-public interface FlowDriver {
+public interface FlowDriver extends NonSerializable {
     /**
      * 异步执行器
      *

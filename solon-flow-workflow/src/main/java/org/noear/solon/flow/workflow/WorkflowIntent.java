@@ -17,6 +17,7 @@ package org.noear.solon.flow.workflow;
 
 import org.noear.solon.flow.Graph;
 import org.noear.solon.lang.Internal;
+import org.noear.solon.lang.NonSerializable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.List;
  * @since 3.8.1
  */
 @Internal
-public class WorkflowIntent { //用 public 可以正常作为脚本参数
+public class WorkflowIntent implements NonSerializable { //用 public 可以正常作为脚本参数
     protected static final String INTENT_KEY = WorkflowIntent.class.getSimpleName();
 
     protected final Graph rootGraph;

@@ -18,6 +18,7 @@ package org.noear.solon.flow;
 import org.noear.solon.core.util.ResourceUtil;
 import org.noear.solon.flow.intercept.FlowInterceptor;
 import org.noear.solon.lang.Internal;
+import org.noear.solon.lang.NonSerializable;
 import org.noear.solon.lang.Preview;
 
 import java.util.Collection;
@@ -45,7 +46,7 @@ import java.util.function.Consumer;
  * @since 3.0
  * */
 @Preview("3.0")
-public interface FlowEngine {
+public interface FlowEngine extends NonSerializable {
     /**
      * 新实例
      */
