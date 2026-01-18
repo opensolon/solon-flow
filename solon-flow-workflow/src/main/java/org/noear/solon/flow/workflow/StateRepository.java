@@ -19,6 +19,8 @@ import org.noear.solon.flow.FlowContext;
 import org.noear.solon.flow.Node;
 import org.noear.solon.lang.Preview;
 
+import java.util.Map;
+
 /**
  * 状态仓库
  *
@@ -27,6 +29,13 @@ import org.noear.solon.lang.Preview;
  */
 @Preview("3.1")
 public interface StateRepository {
+    /**
+     * 数据模型获取
+     */
+    default Map<String,Object> modelGet(FlowContext context, Node node) {
+        return null;
+    }
+
     /**
      * 状态获取
      */

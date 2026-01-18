@@ -15,8 +15,11 @@
  */
 package org.noear.solon.flow.workflow;
 
+import org.noear.solon.core.util.Assert;
 import org.noear.solon.flow.*;
 import org.noear.solon.lang.Preview;
+
+import java.util.Map;
 
 /**
  * 工作流驱动器实现
@@ -40,6 +43,11 @@ public class WorkflowDriver implements FlowDriver {
 
     @Override
     public void onNodeStart(FlowExchanger exchanger, Node node) {
+        Map<String, Object> model = stateRepository.modelGet(exchanger.context(), node);
+        if(Assert.isNotEmpty(model)) {
+            exchanger.context().putAll(model);
+        }
+
         driver.onNodeStart(exchanger, node);
     }
 
