@@ -6,6 +6,7 @@
 
 * 添加 GraphSpec.clearNodes 方法（清空所有节点）
 * 添加 FlowContext.with(key,val,callable) 方法
+* 优化 FlowOptions 的写安全控制
 
 
 ### 3.8.1
