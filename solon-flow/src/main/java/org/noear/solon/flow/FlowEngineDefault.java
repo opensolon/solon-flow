@@ -165,8 +165,8 @@ public class FlowEngineDefault implements FlowEngine {
     /**
      * 执行评估
      */
-    protected void evalDo(FlowInvocation inv) throws FlowException {
-        node_run(inv.getExchanger(), inv.getOptions(), inv.getStartNode().getGraph().getStart(), inv.getStartNode());
+    protected void evalDo(FlowInvocation inv, FlowOptions options) throws FlowException {
+        node_run(inv.getExchanger(), options, inv.getStartNode().getGraph().getStart(), inv.getStartNode());
     }
 
     /**

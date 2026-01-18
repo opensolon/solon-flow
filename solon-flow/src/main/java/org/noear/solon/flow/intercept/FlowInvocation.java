@@ -21,6 +21,7 @@ import org.noear.solon.flow.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -37,10 +38,10 @@ public class FlowInvocation {
     private final Node startNode;
 
     private final List<RankEntity<FlowInterceptor>> interceptorList;
-    private final Consumer<FlowInvocation> lastHandler;
+    private final BiConsumer<FlowInvocation, FlowOptions> lastHandler;
     private int index;
 
-    public FlowInvocation(FlowExchanger exchanger, FlowOptions options, Node startNode, Consumer<FlowInvocation> lastHandler) {
+    public FlowInvocation(FlowExchanger exchanger, FlowOptions options, Node startNode, BiConsumer<FlowInvocation, FlowOptions> lastHandler) {
         this.exchanger = exchanger;
         this.options = options;
         this.startNode = startNode;
@@ -49,15 +50,6 @@ public class FlowInvocation {
         this.lastHandler = lastHandler;
 
         this.index = 0;
-    }
-
-    /**
-     * 获取选项
-     *
-     * @since 3.8.1
-     */
-    public FlowOptions getOptions() {
-        return options;
     }
 
     /**
@@ -98,7 +90,7 @@ public class FlowInvocation {
         if (index < interceptorList.size()) {
             interceptorList.get(index++).target.interceptFlow(this);
         } else {
-            lastHandler.accept(this);
+            lastHandler.accept(this, options);
         }
     }
 }
