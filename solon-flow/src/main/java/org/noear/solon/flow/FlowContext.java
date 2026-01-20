@@ -26,6 +26,7 @@ import org.noear.solon.util.RunnableTx;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 流上下文，表示一个流实例的上下文数据（对外，不支持序列化）
@@ -151,6 +152,18 @@ public interface FlowContext extends NonSerializable {
      * 变量
      */
     Map<String, Object> vars();
+
+    /**
+     * 可序列化的变量
+     *
+     * @since 3.8.4
+     */
+    @Preview("3.8.4")
+    default Map<String, Object> serVars() {
+        return vars().entrySet().stream()
+                .filter(e -> !(e.getValue() instanceof NonSerializable))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
 
     /**
      * 变量
