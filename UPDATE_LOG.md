@@ -8,6 +8,7 @@
 * 添加 `solon-flow` FlowContext.with(key,val,callable) 方法
 * 添加 `solon-flow` FlowContext.vars 概念 替代 model （后者标为弃用）
 * 优化 `solon-flow` FlowOptions 的写安全控制
+* 调整 `solon-flow` LiquorEvaluation 条件表达式，改用 Snel 表达式（编写更自由）
 
 
 ### 3.8.1

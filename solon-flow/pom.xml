@@ -23,6 +23,11 @@
 
         <dependency>
             <groupId>org.noear</groupId>
+            <artifactId>solon-expression</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.noear</groupId>
             <artifactId>solon-aot</artifactId>
             <scope>provided</scope>
         </dependency>

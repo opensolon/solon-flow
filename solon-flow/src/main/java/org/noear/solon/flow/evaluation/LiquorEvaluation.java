@@ -15,8 +15,8 @@
  */
 package org.noear.solon.flow.evaluation;
 
-import org.noear.liquor.eval.Exprs;
 import org.noear.liquor.eval.Scripts;
+import org.noear.solon.expression.snel.SnelParser;
 import org.noear.solon.flow.Evaluation;
 import org.noear.solon.flow.FlowContext;
 
@@ -27,9 +27,19 @@ import org.noear.solon.flow.FlowContext;
  * @since 3.1
  */
 public class LiquorEvaluation implements Evaluation {
+    private static final SnelParser snel = new SnelParser(2048);
+
     @Override
     public boolean runCondition(FlowContext context, String code) {
-        return (boolean) Exprs.eval(code, context.vars());
+        Object val = snel.forEval().parse(code).eval(context.vars());
+
+        if (val == null) {
+            return false;
+        } else if (val instanceof Boolean) {
+            return (Boolean) val;
+        } else {
+            return true;
+        }
     }
 
     @Override
