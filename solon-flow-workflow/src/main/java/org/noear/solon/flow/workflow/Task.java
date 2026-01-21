@@ -79,6 +79,18 @@ public class Task {
     }
 
     /**
+     * 是否为最后节点
+     */
+    public boolean isEnd() {
+        NodeRecord record = exchanger.context().lastRecord();
+        if (record == null) {
+            return false;
+        }
+
+        return record.isEnd();
+    }
+
+    /**
      * 状态
      */
     public TaskState getState() {
