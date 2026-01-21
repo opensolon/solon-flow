@@ -28,12 +28,14 @@ import org.noear.solon.lang.Preview;
 public class Task {
     private transient final FlowExchanger exchanger;
     private transient final Graph rootGraph;
+    private transient final NodeRecord lastRecord;
     private transient final Node node;
     private transient final TaskState state;
 
     public Task(FlowExchanger exchanger, Graph rootGraph, Node node, TaskState state) {
         this.exchanger = exchanger;
         this.rootGraph = rootGraph;
+        this.lastRecord = exchanger.context().lastRecord();
         this.node = node;
         this.state = state;
     }
@@ -56,6 +58,24 @@ public class Task {
         }
     }
 
+    /**
+     * 最后运行记录
+     */
+    public NodeRecord lastRecord() {
+        return lastRecord;
+    }
+
+    /**
+     * 是否为最后节点
+     */
+    public boolean isEnd() {
+        if (lastRecord == null) {
+            return false;
+        }
+
+        return lastRecord.isEnd();
+    }
+
     public Graph getRootGraph() {
         return rootGraph;
     }
@@ -76,18 +96,6 @@ public class Task {
         } else {
             return node.getId();
         }
-    }
-
-    /**
-     * 是否为最后节点
-     */
-    public boolean isEnd() {
-        NodeRecord record = exchanger.context().lastRecord();
-        if (record == null) {
-            return false;
-        }
-
-        return record.isEnd();
     }
 
     /**

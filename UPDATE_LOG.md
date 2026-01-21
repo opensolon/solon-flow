@@ -10,6 +10,7 @@
 * 添加 `solon-flow` FlowContext.serVars 方法（获取可序列化的变理）
 * 添加 `solon-flow` NonSerializable 标识
 * 添加 `solon-flow-workflow` StateRepository.varsGet 方法
+* 添加 `solon-flow-workflow` Task.isEnd, lastRecord 方法
 * 优化 `solon-flow` FlowOptions 的写安全控制
 * 调整 `solon-flow` LiquorEvaluation 条件表达式，改用 Snel 表达式（编写更自由）
 
