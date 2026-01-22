@@ -21,6 +21,7 @@ import org.noear.snack4.Feature;
 import org.noear.snack4.ONode;
 import org.noear.snack4.Options;
 import org.noear.solon.core.util.Assert;
+import org.noear.solon.flow.encoder.NonSerializableEncoder;
 import org.noear.solon.lang.NonSerializable;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
@@ -63,7 +64,10 @@ public class FlowContextDefault implements FlowContextInternal {
             Feature.Read_AutoType,
             Feature.Write_ClassName,
             Feature.Write_NotMapClassName, //比如只读的 Map 避免有类名
-            Feature.Write_EnumUsingName);
+            Feature.Write_EnumUsingName)
+            .then(o-> {
+                o.addEncoder(new NonSerializableEncoder());
+            });
 
     protected static FlowContext fromJson(String json) {
         FlowContextDefault tmp = new FlowContextDefault();
@@ -86,15 +90,7 @@ public class FlowContextDefault implements FlowContextInternal {
     @Override
     public String toJson() {
         ONode oNode = new ONode(OPTIONS).asObject();
-        oNode.getOrNew("vars").then(n -> {
-            vars.forEach((k, v) -> {
-                if (v instanceof NonSerializable) {
-                    return;
-                }
-
-                n.set(k, ONode.ofBean(v, OPTIONS));
-            });
-        });
+        oNode.set("vars", ONode.ofBean(vars, OPTIONS));
 
         if (trace != null) {
             oNode.set("trace", ONode.ofBean(trace));
