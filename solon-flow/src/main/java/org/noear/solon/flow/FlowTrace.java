@@ -16,6 +16,7 @@
 package org.noear.solon.flow;
 
 
+import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
 import java.io.Serializable;
@@ -109,7 +110,7 @@ public class FlowTrace implements Serializable {
     /**
      * 获取图的最后记录
      */
-    public NodeRecord lastRecord(String graphId) {
+    public @Nullable NodeRecord lastRecord(String graphId) {
         if (enabled == false) {
             return null;
         }
@@ -141,7 +142,7 @@ public class FlowTrace implements Serializable {
     /**
      * 获取图的最后节点Id
      */
-    public String lastNodeId(String graphId) {
+    public @Nullable String lastNodeId(String graphId) {
         NodeRecord tmp = lastRecord(graphId);
 
         if (tmp == null) {

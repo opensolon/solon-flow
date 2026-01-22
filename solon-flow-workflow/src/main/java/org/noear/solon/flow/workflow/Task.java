@@ -17,6 +17,8 @@ package org.noear.solon.flow.workflow;
 
 import org.noear.solon.core.util.Assert;
 import org.noear.solon.flow.*;
+import org.noear.solon.lang.NonSerializable;
+import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 
 /**
@@ -25,7 +27,7 @@ import org.noear.solon.lang.Preview;
  * @author noear
  * @since 3.1
  */
-public class Task {
+public class Task implements NonSerializable {
     private transient final FlowExchanger exchanger;
     private transient final Graph rootGraph;
     private transient final Node node;
@@ -59,7 +61,7 @@ public class Task {
     /**
      * 最后运行记录
      */
-    public NodeRecord lastRecord() {
+    public @Nullable NodeRecord lastRecord() {
         //它是动态的（不适合固化为字段）
         return exchanger.context().lastRecord();
     }
