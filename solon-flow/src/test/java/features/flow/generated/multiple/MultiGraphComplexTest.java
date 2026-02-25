@@ -120,7 +120,14 @@ public class MultiGraphComplexTest {
         engine.load(childgraph2);
         engine.load(rootGraph);
 
+        System.out.println("-----------");
+
         System.out.println(rootGraph.toYaml());
+
+
+        System.out.println("-----------");
+
+        System.out.println(rootGraph.toPlantuml());
     });
 
 

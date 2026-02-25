@@ -1,0 +1,31 @@
+@startuml
+skinparam shadowing false
+skinparam state {
+  BackgroundColor White
+  BorderColor #333333
+  FontName SansSerif
+  BackgroundColor<<Gateway>> #fff9c4
+  BorderColor<<Gateway>> #fbc02d
+}
+title rootGraph
+state start <<start>>
+start : start
+state "node1" as node1
+state p1_start <<choice>> <<Gateway>>
+p1_start : PARALLEL
+state "node2" as node2
+node2 : #childgraph1
+state "node3" as node3
+node3 : #childgraph2
+state p1_end <<choice>> <<Gateway>>
+p1_end : PARALLEL
+state end <<end>>
+end : end
+start --> node1
+node1 --> p1_start
+p1_start --> node2
+p1_start --> node3
+node2 --> p1_end
+node3 --> p1_end
+p1_end --> end
+@enduml
