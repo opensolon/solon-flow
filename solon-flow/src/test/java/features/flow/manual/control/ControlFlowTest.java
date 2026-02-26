@@ -69,6 +69,8 @@ public class ControlFlowTest {
 
         FlowContext context = FlowContext.of(initialState.orderId).put("state", initialState);
         flowEngine.eval(graph, context);
+
+        // 可以持久化 context.toJson() ，下次恢复使用 FlowContext.fromJson(json)
         Assertions.assertEquals("n2", context.lastNodeId());
 
         //模拟人工审核后
