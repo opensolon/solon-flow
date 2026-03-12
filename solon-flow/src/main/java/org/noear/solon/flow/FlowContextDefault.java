@@ -75,6 +75,10 @@ public class FlowContextDefault implements FlowContextInternal {
         if (Assert.isNotEmpty(json)) {
             ONode oNode = ONode.ofJson(json, OPTIONS);
 
+            if (oNode.hasKey("stopped")) {
+                tmp.stopped = oNode.get("stopped").getBoolean();
+            }
+
             if (oNode.hasKey("vars")) {
                 tmp.vars.putAll(oNode.get("vars").toBean(Map.class));
             }
@@ -90,6 +94,7 @@ public class FlowContextDefault implements FlowContextInternal {
     @Override
     public String toJson() {
         ONode oNode = new ONode(OPTIONS).asObject();
+        oNode.set("stopped", stopped);
         oNode.set("vars", ONode.ofBean(vars, OPTIONS));
 
         if (trace != null) {
