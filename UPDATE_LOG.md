@@ -3,6 +3,10 @@
 * 优化 solon-flow （有包含结构的）网关的流入流出架构，使不再需要记录栈和计数器???
 
 
+### 3.9.6
+
+* 优化 FlowContext 持久化，添加 stopped 属性
+
 ### 3.9.5
 
 * 添加 `solon-flow` Graph.toPlantuml 方法（PlantUML （状态图）文本）
