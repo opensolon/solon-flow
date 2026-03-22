@@ -5,7 +5,7 @@
 
 ### 3.9.6
 
-* 优化 `solon-flow` FlowContext 持久化，添加 stopped 属性
+* 优化 `solon-flow` FlowContext 持久化，添加 stopped 属性（支持停止状态恢复）
 
 ### 3.9.5
 
