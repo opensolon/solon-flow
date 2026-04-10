@@ -241,6 +241,43 @@ public class Graph {
      * 转为 PlantUML （状态图）文本
      */
     public String toPlantuml() {
+        return toPlantuml(PlantumlOptions.DEFAULT, null);
+    }
+
+    /**
+     * 转为 PlantUML （状态图）文本
+     *
+     * @param options 输出选项（null 时使用默认选项）
+     * @since 3.10
+     */
+    public String toPlantuml(PlantumlOptions options) {
+        return toPlantuml(options != null ? options : PlantumlOptions.DEFAULT, null);
+    }
+
+    /**
+     * 转为 PlantUML （状态图）文本
+     *
+     * @param displayMappingFunc 显示映射函数，用于自定义节点和连接的显示内容
+     * @since 3.10
+     */
+    public String toPlantuml(java.util.function.Function<PlantumlDisplayContext, PlantumlDisplayResult> displayMappingFunc) {
+        return toPlantuml(PlantumlOptions.DEFAULT, displayMappingFunc);
+    }
+
+    /**
+     * 转为 PlantUML （状态图）文本
+     *
+     * @param options            输出选项
+     * @param displayMappingFunc 显示映射函数，用于自定义节点和连接的显示内容
+     * @since 3.10
+     */
+    public String toPlantuml(PlantumlOptions options,
+                              java.util.function.Function<PlantumlDisplayContext, PlantumlDisplayResult> displayMappingFunc) {
+        // 确保 options 不为 null
+        if (options == null) {
+            options = PlantumlOptions.DEFAULT;
+        }
+
         StringBuilder sb = new StringBuilder();
         sb.append("@startuml\n");
 
@@ -255,25 +292,30 @@ public class Graph {
                 .append("}\n");
 
         if (Utils.isNotEmpty(title)) {
-            sb.append("title ").append(title).append("\n");
+            if (options.isShowIdInTitle()) {
+                sb.append("title ").append(title).append(" (").append(id).append(")\n");
+            } else {
+                sb.append("title ").append(title).append("\n");
+            }
+        } else if (options.isShowIdInTitle()) {
+            sb.append("title ").append(id).append("\n");
         }
 
         // 1. 声明节点：遍历 nodes
         for (Node node : nodes.values()) {
             String nodeId = node.getId();
-            String title = Utils.isNotEmpty(node.getTitle()) ? node.getTitle() : nodeId;
 
             // 渲染逻辑
             switch (node.getType()) {
                 case START:
                     // 开始节点
                     sb.append("state ").append(nodeId).append(" <<start>>\n");
-                    sb.append(nodeId).append(" : ").append(title).append("\n");
+                    appendNodeTitle(sb, nodeId, node.getTitle());
                     break;
                 case END:
                     // 结束节点
                     sb.append("state ").append(nodeId).append(" <<end>>\n");
-                    sb.append(nodeId).append(" : ").append(title).append("\n");
+                    appendNodeTitle(sb, nodeId, node.getTitle());
                     break;
                 case EXCLUSIVE:
                 case INCLUSIVE:
@@ -281,16 +323,16 @@ public class Graph {
                 case LOOP:
                     // 网关节点：使用 choice 刻板印象显示为菱形
                     sb.append("state ").append(nodeId).append(" <<choice>> <<Gateway>>\n");
-                    sb.append(nodeId).append(" : ").append(node.getType().name()).append("\n");
+                    appendNodeTitle(sb, nodeId, node.getTitle());
+                    if (options.isShowGatewayType()) {
+                        sb.append(nodeId).append(" : ").append(node.getType().name()).append("\n");
+                    }
                     break;
                 default:
-                    // 业务活动节点：处理引号和描述信息
-                    // 使用别名定义，防止 title 中的特殊字符导致语法错误
-                    sb.append("state \"").append(title).append("\" as ").append(nodeId).append("\n");
-                    if (Utils.isNotEmpty(node.getTask().getDescription())) {
-                        // 将任务描述作为状态内部的说明
-                        sb.append(nodeId).append(" : ").append(node.getTask().getDescription()).append("\n");
-                    }
+                    // 业务活动节点：显示节点ID、标题和任务描述
+                    sb.append("state ").append(nodeId).append("\n");
+                    appendNodeTitle(sb, nodeId, node.getTitle());
+                    appendNodeTask(sb, nodeId, node, displayMappingFunc);
                     break;
             }
         }
@@ -305,8 +347,9 @@ public class Graph {
             if (Utils.isNotEmpty(link.getTitle())) {
                 labels.add(link.getTitle());
             }
-            if (Utils.isNotEmpty(link.getWhen().getDescription())) {
-                labels.add("[" + link.getWhen().getDescription() + "]");
+            String whenText = buildLinkWhenText(link, displayMappingFunc);
+            if (Utils.isNotEmpty(whenText)) {
+                labels.add("[" + whenText + "]");
             }
 
             if (!labels.isEmpty()) {
@@ -317,6 +360,71 @@ public class Graph {
 
         sb.append("@enduml");
         return sb.toString();
+    }
+
+    private void appendNodeTitle(StringBuilder sb, String nodeId, String title) {
+        if (Utils.isNotEmpty(title)) {
+            sb.append(nodeId).append(" : ").append(title).append("\n");
+        }
+    }
+
+    private void appendNodeTask(StringBuilder sb, String nodeId, Node node,
+                                 java.util.function.Function<PlantumlDisplayContext, PlantumlDisplayResult> displayMappingFunc) {
+        String task = node.getTask().getDescription();
+        if (Utils.isEmpty(task)) {
+            return;
+        }
+
+        if (displayMappingFunc != null) {
+            try {
+                PlantumlDisplayResult result = displayMappingFunc.apply(PlantumlDisplayContext.ofNode(node));
+                if (result != null) {
+                    if (!result.isVisible()) {
+                        return; // 隐藏
+                    }
+                    if (result.isUseDefault()) {
+                        sb.append(nodeId).append(" : ").append(task).append("\n");
+                    } else {
+                        sb.append(nodeId).append(" : ").append(result.getText()).append("\n");
+                    }
+                    return;
+                }
+            } catch (Exception e) {
+                // 异常时使用默认处理
+            }
+        }
+
+        // 默认处理
+        sb.append(nodeId).append(" : ").append(task).append("\n");
+    }
+
+    private String buildLinkWhenText(Link link,
+                                      java.util.function.Function<PlantumlDisplayContext, PlantumlDisplayResult> displayMappingFunc) {
+        String when = link.getWhen().getDescription();
+        if (Utils.isEmpty(when)) {
+            return null;
+        }
+
+        if (displayMappingFunc != null) {
+            try {
+                PlantumlDisplayResult result = displayMappingFunc.apply(PlantumlDisplayContext.ofLink(link));
+                if (result != null) {
+                    if (!result.isVisible()) {
+                        return null; // 隐藏
+                    }
+                    if (result.isUseDefault()) {
+                        return when;
+                    } else {
+                        return result.getText();
+                    }
+                }
+            } catch (Exception e) {
+                // 异常时使用默认处理
+            }
+        }
+
+        // 默认处理
+        return when;
     }
 
     /**
