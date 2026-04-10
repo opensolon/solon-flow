@@ -1,101 +1,204 @@
 package demo.flow;
 
-import org.noear.solon.Utils;
-import org.noear.solon.flow.Graph;
-import org.noear.solon.flow.Link;
-import org.noear.solon.flow.Node;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.noear.solon.flow.*;
 
 /**
+ * PlantUML 输出示例
  *
  * @author noear 2026/3/22 created
- *
  */
 public class PumlDemo {
-    //使用自带方法
-    public String case1(Graph graph) {
+
+    /**
+     * 默认输出
+     */
+    public String case1_default(Graph graph) {
         return graph.toPlantuml();
     }
 
-    //自定义生成
-    public String case2(Graph graph) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("@startuml\n");
+    /**
+     * 仅指定选项：不显示网关类型名
+     */
+    public String case2_hideGatewayType(Graph graph) {
+        PlantumlOptions options = new PlantumlOptions().showGatewayType(false);
+        return graph.toPlantuml(options);
+    }
 
-        // 全局样式优化，让状态图具有活动图的视觉美感
-        sb.append("skinparam shadowing false\n");
-        sb.append("skinparam state {\n")
-                .append("  BackgroundColor White\n")
-                .append("  BorderColor #333333\n")
-                .append("  FontName SansSerif\n")
-                .append("  BackgroundColor<<Gateway>> #fff9c4\n") // 网关用淡黄色
-                .append("  BorderColor<<Gateway>> #fbc02d\n")
-                .append("}\n");
+    /**
+     * 仅指定选项：在标题中显示 ID
+     */
+    public String case3_showIdInTitle(Graph graph) {
+        PlantumlOptions options = new PlantumlOptions().showIdInTitle(true);
+        return graph.toPlantuml(options);
+    }
 
-        if (Utils.isNotEmpty(graph.getTitle())) {
-            sb.append("title ").append(graph.getTitle()).append("\n");
-        }
+    /**
+     * 仅指定选项：组合多个选项
+     */
+    public String case4_combinedOptions(Graph graph) {
+        PlantumlOptions options = new PlantumlOptions()
+                .showGatewayType(false)
+                .showIdInTitle(true);
+        return graph.toPlantuml(options);
+    }
 
-        // 1. 声明节点：遍历 nodes
-        for (Node node : graph.getNodes().values()) {
-            String nodeId = node.getId();
-            String title = Utils.isNotEmpty(node.getTitle()) ? node.getTitle() : nodeId;
+    /**
+     * 映射函数：截断过长的 task
+     */
+    public String case5_truncateTask(Graph graph) {
+        return graph.toPlantuml(ctx -> {
+            if (ctx.isNode()) {
+                String task = ctx.getTask();
+                if (task != null && task.length() > 20) {
+                    return PlantumlDisplayResult.of(task.substring(0, 17) + "...");
+                }
+            }
+            return PlantumlDisplayResult.ofDefault();
+        });
+    }
 
-            // 渲染逻辑
-            switch (node.getType()) {
-                case START:
-                    // 开始节点
-                    sb.append("state ").append(nodeId).append(" <<start>>\n");
-                    sb.append(nodeId).append(" : ").append(title).append("\n");
-                    break;
-                case END:
-                    // 结束节点
-                    sb.append("state ").append(nodeId).append(" <<end>>\n");
-                    sb.append(nodeId).append(" : ").append(title).append("\n");
-                    break;
-                case EXCLUSIVE:
-                case INCLUSIVE:
-                case PARALLEL:
-                case LOOP:
-                    // 网关节点：使用 choice 刻板印象显示为菱形
-                    sb.append("state ").append(nodeId).append(" <<choice>> <<Gateway>>\n");
-                    sb.append(nodeId).append(" : ").append(node.getType().name()).append("\n");
-                    break;
-                default:
-                    // 业务活动节点：处理引号和描述信息
-                    // 使用别名定义，防止 title 中的特殊字符导致语法错误
-                    sb.append("state \"").append(title).append("\" as ").append(nodeId).append("\n");
-                    if (Utils.isNotEmpty(node.getTask().getDescription())) {
-                        // 将任务描述作为状态内部的说明
-                        sb.append(nodeId).append(" : ").append(node.getTask().getDescription()).append("\n");
+    /**
+     * 映射函数：隐藏子图调用
+     */
+    public String case6_hideSubgraphCall(Graph graph) {
+        return graph.toPlantuml(ctx -> {
+            if (ctx.isNode()) {
+                String task = ctx.getTask();
+                if (task != null && task.startsWith("#")) {
+                    return PlantumlDisplayResult.HIDDEN;
+                }
+            }
+            return PlantumlDisplayResult.ofDefault();
+        });
+    }
+
+    /**
+     * 映射函数：自定义子图调用显示
+     */
+    public String case7_customSubgraphDisplay(Graph graph) {
+        return graph.toPlantuml(ctx -> {
+            if (ctx.isNode()) {
+                String task = ctx.getTask();
+                if (task != null && task.startsWith("#")) {
+                    return PlantumlDisplayResult.of("子图: " + task.substring(1));
+                }
+            }
+            return PlantumlDisplayResult.ofDefault();
+        });
+    }
+
+    /**
+     * 映射函数：隐藏 link when 条件
+     */
+    public String case8_hideLinkWhen(Graph graph) {
+        return graph.toPlantuml(ctx -> {
+            if (ctx.isLink()) {
+                // 隐藏所有连接上的条件描述
+                return PlantumlDisplayResult.HIDDEN;
+            }
+            return PlantumlDisplayResult.ofDefault();
+        });
+    }
+
+    /**
+     * 映射函数：简化 link when 条件显示
+     */
+    public String case9_simplifyLinkWhen(Graph graph) {
+        return graph.toPlantuml(ctx -> {
+            if (ctx.isLink()) {
+                String when = ctx.getWhen();
+                if (when != null && when.length() > 15) {
+                    return PlantumlDisplayResult.of(when.substring(0, 12) + "...");
+                }
+            }
+            return PlantumlDisplayResult.ofDefault();
+        });
+    }
+
+    /**
+     * 映射函数：同时处理 task 和 when
+     */
+    public String case10_processBoth(Graph graph) {
+        return graph.toPlantuml(ctx -> {
+            if (ctx.isNode()) {
+                String task = ctx.getTask();
+                if (task != null) {
+                    // 隐藏子图调用
+                    if (task.startsWith("#")) {
+                        return PlantumlDisplayResult.HIDDEN;
                     }
-                    break;
+                    // 简化方法调用
+                    if (task.startsWith("@")) {
+                        int idx = task.indexOf("::");
+                        if (idx > 0) {
+                            return PlantumlDisplayResult.of(task.substring(idx + 2));
+                        }
+                    }
+                }
+            } else if (ctx.isLink()) {
+                String when = ctx.getWhen();
+                if (when != null && when.length() > 20) {
+                    return PlantumlDisplayResult.of(when.substring(0, 17) + "...");
+                }
             }
-        }
+            return PlantumlDisplayResult.ofDefault();
+        });
+    }
 
-        // 2. 声明连接：遍历 links
-        for (Link link : graph.getLinks()) {
-            // 基本语法: prevId --> nextId
-            sb.append(link.getPrevId()).append(" --> ").append(link.getNextId());
-
-            // 拼接连线上的标题或条件描述 (When)
-            List<String> labels = new ArrayList<>();
-            if (Utils.isNotEmpty(link.getTitle())) {
-                labels.add(link.getTitle());
+    /**
+     * 组合使用：选项 + 映射函数
+     */
+    public String case11_optionsWithMapping(Graph graph) {
+        PlantumlOptions options = new PlantumlOptions()
+                .showGatewayType(false)
+                .showIdInTitle(true);
+        return graph.toPlantuml(options, ctx -> {
+            if (ctx.isNode()) {
+                String task = ctx.getTask();
+                if (task != null && task.startsWith("#")) {
+                    return PlantumlDisplayResult.of("→ " + task.substring(1));
+                }
+            } else if (ctx.isLink()) {
+                // 隐藏所有 when 条件
+                if (ctx.getWhen() != null) {
+                    return PlantumlDisplayResult.HIDDEN;
+                }
             }
-            if (Utils.isNotEmpty(link.getWhen().getDescription())) {
-                labels.add("[" + link.getWhen().getDescription() + "]");
-            }
+            return PlantumlDisplayResult.ofDefault();
+        });
+    }
 
-            if (!labels.isEmpty()) {
-                sb.append(" : ").append(String.join(" ", labels));
+    /**
+     * 映射函数：根据节点 ID 做不同处理
+     */
+    public String case12_byNodeId(Graph graph) {
+        return graph.toPlantuml(ctx -> {
+            if (ctx.isNode()) {
+                String nodeId = ctx.getId();
+                String task = ctx.getTask();
+                // 特定节点的 task 隐藏
+                if ("internalNode".equals(nodeId) && task != null) {
+                    return PlantumlDisplayResult.HIDDEN;
+                }
             }
-            sb.append("\n");
-        }
+            return PlantumlDisplayResult.ofDefault();
+        });
+    }
 
-        sb.append("@enduml");
-        return sb.toString();
+    /**
+     * 映射函数：根据连接信息做不同处理
+     */
+    public String case13_byLinkInfo(Graph graph) {
+        return graph.toPlantuml(ctx -> {
+            if (ctx.isLink()) {
+                Link link = ctx.getLink();
+                String when = ctx.getWhen();
+                // 特定连接的条件特殊处理
+                if (link != null && "specialLink".equals(link.getTitle()) && when != null) {
+                    return PlantumlDisplayResult.of("【" + when + "】");
+                }
+            }
+            return PlantumlDisplayResult.ofDefault();
+        });
     }
 }
