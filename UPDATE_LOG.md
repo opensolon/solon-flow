@@ -5,7 +5,7 @@
 
 ### 3.10.2
 
-* 添加 PlantumlOptions and displayMappingFunc for toPlantuml
+* 添加 `solon-flow` PlantumlOptions and displayMappingFunc for toPlantuml
 * dami 升为 2.0.5
 
 ### 3.9.6
