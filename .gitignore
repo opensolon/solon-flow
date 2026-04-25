@@ -29,3 +29,5 @@ nbdist/
 *.DS_Store
 .vscode
 solon-flow-designer/package-lock.json
+
+.soloncode/
