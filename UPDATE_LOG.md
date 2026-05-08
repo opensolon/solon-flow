@@ -3,6 +3,10 @@
 * 优化 solon-flow （有包含结构的）网关的流入流出架构，使不再需要记录栈和计数器???
 
 
+### 3.10.5
+
+* 添加 `solon-flow` FlowContext.toJson(data) 方法
+
 ### 3.10.2
 
 * 添加 `solon-flow` PlantumlOptions and displayMappingFunc for toPlantuml

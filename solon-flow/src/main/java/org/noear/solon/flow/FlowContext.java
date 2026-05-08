@@ -64,6 +64,11 @@ public interface FlowContext extends NonSerializable {
      */
     String toJson();
 
+    /**
+     * 将数据转为 json
+     */
+    String toJson(Object data);
+
     /// ////////////
 
     /**

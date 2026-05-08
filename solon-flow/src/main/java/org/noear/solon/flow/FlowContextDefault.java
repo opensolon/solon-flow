@@ -104,6 +104,10 @@ public class FlowContextDefault implements FlowContextInternal {
         return oNode.toJson();
     }
 
+    @Override
+    public String toJson(Object data) {
+        return ONode.ofBean(data, OPTIONS).toJson();
+    }
 
     @Override
     public void exchanger(FlowExchanger exchanger) {
