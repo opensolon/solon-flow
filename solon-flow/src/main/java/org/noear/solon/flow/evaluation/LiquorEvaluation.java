@@ -31,7 +31,7 @@ public class LiquorEvaluation implements Evaluation {
 
     @Override
     public boolean runCondition(FlowContext context, String code) {
-        Object val = snel.forEval().parse(code).eval(context.vars());
+        Object val = snel.forEval().parse(code).eval(context.data());
 
         if (val == null) {
             return false;
@@ -44,6 +44,6 @@ public class LiquorEvaluation implements Evaluation {
 
     @Override
     public void runTask(FlowContext context, String code) {
-        Scripts.eval(code, context.vars());
+        Scripts.eval(code, context.data());
     }
 }

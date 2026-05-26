@@ -6,6 +6,7 @@
 
 ### 4.0.0
 
+* 添加 FlowContext.data(), serData() 方法（vars, serVars 标为弃用）
 * 移除 FlowContext.model() 方法 //.vars()
 * 移除 Link.condition 方法 //.when
 

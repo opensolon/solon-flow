@@ -123,9 +123,9 @@ class FlowContextTest {
     }
 
     @Test
-    void testVarsOperations() {
+    void testDataOperations() {
         int baseSize = 2;
-        Map<String, Object> model = context.vars();
+        Map<String, Object> model = context.data();
         assertNotNull(model);
         assertEquals(baseSize, model.size()); // 默认情况下应该有两个键值对
 

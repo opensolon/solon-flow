@@ -22,7 +22,6 @@ import org.noear.snack4.ONode;
 import org.noear.snack4.Options;
 import org.noear.solon.core.util.Assert;
 import org.noear.solon.flow.encoder.NonSerializableEncoder;
-import org.noear.solon.lang.NonSerializable;
 import org.noear.solon.lang.Nullable;
 import org.noear.solon.lang.Preview;
 import org.noear.solon.util.CallableTx;
@@ -41,7 +40,7 @@ import java.util.function.Function;
 @Preview("3.5")
 public class FlowContextDefault implements FlowContextInternal {
     //变量
-    private transient final Map<String, Object> vars = new ConcurrentHashMap<>();
+    private transient final Map<String, Object> data = new ConcurrentHashMap<>();
     //痕迹
     private transient FlowTrace trace = new FlowTrace();
     //交换器
@@ -80,7 +79,13 @@ public class FlowContextDefault implements FlowContextInternal {
             }
 
             if (oNode.hasKey("vars")) {
-                tmp.vars.putAll(oNode.get("vars").toBean(Map.class));
+                //@deprecated 4.0.0 //暂时不能删
+                tmp.data.putAll(oNode.get("vars").toBean(Map.class));
+            }
+
+            if (oNode.hasKey("data")) {
+                //@since 4.0.0
+                tmp.data.putAll(oNode.get("data").toBean(Map.class));
             }
 
             if (oNode.hasKey("trace")) {
@@ -95,7 +100,7 @@ public class FlowContextDefault implements FlowContextInternal {
     public String toJson() {
         ONode oNode = new ONode(OPTIONS).asObject();
         oNode.set("stopped", stopped);
-        oNode.set("vars", ONode.ofBean(vars, OPTIONS));
+        oNode.set("data", ONode.ofBean(data, OPTIONS));
 
         if (trace != null) {
             oNode.set("trace", ONode.ofBean(trace));
@@ -186,8 +191,8 @@ public class FlowContextDefault implements FlowContextInternal {
     /**
      * 数据模型
      */
-    public Map<String, Object> vars() {
-        return vars;
+    public Map<String, Object> data() {
+        return data;
     }
 
 
@@ -235,7 +240,7 @@ public class FlowContextDefault implements FlowContextInternal {
      */
     public FlowContextDefault put(String key, Object value) {
         if (value != null) {
-            vars.put(key, value);
+            data.put(key, value);
         }
         return this;
     }
@@ -245,7 +250,7 @@ public class FlowContextDefault implements FlowContextInternal {
      */
     public FlowContextDefault putIfAbsent(String key, Object value) {
         if (value != null) {
-            vars.putIfAbsent(key, value);
+            data.putIfAbsent(key, value);
         }
         return this;
     }
@@ -254,7 +259,7 @@ public class FlowContextDefault implements FlowContextInternal {
      * 推入全部
      */
     public FlowContextDefault putAll(Map<String, Object> vars) {
-        this.vars.putAll(vars);
+        this.data.putAll(vars);
         return this;
     }
 
@@ -262,27 +267,27 @@ public class FlowContextDefault implements FlowContextInternal {
      * 尝试完成
      */
     public <T> T computeIfAbsent(String key, Function<String, T> mappingFunction) {
-        return (T) vars.computeIfAbsent(key, mappingFunction);
+        return (T) data.computeIfAbsent(key, mappingFunction);
     }
 
     /**
      * 获取
      */
     public <T> T getAs(String key) {
-        return (T) vars.get(key);
+        return (T) data.get(key);
     }
 
     /**
      * 获取或默认
      */
     public <T> T getOrDefault(String key, T def) {
-        return (T) vars.getOrDefault(key, def);
+        return (T) data.getOrDefault(key, def);
     }
 
     /**
      * 移除
      */
     public void remove(String key) {
-        vars.remove(key);
+        data.remove(key);
     }
 }

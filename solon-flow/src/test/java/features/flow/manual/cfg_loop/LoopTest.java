@@ -23,9 +23,9 @@ public class LoopTest {
         flowEngine.eval("fetch", context);
 
         context.remove("context");
-        log.warn(new TreeMap<>(context.vars()).toString());
+        log.warn(new TreeMap<>(context.data()).toString());
 
-        assert 115 == context.vars().size();
+        assert 115 == context.data().size();
     }
 
     @Test
@@ -34,7 +34,7 @@ public class LoopTest {
         flowEngine.eval("fetch2", context);
 
         context.remove("context");
-        log.warn(new TreeMap<>(context.vars()).toString());
+        log.warn(new TreeMap<>(context.data()).toString());
 
         assert context.<AtomicInteger>getAs("a").get() == 9;
         assert context.<AtomicInteger>getAs("b").get() == 3;

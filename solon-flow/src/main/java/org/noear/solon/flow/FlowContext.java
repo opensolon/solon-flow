@@ -154,21 +154,43 @@ public interface FlowContext extends NonSerializable {
     /// ////////////
 
     /**
-     * 变量
+     * 数据
+     *
+     * @since 4.0.0
      */
-    Map<String, Object> vars();
+    Map<String, Object> data();
+
+    /**
+     * 可序列化的数据
+     *
+     * @since 4.0.0
+     */
+    default Map<String, Object> serData() {
+        return data().entrySet().stream()
+                .filter(e -> !(e.getValue() instanceof NonSerializable))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    /**
+     * 变量
+     *
+     * @deprecated 4.0.0 {@link #data()}
+     */
+    @Deprecated
+    default Map<String, Object> vars(){
+        return data();
+    }
 
     /**
      * 可序列化的变量
      *
      * @since 3.8.4
+     * @deprecated 4.0.0 {@link #serVars()}
      */
-    @Preview("3.8.4")
     default Map<String, Object> serVars() {
-        return vars().entrySet().stream()
-                .filter(e -> !(e.getValue() instanceof NonSerializable))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return serData();
     }
+
 
     /**
      * 获取流实例id
@@ -193,7 +215,7 @@ public interface FlowContext extends NonSerializable {
      */
     default FlowContext put(String key, Object value) {
         if (value != null) {
-            vars().put(key, value);
+            data().put(key, value);
         }
         return this;
     }
@@ -203,7 +225,7 @@ public interface FlowContext extends NonSerializable {
      */
     default FlowContext putIfAbsent(String key, Object value) {
         if (value != null) {
-            vars().putIfAbsent(key, value);
+            data().putIfAbsent(key, value);
         }
         return this;
     }
@@ -212,7 +234,7 @@ public interface FlowContext extends NonSerializable {
      * 推入全部
      */
     default FlowContext putAll(Map<String, Object> model) {
-        this.vars().putAll(model);
+        this.data().putAll(model);
         return this;
     }
 
@@ -220,7 +242,7 @@ public interface FlowContext extends NonSerializable {
      * 尝试完成
      */
     default <T> T computeIfAbsent(String key, Function<String, T> mappingFunction) {
-        return (T) vars().computeIfAbsent(key, mappingFunction);
+        return (T) data().computeIfAbsent(key, mappingFunction);
     }
 
     /**
@@ -228,34 +250,34 @@ public interface FlowContext extends NonSerializable {
      *
      */
     default boolean containsKey(String key) {
-        return vars().containsKey(key);
+        return data().containsKey(key);
     }
 
     /**
      * 获取
      */
     default Object get(String key) {
-        return vars().get(key);
+        return data().get(key);
     }
 
     /**
      * 获取
      */
     default <T> T getAs(String key) {
-        return (T) vars().get(key);
+        return (T) data().get(key);
     }
 
     /**
      * 获取或默认
      */
     default <T> T getOrDefault(String key, T def) {
-        return (T) vars().getOrDefault(key, def);
+        return (T) data().getOrDefault(key, def);
     }
 
     /**
      * 移除
      */
     default void remove(String key) {
-        vars().remove(key);
+        data().remove(key);
     }
 }
