@@ -107,16 +107,6 @@ public class Link implements Comparable<Link> {
     }
 
     /**
-     * 分支流出条件
-     *
-     * @deprecated 3.3 {@link #getWhen()}
-     */
-    @Deprecated
-    public ConditionDesc getCondition() {
-        return getWhen();
-    }
-
-    /**
      * 前面的节点Id
      */
     public String getPrevId() {

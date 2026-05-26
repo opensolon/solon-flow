@@ -198,7 +198,7 @@ class NodeSpecTest {
     void testDeprecatedConditionMethod() {
         // 测试过时的condition方法（向后兼容）
         nodeSpec.linkAdd("target", link -> {
-            link.condition("deprecated"); // 应该委托给when方法
+            link.when("deprecated"); // 应该委托给when方法
         });
 
         LinkSpec link = nodeSpec.getLinks().get(0);

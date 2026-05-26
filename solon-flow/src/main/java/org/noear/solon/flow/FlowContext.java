@@ -171,16 +171,6 @@ public interface FlowContext extends NonSerializable {
     }
 
     /**
-     * 变量
-     *
-     * @deprecated 3.8.4 {@link #vars()}
-     */
-    @Deprecated
-    default Map<String, Object> model(){
-        return vars();
-    }
-
-    /**
      * 获取流实例id
      */
     default String getInstanceId() {

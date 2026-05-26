@@ -3,6 +3,12 @@
 * 优化 solon-flow （有包含结构的）网关的流入流出架构，使不再需要记录栈和计数器???
 
 
+
+### 4.0.0
+
+* 移除 FlowContext.model() 方法 //.vars()
+* 移除 Link.condition 方法 //.when
+
 ### 3.10.5
 
 * 添加 `solon-flow` FlowContext.toJson(data) 方法

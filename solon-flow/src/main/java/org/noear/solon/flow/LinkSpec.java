@@ -91,16 +91,6 @@ public class LinkSpec {
     }
 
     /**
-     * 配置分支流出条件
-     *
-     * @deprecated 3.3 {@link #when(String)}
-     */
-    @Deprecated
-    public LinkSpec condition(String condition) {
-        return when(condition);
-    }
-
-    /**
      * 配置优先级（越大越优）
      */
     public LinkSpec priority(int priority) {

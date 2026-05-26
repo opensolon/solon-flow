@@ -81,17 +81,6 @@ class LinkSpecTest {
     }
 
     @Test
-    void testDeprecatedConditionMethod() {
-        // 测试过时的condition方法
-        linkSpec.condition("deprecated condition");
-        assertEquals("deprecated condition", linkSpec.getWhen());
-
-        // 链式调用
-        LinkSpec result = linkSpec.condition("another");
-        assertSame(linkSpec, result);
-    }
-
-    @Test
     void testPriorityConfiguration() {
         linkSpec.priority(10);
         assertEquals(10, linkSpec.getPriority());

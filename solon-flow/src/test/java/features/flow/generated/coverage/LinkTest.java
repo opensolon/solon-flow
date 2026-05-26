@@ -51,10 +51,6 @@ class LinkTest {
 
         assertNotNull(condition);
         assertEquals("condition == true", condition.getDescription());
-
-        // 测试过时的condition方法（向后兼容）
-        ConditionDesc condition2 = link.getCondition();
-        assertEquals(condition, condition2);
     }
 
     @Test
