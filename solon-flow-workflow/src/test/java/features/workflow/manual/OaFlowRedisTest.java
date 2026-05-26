@@ -36,7 +36,7 @@ public class OaFlowRedisTest {
 
 
         // 创建 Redis 客户端
-        RedisClient redisClient = Solon.cfg().getBean("solon.repo.redis", RedisClient.class);
+        RedisClient redisClient = Solon.cfg().toBean("solon.repo.redis", RedisClient.class);
         if (redisClient == null) {
             throw new IllegalStateException("Redis client configuration not found!");
         }
